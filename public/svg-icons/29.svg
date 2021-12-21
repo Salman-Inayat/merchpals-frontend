@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg3265" viewBox="0 0 433.18 651.87" version="1.1">
+  <defs id="defs3267">
+    <linearGradient id="linearGradient4339" y2="323.12" gradientUnits="userSpaceOnUse" x2="428.25" gradientTransform="matrix(.52425 0 0 .52425 -142.35 62.482)" y1="1272.6" x1="462.51">
+      <stop id="stop3943" offset="0"/>
+      <stop id="stop3989" stop-color="#986601" offset=".5"/>
+      <stop id="stop3945" stop-color="#000400" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient4469" y2="349.25" gradientUnits="userSpaceOnUse" x2="-104.77" y1="466.72" x1="-63.836">
+      <stop id="stop3961" stop-color="#390" offset="0"/>
+      <stop id="stop3963" stop-color="#015a01" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient4471" y2="216.93" gradientUnits="userSpaceOnUse" x2="-135.5" y1="456.75" x1="-53.632">
+      <stop id="stop3937" stop-color="#006400" offset="0"/>
+      <stop id="stop3939" stop-color="#00a000" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient4473" y2="285.42" gradientUnits="userSpaceOnUse" y1="422.46" x2="-112.07" x1="28.926">
+      <stop id="stop3921" stop-color="#008400" offset="0"/>
+      <stop id="stop3923" stop-color="#00a000" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient4475" y2="349.68" gradientUnits="userSpaceOnUse" x2="-255.36" y1="273.81" x1="33.45">
+      <stop id="stop3905" stop-color="#008c00" offset="0"/>
+      <stop id="stop3907" stop-color="#015a01" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g id="layer1" transform="translate(-137.19 -63.57)">
+    <g id="g3400" transform="translate(290.92)">
+      <path id="path4001" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#015a01" transform="matrix(.56414 0 0 .52425 230.31 155.68)"/>
+      <path id="path3999" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#006000" transform="matrix(.56414 0 0 .52425 -13.448 145.41)"/>
+      <path id="path3995" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#390" transform="matrix(-.56414 0 0 .52425 -54.216 205.34)"/>
+      <path id="path3991" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="url(#linearGradient4473)" transform="matrix(-.56414 0 0 .52425 106.18 202.84)"/>
+      <path id="path2999" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#00ac00" transform="matrix(.56414 0 0 .52425 243.43 86.448)"/>
+      <path id="path2989" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#006400" transform="matrix(.56414 0 0 .52425 141.58 207.77)"/>
+      <path id="path2991" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#007c00" transform="matrix(.56414 0 0 .52425 168.54 -21.398)"/>
+      <path id="path2987" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#009c00" transform="matrix(.56414 0 0 .52425 95.142 -36.376)"/>
+      <path id="path2993" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#008c00" transform="matrix(.56414 0 0 .52425 225.46 13.053)"/>
+      <path id="path2997" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#008400" transform="matrix(.56414 0 0 .52425 207.48 167.33)"/>
+      <path id="path3967" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#007800" transform="matrix(.56414 0 0 .52425 202.74 41.594)"/>
+      <path id="path3971" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#390" transform="matrix(.56414 0 0 .52425 204.65 130.02)"/>
+      <path id="path3020" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#00b000" transform="matrix(-.56414 0 0 .52425 38.907 -23.964)"/>
+      <path id="path3001" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#006000" transform="matrix(.56414 0 0 .52425 144.35 10.709)"/>
+      <path id="path2985" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#009400" transform="matrix(.56414 0 0 .52425 170.04 66.976)"/>
+      <path id="path3979" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#008400" transform="matrix(.56414 0 0 .52425 151.42 44.159)"/>
+      <path id="path2995" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#007800" transform="matrix(.56414 0 0 .52425 171.07 134.84)"/>
+      <path id="path3016" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#008c00" transform="matrix(-.56414 0 0 .52425 -7.5263 220.19)"/>
+      <path id="path3026" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#007400" transform="matrix(-.56414 0 0 .52425 -122.21 101.43)"/>
+      <path id="path3018" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#007c00" transform="matrix(-.56414 0 0 .52425 -47.317 -6.4191)"/>
+      <path id="path3973" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#006c00" transform="matrix(-.56414 0 0 .52425 -20.107 6.8263)"/>
+      <path id="path3022" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="url(#linearGradient4475)" transform="matrix(-.56414 0 0 .52425 -104.24 28.032)"/>
+      <path id="path3024" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="url(#linearGradient4473)" transform="matrix(-.56414 0 0 .52425 -86.261 182.31)"/>
+      <path id="path3969" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#390" transform="matrix(.56414 0 0 .52425 20.566 167.32)"/>
+      <path id="path3981" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="url(#linearGradient4471)" transform="matrix(-.56414 0 0 .52425 57.036 95.06)"/>
+      <path id="path3975" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#390" transform="matrix(.56414 0 0 .52425 .94657 32.297)"/>
+      <path id="path3030" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#4a0" transform="matrix(-.56414 0 0 .52425 -89.868 81.955)"/>
+      <path id="path3028" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#009400" transform="matrix(-.56414 0 0 .52425 -12.866 38.517)"/>
+      <path id="path4375" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#2ca02c" transform="matrix(-.56414 0 0 .52425 68.082 173.41)"/>
+      <path id="path4373" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#217821" transform="matrix(-.56414 0 0 .52425 44.496 115.35)"/>
+      <path id="path4377" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#217821" transform="matrix(-.56414 0 0 .52425 -44.406 117.16)"/>
+      <path id="path3957" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="url(#linearGradient4469)" transform="matrix(-.56414 0 0 .52425 -32.11 192.47)"/>
+      <path id="path3977" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#00ac00" transform="matrix(.56414 0 0 .52425 81.515 79.805)"/>
+      <path id="path3985" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#007800" transform="matrix(-.56414 0 0 .52425 33.943 192.56)"/>
+      <path id="path3032" d="m54.286 333.79a131.43 141.43 0 1 1 -262.86 0 131.43 141.43 0 1 1 262.86 0z" fill="#009800" transform="matrix(-.56414 0 0 .52425 26.353 146.19)"/>
+      <path id="path3052" d="m-79.439 629.16c38.902-18.67 83.414-31.85 85.293-59.77 1.8789-27.92 27.023-41.19 44.301-54.98 25.207-20.118 22.497-56.264 12.589-86.624-0.63246-1.9378-9.5698-5.3366-22.037-9.3538-2.5669-0.82708-12.981 6.0171-15.805 5.145-2.7681-0.85474 11.038-8.1422 8.1017-9.0262-29.733-8.9519-75.056-20.334-77.276-24.391l50.768 7.0271-2.9845-19.612-19.466-7.9374 16.242 0.0985-5.9219-26.187 11.141 25.099 30.203-11.571-25.649 17.672 9.1195 24.703 46.879 6.8655 2.3692-27.516-52.245-60.963 22.305 19.296 10.142-13.972-5.1669 20.567 26.947 21.021 3.2266-34.056-9.7859-9.0398 9.6459 1.2374 1.5242-20.671 4.6937 17.502 15.889-8.7688-12.976 14.151 6.4418 29.5 20.436-14.651 5.8195-20.85 1.0997 16.422 24.499-18.097-47.978 48.371 9.0732 37.094 37.394-25.464-2.0201-29.989 10.765 25.152 52.009-36.534c-0.8182 3.7605-32.517 33.496-54.993 54.421-2.452 2.2828 16.924 8.4011 14.54 10.632-2.6167 2.4494-19.285-6.6937-21.738-4.3702-13.535 12.82-23.935 23.216-24.068 25.592-1.9362 34.585-1.5505 83.138 32.669 93.494 22.014 6.6619 27.601 6.3714 33.824 34.841 6.2231 28.47 57.165 54.966 98.146 72.502-35.909-22.443-88.775-15.743-106.44-58.349-17.669-42.606-21.395-30.564-37.351-31.523 16.264 18.759 17.615 31.348 13.972 49.312-3.6433 17.964-2.4964 25.766 13.162 46.454s17.379 55.984 23.793 83.977c-9.7448-28.51-14.134-66.621-34.814-84.135-20.681-17.514-19.523-29.345-14.83-47.171s-6.8626-27.69-22.253-42.446c-1.6897 15.97-13.389 36.49 2.9209 53.043s16.139 21.099 0.29573 41.043-1.5229 53.627 2.7748 81.164c-5.5411-26.015-29.227-55.292-14.884-78.479s3.9201-27.848-8.0622-42.51-9.8104-34.39-10.007-52.763c-11.074 13.379-22.023 25.114-17.95 42.682 4.0723 17.568 1.5485 27.735-19.034 45.26-20.583 17.525-22.255 48.219-30.419 72.329 3.6512-25.424 1.8034-56.357 20.796-74.865 18.992-18.508 21.947-31.591 13.509-48.633-8.4374-17.042 3.6794-26.082 10.631-38.271-17.773-8.9741-33.644-3.831-48.186 35.89-14.543 39.721-65.449 35.133-95.608 53.982z" fill="url(#linearGradient4339)"/>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Simple Tree 1</dc:title>
+        <dc:date>2011-03-06T02:36:31</dc:date>
+        <dc:description>A Simple Tree made with circles. Drawn with Inkscape.</dc:description>
+        <dc:source>http://openclipart.org/detail/125659/simple-tree-1-by-merlin2525</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Merlin2525</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>3d</rdf:li>
+            <rdf:li>animado</rdf:li>
+            <rdf:li>animados</rdf:li>
+            <rdf:li>anime</rdf:li>
+            <rdf:li>arbol</rdf:li>
+            <rdf:li>arboles</rdf:li>
+            <rdf:li>arbre</rdf:li>
+            <rdf:li>arbres</rdf:li>
+            <rdf:li>bosque</rdf:li>
+            <rdf:li>caricaturedessin</rdf:li>
+            <rdf:li>caricaturee</rdf:li>
+            <rdf:li>cartoon</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>decoracion</rdf:li>
+            <rdf:li>decoratif</rdf:li>
+            <rdf:li>decoration</rdf:li>
+            <rdf:li>decorative</rdf:li>
+            <rdf:li>decorativo</rdf:li>
+            <rdf:li>dessin</rdf:li>
+            <rdf:li>dibujo</rdf:li>
+            <rdf:li>dibujos</rdf:li>
+            <rdf:li>ete</rdf:li>
+            <rdf:li>feuille</rdf:li>
+            <rdf:li>forest</rdf:li>
+            <rdf:li>forestal</rdf:li>
+            <rdf:li>foret</rdf:li>
+            <rdf:li>green</rdf:li>
+            <rdf:li>hojas</rdf:li>
+            <rdf:li>humoristique</rdf:li>
+            <rdf:li>image</rdf:li>
+            <rdf:li>la</rdf:li>
+            <rdf:li>leaves</rdf:li>
+            <rdf:li>naturaleza</rdf:li>
+            <rdf:li>nature</rdf:li>
+            <rdf:li>papel</rdf:li>
+            <rdf:li>paper</rdf:li>
+            <rdf:li>papier</rdf:li>
+            <rdf:li>plant</rdf:li>
+            <rdf:li>plantas</rdf:li>
+            <rdf:li>plante</rdf:li>
+            <rdf:li>primavera</rdf:li>
+            <rdf:li>printemps</rdf:li>
+            <rdf:li>simple</rdf:li>
+            <rdf:li>spring</rdf:li>
+            <rdf:li>summer</rdf:li>
+            <rdf:li>tree</rdf:li>
+            <rdf:li>trees</rdf:li>
+            <rdf:li>verano</rdf:li>
+            <rdf:li>verde</rdf:li>
+            <rdf:li>verts</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
