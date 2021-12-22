@@ -6,7 +6,8 @@ import { makeStyles } from "@mui/styles";
 import { Delete, Undo } from "@mui/icons-material";
 import { bgcolor, Box } from "@mui/system";
 import ColorPallete from "./ColorPallete";
-import FabricEditor from "../../components/editor/FabricEditor";
+import FabricEditor from "../../components/editor/useEditor";
+import useEditor from "../../components/editor/useEditor";
 
 const useStyles = makeStyles({
   editor: {
@@ -31,6 +32,7 @@ const useStyles = makeStyles({
 
 const Editor = () => {
   const classes = useStyles();
+  const editorJs = useEditor('canvas')
   const { selectedObjects, editor, onReady } = useFabricJSEditor();
   useEffect(() => {
     editor?.canvas.setWidth("500px");
@@ -162,14 +164,15 @@ const Editor = () => {
   ];
 
   const onAddCircle = () => {
-    editor?.addCircle();
+    // editor?.addCircle();
   };
   const onAddRectangle = () => {
     editor?.addRectangle();
   };
 
   const addText = () => {
-    editor?.addText("Add Text Here");
+    // editor?.addText("Add Text Here");
+    editorJs.addText()
   };
 
   const addPng = (img) => {
@@ -235,8 +238,9 @@ const Editor = () => {
       </Grid>
       <Grid item xs={5}>
         <Card className={classes.editor}>
-          <FabricJSCanvas className={classes.editor} onReady={onReady} />
+          {/* <FabricJSCanvas className={classes.editor} onReady={onReady} /> */}
           {/* <FabricEditor /> */}
+          <canvas id="canvas"></canvas>
         </Card>
       </Grid>
       <Grid item xs={1}>

@@ -6,7 +6,7 @@ import { initCenteringGuidelines } from "./gridlines/center";
 import StateManager from "./stateManager";
 import { useEffect } from "react";
 
-const FabricEditor = () => {
+const useEditor = (canvasId) => {
   let canvas;
   let stateManager;
 
@@ -51,7 +51,7 @@ const FabricEditor = () => {
   let url = "";
 
   useEffect(() => {
-    canvas = new fabric.Canvas("canvas", {
+    canvas = new fabric.Canvas(canvasId, {
       hoverCursor: "pointer",
       selection: false,
       selectionBorderColor: "blue",
@@ -59,14 +59,16 @@ const FabricEditor = () => {
       fireMiddleClick: true, // <-- enable firing of middle click events
       stopContextMenu: true, // <--  prevent context menu from showing
     });
+  
+    stateManager = new StateManager(canvas);    
 
     initAligningGuidelines(canvas);
-    initCenteringGuidelines(canvas, isMobile);
+    initCenteringGuidelines(canvas, isMobile); 
 
     canvas.on({
       "object:moving": (e) => {},
       "object:modified": (e) => {
-        saveState();
+        // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
@@ -91,7 +93,7 @@ const FabricEditor = () => {
         resetPanels();
       },
       "object:added": (e) => {
-        saveState();
+        // saveState();
       },
       "selection:updated": (e) => {
         const selectedObject = e.target;
@@ -196,7 +198,7 @@ const FabricEditor = () => {
         }
       },
     });
-    stateManager = new StateManager(canvas);
+    
     if (!isMobile) {
       canvas.setWidth(size.width);
       canvas.setHeight(size.height);
@@ -958,8 +960,20 @@ const FabricEditor = () => {
     //   createStoreResponse.emit(resp1);
     // });
   };
+  
+  return {
+    resetPanels,
+    undo,
+    redo,
+    changeSize,
+    addText,
+    getImgPolaroid,
+    setCanvasImage,
+    addImageOnCanvas,
+    addFigure,
 
-  return <canvas id="canvas"></canvas>;
+    
+  };
 };
 
-export default FabricEditor;
+export default useEditor;
