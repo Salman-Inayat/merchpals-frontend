@@ -42,12 +42,21 @@ export default function RegisterForm() {
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      // isSubmitting = true;
-      axios.post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/send-otp`, {phoneNo: `+${phoneNo}`}).then(response => {
-        // isSubmitting = false;
-        // console.log(response)
-        navigate("/otp-verification", { replace: true });
-      })
+      try {
+        const formattedPhoneNo = `+${phoneNo}`;
+        const data = {
+          ...formik.values,
+          phoneNo: formattedPhoneNo,
+        }
+        
+        axios.post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data }).then(response => {
+          localStorage.setItem('phoneNoForOTP', formattedPhoneNo);
+          navigate("/otp-verification", { replace: true });
+        })
+      } catch (error) {
+        //console.log('error', error.message);
+      }
+      
     },
   });
 

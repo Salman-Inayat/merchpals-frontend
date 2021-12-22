@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from "react";
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Page from "../../components/Page";
 import { makeStyles } from "@mui/styles";
 import {
@@ -12,8 +15,8 @@ import {
   useTheme,
 } from "@mui/material";
 import { OtpVerifyInput } from "../../components/authentication/otp-verify-input";
-import { useState } from "react";
 import { LockOutlined } from "@mui/icons-material";
+import { verifyOTP, sendOTP, clearError } from '../../store/redux/actions/auth';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -34,17 +37,56 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  error: {
+    marginTop: '5px',
+    color: 'red'
+  }
 }));
 
-const OtpVerification = () => {
+const OtpVerification = ({
+  verifyOTP = () => {},
+  sendOTP = () => {},
+  otpVerified = false,
+  otpSent = false,
+  verificationError = '',
+  sendingError = '',
+}) => {
   const classes = useStyles();
   const theme = useTheme();
   const [otp, setOtp] = useState();
+  const [error, setError] = useState('Some brief error');
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(otpVerified){
+      localStorage.removeItem('phoneNoForOTP')
+      navigate('/', { replace: true })
+    } else if(verificationError) {
+      setError(verificationError);
+      clearError()
+    }
+  }, [otpVerified, verificationError])
+
+
+  useEffect(() => {
+    if(otpSent){
+    console.log('display some message here');
+    } else if(sendingError) {
+      setError(sendingError);
+      clearError()
+    }
+  }, [otpSent, sendingError])
 
   const handleSubmit = () => {
-    console.log(otp);
+    const phoneNo = localStorage.getItem('phoneNoForOTP')
+    verifyOTP(phoneNo, otp);
   };
 
+  const resentOTP = () =>  {
+    const phoneNo = localStorage.getItem('phoneNoForOTP')
+    sendOTP(phoneNo);
+  }
   return (
     <Page title="Verify Otp">
       <Container component="main" maxWidth="sm">
@@ -90,6 +132,9 @@ const OtpVerification = () => {
               <Grid item spacing={3} justify="center">
                 <OtpVerifyInput otp={otp} setOtp={setOtp} />
               </Grid>
+              <Grid className={classes.error} item>
+                {error}
+              </Grid>
               <Grid container item xs={12} justifyContent="center">
                 <Grid item xs={4}>
                   <Button
@@ -103,7 +148,7 @@ const OtpVerification = () => {
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
-                  <Link color="secondary">
+                  <Link color="secondary" onClick={resentOTP}>
                     <Typography variant="body2">Resend OTP</Typography>
                   </Link>
                 </Grid>
@@ -116,4 +161,17 @@ const OtpVerification = () => {
   );
 };
 
-export default OtpVerification;
+const mapDispatch = dispatch => ({
+    verifyOTP: (phoneNumber, code) => dispatch(verifyOTP(phoneNumber, code)),
+    sendOTP: (phoneNumber) => dispatch(sendOTP(phoneNumber)),
+    clearError: () => dispatch(clearError())
+});
+
+const mapState = state => ({
+  otpVerified: state.auth.otpVerified,
+  otpSent: state.auth.otpSent,
+  verificationError: state.auth.verificationError,
+  sendingError: state.auth.sendingError
+})
+
+export default connect(mapState, mapDispatch)(OtpVerification);
