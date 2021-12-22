@@ -94,6 +94,28 @@ const useEditor = (canvasId) => {
       },
       "object:added": (e) => {
         // saveState();
+        const selectedObject = e.target;
+        selectedObject.hasRotatingPoint = true;
+        selectedObject.transparentCorners = false;
+        selectedObject.cornerColor = "white";
+        selectedObject.cornerStyle = "circle";
+        selectedObject.transparentCorners = false;
+        selectedObject.cornerStrokeColor = "#116dff";
+        selectedObject.padding = 5;
+        selectedObject.cornerSize = 30;
+        selectedObject.rotatingPointOffset = 30;
+        selectedObject.setControlsVisibility({
+          mt: false,
+          mb: false,
+          ml: false,
+          mr: false,
+          bl: false,
+          br: true,
+          tl: false,
+          tr: false,
+          mtr: true,
+        });
+        resetPanels();
       },
       "selection:updated": (e) => {
         const selectedObject = e.target;
@@ -119,14 +141,14 @@ const useEditor = (canvasId) => {
         });
         resetPanels();
         if (selectedObject.type == "i-text") {
-          textSelection.emit("addText");
+          // textSelection.emit("addText");
         } else if (
           selectedObject.type == "path" ||
           selectedObject.type == "group"
         ) {
-          textSelection.emit("addsmiley");
+          // textSelection.emit("addsmiley");
         } else if (selectedObject.type == "image") {
-          textSelection.emit("image");
+          // textSelection.emit("image");
         }
       },
       "object:selected": (e) => {
@@ -166,7 +188,7 @@ const useEditor = (canvasId) => {
               getFill();
               break;
             case "i-text":
-              textSelection.emit("addText");
+              // textSelection.emit("addText");
               textEditor = true;
               getLineHeight();
               getCharSpacing();
@@ -178,14 +200,14 @@ const useEditor = (canvasId) => {
 
               break;
             case "image":
-              textSelection.emit("image");
+              // textSelection.emit("image");
               break;
             case "path":
-              textSelection.emit("addsmiley");
+              // textSelection.emit("addsmiley");
               break;
           }
         } else if (selectedObject.type == "group" && selectedObject) {
-          textSelection.emit("addsmiley");
+          // textSelection.emit("addsmiley");
         }
       },
       "selection:cleared": (e) => {
@@ -194,7 +216,7 @@ const useEditor = (canvasId) => {
         selected = null;
         resetPanels();
         if (selectedObject == undefined) {
-          textSelection.emit("cleared");
+          // textSelection.emit("cleared");
         }
       },
     });
@@ -321,9 +343,9 @@ const useEditor = (canvasId) => {
     }
   };
 
-  const getImgPolaroid = (event) => {
-    const el = event.target;
-    fabric.loadSVGFromURL(el.src, (objects, options) => {
+  const getImgPolaroid = (img) => {
+    // const el = event.target;
+    fabric.loadSVGFromURL(img, (objects, options) => {
       const image = fabric.util.groupSVGElements(objects, options);
       if (!isMobile) {
         image.set({
@@ -971,7 +993,7 @@ const useEditor = (canvasId) => {
     setCanvasImage,
     addImageOnCanvas,
     addFigure,
-
+    removeSelected
     
   };
 };

@@ -176,38 +176,40 @@ const Editor = () => {
   };
 
   const addPng = (img) => {
-    fabric.Image.fromURL(`/svg-icons/${img}`, (oImg) => {
-      console.log(oImg.getOriginalSize());
+    editorJs.getImgPolaroid(img)
+    // fabric.Image.fromURL(`/svg-icons/${img}`, (oImg) => {
+    //   console.log(oImg.getOriginalSize());
 
-      // scale the image width
-      oImg.scaleToWidth(300);
+    //   // scale the image width
+    //   oImg.scaleToWidth(300);
 
-      oImg.hasRotatingPoint = true;
-      oImg.transparentCorners = false;
-      oImg.cornerColor = "white";
-      oImg.cornerStyle = "circle";
-      oImg.transparentCorners = false;
-      oImg.cornerStrokeColor = "#116dff";
-      oImg.padding = 5;
-      oImg.cornerSize = 30;
-      oImg.rotatingPointOffset = 30;
-      oImg.setControlsVisibility({
-        mt: false,
-        mb: false,
-        ml: false,
-        mr: false,
-        bl: false,
-        tl: false,
-        tr: false,
-      });
-      editor?.canvas.add(oImg);
-    });
+    //   oImg.hasRotatingPoint = true;
+    //   oImg.transparentCorners = false;
+    //   oImg.cornerColor = "white";
+    //   oImg.cornerStyle = "circle";
+    //   oImg.transparentCorners = false;
+    //   oImg.cornerStrokeColor = "#116dff";
+    //   oImg.padding = 5;
+    //   oImg.cornerSize = 30;
+    //   oImg.rotatingPointOffset = 30;
+    //   oImg.setControlsVisibility({
+    //     mt: false,
+    //     mb: false,
+    //     ml: false,
+    //     mr: false,
+    //     bl: false,
+    //     tl: false,
+    //     tr: false,
+    //   });
+    //   editor?.canvas.add(oImg);
+    // });
 
-    editor?.canvas.renderAll();
+    // editor?.canvas.renderAll();
   };
 
   const deleteSelected = () => {
-    editor?.deleteSelected();
+    editorJs.removeSelected();
+    // editor?.deleteSelected();
   };
 
   const setCanvasBackground = (bgColor) => {
@@ -226,7 +228,7 @@ const Editor = () => {
           {images.map((oneImage) => (
             <img
               src={`/svg-icons/${oneImage}`}
-              onClick={() => addPng(oneImage)}
+              onClick={() => addPng(`/svg-icons/${oneImage}`)}
               style={{
                 width: "100%",
                 height: "75px",
