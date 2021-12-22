@@ -71,7 +71,7 @@ const OtpVerification = ({
 
   useEffect(() => {
     if(otpSent){
-    console.log('display some message here');
+      console.log('display some message here');
     } else if(sendingError) {
       setError(sendingError);
       clearError()
@@ -162,9 +162,9 @@ const OtpVerification = ({
 };
 
 const mapDispatch = dispatch => ({
-    verifyOTP: (phoneNumber, code) => dispatch(verifyOTP(phoneNumber, code)),
-    sendOTP: (phoneNumber) => dispatch(sendOTP(phoneNumber)),
-    clearError: () => dispatch(clearError())
+  verifyOTP: (phoneNumber, code) => dispatch(verifyOTP(phoneNumber, code)),
+  sendOTP: (phoneNumber) => dispatch(sendOTP(phoneNumber)),
+  clearError: () => dispatch(clearError())
 });
 
 const mapState = state => ({

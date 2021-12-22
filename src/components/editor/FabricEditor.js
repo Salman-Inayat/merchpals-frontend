@@ -157,30 +157,30 @@ const FabricEditor = () => {
           getOpacity();
 
           switch (selectedObject.type) {
-            case "rect":
-            case "circle":
-            case "triangle":
-              figureEditor = true;
-              getFill();
-              break;
-            case "i-text":
-              textSelection.emit("addText");
-              textEditor = true;
-              getLineHeight();
-              getCharSpacing();
-              getBold();
-              getFill();
-              getTextDecoration();
-              getTextAlign();
-              //getFontFamily();
+          case "rect":
+          case "circle":
+          case "triangle":
+            figureEditor = true;
+            getFill();
+            break;
+          case "i-text":
+            textSelection.emit("addText");
+            textEditor = true;
+            getLineHeight();
+            getCharSpacing();
+            getBold();
+            getFill();
+            getTextDecoration();
+            getTextAlign();
+            //getFontFamily();
 
-              break;
-            case "image":
-              textSelection.emit("image");
-              break;
-            case "path":
-              textSelection.emit("addsmiley");
-              break;
+            break;
+          case "image":
+            textSelection.emit("image");
+            break;
+          case "path":
+            textSelection.emit("addsmiley");
+            break;
           }
         } else if (selectedObject.type == "group" && selectedObject) {
           textSelection.emit("addsmiley");
@@ -432,43 +432,43 @@ const FabricEditor = () => {
   const addFigure = (figure) => {
     let add;
     switch (figure) {
-      case "rectangle":
-        add = new fabric.Rect({
-          width: 200,
-          height: 100,
-          left: 10,
-          top: 10,
-          angle: 0,
-          fill: "#3f51b5",
-        });
-        break;
-      case "square":
-        add = new fabric.Rect({
-          width: 100,
-          height: 100,
-          left: 10,
-          top: 10,
-          angle: 0,
-          fill: "#4caf50",
-        });
-        break;
-      case "triangle":
-        add = new fabric.Triangle({
-          width: 100,
-          height: 100,
-          left: 10,
-          top: 10,
-          fill: "#2196f3",
-        });
-        break;
-      case "circle":
-        add = new fabric.Circle({
-          radius: 50,
-          left: 10,
-          top: 10,
-          fill: "#ff5722",
-        });
-        break;
+    case "rectangle":
+      add = new fabric.Rect({
+        width: 200,
+        height: 100,
+        left: 10,
+        top: 10,
+        angle: 0,
+        fill: "#3f51b5",
+      });
+      break;
+    case "square":
+      add = new fabric.Rect({
+        width: 100,
+        height: 100,
+        left: 10,
+        top: 10,
+        angle: 0,
+        fill: "#4caf50",
+      });
+      break;
+    case "triangle":
+      add = new fabric.Triangle({
+        width: 100,
+        height: 100,
+        left: 10,
+        top: 10,
+        fill: "#2196f3",
+      });
+      break;
+    case "circle":
+      add = new fabric.Circle({
+        radius: 50,
+        left: 10,
+        top: 10,
+        fill: "#ff5722",
+      });
+      break;
     }
     extend(add, randomId());
     canvas.add(add);
@@ -620,21 +620,21 @@ const FabricEditor = () => {
     if (activeObject) {
       let clone;
       switch (activeObject.type) {
-        case "rect":
-          clone = new fabric.Rect(activeObject.toObject());
-          break;
-        case "circle":
-          clone = new fabric.Circle(activeObject.toObject());
-          break;
-        case "triangle":
-          clone = new fabric.Triangle(activeObject.toObject());
-          break;
-        case "i-text":
-          clone = new fabric.IText("", activeObject.toObject());
-          break;
-        case "image":
-          clone = fabric.util.object.clone(activeObject);
-          break;
+      case "rect":
+        clone = new fabric.Rect(activeObject.toObject());
+        break;
+      case "circle":
+        clone = new fabric.Circle(activeObject.toObject());
+        break;
+      case "triangle":
+        clone = new fabric.Triangle(activeObject.toObject());
+        break;
+      case "i-text":
+        clone = new fabric.IText("", activeObject.toObject());
+        break;
+      case "image":
+        clone = fabric.util.object.clone(activeObject);
+        break;
       }
       if (clone) {
         clone.set({ left: 10, top: 10 });

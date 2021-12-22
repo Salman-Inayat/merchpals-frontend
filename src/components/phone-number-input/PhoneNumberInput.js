@@ -5,7 +5,7 @@ import "react-phone-input-2/lib/material.css";
 
 const useStyles = makeStyles({
   phoneNo: {
-      width: "100% !important",
+    width: "100% !important",
   },
 });
 

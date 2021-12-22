@@ -17,7 +17,7 @@ export const verifyOTP = (phoneNo, code) => async dispatch => {
     phoneNo, 
     code
   }).then(res => dispatch({ type: AUTH_OTP_VERFICATION_SUCCESS }))
-  .catch(err => dispatch({ type: AUTH_OTP_VERFICATION_FAILED }));
+    .catch(err => dispatch({ type: AUTH_OTP_VERFICATION_FAILED }));
 };
 
 export const sendOTP = (phoneNo) => async dispatch => {
