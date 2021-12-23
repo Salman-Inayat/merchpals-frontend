@@ -5,17 +5,32 @@ import { useFormik, Form, FormikProvider } from "formik";
 import eyeFill from "@iconify/icons-eva/eye-fill";
 import eyeOffFill from "@iconify/icons-eva/eye-off-fill";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // material
-import { Stack, TextField, IconButton, InputAdornment } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Grid, Stack, TextField, IconButton, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { PhoneNumberInput } from "../../phone-number-input";
-import axios from "axios";
-// ----------------------------------------------------------------------
 
+const useStyles = makeStyles((theme) => ({
+  error: {
+    marginTop: '5px',
+    color: '#FF4842',
+    marginLeft: '14px',
+    fontSize: '0.75rem'
+  }
+}))
 export default function RegisterForm() {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNo, setPhoneNo] = useState();
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    phoneNo: '',
+    message: ''
+  });
+
+  const navigate = useNavigate();
+  const classes = useStyles();
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -29,7 +44,13 @@ export default function RegisterForm() {
     email: Yup.string()
       .email("Email must be a valid email address")
       .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, 'Password is too short - should be 8 chars minimum.'),
+    confirmPassword: Yup.string()
+      .test('passwords-match', 'Passwords must match', function(value){
+        return this.parent.password === value
+      })
   });
 
   const formik = useFormik({
@@ -39,24 +60,31 @@ export default function RegisterForm() {
       phoneNo: "",
       email: "",
       password: "",
+      confirmPassword: ""
     },
     validationSchema: RegisterSchema,
-    onSubmit: () => {
-      try {
+    onSubmit: (values, actions) => {
         const formattedPhoneNo = `+${phoneNo}`;
         const data = {
-          ...formik.values,
+          ...values,
           phoneNo: formattedPhoneNo,
         }
         
         axios.post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data }).then(response => {
           localStorage.setItem('phoneNoForOTP', formattedPhoneNo);
-          navigate("/otp-verification", { replace: true });
+          // navigate("/otp-verification", { replace: true });
+        }).catch(error => {
+          actions.setSubmitting(false);
+          let err = error.response.data.message;
+          if (error.response.data.name === 'object') {
+            err = JSON.parse(error.response.data.message);
+          }
+          if(typeof err === 'string'){
+            setFormErrors({ phoneNo: '', email: '', message: err })
+          } else {
+            setFormErrors({phoneNo: err.phoneNo, email: err.email , message: '' })
+          }
         })
-      } catch (error) {
-        //console.log('error', error.message);
-      }
-      
     },
   });
 
@@ -84,21 +112,30 @@ export default function RegisterForm() {
             />
           </Stack>
 
-          <PhoneNumberInput phoneNo={phoneNo} setPhoneNo={setPhoneNo} />
-
-          <TextField
-            fullWidth
-            autoComplete="username"
-            type="email"
-            label="Email address"
-            {...getFieldProps("email")}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
+          <PhoneNumberInput 
+            phoneNo={phoneNo} 
+            setPhoneNo={(value) => {
+                setFormErrors({...formErrors, phoneNo: ''});
+                setPhoneNo(value)
+              }
+            } 
+            error={formErrors.phoneNo} 
           />
 
           <TextField
             fullWidth
-            autoComplete="current-password"
+            autoComplete="email"
+            type="email"
+            label="Email address"
+            {...getFieldProps("email")}
+            onKeyUp={() => setFormErrors({...formErrors, email: ''})}
+            error={Boolean(touched.email && errors.email) || Boolean(formErrors.email)}
+            helperText={(touched.email && errors.email) || formErrors.email}
+          />
+
+          <TextField
+            fullWidth
+            autoComplete="password"
             type={showPassword ? "text" : "password"}
             label="Password"
             {...getFieldProps("password")}
@@ -117,6 +154,34 @@ export default function RegisterForm() {
             error={Boolean(touched.password && errors.password)}
             helperText={touched.password && errors.password}
           />
+
+          {formik.values.password.length > 7 && <TextField
+            fullWidth
+            autoComplete={+new Date()}
+            type={showPassword ? "text" : "password"}
+            label="Confirm Password"
+            {...getFieldProps("confirmPassword")}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+            helperText={touched.confirmPassword && errors.confirmPassword}
+          />}
+
+          {formErrors.message && 
+            <Grid className={classes.error} item>
+              {formErrors.message}
+            </Grid>
+          }
 
           <LoadingButton
             fullWidth

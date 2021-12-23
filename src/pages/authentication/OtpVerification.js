@@ -40,6 +40,13 @@ const useStyles = makeStyles((theme) => ({
   error: {
     marginTop: '5px',
     color: 'red'
+  },
+  message: {
+    marginTop: '5px',
+    color: 'green'
+  },  
+  resendOtp: {
+    cursor: 'pointer',
   }
 }));
 
@@ -54,7 +61,8 @@ const OtpVerification = ({
   const classes = useStyles();
   const theme = useTheme();
   const [otp, setOtp] = useState();
-  const [error, setError] = useState('Some brief error');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -71,7 +79,12 @@ const OtpVerification = ({
 
   useEffect(() => {
     if(otpSent){
-      console.log('display some message here');
+      setError('');
+      setMessage('OTP has been sent!')
+      setTimeout(() => {
+        setMessage('');
+      }, 10000)
+
     } else if(sendingError) {
       setError(sendingError);
       clearError()
@@ -132,9 +145,18 @@ const OtpVerification = ({
               <Grid item spacing={3} justify="center">
                 <OtpVerifyInput otp={otp} setOtp={setOtp} />
               </Grid>
-              <Grid className={classes.error} item>
-                {error}
-              </Grid>
+              {error && 
+                <Grid className={classes.error} item>
+                  {error}
+                </Grid>
+              }
+
+              {message && 
+                <Grid className={classes.message} item>
+                  {message}
+                </Grid>
+              }
+
               <Grid container item xs={12} justifyContent="center">
                 <Grid item xs={4}>
                   <Button
@@ -147,9 +169,9 @@ const OtpVerification = ({
                     Verify
                   </Button>
                 </Grid>
-                <Grid item xs={12}>
-                  <Link color="secondary" onClick={resentOTP}>
-                    <Typography variant="body2">Resend OTP</Typography>
+                <Grid xs={12} item>
+                  <Link className={classes.resendOtp} color="secondary" onClick={resentOTP}>
+                    Resend OTP
                   </Link>
                 </Grid>
               </Grid>
