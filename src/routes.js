@@ -1,28 +1,28 @@
 import { Navigate, useRoutes } from "react-router-dom";
 // layouts
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
+import ForgotPassword from "./pages/authentication/ForgotPassword";
 
 // Pages
 import Login from "./pages/authentication/Login";
+import OtpForResetPassword from "./pages/authentication/OtpForResetPassword";
 import OtpVerification from "./pages/authentication/OtpVerification";
 import Register from "./pages/authentication/Register";
+import ResetPassword from "./pages/authentication/ResetPassword";
 import Editor from "./pages/editor/Editor";
+import Home from "./pages/home";
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
-    {
-      path: "/",
-      // element: <LogoOnlyLayout />,
-      children: [
-        { path: "login", element: <Login /> },
-        { path: "register", element: <Register /> },
-        { path: "otp-verification", element: <OtpVerification /> },
-        { path: "editor", element: <Editor /> },
-
-      ],
-    },
-    // { path: '*', element: <Navigate to="/404" replace /> }
+    { path: "/", element: <Home />},
+    { path: "/login", element: <Login /> },
+    { path: "/register", element: <Register /> },
+    { path: "/otp-verification", element: <OtpVerification /> },
+    { path: "/otp-verification-for-reset", element: <OtpForResetPassword /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/reset-password", element: <ResetPassword />},
+    { path: "/editor", element: <Editor /> },
   ]);
 }

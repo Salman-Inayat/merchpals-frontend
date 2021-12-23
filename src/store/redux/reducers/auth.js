@@ -5,6 +5,11 @@ import {
   AUTH_OTP_SEND,
   AUTH_OTP_SEND_SUCCESS,
   AUTH_OTP_SEND_FAILED,
+  AUTH_FORGOT_PASSWORD_OTP,
+  AUTH_FORGOT_PASSWORD_OTP_SUCCESS,
+  AUTH_FORGOT_PASSWORD_OTP_FAILED,
+  AUTH_RESET_PASSWORD_SUCCESS,
+  AUTH_RESET_PASSWORD_FAILED,  
   CLEAR_ERRORS
 } from '../types';
 
@@ -12,7 +17,8 @@ const initialState = {
   otpVerified: false,
   otpSent: false,
   verificationError: '',
-  sendingError: ''
+  sendingError: '',
+  error: ''
 }
 
 const authReducer = (state = initialState, action) => {
@@ -24,16 +30,24 @@ const authReducer = (state = initialState, action) => {
   case AUTH_OTP_VERFICATION_FAILED:
     return { otpVerified: false, verificationError: 'Something went wrong!' };
   case AUTH_OTP_SEND:
+  case AUTH_FORGOT_PASSWORD_OTP:
     return { otpSent: false };
   case AUTH_OTP_SEND_SUCCESS:
+  case AUTH_FORGOT_PASSWORD_OTP_SUCCESS:
     return { otpSent: true, sendingError: '' };
   case AUTH_OTP_SEND_FAILED:
+  case AUTH_FORGOT_PASSWORD_OTP_FAILED:
     return { otpSent: false, sendingError: 'Error sending OTP. Please Try again!' };
+  case AUTH_RESET_PASSWORD_SUCCESS:
+    return { passwordUpdated: true, error: false }
+  case AUTH_RESET_PASSWORD_FAILED:
+    return { passwordUpdated: false, error: action.payload }
   case CLEAR_ERRORS:
     return { 
       ...state, 
-      verificationError: false,
-      sendingError: false
+      verificationError: '',
+      sendingError: '',
+      error: ''
     }
   default:
     return state

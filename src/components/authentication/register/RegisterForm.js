@@ -72,7 +72,7 @@ export default function RegisterForm() {
         
         axios.post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data }).then(response => {
           localStorage.setItem('phoneNoForOTP', formattedPhoneNo);
-          // navigate("/otp-verification", { replace: true });
+          navigate("/otp-verification", { replace: true });
         }).catch(error => {
           actions.setSubmitting(false);
           let err = error.response.data.message;
