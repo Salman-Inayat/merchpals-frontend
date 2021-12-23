@@ -6,7 +6,7 @@ import { initCenteringGuidelines } from "./gridlines/center";
 import StateManager from "./stateManager";
 import { useEffect } from "react";
 
-const FabricEditor = () => {
+const useEditor = (canvasId) => {
   let canvas;
   let stateManager;
 
@@ -51,7 +51,7 @@ const FabricEditor = () => {
   let url = "";
 
   useEffect(() => {
-    canvas = new fabric.Canvas("canvas", {
+    canvas = new fabric.Canvas(canvasId, {
       hoverCursor: "pointer",
       selection: false,
       selectionBorderColor: "blue",
@@ -59,14 +59,16 @@ const FabricEditor = () => {
       fireMiddleClick: true, // <-- enable firing of middle click events
       stopContextMenu: true, // <--  prevent context menu from showing
     });
+  
+    stateManager = new StateManager(canvas);    
 
     initAligningGuidelines(canvas);
-    initCenteringGuidelines(canvas, isMobile);
+    initCenteringGuidelines(canvas, isMobile); 
 
     canvas.on({
       "object:moving": (e) => {},
       "object:modified": (e) => {
-        saveState();
+        // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
@@ -91,7 +93,29 @@ const FabricEditor = () => {
         resetPanels();
       },
       "object:added": (e) => {
-        saveState();
+        // saveState();
+        const selectedObject = e.target;
+        selectedObject.hasRotatingPoint = true;
+        selectedObject.transparentCorners = false;
+        selectedObject.cornerColor = "white";
+        selectedObject.cornerStyle = "circle";
+        selectedObject.transparentCorners = false;
+        selectedObject.cornerStrokeColor = "#116dff";
+        selectedObject.padding = 5;
+        selectedObject.cornerSize = 30;
+        selectedObject.rotatingPointOffset = 30;
+        selectedObject.setControlsVisibility({
+          mt: false,
+          mb: false,
+          ml: false,
+          mr: false,
+          bl: false,
+          br: true,
+          tl: false,
+          tr: false,
+          mtr: true,
+        });
+        resetPanels();
       },
       "selection:updated": (e) => {
         const selectedObject = e.target;
@@ -117,14 +141,14 @@ const FabricEditor = () => {
         });
         resetPanels();
         if (selectedObject.type == "i-text") {
-          textSelection.emit("addText");
+          // textSelection.emit("addText");
         } else if (
           selectedObject.type == "path" ||
           selectedObject.type == "group"
         ) {
-          textSelection.emit("addsmiley");
+          // textSelection.emit("addsmiley");
         } else if (selectedObject.type == "image") {
-          textSelection.emit("image");
+          // textSelection.emit("image");
         }
       },
       "object:selected": (e) => {
@@ -164,7 +188,7 @@ const FabricEditor = () => {
               getFill();
               break;
             case "i-text":
-              textSelection.emit("addText");
+              // textSelection.emit("addText");
               textEditor = true;
               getLineHeight();
               getCharSpacing();
@@ -176,14 +200,14 @@ const FabricEditor = () => {
 
               break;
             case "image":
-              textSelection.emit("image");
+              // textSelection.emit("image");
               break;
             case "path":
-              textSelection.emit("addsmiley");
+              // textSelection.emit("addsmiley");
               break;
           }
         } else if (selectedObject.type == "group" && selectedObject) {
-          textSelection.emit("addsmiley");
+          // textSelection.emit("addsmiley");
         }
       },
       "selection:cleared": (e) => {
@@ -192,11 +216,11 @@ const FabricEditor = () => {
         selected = null;
         resetPanels();
         if (selectedObject == undefined) {
-          textSelection.emit("cleared");
+          // textSelection.emit("cleared");
         }
       },
     });
-    stateManager = new StateManager(canvas);
+    
     if (!isMobile) {
       canvas.setWidth(size.width);
       canvas.setHeight(size.height);
@@ -319,9 +343,9 @@ const FabricEditor = () => {
     }
   };
 
-  const getImgPolaroid = (event) => {
-    const el = event.target;
-    fabric.loadSVGFromURL(el.src, (objects, options) => {
+  const getImgPolaroid = (img) => {
+    // const el = event.target;
+    fabric.loadSVGFromURL(img, (objects, options) => {
       const image = fabric.util.groupSVGElements(objects, options);
       if (!isMobile) {
         image.set({
@@ -958,8 +982,20 @@ const FabricEditor = () => {
     //   createStoreResponse.emit(resp1);
     // });
   };
-
-  return <canvas id="canvas"></canvas>;
+  
+  return {
+    resetPanels,
+    undo,
+    redo,
+    changeSize,
+    addText,
+    getImgPolaroid,
+    setCanvasImage,
+    addImageOnCanvas,
+    addFigure,
+    removeSelected
+    
+  };
 };
 
-export default FabricEditor;
+export default useEditor;

@@ -25,6 +25,7 @@
         "no-redeclare": "off",
         "no-undef": "off",
         "react/jsx-key": "off",
-        "react/display-name": "off"
+        "react/display-name": "off",
+        "linebreak-style": "off"
     }
 }
