@@ -93,5 +93,10 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "engines": {
+    "npm": "please use yarn to install packages",
+    "yarn": "~1.22.17",
+    "node": "~14.17.0"
   }
 }
