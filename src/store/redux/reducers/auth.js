@@ -10,15 +10,24 @@ import {
   AUTH_FORGOT_PASSWORD_OTP_FAILED,
   AUTH_RESET_PASSWORD_SUCCESS,
   AUTH_RESET_PASSWORD_FAILED,  
+  AUTH_LOGIN_SUCCESS,
+  AUTH_LOGIN_FAILED,
   CLEAR_ERRORS
 } from '../types';
 
 const initialState = {
   otpVerified: false,
   otpSent: false,
+  isLoggedIn: false,
   verificationError: '',
   sendingError: '',
-  error: ''
+  error: '',
+}
+
+const setAuthTokens = data => {
+  console.log({ data });
+  localStorage.setItem('MERCHPAL_AUTH_TOKEN', data.accessToken)
+  return true;
 }
 
 const authReducer = (state = initialState, action) => {
@@ -42,6 +51,11 @@ const authReducer = (state = initialState, action) => {
     return { passwordUpdated: true, error: false }
   case AUTH_RESET_PASSWORD_FAILED:
     return { passwordUpdated: false, error: action.payload }
+  case AUTH_LOGIN_SUCCESS:
+    setAuthTokens(action.payload)
+    return { isLoggedIn: true, error: false }
+  case AUTH_LOGIN_FAILED:
+    return { isLoggedIn: false, error: action.payload }
   case CLEAR_ERRORS:
     return { 
       ...state, 

@@ -12,6 +12,8 @@ import {
   AUTH_FORGOT_PASSWORD_OTP_FAILED,
   AUTH_RESET_PASSWORD_SUCCESS,
   AUTH_RESET_PASSWORD_FAILED,
+  AUTH_LOGIN_SUCCESS,
+  AUTH_LOGIN_FAILED,
   CLEAR_ERRORS
 } from '../types';
 
@@ -60,8 +62,13 @@ export const updatePassword = (password, phoneNo) => async dispatch => {
     password,
     phoneNo
   }).then(res => dispatch({ type: AUTH_RESET_PASSWORD_SUCCESS }))
-    .catch(err => {
-      console.log('err', err);
-      dispatch({ type: AUTH_RESET_PASSWORD_FAILED, payload: err.response.data.message })
-    });  
+    .catch(err => dispatch({ type: AUTH_RESET_PASSWORD_FAILED, payload: err.response.data.message }));  
+}
+
+export const login = (phoneNo, password) => async dispatch => {
+  axios.post(`${baseURL}/auth/login`, {
+    phoneNo,
+    password
+  }).then(res => dispatch({ type: AUTH_LOGIN_SUCCESS }))
+  .catch(err => dispatch({ type: AUTH_LOGIN_FAILED }));
 }

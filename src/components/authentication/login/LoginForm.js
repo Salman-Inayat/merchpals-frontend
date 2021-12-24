@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
+import { connect } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
@@ -13,62 +13,52 @@ import {
   TextField,
   IconButton,
   InputAdornment,
-  FormControlLabel
+  FormControlLabel,
+  Grid
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { PhoneNumberInput } from '../../phone-number-input';
+import { login } from '../../../store/redux/actions/auth';
 
 // ----------------------------------------------------------------------
 
-export default function LoginForm() {
+const LoginForm = ({
+  login = () => {},
+  isLoggedIn = false,
+  error = '',
+}) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNo, setPhoneNo] = useState();
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required')
+  const [password, settPassword] = useState('');
+  const [errors, setErrors] = useState({
+    password: '',
+    phoneNo: ''
   });
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-      remember: true
-    },
-    validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/', { replace: true });
-    }
-  });
+    const handleSubmit = () => {
+      login(phoneNo, password);
+    };
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
-
-  const handleShowPassword = () => {
-    setShowPassword((show) => !show);
-  };
+  const handleShowPassword = () => setShowPassword(!showPassword);
 
   return (
-    <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <Grid>
         <Stack spacing={3}>
-          {/* <TextField
-            fullWidth
-            autoComplete="username"
-            type="email"
-            label="Email address"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
-          /> */}
-          <PhoneNumberInput phoneNo={phoneNo} setPhoneNo={setPhoneNo}/>
-
+          <PhoneNumberInput 
+            phoneNo={phoneNo} 
+            setPhoneNo={val => {
+              setPhoneNo(val);
+              setErrors({...errors, phoneNo: ''})
+            }} 
+            error={errors.phoneNo} 
+          />
 
           <TextField
             fullWidth
-            autoComplete="current-password"
+            autoComplete={+new Date()}
             type={showPassword ? 'text' : 'password'}
             label="Password"
-            {...getFieldProps('password')}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -78,14 +68,19 @@ export default function LoginForm() {
                 </InputAdornment>
               )
             }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
+            onChange={e => {
+              setErrors({...errors, password: ''})
+              setPassword(e.target.value)
+            }}
+            value={password}
+            error={Boolean(errors.password)}
+            helperText={errors.password}
           />
         </Stack>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
           <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
+            control={<Checkbox checked={false} />}
             label="Remember me"
           />
 
@@ -99,11 +94,21 @@ export default function LoginForm() {
           size="large"
           type="submit"
           variant="contained"
-          loading={isSubmitting}
+          onClick={handleSubmit}
+          loading={false}
         >
           Login
         </LoadingButton>
-      </Form>
-    </FormikProvider>
+      </Grid>
   );
 }
+
+const mapDispatch = dispatch => ({
+  login: (phoneNo, password) => dispatch(login(phoneNo, password))
+});
+
+const mapState = state => ({
+  isLoggedIn: state.auth.isLoggedIn,
+  error: state.auth.error
+})
+export default connect(mapState, mapDispatch)(LoginForm);
