@@ -276,14 +276,12 @@ const Editor = () => {
           setCanvasBackground={setCanvasBackground}
         />
       </Grid>
-
       <Grid item md={12} xs={2}>
         <FontControls
           setFontColor={setFontColor}
           setFontFamily={setFontFamily}
         />
       </Grid>
-
       <Grid item xs={12}>
         <Stack
           direction="row"
