@@ -1,3 +1,19 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arbutus&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Moon+Dance&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tourney:wght@100&display=swap'); */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +26,80 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@font-face {
+  font-family: 'Alpha-Slab';
+  font-size: 30px;
+  src: url('./assets/fonts/AlfaSlabOne-Regular.ttf');
+}
+@font-face {
+  font-family: 'Anton';
+  font-size: 30px;
+  src: url('./assets/fonts/Anton-Regular.ttf');
+}
+@font-face {
+  font-family: 'Arbutus';
+  font-size: 30px;
+  src: url('./assets/fonts/Arbutus-Regular.ttf');
+}
+@font-face {
+  font-family: 'Bangers';
+  font-size: 30px;
+  src: url('./assets/fonts/Bangers-Regular.ttf');
+}
+@font-face {
+  font-family: 'BebasNeue';
+  font-size: 30px;
+  src: url('./assets/fonts/BebasNeue-Regular.ttf');
+}
+@font-face {
+  font-family: 'Blackops';
+  font-size: 30px;
+  src: url('./assets/fonts/BlackOpsOne-Regular.ttf');
+}
+@font-face {
+  font-family: 'Bungee';
+  font-size: 30px;
+  src: url('./assets/fonts/Bungee-Regular.ttf');
+}
+@font-face {
+  font-family: 'BungeeS';
+  font-size: 30px;
+  src: url('./assets/fonts/BungeeShade-Regular.ttf');
+}
+@font-face {
+  font-family: 'Caveat';
+  font-size: 30px;
+  src: url('./assets/fonts/CaveatBrush-Regular.ttf');
+}
+@font-face {
+  font-family: 'Cinzel';
+  font-size: 30px;
+  src: url('./assets/fonts/Cinzel-VariableFont_wght.ttf');
+}
+@font-face {
+  font-family: 'Dance';
+  font-size: 30px;
+  src: url('./assets/fonts/DancingScript-VariableFont_wght.ttf');
+}
+@font-face {
+  font-family: 'DelaGothic';
+  font-size: 30px;
+  src: url('./assets/fonts/DelaGothicOne-Regular.ttf');
+}
+@font-face {
+  font-family: 'Fredoka';
+  font-size: 30px;
+  src: url('./assets/fonts/FredokaOne-Regular.ttf');
+}
+@font-face {
+  font-family: 'RussoOne';
+  font-size: 30px;
+  src: url('./assets/fonts/RussoOne-Regular.ttf');
+}
+@font-face {
+  font-family: 'Tourney';
+  font-size: 30px;
+  src: url('./assets/fonts/Tourney-VariableFont_wdth,wght.ttf');
 }
