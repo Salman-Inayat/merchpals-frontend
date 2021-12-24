@@ -173,7 +173,6 @@ const Editor = () => {
   };
 
   const addText = () => {
-    // setTextControls(true);
     editorJs.addText();
   };
 
