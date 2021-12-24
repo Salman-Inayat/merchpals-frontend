@@ -140,8 +140,13 @@ const useEditor = canvasId => {
           mtr: true,
         });
         resetPanels();
+        if (selectedObject.type !== 'i-text') {
+          document.getElementById('textControls').hidden = true;
+        }
+
         if (selectedObject.type == 'i-text') {
           // textSelection.emit("addText");
+          document.getElementById('textControls').hidden = false;
         } else if (
           selectedObject.type == 'path' ||
           selectedObject.type == 'group'
@@ -208,6 +213,20 @@ const useEditor = canvasId => {
           }
         } else if (selectedObject.type == 'group' && selectedObject) {
           // textSelection.emit("addsmiley");
+        }
+      },
+      'selection:created': e => {
+        const selectedObject = e.target;
+        if (selectedObject.type === 'i-text') {
+          console.log('Text box');
+          document.getElementById('textControls').hidden = false;
+        } else {
+          document.getElementById('textControls').hidden = true;
+        }
+      },
+      'before:selection:cleared': e => {
+        if (e.target.type === 'i-text') {
+          document.getElementById('textControls').hidden = true;
         }
       },
       'selection:cleared': e => {
@@ -296,6 +315,7 @@ const useEditor = canvasId => {
           }
         },
       });
+
       extend(text, randomId());
       canvas.discardActiveObject().renderAll();
       canvas.add(text);
@@ -510,7 +530,8 @@ const useEditor = canvasId => {
     canvas.setActiveObject(obj);
   };
 
-  const setCanvasFill = () => {
+  const setCanvasFill = bgcolor => {
+    canvasProperties.canvasFill = bgcolor;
     if (!canvasProperties.canvasImage) {
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
@@ -784,8 +805,7 @@ const useEditor = canvasId => {
   };
 
   const setFontFamily = value => {
-    canvasProperties.fontFamily = value.replace(/"/g, '');
-    setActiveProp('fontFamily', canvasProperties.fontFamily);
+    setActiveProp('fontFamily', value);
   };
 
   const setFontColor = value => {
@@ -1013,6 +1033,8 @@ const useEditor = canvasId => {
     removeSelected,
     setFontFamily,
     setFontColor,
+    setFontSize,
+    setCanvasFill,
   };
 };
 

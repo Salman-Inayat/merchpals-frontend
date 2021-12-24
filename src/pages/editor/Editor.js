@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fabric } from 'fabric';
 import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
-import { Button, Card, Grid, Stack, Typography } from '@mui/material';
+import { Button, Card, Grid, Stack, Typography, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo } from '@mui/icons-material';
 import { bgcolor, Box } from '@mui/system';
@@ -35,7 +35,6 @@ const Editor = () => {
   const classes = useStyles();
   const editorJs = useEditor('canvas');
   const { selectedObjects, editor, onReady } = useFabricJSEditor();
-  const [textControls, setTextControls] = useState(false);
 
   useEffect(() => {
     editor?.canvas.setWidth('500px');
@@ -174,7 +173,6 @@ const Editor = () => {
   };
 
   const addText = () => {
-    // editor?.addText("Add Text Here");
     // setTextControls(true);
     editorJs.addText();
   };
@@ -217,8 +215,7 @@ const Editor = () => {
   };
 
   const setCanvasBackground = bgColor => {
-    editor?.canvas.setBackgroundColor(bgColor);
-    editor?.canvas.renderAll();
+    editorJs.setCanvasFill(bgColor);
   };
 
   const setFontColor = color => {
@@ -227,6 +224,20 @@ const Editor = () => {
 
   const setFontFamily = fontFamily => {
     editorJs?.setFontFamily(fontFamily);
+  };
+
+  const setFontSize = fontSize => {
+    editorJs?.setFontSize(fontSize);
+  };
+
+  const addImage = e => {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (f) {
+      var data = f.target.result;
+      editorJs.addImageOnCanvas(data);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -265,14 +276,14 @@ const Editor = () => {
           setCanvasBackground={setCanvasBackground}
         />
       </Grid>
-      {/* {textControls && ( */}
+
       <Grid item md={12} xs={2}>
         <FontControls
           setFontColor={setFontColor}
           setFontFamily={setFontFamily}
         />
       </Grid>
-      {/* )} */}
+
       <Grid item xs={12}>
         <Stack
           direction="row"
@@ -289,6 +300,10 @@ const Editor = () => {
           <Button variant="contained" onClick={addText}>
             {' '}
             Add Text{' '}
+          </Button>
+          <Button variant="contained" component="label">
+            Upload a picture
+            <input type="file" hidden onChange={e => addImage(e)} />
           </Button>
           <Button onClick={deleteSelected} variant="contained" color="error">
             <Delete />
