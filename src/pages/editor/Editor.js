@@ -165,47 +165,12 @@ const Editor = () => {
     'Tourney',
   ];
 
-  const onAddCircle = () => {
-    // editor?.addCircle();
-  };
-  const onAddRectangle = () => {
-    editor?.addRectangle();
-  };
-
   const addText = () => {
     editorJs.addText();
   };
 
   const addPng = img => {
     editorJs.getImgPolaroid(img);
-    // fabric.Image.fromURL(`/svg-icons/${img}`, (oImg) => {
-    //   console.log(oImg.getOriginalSize());
-
-    //   // scale the image width
-    //   oImg.scaleToWidth(300);
-
-    //   oImg.hasRotatingPoint = true;
-    //   oImg.transparentCorners = false;
-    //   oImg.cornerColor = "white";
-    //   oImg.cornerStyle = "circle";
-    //   oImg.transparentCorners = false;
-    //   oImg.cornerStrokeColor = "#116dff";
-    //   oImg.padding = 5;
-    //   oImg.cornerSize = 30;
-    //   oImg.rotatingPointOffset = 30;
-    //   oImg.setControlsVisibility({
-    //     mt: false,
-    //     mb: false,
-    //     ml: false,
-    //     mr: false,
-    //     bl: false,
-    //     tl: false,
-    //     tr: false,
-    //   });
-    //   editor?.canvas.add(oImg);
-    // });
-
-    // editor?.canvas.renderAll();
   };
 
   const deleteSelected = () => {
@@ -237,6 +202,10 @@ const Editor = () => {
       editorJs.addImageOnCanvas(data);
     };
     reader.readAsDataURL(file);
+  };
+
+  const undo = () => {
+    editorJs.undo();
   };
 
   return (
@@ -288,11 +257,8 @@ const Editor = () => {
           alignItems="center"
           alignContent="center"
         >
-          <Button variant="contained" onClick={onAddCircle}>
+          <Button variant="contained" onClick={undo}>
             <Undo />
-          </Button>
-          <Button variant="contained" onClick={onAddRectangle}>
-            Add Rectangle
           </Button>
           <Button variant="contained" onClick={addText}>
             {' '}

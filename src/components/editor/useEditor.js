@@ -5,6 +5,7 @@ import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
 import StateManager from './stateManager';
 import { useEffect } from 'react';
+// import { saveStateHistory, undoState, redoState } from './state';
 
 const useEditor = canvasId => {
   let canvas;
@@ -68,6 +69,7 @@ const useEditor = canvasId => {
     canvas.on({
       'object:moving': e => {},
       'object:modified': e => {
+        // saveStateHistory(canvas, true);
         // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
@@ -93,6 +95,7 @@ const useEditor = canvasId => {
         resetPanels();
       },
       'object:added': e => {
+        // saveStateHistory(canvas, true);
         // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
@@ -256,10 +259,12 @@ const useEditor = canvasId => {
 
   const undo = () => {
     stateManager.undo();
+    // undoState();
   };
 
   const redo = () => {
     stateManager.redo();
+    // redoState();
   };
 
   const saveState = () => {
