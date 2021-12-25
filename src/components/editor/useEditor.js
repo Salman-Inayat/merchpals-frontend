@@ -1,12 +1,13 @@
-import { fabric } from "fabric";
-import "fabric-history";
-import * as changedpi from "changedpi";
-import { initAligningGuidelines } from "./gridlines/alignment";
-import { initCenteringGuidelines } from "./gridlines/center";
-import StateManager from "./stateManager";
-import { useEffect } from "react";
+import { fabric } from 'fabric';
+import 'fabric-history';
+import * as changedpi from 'changedpi';
+import { initAligningGuidelines } from './gridlines/alignment';
+import { initCenteringGuidelines } from './gridlines/center';
+import StateManager from './stateManager';
+import { useEffect } from 'react';
+// import { saveStateHistory, undoState, redoState } from './state';
 
-const useEditor = (canvasId) => {
+const useEditor = canvasId => {
   let canvas;
   let stateManager;
 
@@ -20,8 +21,8 @@ const useEditor = (canvasId) => {
   };
 
   let canvasProperties = {
-    canvasFill: "#ffffff",
-    canvasImage: "",
+    canvasFill: '#ffffff',
+    canvasImage: '',
     id: null,
     opacity: null,
     fill: null,
@@ -31,8 +32,8 @@ const useEditor = (canvasId) => {
     fontWeight: null,
     fontStyle: null,
     textAlign: null,
-    fontFamily: "Alpha-Slab",
-    TextDecoration: "",
+    fontFamily: 'Alpha-Slab',
+    TextDecoration: '',
   };
 
   let isMobile = false;
@@ -48,34 +49,35 @@ const useEditor = (canvasId) => {
   let state = [];
   let mods = 0;
   let textSelection;
-  let url = "";
+  let url = '';
 
   useEffect(() => {
     canvas = new fabric.Canvas(canvasId, {
-      hoverCursor: "pointer",
+      hoverCursor: 'pointer',
       selection: false,
-      selectionBorderColor: "blue",
+      selectionBorderColor: 'blue',
       fireRightClick: true, // <-- enable firing of right click events
       fireMiddleClick: true, // <-- enable firing of middle click events
       stopContextMenu: true, // <--  prevent context menu from showing
     });
-  
-    stateManager = new StateManager(canvas);    
+
+    stateManager = new StateManager(canvas);
 
     initAligningGuidelines(canvas);
-    initCenteringGuidelines(canvas, isMobile); 
+    initCenteringGuidelines(canvas, isMobile);
 
     canvas.on({
-      "object:moving": (e) => {},
-      "object:modified": (e) => {
+      'object:moving': e => {},
+      'object:modified': e => {
+        // saveStateHistory(canvas, true);
         // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = "white";
-        selectedObject.cornerStyle = "circle";
+        selectedObject.cornerColor = 'white';
+        selectedObject.cornerStyle = 'circle';
         selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = "#116dff";
+        selectedObject.cornerStrokeColor = '#116dff';
         selectedObject.padding = 5;
         selectedObject.cornerSize = 30;
         selectedObject.rotatingPointOffset = 30;
@@ -92,15 +94,16 @@ const useEditor = (canvasId) => {
         });
         resetPanels();
       },
-      "object:added": (e) => {
+      'object:added': e => {
+        // saveStateHistory(canvas, true);
         // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = "white";
-        selectedObject.cornerStyle = "circle";
+        selectedObject.cornerColor = 'white';
+        selectedObject.cornerStyle = 'circle';
         selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = "#116dff";
+        selectedObject.cornerStrokeColor = '#116dff';
         selectedObject.padding = 5;
         selectedObject.cornerSize = 30;
         selectedObject.rotatingPointOffset = 30;
@@ -117,14 +120,14 @@ const useEditor = (canvasId) => {
         });
         resetPanels();
       },
-      "selection:updated": (e) => {
+      'selection:updated': e => {
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = "white";
-        selectedObject.cornerStyle = "circle";
+        selectedObject.cornerColor = 'white';
+        selectedObject.cornerStyle = 'circle';
         selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = "#116dff";
+        selectedObject.cornerStrokeColor = '#116dff';
         selectedObject.padding = 5;
         selectedObject.cornerSize = 30;
         selectedObject.rotatingPointOffset = 30;
@@ -140,26 +143,31 @@ const useEditor = (canvasId) => {
           mtr: true,
         });
         resetPanels();
-        if (selectedObject.type == "i-text") {
+        if (selectedObject.type !== 'i-text') {
+          document.getElementById('textControls').hidden = true;
+        }
+
+        if (selectedObject.type == 'i-text') {
           // textSelection.emit("addText");
+          document.getElementById('textControls').hidden = false;
         } else if (
-          selectedObject.type == "path" ||
-          selectedObject.type == "group"
+          selectedObject.type == 'path' ||
+          selectedObject.type == 'group'
         ) {
           // textSelection.emit("addsmiley");
-        } else if (selectedObject.type == "image") {
+        } else if (selectedObject.type == 'image') {
           // textSelection.emit("image");
         }
       },
-      "object:selected": (e) => {
+      'object:selected': e => {
         const selectedObject = e.target;
         selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = "white";
-        selectedObject.cornerStyle = "circle";
+        selectedObject.cornerColor = 'white';
+        selectedObject.cornerStyle = 'circle';
         selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = "#116dff";
+        selectedObject.cornerStrokeColor = '#116dff';
         selectedObject.padding = 5;
         selectedObject.cornerSize = 30;
         selectedObject.rotatingPointOffset = 30;
@@ -176,18 +184,18 @@ const useEditor = (canvasId) => {
         });
         resetPanels();
 
-        if (selectedObject.type !== "group" && selectedObject) {
+        if (selectedObject.type !== 'group' && selectedObject) {
           getId();
           getOpacity();
 
           switch (selectedObject.type) {
-            case "rect":
-            case "circle":
-            case "triangle":
+            case 'rect':
+            case 'circle':
+            case 'triangle':
               figureEditor = true;
               getFill();
               break;
-            case "i-text":
+            case 'i-text':
               // textSelection.emit("addText");
               textEditor = true;
               getLineHeight();
@@ -199,19 +207,33 @@ const useEditor = (canvasId) => {
               //getFontFamily();
 
               break;
-            case "image":
+            case 'image':
               // textSelection.emit("image");
               break;
-            case "path":
+            case 'path':
               // textSelection.emit("addsmiley");
               break;
           }
-        } else if (selectedObject.type == "group" && selectedObject) {
+        } else if (selectedObject.type == 'group' && selectedObject) {
           // textSelection.emit("addsmiley");
         }
       },
-      "selection:cleared": (e) => {
-        localStorage.setItem("clearLines", "true");
+      'selection:created': e => {
+        const selectedObject = e.target;
+        if (selectedObject.type === 'i-text') {
+          console.log('Text box');
+          document.getElementById('textControls').hidden = false;
+        } else {
+          document.getElementById('textControls').hidden = true;
+        }
+      },
+      'before:selection:cleared': e => {
+        if (e.target.type === 'i-text') {
+          document.getElementById('textControls').hidden = true;
+        }
+      },
+      'selection:cleared': e => {
+        localStorage.setItem('clearLines', 'true');
         const selectedObject = e.target;
         selected = null;
         resetPanels();
@@ -220,7 +242,7 @@ const useEditor = (canvasId) => {
         }
       },
     });
-    
+
     if (!isMobile) {
       canvas.setWidth(size.width);
       canvas.setHeight(size.height);
@@ -230,17 +252,19 @@ const useEditor = (canvasId) => {
     }
 
     // get references to the html canvas element & its context
-    canvas.on("mouse:down", (e) => {
-      const canvasElement = document.getElementById("canvas");
+    canvas.on('mouse:down', e => {
+      const canvasElement = document.getElementById('canvas');
     });
   }, []);
 
   const undo = () => {
     stateManager.undo();
+    // undoState();
   };
 
   const redo = () => {
     stateManager.redo();
+    // redoState();
   };
 
   const saveState = () => {
@@ -261,16 +285,16 @@ const useEditor = (canvasId) => {
 
   const addText = () => {
     if (isMobile) {
-      const text = new fabric.IText("Sample Text", {
+      const text = new fabric.IText('Sample Text', {
         left: 40,
         top: 100,
         selected: true,
-        fontFamily: "Alpha-Slab",
+        fontFamily: 'Alpha-Slab',
         angle: 0,
-        fill: "#000000",
+        fill: '#000000',
         scaleX: 0.6,
         scaleY: 0.6,
-        fontWeight: "",
+        fontWeight: '',
         hasRotatingPoint: true,
       });
 
@@ -286,16 +310,17 @@ const useEditor = (canvasId) => {
         mtr: true,
       });
       canvas.on({
-        "text:editing:entered": (e) => {
-          if (e.target.type === "i-text") {
-            if (e.target.text === "Sample Text") {
-              e.target.text = "";
-              e.target.hiddenTextarea.value = ""; // NEW
+        'text:editing:entered': e => {
+          if (e.target.type === 'i-text') {
+            if (e.target.text === 'Sample Text') {
+              e.target.text = '';
+              e.target.hiddenTextarea.value = ''; // NEW
               canvas.renderAll();
             }
           }
         },
       });
+
       extend(text, randomId());
       canvas.discardActiveObject().renderAll();
       canvas.add(text);
@@ -303,15 +328,15 @@ const useEditor = (canvasId) => {
       canvas.renderAll();
     }
     if (!isMobile) {
-      const text = new fabric.IText("Sample Text", {
+      const text = new fabric.IText('Sample Text', {
         left: 50,
         top: 150,
-        fontFamily: "Alpha-Slab",
+        fontFamily: 'Alpha-Slab',
         angle: 0,
         scaleX: 1.5,
         scaleY: 1.5,
-        fill: "#000000",
-        fontWeight: "",
+        fill: '#000000',
+        fontWeight: '',
         hasRotatingPoint: true,
       });
       text.setControlsVisibility({
@@ -326,11 +351,11 @@ const useEditor = (canvasId) => {
         mtr: true,
       });
       canvas.on({
-        "text:editing:entered": (e) => {
-          if (e.target.type === "i-text") {
-            if (e.target.text === "Sample Text") {
-              e.target.text = "";
-              e.target.hiddenTextarea.value = ""; // NEW
+        'text:editing:entered': e => {
+          if (e.target.type === 'i-text') {
+            if (e.target.text === 'Sample Text') {
+              e.target.text = '';
+              e.target.hiddenTextarea.value = ''; // NEW
               canvas.renderAll();
             }
           }
@@ -343,7 +368,7 @@ const useEditor = (canvasId) => {
     }
   };
 
-  const getImgPolaroid = (img) => {
+  const getImgPolaroid = img => {
     // const el = event.target;
     fabric.loadSVGFromURL(img, (objects, options) => {
       const image = fabric.util.groupSVGElements(objects, options);
@@ -403,9 +428,9 @@ const useEditor = (canvasId) => {
 
   // Block "Upload Image"
 
-  const addImageOnCanvas = (url) => {
+  const addImageOnCanvas = url => {
     if (url) {
-      fabric.Image.fromURL(url, (image) => {
+      fabric.Image.fromURL(url, image => {
         image.set({
           left: 50,
           top: 50,
@@ -437,62 +462,62 @@ const useEditor = (canvasId) => {
     }
   };
 
-  const readUrl = (event) => {
+  const readUrl = event => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
-      reader.onload = (readerEvent) => {
+      reader.onload = readerEvent => {
         url = readerEvent.target.result;
       };
       reader.readAsDataURL(event.target.files[0]);
     }
   };
 
-  const removeWhite = (url) => {
-    url = "";
+  const removeWhite = url => {
+    url = '';
   };
 
   // Block "Add figure"
 
-  const addFigure = (figure) => {
+  const addFigure = figure => {
     let add;
     switch (figure) {
-    case "rectangle":
-      add = new fabric.Rect({
-        width: 200,
-        height: 100,
-        left: 10,
-        top: 10,
-        angle: 0,
-        fill: "#3f51b5",
-      });
-      break;
-    case "square":
-      add = new fabric.Rect({
-        width: 100,
-        height: 100,
-        left: 10,
-        top: 10,
-        angle: 0,
-        fill: "#4caf50",
-      });
-      break;
-    case "triangle":
-      add = new fabric.Triangle({
-        width: 100,
-        height: 100,
-        left: 10,
-        top: 10,
-        fill: "#2196f3",
-      });
-      break;
-    case "circle":
-      add = new fabric.Circle({
-        radius: 50,
-        left: 10,
-        top: 10,
-        fill: "#ff5722",
-      });
-      break;
+      case 'rectangle':
+        add = new fabric.Rect({
+          width: 200,
+          height: 100,
+          left: 10,
+          top: 10,
+          angle: 0,
+          fill: '#3f51b5',
+        });
+        break;
+      case 'square':
+        add = new fabric.Rect({
+          width: 100,
+          height: 100,
+          left: 10,
+          top: 10,
+          angle: 0,
+          fill: '#4caf50',
+        });
+        break;
+      case 'triangle':
+        add = new fabric.Triangle({
+          width: 100,
+          height: 100,
+          left: 10,
+          top: 10,
+          fill: '#2196f3',
+        });
+        break;
+      case 'circle':
+        add = new fabric.Circle({
+          radius: 50,
+          left: 10,
+          top: 10,
+          fill: '#ff5722',
+        });
+        break;
     }
     extend(add, randomId());
     canvas.add(add);
@@ -505,12 +530,13 @@ const useEditor = (canvasId) => {
     canvas.discardActiveObject().renderAll();
   };
 
-  const selectItemAfterAdded = (obj) => {
+  const selectItemAfterAdded = obj => {
     canvas.discardActiveObject().renderAll();
     canvas.setActiveObject(obj);
   };
 
-  const setCanvasFill = () => {
+  const setCanvasFill = bgcolor => {
+    canvasProperties.canvasFill = bgcolor;
     if (!canvasProperties.canvasImage) {
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
@@ -518,7 +544,7 @@ const useEditor = (canvasId) => {
   };
 
   const extend = (obj, id) => {
-    obj.toObject = ((toObject) => {
+    obj.toObject = (toObject => {
       return function () {
         return fabric.util.object.extend(toObject.call(this), {
           id,
@@ -531,11 +557,14 @@ const useEditor = (canvasId) => {
     const self = this;
     if (canvasProperties.canvasImage) {
       canvas.setBackgroundColor(
-        new fabric.Pattern({ source: canvasProperties.canvasImage, repeat: "repeat" }),
+        new fabric.Pattern({
+          source: canvasProperties.canvasImage,
+          repeat: 'repeat',
+        }),
         () => {
-          self.canvasProperties.canvasFill = "";
+          self.canvasProperties.canvasFill = '';
           self.canvas.renderAll();
-        }
+        },
       );
     }
   };
@@ -549,13 +578,13 @@ const useEditor = (canvasId) => {
   const getActiveStyle = (styleName, object) => {
     object = object || canvas.getActiveObject();
     if (!object) {
-      return "";
+      return '';
     }
 
     if (object.getSelectionStyles && object.isEditing) {
-      return object.getSelectionStyles()[styleName] || "";
+      return object.getSelectionStyles()[styleName] || '';
     } else {
-      return object[styleName] || "";
+      return object[styleName] || '';
     }
   };
 
@@ -569,20 +598,20 @@ const useEditor = (canvasId) => {
       const style = {};
       style[styleName] = value;
 
-      if (typeof value === "string") {
-        if (value.includes("underline")) {
+      if (typeof value === 'string') {
+        if (value.includes('underline')) {
           object.setSelectionStyles({ underline: true });
         } else {
           object.setSelectionStyles({ underline: false });
         }
 
-        if (value.includes("overline")) {
+        if (value.includes('overline')) {
           object.setSelectionStyles({ overline: true });
         } else {
           object.setSelectionStyles({ overline: false });
         }
 
-        if (value.includes("line-through")) {
+        if (value.includes('line-through')) {
           object.setSelectionStyles({ linethrough: true });
         } else {
           object.setSelectionStyles({ linethrough: false });
@@ -592,23 +621,23 @@ const useEditor = (canvasId) => {
       object.setSelectionStyles(style);
       object.setCoords();
     } else {
-      if (typeof value === "string") {
-        if (value.includes("underline")) {
-          object.set("underline", true);
+      if (typeof value === 'string') {
+        if (value.includes('underline')) {
+          object.set('underline', true);
         } else {
-          object.set("underline", false);
+          object.set('underline', false);
         }
 
-        if (value.includes("overline")) {
-          object.set("overline", true);
+        if (value.includes('overline')) {
+          object.set('overline', true);
         } else {
-          object.set("overline", false);
+          object.set('overline', false);
         }
 
-        if (value.includes("line-through")) {
-          object.set("linethrough", true);
+        if (value.includes('line-through')) {
+          object.set('linethrough', true);
         } else {
-          object.set("linethrough", false);
+          object.set('linethrough', false);
         }
       }
 
@@ -619,13 +648,13 @@ const useEditor = (canvasId) => {
     canvas.renderAll();
   };
 
-  const getActiveProp = (name) => {
+  const getActiveProp = name => {
     const object = canvas.getActiveObject();
     if (!object) {
-      return "";
+      return '';
     }
 
-    return object[name] || "";
+    return object[name] || '';
   };
 
   const setActiveProp = (name, value) => {
@@ -644,21 +673,21 @@ const useEditor = (canvasId) => {
     if (activeObject) {
       let clone;
       switch (activeObject.type) {
-      case "rect":
-        clone = new fabric.Rect(activeObject.toObject());
-        break;
-      case "circle":
-        clone = new fabric.Circle(activeObject.toObject());
-        break;
-      case "triangle":
-        clone = new fabric.Triangle(activeObject.toObject());
-        break;
-      case "i-text":
-        clone = new fabric.IText("", activeObject.toObject());
-        break;
-      case "image":
-        clone = fabric.util.object.clone(activeObject);
-        break;
+        case 'rect':
+          clone = new fabric.Rect(activeObject.toObject());
+          break;
+        case 'circle':
+          clone = new fabric.Circle(activeObject.toObject());
+          break;
+        case 'triangle':
+          clone = new fabric.Triangle(activeObject.toObject());
+          break;
+        case 'i-text':
+          clone = new fabric.IText('', activeObject.toObject());
+          break;
+        case 'image':
+          clone = fabric.util.object.clone(activeObject);
+          break;
       }
       if (clone) {
         clone.set({ left: 10, top: 10 });
@@ -683,97 +712,110 @@ const useEditor = (canvasId) => {
   };
 
   const getOpacity = () => {
-    canvasProperties.opacity = getActiveStyle("opacity", null) * 100;
+    canvasProperties.opacity = getActiveStyle('opacity', null) * 100;
   };
 
   const setOpacity = () => {
-    setActiveStyle("opacity", parseInt(canvasProperties.opacity, 10) / 100, null);
+    setActiveStyle(
+      'opacity',
+      parseInt(canvasProperties.opacity, 10) / 100,
+      null,
+    );
   };
 
   const getFill = () => {
-    canvasProperties.fill = getActiveStyle("fill", null);
+    canvasProperties.fill = getActiveStyle('fill', null);
   };
 
   const setFill = () => {
-    setActiveStyle("fill", canvasProperties.fill, null);
+    setActiveStyle('fill', canvasProperties.fill, null);
   };
 
   const getLineHeight = () => {
-    canvasProperties.lineHeight = getActiveStyle("lineHeight", null);
+    canvasProperties.lineHeight = getActiveStyle('lineHeight', null);
   };
 
   const setLineHeight = () => {
-    setActiveStyle("lineHeight", parseFloat(canvasProperties.lineHeight), null);
+    setActiveStyle('lineHeight', parseFloat(canvasProperties.lineHeight), null);
   };
 
   const getCharSpacing = () => {
-    canvasProperties.charSpacing = getActiveStyle("charSpacing", null);
+    canvasProperties.charSpacing = getActiveStyle('charSpacing', null);
   };
 
   const setCharSpacing = () => {
-    setActiveStyle("charSpacing", canvasProperties.charSpacing, null);
+    setActiveStyle('charSpacing', canvasProperties.charSpacing, null);
   };
 
   const getFontSize = () => {
-    canvasProperties.fontSize = getActiveStyle("fontSize", null);
+    canvasProperties.fontSize = getActiveStyle('fontSize', null);
   };
 
   const setFontSize = () => {
-    setActiveStyle("fontSize", parseInt(canvasProperties.fontSize, 10), null);
+    setActiveStyle('fontSize', parseInt(canvasProperties.fontSize, 10), null);
   };
 
   const getBold = () => {
-    canvasProperties.fontWeight = getActiveStyle("fontWeight", null);
+    canvasProperties.fontWeight = getActiveStyle('fontWeight', null);
   };
 
   const setBold = () => {
     canvasProperties.fontWeight = !canvasProperties.fontWeight;
-    setActiveStyle("fontWeight", canvasProperties.fontWeight ? "bold" : "", null);
+    setActiveStyle(
+      'fontWeight',
+      canvasProperties.fontWeight ? 'bold' : '',
+      null,
+    );
   };
 
   const setFontStyle = () => {
     canvasProperties.fontStyle = !canvasProperties.fontStyle;
     if (canvasProperties.fontStyle) {
-      setActiveStyle("fontStyle", "italic", null);
+      setActiveStyle('fontStyle', 'italic', null);
     } else {
-      setActiveStyle("fontStyle", "normal", null);
+      setActiveStyle('fontStyle', 'normal', null);
     }
   };
 
   const getTextDecoration = () => {
-    canvasProperties.TextDecoration = getActiveStyle("textDecoration", null);
+    canvasProperties.TextDecoration = getActiveStyle('textDecoration', null);
   };
 
-  const setTextDecoration = (value) => {
+  const setTextDecoration = value => {
     let iclass = canvasProperties.TextDecoration;
     if (iclass.includes(value)) {
-      iclass = iclass.replace(RegExp(value, "g"), "");
+      iclass = iclass.replace(RegExp(value, 'g'), '');
     } else {
       iclass += ` ${value}`;
     }
     canvasProperties.TextDecoration = iclass;
-    setActiveStyle("textDecoration", canvasProperties.TextDecoration, null);
+    setActiveStyle('textDecoration', canvasProperties.TextDecoration, null);
   };
 
-  const hasTextDecoration = (value) => {
+  const hasTextDecoration = value => {
     return canvasProperties.TextDecoration.includes(value);
   };
 
   const getTextAlign = () => {
-    canvasProperties.textAlign = getActiveProp("textAlign");
+    canvasProperties.textAlign = getActiveProp('textAlign');
   };
 
-  const setTextAlign = (value) => {
+  const setTextAlign = value => {
     canvasProperties.textAlign = value;
-    setActiveProp("textAlign", canvasProperties.textAlign);
+    setActiveProp('textAlign', canvasProperties.textAlign);
   };
 
   const getFontFamily = () => {
-    canvasProperties.fontFamily = getActiveProp("fontFamily");
+    canvasProperties.fontFamily = getActiveProp('fontFamily');
   };
 
-  const setFontFamily = () => {
-    setActiveProp("fontFamily", canvasProperties.fontFamily);
+  const setFontFamily = value => {
+    setActiveProp('fontFamily', value);
+  };
+
+  const setFontColor = value => {
+    canvasProperties.fontColor = value;
+    setActiveProp('fill', canvasProperties.fontColor);
   };
 
   /*System*/
@@ -788,7 +830,7 @@ const useEditor = (canvasId) => {
     } else if (activeGroup) {
       canvas.discardActiveObject();
       const self = this;
-      activeGroup.forEach((object) => {
+      activeGroup.forEach(object => {
         self.canvas.remove(object);
       });
     }
@@ -803,7 +845,7 @@ const useEditor = (canvasId) => {
       activeObject.opacity = 1;
     } else if (activeGroup) {
       canvas.discardActiveObject();
-      activeGroup.forEach((object) => {
+      activeGroup.forEach(object => {
         object.bringToFront();
       });
     }
@@ -819,7 +861,7 @@ const useEditor = (canvasId) => {
       activeObject.opacity = 1;
     } else if (activeGroup) {
       canvas.discardActiveObject();
-      activeGroup.forEach((object) => {
+      activeGroup.forEach(object => {
         object.sendToBack();
       });
     }
@@ -836,29 +878,29 @@ const useEditor = (canvasId) => {
 
     var mult = 1350 / 450;
     image.src = canvas.toDataURL({
-      format: "png",
+      format: 'png',
       multiplier: mult,
     });
-    let downloadLink = document.createElement("a");
-    downloadLink.setAttribute("download", "CanvasAsImage.png");
-    let canvas = document.getElementById("myCanvas");
+    let downloadLink = document.createElement('a');
+    downloadLink.setAttribute('download', 'CanvasAsImage.png');
+    let canvas = document.getElementById('myCanvas');
     let url = image.src.replace(
       /^data:image\/png/,
-      "data:application/octet-stream"
+      'data:application/octet-stream',
     );
-    downloadLink.setAttribute("href", url);
+    downloadLink.setAttribute('href', url);
     downloadLink.click();
   };
 
   const rasterizeSVG = () => {
-    const w = window.open("");
+    const w = window.open('');
     w.document.write(canvas.toSVG());
-    return "data:image/svg+xml;utf8," + encodeURIComponent(canvas.toSVG());
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(canvas.toSVG());
   };
 
   const saveCanvasToJSON = () => {
     const json = JSON.stringify(canvas);
-    localStorage.setItem("Kanvas", json);
+    localStorage.setItem('Kanvas', json);
   };
   const deviceDetect = () => {
     // isMobile = deviceService.isMobile();
@@ -886,17 +928,17 @@ const useEditor = (canvasId) => {
     imageEditor = false;
     figureEditor = false;
   };
-  const chopBegining = (data) => {
-    let modifiedData = data.replace("data:image/png;base64,", "");
+  const chopBegining = data => {
+    let modifiedData = data.replace('data:image/png;base64,', '');
     return modifiedData;
   };
-  const phoneFormat = (phone) => {
+  const phoneFormat = phone => {
     var number = phone;
-    number = number.replace("(", "");
-    number = number.replace(")", "");
-    number = number.replace(" ", "");
-    number = number.replace("-", "");
-    return "+1" + number;
+    number = number.replace('(', '');
+    number = number.replace(')', '');
+    number = number.replace(' ', '');
+    number = number.replace('-', '');
+    return '+1' + number;
   };
   const saveFinalJson = (userDetails, products) => {
     let json = JSON.stringify(canvas);
@@ -917,14 +959,14 @@ const useEditor = (canvasId) => {
       var mult3 = 1050 / 450;
       var mult4 = 831 / 450;
     }
-    formatOne.src = canvas.toDataURL({ format: "png", multiplier: mult1 });
-    formatTwo.src = canvas.toDataURL({ format: "png", multiplier: mult2 });
-    formatThree.src = canvas.toDataURL({ format: "png", multiplier: mult3 });
-    formatFour.src = canvas.toDataURL({ format: "png", multiplier: mult4 });
+    formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
+    formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
+    formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
+    formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
     let dp = userDetails.profilePic;
     let cover = userDetails.coverPic;
-    userDetails.profilePic = "";
-    userDetails.coverPic = "";
+    userDetails.profilePic = '';
+    userDetails.coverPic = '';
     formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
     formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
     formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
@@ -933,7 +975,7 @@ const useEditor = (canvasId) => {
     console.log(formatTwo.src);
     console.log(formatThree.src);
     console.log(formatFour.src);
-    userDetails["JSON"] = JSON.stringify(json);
+    userDetails['JSON'] = JSON.stringify(json);
     var finaljson = {
       vendorId: phoneFormat(userDetails.phone),
       vendorStoreName: userDetails.storeName.toLowerCase(),
@@ -941,34 +983,34 @@ const useEditor = (canvasId) => {
       userDetails: userDetails,
       imgData: [
         {
-          name: "ProfilePic",
+          name: 'ProfilePic',
           data: chopBegining(dp),
         },
         {
-          name: "CoverPic",
+          name: 'CoverPic',
           data: chopBegining(cover),
         },
       ],
       products: [
         {
-          designName: "default",
+          designName: 'default',
           designProduct: products,
           designJson: json,
           designImage: [
             {
-              name: "2700x2700",
+              name: '2700x2700',
               data: chopBegining(formatOne.src),
             },
             {
-              name: "3000x3000",
+              name: '3000x3000',
               data: chopBegining(formatTwo.src),
             },
             {
-              name: "1050x1050",
+              name: '1050x1050',
               data: chopBegining(formatThree.src),
             },
             {
-              name: "831x831",
+              name: '831x831',
               data: chopBegining(formatFour.src),
             },
           ],
@@ -982,7 +1024,7 @@ const useEditor = (canvasId) => {
     //   createStoreResponse.emit(resp1);
     // });
   };
-  
+
   return {
     resetPanels,
     undo,
@@ -993,8 +1035,11 @@ const useEditor = (canvasId) => {
     setCanvasImage,
     addImageOnCanvas,
     addFigure,
-    removeSelected
-    
+    removeSelected,
+    setFontFamily,
+    setFontColor,
+    setFontSize,
+    setCanvasFill,
   };
 };
 
