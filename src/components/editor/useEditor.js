@@ -181,32 +181,6 @@ const useEditor = (canvasId) => {
           getOpacity();
 
           switch (selectedObject.type) {
-<<<<<<< HEAD:src/components/editor/FabricEditor.js
-          case "rect":
-          case "circle":
-          case "triangle":
-            figureEditor = true;
-            getFill();
-            break;
-          case "i-text":
-            textSelection.emit("addText");
-            textEditor = true;
-            getLineHeight();
-            getCharSpacing();
-            getBold();
-            getFill();
-            getTextDecoration();
-            getTextAlign();
-            //getFontFamily();
-
-            break;
-          case "image":
-            textSelection.emit("image");
-            break;
-          case "path":
-            textSelection.emit("addsmiley");
-            break;
-=======
             case "rect":
             case "circle":
             case "triangle":
@@ -231,7 +205,6 @@ const useEditor = (canvasId) => {
             case "path":
               // textSelection.emit("addsmiley");
               break;
->>>>>>> a0b2418cef7d543667bf74daedabc12174ed23ab:src/components/editor/useEditor.js
           }
         } else if (selectedObject.type == "group" && selectedObject) {
           // textSelection.emit("addsmiley");
