@@ -27,7 +27,6 @@
     "fabricjs-react": "^1.0.8",
     "faker": "^5.5.3",
     "formik": "^2.2.9",
-    "framer-motion": "^4.1.17",
     "history": "^5.0.1",
     "lodash": "^4.17.21",
     "numeral": "^2.0.6",
@@ -50,10 +49,11 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "PORT=3005 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js --fix src/"
   },
   "eslintConfig": {
     "extends": [
@@ -93,5 +93,10 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "engines": {
+    "npm": "please use yarn to install packages",
+    "yarn": "~1.22.17",
+    "node": "~14.17.0"
   }
 }
