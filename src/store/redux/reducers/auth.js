@@ -12,6 +12,10 @@ import {
   AUTH_RESET_PASSWORD_FAILED,  
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGIN_FAILED,
+  AUTH_LOGOUT,
+  GET_LOGGED_IN_USER_INFO_SUCCESS,
+  GET_LOGGED_IN_USER_INFO_FAILED,
+  AUTH_LOGOUT_CLEAR,
   CLEAR_ERRORS
 } from '../types';
 
@@ -19,14 +23,16 @@ const initialState = {
   otpVerified: false,
   otpSent: false,
   isLoggedIn: false,
+  isLoggedOut: false,
   verificationError: '',
   sendingError: '',
   error: '',
+  user: null
 }
 
 const setAuthTokens = data => {
-  console.log({ data });
-  localStorage.setItem('MERCHPAL_AUTH_TOKEN', data.accessToken)
+  console.log({data});
+  localStorage.setItem('MERCHPAL_AUTH_TOKEN', data.token)
   return true;
 }
 
@@ -55,7 +61,7 @@ const authReducer = (state = initialState, action) => {
     setAuthTokens(action.payload)
     return { isLoggedIn: true, error: false }
   case AUTH_LOGIN_FAILED:
-    return { isLoggedIn: false, error: action.payload }
+    return { isLoggedIn: false, error: action.message }
   case CLEAR_ERRORS:
     return { 
       ...state, 
@@ -63,6 +69,16 @@ const authReducer = (state = initialState, action) => {
       sendingError: '',
       error: ''
     }
+  case AUTH_LOGOUT:
+    localStorage.removeItem('MERCHPAL_AUTH_TOKEN');
+    return { isLoggedOut: true }
+  case GET_LOGGED_IN_USER_INFO_SUCCESS:
+    console.log({payload: action});
+    return { user: action.payload };
+  case GET_LOGGED_IN_USER_INFO_FAILED: 
+    return { user: null }
+  case AUTH_LOGOUT_CLEAR:
+    return { isLoggedOut: false }
   default:
     return state
   }

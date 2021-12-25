@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -14,27 +14,41 @@ import {
   IconButton,
   InputAdornment,
   FormControlLabel,
-  Grid
+  Grid,
+  Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { PhoneNumberInput } from '../../phone-number-input';
-import { login } from '../../../store/redux/actions/auth';
+import { login, clearError } from '../../../store/redux/actions/auth';
+import { makeStyles } from "@mui/styles";
 
-// ----------------------------------------------------------------------
+const useStyle = makeStyles(() => ({
+  error: {
+    marginTop: '5px',
+    color: '#FF4842',
+    marginLeft: '14px',
+    fontSize: '0.75rem'
+  }
+}))
 
 const LoginForm = ({
   login = () => {},
+  clearError = () => {},
   isLoggedIn = false,
-  error = '',
+  loginError = '',
 }) => {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNo, setPhoneNo] = useState();
-  const [password, settPassword] = useState('');
-  const [errors, setErrors] = useState({
-    password: '',
-    phoneNo: ''
-  });
+  const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+  const classes = useStyle();
+
+  useEffect(() => {
+    if (isLoggedIn || localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [loginError, isLoggedIn])
 
     const handleSubmit = () => {
       login(phoneNo, password);
@@ -47,11 +61,7 @@ const LoginForm = ({
         <Stack spacing={3}>
           <PhoneNumberInput 
             phoneNo={phoneNo} 
-            setPhoneNo={val => {
-              setPhoneNo(val);
-              setErrors({...errors, phoneNo: ''})
-            }} 
-            error={errors.phoneNo} 
+            setPhoneNo={val => setPhoneNo(val)} 
           />
 
           <TextField
@@ -68,14 +78,13 @@ const LoginForm = ({
                 </InputAdornment>
               )
             }}
-            onChange={e => {
-              setErrors({...errors, password: ''})
-              setPassword(e.target.value)
-            }}
+            onChange={e => setPassword(e.target.value)}
             value={password}
-            error={Boolean(errors.password)}
-            helperText={errors.password}
           />
+        </Stack>
+
+        <Stack className={classes.error} alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+          <Typography>{loginError}</Typography>
         </Stack>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
@@ -104,11 +113,12 @@ const LoginForm = ({
 }
 
 const mapDispatch = dispatch => ({
-  login: (phoneNo, password) => dispatch(login(phoneNo, password))
+  login: (phoneNo, password) => dispatch(login(phoneNo, password)),
+  clearError: () => dispatch(clearError())
 });
 
 const mapState = state => ({
   isLoggedIn: state.auth.isLoggedIn,
-  error: state.auth.error
+  loginError: state.auth.error
 })
 export default connect(mapState, mapDispatch)(LoginForm);

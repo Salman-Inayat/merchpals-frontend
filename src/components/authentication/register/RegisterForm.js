@@ -112,50 +112,58 @@ export default function RegisterForm() {
             />
           </Stack>
 
-          <PhoneNumberInput 
-            phoneNo={phoneNo} 
-            setPhoneNo={(value) => {
-                setFormErrors({...formErrors, phoneNo: ''});
-                setPhoneNo(value)
-              }
-            } 
-            error={formErrors.phoneNo} 
-          />
+          {
+            formik.values.lastName?.length > 0 && (
+              <PhoneNumberInput 
+                phoneNo={phoneNo} 
+                setPhoneNo={(value) => {
+                  setFormErrors({...formErrors, phoneNo: ''});
+                  setPhoneNo(value)
+                  }
+                } 
+                error={formErrors.phoneNo} 
+              />
+            )
+          }
 
+          { phoneNo?.length > 0 && (
+            <TextField
+              fullWidth
+              autoComplete="email"
+              type="email"
+              label="Email address"
+              {...getFieldProps("email")}
+              onKeyUp={() => setFormErrors({...formErrors, email: ''})}
+              error={Boolean(touched.email && errors.email) || Boolean(formErrors.email)}
+              helperText={(touched.email && errors.email) || formErrors.email}
+            />
+          )}
+
+          {formik.values?.email && (
           <TextField
-            fullWidth
-            autoComplete="email"
-            type="email"
-            label="Email address"
-            {...getFieldProps("email")}
-            onKeyUp={() => setFormErrors({...formErrors, email: ''})}
-            error={Boolean(touched.email && errors.email) || Boolean(formErrors.email)}
-            helperText={(touched.email && errors.email) || formErrors.email}
-          />
+              fullWidth
+              autoComplete="password"
+              type={showPassword ? "text" : "password"}
+              label="Password"
+              {...getFieldProps("password")}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              error={Boolean(touched.password && errors.password)}
+              helperText={touched.password && errors.password}
+            />
+          )}
 
-          <TextField
-            fullWidth
-            autoComplete="password"
-            type={showPassword ? "text" : "password"}
-            label="Password"
-            {...getFieldProps("password")}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    edge="end"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
-          />
-
-          {formik.values.password.length > 7 && <TextField
+          {formik.values.password?.length > 7 && <TextField
             fullWidth
             autoComplete={+new Date()}
             type={showPassword ? "text" : "password"}

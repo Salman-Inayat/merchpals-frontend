@@ -14,7 +14,11 @@ import {
   AUTH_RESET_PASSWORD_FAILED,
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGIN_FAILED,
-  CLEAR_ERRORS
+  AUTH_LOGOUT,
+  AUTH_LOGOUT_CLEAR,
+  CLEAR_ERRORS,
+  GET_LOGGED_IN_USER_INFO_SUCCESS,
+  GET_LOGGED_IN_USER_INFO_FAILED
 } from '../types';
 
 export const verifyOTP = (phoneNo, code) => async dispatch => {
@@ -69,6 +73,23 @@ export const login = (phoneNo, password) => async dispatch => {
   axios.post(`${baseURL}/auth/login`, {
     phoneNo,
     password
-  }).then(res => dispatch({ type: AUTH_LOGIN_SUCCESS }))
-  .catch(err => dispatch({ type: AUTH_LOGIN_FAILED }));
+  }).then(res => dispatch({ type: AUTH_LOGIN_SUCCESS, payload: res.data }))
+  .catch(err => dispatch({ type: AUTH_LOGIN_FAILED, message: err.response.data.message }))
+}
+
+export const logout = () => dispatch => {
+  dispatch({ type:  AUTH_LOGOUT })
+}
+
+export const clearLogoutFlag = () => dispatch => {
+  dispatch({ type:  AUTH_LOGOUT_CLEAR })
+}
+
+export const getLoggedInUserInfo = () => async dispatch => {
+  axios.get(`${baseURL}/auth`, {
+    headers: {
+      'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN')
+    }
+  }).then(res => dispatch({ type: GET_LOGGED_IN_USER_INFO_SUCCESS, payload: res.data }))
+  .catch(err => dispatch({ type: GET_LOGGED_IN_USER_INFO_FAILED, message: err.response.data.message }))
 }
