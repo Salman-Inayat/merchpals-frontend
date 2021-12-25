@@ -8,12 +8,12 @@ import { fabric } from "fabric";
 export function initAligningGuidelines(canvas) {
 
   var ctx = canvas.getSelectionContext(),
-      aligningLineOffset = 5,
-      aligningLineMargin = 4,
-      aligningLineWidth = 2,
-      aligningLineColor = '#007bff',
-      viewportTransform,
-      zoom = 1;
+    aligningLineOffset = 5,
+    aligningLineMargin = 4,
+    aligningLineWidth = 2,
+    aligningLineColor = '#007bff',
+    viewportTransform,
+    zoom = 1;
 
   function drawVerticalLine(coords) {
     drawLine(
@@ -54,7 +54,7 @@ export function initAligningGuidelines(canvas) {
   }
 
   var verticalLines = [],
-      horizontalLines = [];
+    horizontalLines = [];
 
   canvas.on('mouse:down', function () {
     viewportTransform = canvas.viewportTransform;
@@ -64,16 +64,16 @@ export function initAligningGuidelines(canvas) {
   canvas.on('object:moving', function(e) {
 
     var activeObject = e.target,
-        canvasObjects = canvas.getObjects(),
-        activeObjectCenter = activeObject.getCenterPoint(),
-        activeObjectLeft = activeObjectCenter.x,
-        activeObjectTop = activeObjectCenter.y,
-        activeObjectBoundingRect = activeObject.getBoundingRect(),
-        activeObjectHeight = activeObjectBoundingRect.height / viewportTransform[3],
-        activeObjectWidth = activeObjectBoundingRect.width / viewportTransform[0],
-        horizontalInTheRange = false,
-        verticalInTheRange = false,
-        transform = canvas._currentTransform;
+      canvasObjects = canvas.getObjects(),
+      activeObjectCenter = activeObject.getCenterPoint(),
+      activeObjectLeft = activeObjectCenter.x,
+      activeObjectTop = activeObjectCenter.y,
+      activeObjectBoundingRect = activeObject.getBoundingRect(),
+      activeObjectHeight = activeObjectBoundingRect.height / viewportTransform[3],
+      activeObjectWidth = activeObjectBoundingRect.width / viewportTransform[0],
+      horizontalInTheRange = false,
+      verticalInTheRange = false,
+      transform = canvas._currentTransform;
 
     if (!transform) return;
 
@@ -85,11 +85,11 @@ export function initAligningGuidelines(canvas) {
       if (canvasObjects[i] === activeObject) continue;
 
       var objectCenter = canvasObjects[i].getCenterPoint(),
-          objectLeft = objectCenter.x,
-          objectTop = objectCenter.y,
-          objectBoundingRect = canvasObjects[i].getBoundingRect(),
-          objectHeight = objectBoundingRect.height / viewportTransform[3],
-          objectWidth = objectBoundingRect.width / viewportTransform[0];
+        objectLeft = objectCenter.x,
+        objectTop = objectCenter.y,
+        objectBoundingRect = canvasObjects[i].getBoundingRect(),
+        objectHeight = objectBoundingRect.height / viewportTransform[3],
+        objectWidth = objectBoundingRect.width / viewportTransform[0];
 
       // snap by the horizontal center line
       if (isInRange(objectLeft, activeObjectLeft)) {
@@ -192,8 +192,8 @@ export function initAligningGuidelines(canvas) {
   });
 
   canvas.on('before:render', function() {
-   // ctx.clearRect(0, 0, canvas.width, canvas.height);
-   // canvas.clearContext(canvas.contextTop);
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // canvas.clearContext(canvas.contextTop);
   });
 
   canvas.on('after:render', function() {

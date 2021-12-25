@@ -14,19 +14,14 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { OtpVerifyInput } from "../../components/authentication/otp-verify-input";
-import { LockOutlined } from "@mui/icons-material";
-import { verifyOTP, sendOTP, clearError } from '../../store/redux/actions/auth';
+import {PhoneNumberInput} from "../../components/phone-number-input";
+import { sendOTPForResetPassword, clearError } from '../../store/redux/actions/auth';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
     backgroundColor: "grey",
     height: "50vh",
     textAlign: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -44,62 +39,37 @@ const useStyles = makeStyles((theme) => ({
   message: {
     marginTop: '5px',
     color: 'green'
-  },  
-  resendOtp: {
-    cursor: 'pointer',
   }
 }));
 
-const OtpVerification = ({
-  verifyOTP = () => {},
-  sendOTP = () => {},
-  otpVerified = false,
+const ForgotPassword = ({
+  sendOTPForResetPassword = () => {},
+  clearError = () => {},
   otpSent = false,
-  verificationError = '',
   sendingError = '',
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [otp, setOtp] = useState();
+  const [phoneNo, setPhoneNo] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(otpVerified){
-      localStorage.removeItem('phoneNoForOTP')
-      navigate('/login', { replace: true })
-    } else if(verificationError) {
-      setError(verificationError);
-      clearError()
-    }
-  }, [otpVerified, verificationError])
-
-
-  useEffect(() => {
     if(otpSent){
-      setError('');
-      setMessage('OTP has been sent!')
-      setTimeout(() => {
-        setMessage('');
-      }, 10000)
-
+      navigate("/otp-verification-for-reset", { replace: true });
     } else if(sendingError) {
       setError(sendingError);
       clearError()
     }
   }, [otpSent, sendingError])
 
-  const handleSubmit = () => {
-    const phoneNo = localStorage.getItem('phoneNoForOTP')
-    verifyOTP(phoneNo, otp);
-  };
-
-  const resentOTP = () =>  {
-    const phoneNo = localStorage.getItem('phoneNoForOTP')
-    sendOTP(phoneNo);
+  const handleSubmit = () =>  {
+    const formattedPhoneNo = `+${phoneNo}`
+    localStorage.setItem('phoneNoForOTP', formattedPhoneNo)
+    sendOTPForResetPassword(formattedPhoneNo);
   }
+
   return (
     <Page title="Verify Otp">
       <Container component="main" maxWidth="sm">
@@ -116,23 +86,11 @@ const OtpVerification = ({
             <Grid item container justify="center">
               <Grid item container alignItems="center" direction="column">
                 <Grid item>
-                  <Avatar className={classes.avatar}>
-                    <LockOutlined />
-                  </Avatar>
-                </Grid>
-                <Grid item>
                   <Typography component="h1" variant="h5">
-                    Verification Code
+                    Enter your phone number
                   </Typography>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item xs={12} textAlign="center">
-              <Paper elevation={0}>
-                <Typography variant="body">
-                  Please enter the verification code sent to your mobile
-                </Typography>
-              </Paper>
             </Grid>
             <Grid
               item
@@ -143,17 +101,11 @@ const OtpVerification = ({
               direction="column"
             >
               <Grid item spacing={3} justify="center">
-                <OtpVerifyInput otp={otp} setOtp={setOtp} />
+              <PhoneNumberInput phoneNo={phoneNo} setPhoneNo={setPhoneNo}/>
               </Grid>
               {error && 
                 <Grid className={classes.error} item>
                   {error}
-                </Grid>
-              }
-
-              {message && 
-                <Grid className={classes.message} item>
-                  {message}
                 </Grid>
               }
 
@@ -166,13 +118,8 @@ const OtpVerification = ({
                     color="primary"
                     className={classes.submit}
                   >
-                    Verify
+                    Send OTP
                   </Button>
-                </Grid>
-                <Grid xs={12} item>
-                  <Link className={classes.resendOtp} color="secondary" onClick={resentOTP}>
-                    Resend OTP
-                  </Link>
                 </Grid>
               </Grid>
             </Grid>
@@ -184,16 +131,13 @@ const OtpVerification = ({
 };
 
 const mapDispatch = dispatch => ({
-  verifyOTP: (phoneNumber, code) => dispatch(verifyOTP(phoneNumber, code)),
-  sendOTP: (phoneNumber) => dispatch(sendOTP(phoneNumber)),
+  sendOTPForResetPassword: (phoneNumber) => dispatch(sendOTPForResetPassword(phoneNumber)),
   clearError: () => dispatch(clearError())
 });
 
 const mapState = state => ({
-  otpVerified: state.auth.otpVerified,
   otpSent: state.auth.otpSent,
-  verificationError: state.auth.verificationError,
   sendingError: state.auth.sendingError
 })
 
-export default connect(mapState, mapDispatch)(OtpVerification);
+export default connect(mapState, mapDispatch)(ForgotPassword);

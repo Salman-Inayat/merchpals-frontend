@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { OtpVerifyInput } from "../../components/authentication/otp-verify-input";
 import { LockOutlined } from "@mui/icons-material";
-import { verifyOTP, sendOTP, clearError } from '../../store/redux/actions/auth';
+import { verifyOTPForResetPassword, sendOTP, clearError } from '../../store/redux/actions/auth';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -68,8 +68,7 @@ const OtpVerification = ({
 
   useEffect(() => {
     if(otpVerified){
-      localStorage.removeItem('phoneNoForOTP')
-      navigate('/login', { replace: true })
+      navigate('/reset-password', { replace: true })
     } else if(verificationError) {
       setError(verificationError);
       clearError()
@@ -184,7 +183,7 @@ const OtpVerification = ({
 };
 
 const mapDispatch = dispatch => ({
-  verifyOTP: (phoneNumber, code) => dispatch(verifyOTP(phoneNumber, code)),
+  verifyOTP: (phoneNumber, code) => dispatch(verifyOTPForResetPassword(phoneNumber, code)),
   sendOTP: (phoneNumber) => dispatch(sendOTP(phoneNumber)),
   clearError: () => dispatch(clearError())
 });
