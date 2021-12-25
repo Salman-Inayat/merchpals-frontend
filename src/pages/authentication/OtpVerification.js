@@ -69,7 +69,7 @@ const OtpVerification = ({
   useEffect(() => {
     if(otpVerified){
       localStorage.removeItem('phoneNoForOTP')
-      navigate('/', { replace: true })
+      navigate('/login', { replace: true })
     } else if(verificationError) {
       setError(verificationError);
       clearError()
