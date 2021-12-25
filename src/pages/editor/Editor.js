@@ -6,7 +6,8 @@ import { makeStyles } from "@mui/styles";
 import { Delete, Undo } from "@mui/icons-material";
 import { bgcolor, Box } from "@mui/system";
 import ColorPallete from "./ColorPallete";
-import FabricEditor from "../../components/editor/FabricEditor";
+import FabricEditor from "../../components/editor/useEditor";
+import useEditor from "../../components/editor/useEditor";
 
 const useStyles = makeStyles({
   editor: {
@@ -31,6 +32,7 @@ const useStyles = makeStyles({
 
 const Editor = () => {
   const classes = useStyles();
+  const editorJs = useEditor('canvas')
   const { selectedObjects, editor, onReady } = useFabricJSEditor();
   useEffect(() => {
     editor?.canvas.setWidth("500px");
@@ -162,49 +164,52 @@ const Editor = () => {
   ];
 
   const onAddCircle = () => {
-    editor?.addCircle();
+    // editor?.addCircle();
   };
   const onAddRectangle = () => {
     editor?.addRectangle();
   };
 
   const addText = () => {
-    editor?.addText("Add Text Here");
+    // editor?.addText("Add Text Here");
+    editorJs.addText()
   };
 
   const addPng = (img) => {
-    fabric.Image.fromURL(`/svg-icons/${img}`, (oImg) => {
-      console.log(oImg.getOriginalSize());
+    editorJs.getImgPolaroid(img)
+    // fabric.Image.fromURL(`/svg-icons/${img}`, (oImg) => {
+    //   console.log(oImg.getOriginalSize());
 
-      // scale the image width
-      oImg.scaleToWidth(300);
+    //   // scale the image width
+    //   oImg.scaleToWidth(300);
 
-      oImg.hasRotatingPoint = true;
-      oImg.transparentCorners = false;
-      oImg.cornerColor = "white";
-      oImg.cornerStyle = "circle";
-      oImg.transparentCorners = false;
-      oImg.cornerStrokeColor = "#116dff";
-      oImg.padding = 5;
-      oImg.cornerSize = 30;
-      oImg.rotatingPointOffset = 30;
-      oImg.setControlsVisibility({
-        mt: false,
-        mb: false,
-        ml: false,
-        mr: false,
-        bl: false,
-        tl: false,
-        tr: false,
-      });
-      editor?.canvas.add(oImg);
-    });
+    //   oImg.hasRotatingPoint = true;
+    //   oImg.transparentCorners = false;
+    //   oImg.cornerColor = "white";
+    //   oImg.cornerStyle = "circle";
+    //   oImg.transparentCorners = false;
+    //   oImg.cornerStrokeColor = "#116dff";
+    //   oImg.padding = 5;
+    //   oImg.cornerSize = 30;
+    //   oImg.rotatingPointOffset = 30;
+    //   oImg.setControlsVisibility({
+    //     mt: false,
+    //     mb: false,
+    //     ml: false,
+    //     mr: false,
+    //     bl: false,
+    //     tl: false,
+    //     tr: false,
+    //   });
+    //   editor?.canvas.add(oImg);
+    // });
 
-    editor?.canvas.renderAll();
+    // editor?.canvas.renderAll();
   };
 
   const deleteSelected = () => {
-    editor?.deleteSelected();
+    editorJs.removeSelected();
+    // editor?.deleteSelected();
   };
 
   const setCanvasBackground = (bgColor) => {
@@ -223,7 +228,7 @@ const Editor = () => {
           {images.map((oneImage) => (
             <img
               src={`/svg-icons/${oneImage}`}
-              onClick={() => addPng(oneImage)}
+              onClick={() => addPng(`/svg-icons/${oneImage}`)}
               style={{
                 width: "100%",
                 height: "75px",
@@ -235,8 +240,9 @@ const Editor = () => {
       </Grid>
       <Grid item xs={5}>
         <Card className={classes.editor}>
-          <FabricJSCanvas className={classes.editor} onReady={onReady} />
+          {/* <FabricJSCanvas className={classes.editor} onReady={onReady} /> */}
           {/* <FabricEditor /> */}
+          <canvas id="canvas"></canvas>
         </Card>
       </Grid>
       <Grid item xs={1}>

@@ -18,13 +18,13 @@
     "rules": {
         "react/prop-types": 0,
         "indent": "off",
-        "linebreak-style": 1,
         "no-console": "off",
         "no-unused-vars": "off",
         "react/react-in-jsx-scope": "off",
         "no-redeclare": "off",
         "no-undef": "off",
         "react/jsx-key": "off",
-        "react/display-name": "off"
+        "react/display-name": "off",
+        "linebreak-style": "off"
     }
 }
