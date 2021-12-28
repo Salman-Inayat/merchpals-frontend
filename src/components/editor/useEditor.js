@@ -5,7 +5,7 @@ import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
 import StateManager from './stateManager';
 import { useEffect } from 'react';
-// import { saveStateHistory, undoState, redoState } from './state';
+import 'fabric-history';
 
 const useEditor = canvasId => {
   let canvas;
@@ -69,7 +69,6 @@ const useEditor = canvasId => {
     canvas.on({
       'object:moving': e => {},
       'object:modified': e => {
-        // saveStateHistory(canvas, true);
         // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
@@ -95,7 +94,6 @@ const useEditor = canvasId => {
         resetPanels();
       },
       'object:added': e => {
-        // saveStateHistory(canvas, true);
         // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
@@ -143,25 +141,29 @@ const useEditor = canvasId => {
           mtr: true,
         });
         resetPanels();
-        if (selectedObject.type !== 'i-text') {
+        if (selectedObject.type !== 'textbox') {
           document.getElementById('textControls').hidden = true;
+        }
+
+        if (selectedObject.type !== 'image') {
+          document.getElementById('crop-image-button').hidden = true;
+          console.log(selectedObject);
         }
 
         if (selectedObject.type == 'i-text') {
           // textSelection.emit("addText");
-          document.getElementById('textControls').hidden = false;
+          // document.getElementById('textControls').hidden = false;
         } else if (
           selectedObject.type == 'path' ||
           selectedObject.type == 'group'
         ) {
           // textSelection.emit("addsmiley");
         } else if (selectedObject.type == 'image') {
-          // textSelection.emit("image");
+          // // textSelection.emit("image")
         }
       },
       'object:selected': e => {
         const selectedObject = e.target;
-        selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
         selectedObject.cornerColor = 'white';
@@ -220,16 +222,19 @@ const useEditor = canvasId => {
       },
       'selection:created': e => {
         const selectedObject = e.target;
-        if (selectedObject.type === 'i-text') {
-          console.log('Text box');
+        console.log(selectedObject.type);
+        if (selectedObject.type === 'textbox') {
           document.getElementById('textControls').hidden = false;
-        } else {
+        } else if (selectedObject.type === 'image') {
+          document.getElementById('crop-image-button').hidden = false;
           document.getElementById('textControls').hidden = true;
         }
       },
       'before:selection:cleared': e => {
-        if (e.target.type === 'i-text') {
+        if (e.target.type === 'textbox') {
           document.getElementById('textControls').hidden = true;
+        } else if (e.target.type === 'image') {
+          document.getElementById('crop-image-button').hidden = true;
         }
       },
       'selection:cleared': e => {
@@ -258,13 +263,11 @@ const useEditor = canvasId => {
   }, []);
 
   const undo = () => {
-    stateManager.undo();
-    // undoState();
+    canvas.undo();
   };
 
   const redo = () => {
-    stateManager.redo();
-    // redoState();
+    canvas.redo();
   };
 
   const saveState = () => {
@@ -296,6 +299,7 @@ const useEditor = canvasId => {
         scaleY: 0.6,
         fontWeight: '',
         hasRotatingPoint: true,
+        scaleToWidth: true,
       });
 
       text.setControlsVisibility({
@@ -309,9 +313,10 @@ const useEditor = canvasId => {
         tr: false,
         mtr: true,
       });
+
       canvas.on({
         'text:editing:entered': e => {
-          if (e.target.type === 'i-text') {
+          if (e.target.type === 'textbox') {
             if (e.target.text === 'Sample Text') {
               e.target.text = '';
               e.target.hiddenTextarea.value = ''; // NEW
@@ -328,16 +333,19 @@ const useEditor = canvasId => {
       canvas.renderAll();
     }
     if (!isMobile) {
-      const text = new fabric.IText('Sample Text', {
+      const text = new fabric.Textbox('Sample Text', {
         left: 50,
         top: 150,
-        fontFamily: 'Alpha-Slab',
+        fontFamily: 'Caveat',
         angle: 0,
         scaleX: 1.5,
         scaleY: 1.5,
         fill: '#000000',
         fontWeight: '',
         hasRotatingPoint: true,
+        // align: 'mid',
+        // originX: 'center',
+        // originY: 'center',
       });
       text.setControlsVisibility({
         mt: false,
@@ -352,7 +360,7 @@ const useEditor = canvasId => {
       });
       canvas.on({
         'text:editing:entered': e => {
-          if (e.target.type === 'i-text') {
+          if (e.target.type === 'textbox') {
             if (e.target.text === 'Sample Text') {
               e.target.text = '';
               e.target.hiddenTextarea.value = ''; // NEW
@@ -361,6 +369,7 @@ const useEditor = canvasId => {
           }
         },
       });
+
       canvas.discardActiveObject().renderAll();
       canvas.add(text);
       canvas.setActiveObject(text);
@@ -460,6 +469,73 @@ const useEditor = canvasId => {
         selectItemAfterAdded(image);
       });
     }
+  };
+
+  const cropImage = () => {
+    var image;
+
+    image = canvas.getActiveObject();
+
+    const tl = image.aCoords.tl;
+    const tr = image.aCoords.tr;
+    const bl = image.aCoords.bl;
+
+    var mask = new fabric.Rect({
+      fill: 'rgba(0,0,0,0.5)',
+      left: image.aCoords.tl.x,
+      top: image.aCoords.tl.y,
+      width: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
+      height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+    });
+
+    mask.set({
+      maxWidth: image.width,
+      maxHeight: image.height,
+    });
+
+    // mask.on('changed', function() {
+    //   mask.set({
+    //     width:
+    //   });
+    // });
+
+    canvas.add(mask);
+    canvas.bringToFront(mask);
+    canvas.setActiveObject(mask);
+    canvas.renderAll();
+  };
+
+  const cropImageDone = () => {
+    var image;
+    var mask;
+
+    console.log(canvas._objects);
+    mask = canvas.getActiveObject();
+    image = canvas._objects[canvas._objects.length - 2];
+
+    // console.log('Image:', image);
+    // console.log('Mask:', mask);
+
+    var scale = {
+      x: image.scaleX,
+      y: image.scaleY,
+    };
+
+    image.set({
+      left: mask.left,
+      top: mask.top,
+      width: mask.width,
+      height: mask.height,
+      scaleX: mask.scaleX,
+      scaleY: mask.scaleY,
+      // cropX: mask.left / scale.x,
+      // cropY: mask.top / scale.y,
+    });
+
+    image.setCoords();
+    canvas.remove(mask);
+    canvas.setActiveObject(image);
+    canvas.renderAll();
   };
 
   const readUrl = event => {
@@ -662,7 +738,27 @@ const useEditor = canvasId => {
     if (!object) {
       return;
     }
-    object.set(name, value).setCoords();
+    object.set(name, value);
+    // console.log(object.type);
+
+    // const ctx = canvas.getSelectionContext();
+
+    // if (object.type === 'i-text') {
+    //   const text = object;
+    //   console.log('text width', text.width);
+
+    //   var actualWidth = text.scaleX * text.width;
+    //   var largest = canvas.getActiveObject().__lineWidths[0];
+    //   var tryWidth = (largest + 5) * text.scaleX;
+    //   canvas.getActiveObject().set('width', tryWidth);
+    //   if (text.left + actualWidth >= canvas.width - 10) {
+    //     //console.log(canvas.height - arrowLeft)
+    //     text.set('width', canvas.width - text.left - 10);
+    //   }
+    //   canvas.renderAll();
+
+    //   console.log('text width', text.width);
+    // }
     canvas.renderAll();
   };
 
@@ -1025,6 +1121,11 @@ const useEditor = canvasId => {
     // });
   };
 
+  const showMiniature = () => {
+    const miniature = canvas.toDataURL();
+    return miniature;
+  };
+
   return {
     resetPanels,
     undo,
@@ -1040,6 +1141,9 @@ const useEditor = canvasId => {
     setFontColor,
     setFontSize,
     setCanvasFill,
+    cropImage,
+    cropImageDone,
+    showMiniature,
   };
 };
 

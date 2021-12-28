@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { fabric } from 'fabric';
-import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
+import React, { useEffect, useState, useRef } from 'react';
+// import { fabric } from 'fabric';
+// import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
 import { Button, Card, Grid, Stack, Typography, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Delete, Undo } from '@mui/icons-material';
+import { Delete, Undo, Redo } from '@mui/icons-material';
 import { bgcolor, Box } from '@mui/system';
 import ColorPallete from './ColorPallete';
 import FabricEditor from '../../components/editor/useEditor';
@@ -33,13 +33,40 @@ const useStyles = makeStyles({
 
 const Editor = () => {
   const classes = useStyles();
-  const editorJs = useEditor('canvas');
-  const { selectedObjects, editor, onReady } = useFabricJSEditor();
+  const canvasRef = useRef(null);
+
+  const editorJs = useEditor('canvas', canvasRef);
+  // const { selectedObjects, editor, onReady } = useFabricJSEditor();
+  const [cropDoneButton, setCropDoneButton] = useState(false);
+  const [miniature, setMiniature] = useState('');
 
   useEffect(() => {
-    editor?.canvas.setWidth('500px');
-    editor?.canvas.setHeight('500px');
+    // editor?.canvas.setWidth('500px');
+    // editor?.canvas.setHeight('500px');
+
+    setTimeout(() => {
+      var style1 = document.getElementById('style1');
+      style1.style.fontFamily = 'Alpha-Slab';
+      console.log('Style set', style1);
+    }, 1000);
+
+    setTimeout(() => {
+      var style2 = document.getElementById('style2');
+      style2.style.fontFamily = 'Anton';
+      console.log('Style set', style2);
+    }, 1000);
+
+    setTimeout(() => {
+      var style3 = document.getElementById('style3');
+      style3.style.fontFamily = 'Arbutus';
+      console.log('Style set', style3);
+    }, 1000);
   }, []);
+
+  // useEffect(() => {
+  //   setMiniature(editorJs.showMiniature());
+  // }, [editorJs]);
+
   const images = [
     '1.svg',
     '2.svg',
@@ -208,8 +235,35 @@ const Editor = () => {
     editorJs.undo();
   };
 
+  const redo = () => {
+    editorJs.redo();
+  };
+
+  const cropImage = () => {
+    editorJs.cropImage();
+    // setCropDoneButton(true);
+  };
+
+  const cropImageDone = () => {
+    editorJs.cropImageDone();
+  };
+
   return (
     <Grid container spacing={2} alignItems="center">
+      <div hidden>
+        <p id="style1">P</p>
+        <p id="style2">P</p>
+        <p id="style3">P</p>
+        <p id="style4">P</p>
+        <p id="style5">P</p>
+        <p id="style6">P</p>
+        <p id="style7">P</p>
+        <p id="style8">P</p>
+        <p id="style9">P</p>
+        <p id="style10">P</p>
+        <p id="style11">P</p>
+        <p id="style12">P</p>
+      </div>
       <Grid item xs={12}>
         <Typography variant="h3" align="center">
           Create Your Design Here
@@ -235,7 +289,7 @@ const Editor = () => {
         <Card className={classes.editor}>
           {/* <FabricJSCanvas className={classes.editor} onReady={onReady} /> */}
           {/* <FabricEditor /> */}
-          <canvas id="canvas"></canvas>
+          <canvas id="canvas" ref={canvasRef}></canvas>
         </Card>
       </Grid>
       <Grid item xs={1}>
@@ -260,6 +314,24 @@ const Editor = () => {
           <Button variant="contained" onClick={undo}>
             <Undo />
           </Button>
+          <Button variant="contained" onClick={redo}>
+            <Redo />
+          </Button>
+          <div id="crop-image-button" hidden>
+            <Button variant="contained" onClick={cropImage}>
+              Crop Image
+            </Button>
+          </div>
+          {/* {cropDoneButton && ( */}
+          <Button
+            variant="contained"
+            onClick={cropImageDone}
+            id="crop-image-done-button"
+            hidden
+          >
+            Done
+          </Button>
+          {/* )} */}
           <Button variant="contained" onClick={addText}>
             {' '}
             Add Text{' '}
@@ -272,6 +344,19 @@ const Editor = () => {
             <Delete />
           </Button>
         </Stack>
+      </Grid>
+      <Grid>
+        <div
+        // style="    right: 25px;
+        // display: inline-block;
+        // text-align: center;
+        // position: absolute;
+        // "
+        // class="width:40%"
+        >
+          <img src="/assets/img/OGG1.png" className="f-22" />
+          <img src={`${miniature}`} />
+        </div>
       </Grid>
     </Grid>
   );

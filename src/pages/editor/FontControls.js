@@ -12,7 +12,6 @@ const FontColor = props => {
   const [fontColor, setFontColor] = React.useState('');
 
   const colors = [
-    '#ffffff00',
     '#000000',
     '#FFFFFF',
     '#9c9793',
