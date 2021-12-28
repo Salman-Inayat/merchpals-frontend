@@ -35,32 +35,61 @@ const Editor = () => {
   const classes = useStyles();
   const canvasRef = useRef(null);
 
-  const editorJs = useEditor('canvas', canvasRef);
+  const editorJs = useEditor('canvas');
   // const { selectedObjects, editor, onReady } = useFabricJSEditor();
   const [cropDoneButton, setCropDoneButton] = useState(false);
   const [miniature, setMiniature] = useState('');
 
   useEffect(() => {
-    // editor?.canvas.setWidth('500px');
-    // editor?.canvas.setHeight('500px');
+    var style1 = document.getElementById('style1');
+    var style2 = document.getElementById('style2');
+    var style3 = document.getElementById('style3');
+    var style4 = document.getElementById('style4');
+    var style5 = document.getElementById('style5');
+    var style6 = document.getElementById('style6');
+    var style7 = document.getElementById('style7');
+    var style8 = document.getElementById('style8');
+    var style9 = document.getElementById('style9');
+    var style10 = document.getElementById('style10');
+    var style11 = document.getElementById('style11');
+    var style12 = document.getElementById('style12');
+    var style13 = document.getElementById('style13');
+    var style14 = document.getElementById('style14');
+    var style15 = document.getElementById('style15');
+
+    style1.style.fontFamily = 'Alpha-Slab';
+    style2.style.fontFamily = 'Anton';
+    style3.style.fontFamily = 'Arbutus';
+    style4.style.fontFamily = 'Bangers';
+    style5.style.fontFamily = 'BebasNeue';
+    style6.style.fontFamily = 'Blackops';
+    style7.style.fontFamily = 'Bungee';
+    style8.style.fontFamily = 'Caveat';
+    style9.style.fontFamily = 'Cinzel';
+    style10.style.fontFamily = 'Dance';
+    style11.style.fontFamily = 'DelaGothic';
+    style12.style.fontFamily = 'Fredoka';
+    style13.style.fontFamily = 'RussoOne';
+    style14.style.fontFamily = 'Tourney';
+    style15.style.fontFamily = 'BungeeS';
 
     setTimeout(() => {
-      var style1 = document.getElementById('style1');
-      style1.style.fontFamily = 'Alpha-Slab';
-      console.log('Style set', style1);
-    }, 1000);
-
-    setTimeout(() => {
-      var style2 = document.getElementById('style2');
-      style2.style.fontFamily = 'Anton';
-      console.log('Style set', style2);
-    }, 1000);
-
-    setTimeout(() => {
-      var style3 = document.getElementById('style3');
-      style3.style.fontFamily = 'Arbutus';
-      console.log('Style set', style3);
-    }, 1000);
+      style1.style.display = 'none';
+      style2.style.display = 'none';
+      style3.style.display = 'none';
+      style4.style.display = 'none';
+      style5.style.display = 'none';
+      style6.style.display = 'none';
+      style7.style.display = 'none';
+      style8.style.display = 'none';
+      style9.style.display = 'none';
+      style10.style.display = 'none';
+      style11.style.display = 'none';
+      style12.style.display = 'none';
+      style13.style.display = 'none';
+      style14.style.display = 'none';
+      style15.style.display = 'none';
+    }, 10);
   }, []);
 
   // useEffect(() => {
@@ -174,24 +203,6 @@ const Editor = () => {
     '100.svg',
   ];
 
-  const fontFamilies = [
-    'Alpha-Slab',
-    'Anton',
-    'Arbutus',
-    'Bangers',
-    'BebasNeue',
-    'Blackops',
-    'Bungee',
-    'BungeeS',
-    'Caveat',
-    'Cinzel',
-    'Dance',
-    'DelaGothic',
-    'Fredoka',
-    'RussoOne',
-    'Tourney',
-  ];
-
   const addText = () => {
     editorJs.addText();
   };
@@ -248,21 +259,30 @@ const Editor = () => {
     editorJs.cropImageDone();
   };
 
+  const handleImageClick = () => {
+    const miniature = editorJs.showMiniature();
+
+    return <img src={`${miniature}`} />;
+  };
+
   return (
     <Grid container spacing={2} alignItems="center">
-      <div hidden>
-        <p id="style1">P</p>
-        <p id="style2">P</p>
-        <p id="style3">P</p>
-        <p id="style4">P</p>
-        <p id="style5">P</p>
-        <p id="style6">P</p>
-        <p id="style7">P</p>
-        <p id="style8">P</p>
-        <p id="style9">P</p>
-        <p id="style10">P</p>
-        <p id="style11">P</p>
-        <p id="style12">P</p>
+      <div style={{ height: '10px' }}>
+        <p id="style1">Paragraph demo</p>
+        <p id="style2">Paragraph demo </p>
+        <p id="style3">Paragraph demo </p>
+        <p id="style4">Paragraph demo </p>
+        <p id="style5">Paragraph demo </p>
+        <p id="style6">Paragraph demo </p>
+        <p id="style7">Paragraph demo </p>
+        <p id="style8">Paragraph demo </p>
+        <p id="style9">Paragraph demo </p>
+        <p id="style10">Paragraph demo </p>
+        <p id="style11">Paragraph demo </p>
+        <p id="style12">Paragraph demo </p>
+        <p id="style13">Paragraph demo </p>
+        <p id="style14">Paragraph demo </p>
+        <p id="style15">Paragraph demo </p>
       </div>
       <Grid item xs={12}>
         <Typography variant="h3" align="center">
@@ -297,6 +317,27 @@ const Editor = () => {
           customClass={classes.colorPallete}
           setCanvasBackground={setCanvasBackground}
         />
+      </Grid>
+      <Grid xs={1}>
+        <div
+        // style="    right: 25px;
+        // display: inline-block;
+        // text-align: center;
+        // position: absolute;
+        // "
+        // class="width:40%"
+        >
+          <img
+            src="/assets/img/OGG1.png"
+            className="f-22"
+            style={{
+              border: '1px solid black',
+              width: '450px',
+              height: '100px',
+            }}
+            onClick={handleImageClick}
+          />
+        </div>
       </Grid>
       <Grid item md={12} xs={2}>
         <FontControls
@@ -344,19 +385,6 @@ const Editor = () => {
             <Delete />
           </Button>
         </Stack>
-      </Grid>
-      <Grid>
-        <div
-        // style="    right: 25px;
-        // display: inline-block;
-        // text-align: center;
-        // position: absolute;
-        // "
-        // class="width:40%"
-        >
-          <img src="/assets/img/OGG1.png" className="f-22" />
-          <img src={`${miniature}`} />
-        </div>
       </Grid>
     </Grid>
   );

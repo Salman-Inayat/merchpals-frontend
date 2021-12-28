@@ -113,7 +113,6 @@ const FontFamily = props => {
     'BebasNeue',
     'Blackops',
     'Bungee',
-    'BungeeS',
     'Caveat',
     'Cinzel',
     'Dance',
@@ -121,6 +120,7 @@ const FontFamily = props => {
     'Fredoka',
     'RussoOne',
     'Tourney',
+    'BungeeS',
   ];
 
   const handleFontFamilyChange = event => {
