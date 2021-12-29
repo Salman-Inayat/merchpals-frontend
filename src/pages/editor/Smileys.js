@@ -110,9 +110,9 @@ const Smileys = ({ addPng, className }) => {
 
   return (
     <Stack direction="column" className={className}>
-      {images.map(oneImage => (
+      {images.map((oneImage, index) => (
         <img
-          key={oneImage}
+          key={index}
           src={`/svg-icons/${oneImage}`}
           onClick={() => addPng(`/svg-icons/${oneImage}`)}
           style={{
