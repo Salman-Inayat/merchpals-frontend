@@ -3,7 +3,7 @@ import 'fabric-history';
 import * as changedpi from 'changedpi';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
-import { useLayoutEffect } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import 'fabric-history';
 
 const useEditor = canvasId => {
@@ -66,15 +66,12 @@ const useEditor = canvasId => {
       stopContextMenu: true, // <--  prevent context menu from showing
     });
 
-    stateManager = new StateManager(canvas);
-
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
 
     canvas.on({
       'object:moving': e => {},
       'object:modified': e => {
-        // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
@@ -99,7 +96,6 @@ const useEditor = canvasId => {
         resetPanels();
       },
       'object:added': e => {
-        // saveState();
         const selectedObject = e.target;
         selectedObject.hasRotatingPoint = true;
         selectedObject.transparentCorners = false;
@@ -518,9 +514,6 @@ const useEditor = canvasId => {
     console.log(canvas._objects);
     mask = canvas.getActiveObject();
     image = canvas._objects[canvas._objects.length - 2];
-
-    // console.log('Image:', image);
-    // console.log('Mask:', mask);
 
     var scale = {
       x: image.scaleX,

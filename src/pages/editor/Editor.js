@@ -181,13 +181,11 @@ const Editor = () => {
         </Typography>
       </Grid>
       <Grid item xs={1}>
-        <Stack direction="column" className={classes.images}>
-          {toggleSmileys ? (
-            <Smileys addPng={addPng} className={classes.images} />
-          ) : (
-            ''
-          )}
-        </Stack>
+        {toggleSmileys ? (
+          <Smileys addPng={addPng} className={classes.images} />
+        ) : (
+          ''
+        )}
       </Grid>
       <Grid item xs={5}>
         <Card className={classes.editor}>
@@ -258,6 +256,12 @@ const Editor = () => {
           <Button variant="contained" onClick={addText}>
             {' '}
             Add Text{' '}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => setToggleSmileys(!toggleSmileys)}
+          >
+            Smileys
           </Button>
           <Button variant="contained" component="label">
             Upload a picture
