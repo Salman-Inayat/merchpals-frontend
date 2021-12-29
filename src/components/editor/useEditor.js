@@ -3,13 +3,11 @@ import 'fabric-history';
 import * as changedpi from 'changedpi';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
-import StateManager from './stateManager';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import 'fabric-history';
 
 const useEditor = canvasId => {
-  let canvas;
-  let stateManager;
+  let [canvas, setCanvas] = useState();
 
   const size = {
     width: 450,
@@ -51,7 +49,14 @@ const useEditor = canvasId => {
   let textSelection;
   let url = '';
 
-  useEffect(() => {
+  const firstUpdate = useRef(true);
+
+  useLayoutEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+
     canvas = new fabric.Canvas(canvasId, {
       hoverCursor: 'pointer',
       selection: false,
@@ -260,7 +265,7 @@ const useEditor = canvasId => {
     canvas.on('mouse:down', e => {
       const canvasElement = document.getElementById('canvas');
     });
-  }, []);
+  });
 
   const undo = () => {
     canvas.undo();
@@ -274,6 +279,7 @@ const useEditor = canvasId => {
     stateManager.saveState();
     canvas.renderAll();
   };
+
   const changeSize = () => {
     if (!isMobile) {
       canvas.setWidth(size.width);
@@ -1126,7 +1132,12 @@ const useEditor = canvasId => {
     return miniature;
   };
 
+  const canvasReady = canvasReady => {
+    setCanvas(canvasReady);
+  };
+
   return {
+    onReady: canvasReady,
     resetPanels,
     undo,
     redo,
