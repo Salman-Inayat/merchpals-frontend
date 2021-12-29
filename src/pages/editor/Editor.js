@@ -1,12 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
-// import { fabric } from 'fabric';
-// import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { Button, Card, Grid, Stack, Typography, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
 import { bgcolor, Box } from '@mui/system';
 import ColorPallete from './ColorPallete';
-import FabricEditor from '../../components/editor/useEditor';
 import useEditor from '../../components/editor/useEditor';
 import FontControls from './FontControls';
 import CanvasEditor from '../../components/editor/canvasEditor';
@@ -38,9 +35,8 @@ const Editor = () => {
 
   const editorJs = useEditor();
   const [toggleSmileys, setToggleSmileys] = useState(false);
-
   const [cropDoneButton, setCropDoneButton] = useState(false);
-  const [miniature, setMiniature] = useState('');
+  const [miniature, setMiniature] = useState();
 
   useEffect(() => {
     var style1 = document.getElementById('style1');
@@ -74,25 +70,18 @@ const Editor = () => {
     style13.style.fontFamily = 'RussoOne';
     style14.style.fontFamily = 'Tourney';
     style15.style.fontFamily = 'BungeeS';
-
-    setTimeout(() => {
-      style1.style.display = 'none';
-      style2.style.display = 'none';
-      style3.style.display = 'none';
-      style4.style.display = 'none';
-      style5.style.display = 'none';
-      style6.style.display = 'none';
-      style7.style.display = 'none';
-      style8.style.display = 'none';
-      style9.style.display = 'none';
-      style10.style.display = 'none';
-      style11.style.display = 'none';
-      style12.style.display = 'none';
-      style13.style.display = 'none';
-      style14.style.display = 'none';
-      style15.style.display = 'none';
-    }, 10);
   }, []);
+
+  const firstUpdate = useRef(true);
+
+  useLayoutEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+
+    setMiniature(editorJs.getMiniature());
+  });
 
   const addText = () => {
     editorJs.addText();
@@ -104,7 +93,6 @@ const Editor = () => {
 
   const deleteSelected = () => {
     editorJs.removeSelected();
-    // editor?.deleteSelected();
   };
 
   const setCanvasBackground = bgColor => {
@@ -117,10 +105,6 @@ const Editor = () => {
 
   const setFontFamily = fontFamily => {
     editorJs?.setFontFamily(fontFamily);
-  };
-
-  const setFontSize = fontSize => {
-    editorJs?.setFontSize(fontSize);
   };
 
   const addImage = e => {
@@ -143,37 +127,32 @@ const Editor = () => {
 
   const cropImage = () => {
     editorJs.cropImage();
-    // setCropDoneButton(true);
+    setCropDoneButton(true);
   };
 
   const cropImageDone = () => {
     editorJs.cropImageDone();
-  };
-
-  const handleImageClick = () => {
-    const miniature = editorJs.showMiniature();
-
-    return <img src={`${miniature}`} />;
+    setCropDoneButton(false);
   };
 
   return (
     <Grid container spacing={2} alignItems="center">
       <div style={{ height: '10px' }}>
-        <p id="style1">Paragraph demo</p>
-        <p id="style2">Paragraph demo </p>
-        <p id="style3">Paragraph demo </p>
-        <p id="style4">Paragraph demo </p>
-        <p id="style5">Paragraph demo </p>
-        <p id="style6">Paragraph demo </p>
-        <p id="style7">Paragraph demo </p>
-        <p id="style8">Paragraph demo </p>
-        <p id="style9">Paragraph demo </p>
-        <p id="style10">Paragraph demo </p>
-        <p id="style11">Paragraph demo </p>
-        <p id="style12">Paragraph demo </p>
-        <p id="style13">Paragraph demo </p>
-        <p id="style14">Paragraph demo </p>
-        <p id="style15">Paragraph demo </p>
+        <span id="style1"></span>
+        <span id="style2"> </span>
+        <span id="style3"> </span>
+        <span id="style4"> </span>
+        <span id="style5"> </span>
+        <span id="style6"> </span>
+        <span id="style7"> </span>
+        <span id="style8"> </span>
+        <span id="style9"> </span>
+        <span id="style10"> </span>
+        <span id="style11"> </span>
+        <span id="style12"> </span>
+        <span id="style13"> </span>
+        <span id="style14"> </span>
+        <span id="style15"> </span>
       </div>
       <Grid item xs={12}>
         <Typography variant="h3" align="center">
@@ -198,24 +177,35 @@ const Editor = () => {
           setCanvasBackground={setCanvasBackground}
         />
       </Grid>
-      <Grid xs={1}>
+      <Grid xs={3}>
         <div
-        // style="    right: 25px;
-        // display: inline-block;
-        // text-align: center;
-        // position: absolute;
-        // "
-        // class="width:40%"
+          style={{
+            display: 'inline-block',
+            textAlign: 'center',
+            position: 'relative',
+          }}
         >
           <img
             src="/assets/img/OGG1.png"
-            className="f-22"
             style={{
               border: '1px solid black',
-              width: '450px',
-              height: '100px',
+              width: '350px',
+              height: '300px',
+              position: 'relative',
+              top: '0',
+              left: '0',
             }}
-            onClick={handleImageClick}
+          />
+          <img
+            src={miniature}
+            style={{
+              position: 'absolute',
+              top: '100px',
+              left: '120px',
+              width: '100px',
+              height: '100px',
+              border: 'none',
+            }}
           />
         </div>
       </Grid>
@@ -243,16 +233,16 @@ const Editor = () => {
               Crop Image
             </Button>
           </div>
-          {/* {cropDoneButton && ( */}
-          <Button
-            variant="contained"
-            onClick={cropImageDone}
-            id="crop-image-done-button"
-            hidden
-          >
-            Done
-          </Button>
-          {/* )} */}
+          {cropDoneButton && (
+            <Button
+              variant="contained"
+              onClick={cropImageDone}
+              id="crop-image-done-button"
+              hidden
+            >
+              Done
+            </Button>
+          )}
           <Button variant="contained" onClick={addText}>
             {' '}
             Add Text{' '}
@@ -265,7 +255,12 @@ const Editor = () => {
           </Button>
           <Button variant="contained" component="label">
             Upload a picture
-            <input type="file" hidden onChange={e => addImage(e)} />
+            <input
+              type="file"
+              hidden
+              onChange={e => addImage(e)}
+              accept="image/png, image/jpeg"
+            />
           </Button>
           <Button onClick={deleteSelected} variant="contained" color="error">
             <Delete />
