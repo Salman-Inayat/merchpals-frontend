@@ -57,15 +57,6 @@ const useEditor = canvasId => {
       return;
     }
 
-    canvas = new fabric.Canvas(canvasId, {
-      hoverCursor: 'pointer',
-      selection: false,
-      selectionBorderColor: 'blue',
-      fireRightClick: true, // <-- enable firing of right click events
-      fireMiddleClick: true, // <-- enable firing of middle click events
-      stopContextMenu: true, // <--  prevent context menu from showing
-    });
-
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
 

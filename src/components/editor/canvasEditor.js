@@ -54,7 +54,6 @@ const CanvasEditor = _ref => {
     window.addEventListener('resize', resizeCanvas, false);
 
     if (onReady) {
-      console.log('Ready: ', onReady);
       onReady(canvas);
     }
 
