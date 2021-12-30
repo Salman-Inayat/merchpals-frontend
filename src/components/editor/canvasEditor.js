@@ -9,12 +9,18 @@ import { fabric } from 'fabric';
 import { useEffect, useRef } from 'react';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
+import { useMediaQuery } from 'react-responsive';
 
 const CanvasEditor = _ref => {
-  var className = _ref.className,
+  var className = _ref.class,
     onReady = _ref.onReady;
   var canvasElParent = useRef(null);
   var canvasEl = useRef(null);
+
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   useEffect(function () {
     var canvas = new fabric.Canvas(canvasEl.current, {
       hoverCursor: 'pointer',
@@ -25,24 +31,33 @@ const CanvasEditor = _ref => {
       stopContextMenu: true, // <--  prevent context menu from showing
     });
 
+    canvas.setDimensions({ width: 500, height: 500 });
+
+    console.log(canvas);
+    // if (isDesktop){
+
+    // }
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, false);
 
     var setCurrentDimensions = function setCurrentDimensions() {
       var _canvasElParent$curre, _canvasElParent$curre2;
+      const outerCanvasContainer =
+        document.getElementsByClassName(className)[0];
 
-      canvas.setHeight(
-        ((_canvasElParent$curre = canvasElParent.current) === null ||
-        _canvasElParent$curre === void 0
-          ? void 0
-          : _canvasElParent$curre.clientHeight) || 0,
-      );
-      canvas.setWidth(
-        ((_canvasElParent$curre2 = canvasElParent.current) === null ||
-        _canvasElParent$curre2 === void 0
-          ? void 0
-          : _canvasElParent$curre2.clientWidth) || 0,
-      );
+      const ratio = canvas.getWidth() / canvas.getHeight();
+      const containerWidth = outerCanvasContainer.clientWidth;
+      const containerHeight = outerCanvasContainer.clientHeight;
+
+      const scale = containerWidth / canvas.getWidth();
+      const zoom = canvas.getZoom() * scale;
+      canvas.setDimensions({
+        width: containerWidth,
+        height: containerWidth / ratio,
+      });
+      canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
+      console.log('Scale: ', scale, ' Zoom: ', zoom);
+
       canvas.renderAll();
     };
 

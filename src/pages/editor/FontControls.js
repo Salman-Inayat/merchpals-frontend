@@ -171,19 +171,15 @@ const FontControls = props => {
 
   return (
     <div id="textControls" hidden>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            alignContent="center"
-          >
-            <FontFamily setFontFamily={setFontFamily} />
-            <FontColor setFontColor={setFontColor} />
-          </Stack>
-        </Grid>
-      </Grid>
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        alignContent="center"
+      >
+        <FontFamily setFontFamily={setFontFamily} />
+        <FontColor setFontColor={setFontColor} />
+      </Stack>
     </div>
   );
 };

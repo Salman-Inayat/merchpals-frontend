@@ -1,6 +1,48 @@
 import { Stack } from '@mui/material';
 
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(theme => ({
+  smileyContainer: {
+    height: '500px',
+    overflow: 'scroll',
+    [theme.breakpoints.down('md')]: {
+      overflowX: 'scroll',
+      overflowY: 'hidden',
+      whiteSpace: 'nowrap',
+      height: '50px',
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      overflowX: 'scroll',
+      overflowY: 'hidden',
+      whiteSpace: 'nowrap',
+      height: '50px',
+    },
+  },
+  smileys: {
+    width: '100%',
+    height: '75px',
+    overflow: 'auto',
+    [theme.breakpoints.down('md')]: {
+      width: '60px',
+      height: '30px',
+      margin: '10px 0px',
+      display: 'inline-block',
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      width: '60px',
+      height: '30px',
+      margin: '10px 0px',
+      display: 'inline-block',
+    },
+  },
+}));
+
 const Smileys = ({ addPng, className }) => {
+  const classes = useStyles();
+
   const images = [
     '1.svg',
     '2.svg',
@@ -109,20 +151,16 @@ const Smileys = ({ addPng, className }) => {
   ];
 
   return (
-    <Stack direction="column" className={className}>
+    <div className={classes.smileyContainer}>
       {images.map((oneImage, index) => (
         <img
           key={index}
           src={`/svg-icons/${oneImage}`}
           onClick={() => addPng(`/svg-icons/${oneImage}`)}
-          style={{
-            width: '100%',
-            height: '75px',
-            overflow: 'auto',
-          }}
+          className={classes.smileys}
         />
       ))}
-    </Stack>
+    </div>
   );
 };
 

@@ -5,18 +5,28 @@ import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef } from 'react';
 import 'fabric-history';
+import { useMediaQuery } from 'react-responsive';
 
 const useEditor = canvasId => {
   let [canvas, setCanvas] = useState();
   let [miniature, setMiniature] = useState();
 
+  let isDesktop = useMediaQuery({ minWidth: 992 });
+  let isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  let isMobile = useMediaQuery({ maxWidth: 767 });
+
   const size = {
-    width: 450,
-    height: 450,
+    width: 700,
+    height: 500,
   };
   const sizeMobile = {
-    width: 225,
-    height: 225,
+    width: 340,
+    height: 350,
+  };
+
+  const sizeTablet = {
+    width: 700,
+    height: 550,
   };
 
   let canvasProperties = {
@@ -35,9 +45,9 @@ const useEditor = canvasId => {
     TextDecoration: '',
   };
 
-  let isMobile = false;
-  let isTablet = false;
-  let isDesktopDevice = false;
+  // let isMobile = false;
+  // let isTablet = false;
+  // let isDesktopDevice = false;
 
   let json;
   let globalEditor = false;
@@ -52,6 +62,29 @@ const useEditor = canvasId => {
 
   const firstUpdate = useRef(true);
 
+  const applyProperties = selectedObject => {
+    selectedObject.hasRotatingPoint = true;
+    selectedObject.transparentCorners = false;
+    selectedObject.cornerColor = 'white';
+    selectedObject.cornerStyle = 'circle';
+    selectedObject.transparentCorners = false;
+    selectedObject.cornerStrokeColor = '#116dff';
+    selectedObject.padding = 5;
+    selectedObject.cornerSize = 30;
+    selectedObject.rotatingPointOffset = 30;
+    selectedObject.setControlsVisibility({
+      mt: false,
+      mb: false,
+      ml: false,
+      mr: false,
+      bl: false,
+      br: true,
+      tl: false,
+      tr: false,
+      mtr: true,
+    });
+  };
+
   useLayoutEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
@@ -63,81 +96,25 @@ const useEditor = canvasId => {
 
     canvas.on({
       'object:moving': e => {
-        // setMiniature(canvas.toDataURL());
+        // //setMiniature(canvas.toDataURL());
       },
       'object:modified': e => {
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
-        setMiniature(canvas.toDataURL());
+
+        applyProperties(selectedObject);
+        //setMiniature(canvas.toDataURL());
 
         resetPanels();
       },
       'object:added': e => {
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
-        setMiniature(canvas.toDataURL());
+        applyProperties(selectedObject);
+        //setMiniature(canvas.toDataURL());
         resetPanels();
       },
       'selection:updated': e => {
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
+        applyProperties(selectedObject);
 
         resetPanels();
         if (selectedObject.type !== 'textbox') {
@@ -166,26 +143,7 @@ const useEditor = canvasId => {
       },
       'object:selected': e => {
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
+        applyProperties(selectedObject);
         resetPanels();
 
         if (selectedObject.type !== 'group' && selectedObject) {
@@ -249,33 +207,36 @@ const useEditor = canvasId => {
       },
     });
 
-    if (!isMobile) {
-      canvas.setWidth(size.width);
-      canvas.setHeight(size.height);
-    } else {
+    if (isMobile) {
       canvas.setWidth(sizeMobile.width);
       canvas.setHeight(sizeMobile.height);
+    } else if (isTablet) {
+      canvas.setWidth(sizeTablet.width);
+      canvas.setHeight(sizeTablet.height);
+    } else {
+      canvas.setWidth(size.width);
+      canvas.setHeight(size.height);
     }
 
     // get references to the html canvas element & its context
     canvas.on('mouse:down', e => {
       const canvasElement = document.getElementById('canvas');
-      setMiniature(canvas.toDataURL());
+      //setMiniature(canvas.toDataURL());
     });
 
     canvas.on('mouse:moving', e => {
-      setMiniature(canvas.toDataURL());
+      //setMiniature(canvas.toDataURL());
     });
   });
 
   const undo = () => {
     canvas.undo();
-    // setMiniature(canvas.toDataURL());
+    // //setMiniature(canvas.toDataURL());
   };
 
   const redo = () => {
     canvas.redo();
-    // setMiniature(canvas.toDataURL());
+    // //setMiniature(canvas.toDataURL());
   };
 
   const saveState = () => {
@@ -502,17 +463,11 @@ const useEditor = canvasId => {
       maxHeight: image.height,
     });
 
-    // mask.on('changed', function() {
-    //   mask.set({
-    //     width:
-    //   });
-    // });
-
     canvas.add(mask);
     canvas.bringToFront(mask);
     canvas.setActiveObject(mask);
     canvas.renderAll();
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
   };
 
   const cropImageDone = () => {
@@ -528,21 +483,23 @@ const useEditor = canvasId => {
     };
 
     image.set({
-      left: mask.left,
-      top: mask.top,
-      width: mask.width,
-      height: mask.height,
-      scaleX: mask.scaleX,
-      scaleY: mask.scaleY,
+      // left: mask.left,
+      // top: mask.top,
+      // width: mask.width,
+      // height: mask.height,
+      // scaleX: mask.scaleX,
+      // scaleY: mask.scaleY,
       // cropX: mask.left / scale.x,
       // cropY: mask.top / scale.y,
+      cropX: 150,
+      // cropY: 50,
     });
 
     image.setCoords();
     canvas.remove(mask);
     canvas.setActiveObject(image);
     canvas.renderAll();
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
   };
 
   const readUrl = event => {
@@ -624,7 +581,7 @@ const useEditor = canvasId => {
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
     }
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
   };
 
   const extend = (obj, id) => {
@@ -764,7 +721,7 @@ const useEditor = canvasId => {
 
     // }
     canvas.renderAll();
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
   };
 
   const clone = () => {
@@ -830,7 +787,7 @@ const useEditor = canvasId => {
 
   const setFill = () => {
     setActiveStyle('fill', canvasProperties.fill, null);
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
   };
 
   const getLineHeight = () => {
@@ -937,7 +894,7 @@ const useEditor = canvasId => {
       });
     }
 
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
   };
 
   const bringToFront = () => {
@@ -1007,9 +964,9 @@ const useEditor = canvasId => {
     localStorage.setItem('Kanvas', json);
   };
   const deviceDetect = () => {
-    // isMobile = deviceService.isMobile();
-    // isTablet = deviceService.isTablet();
-    // isDesktopDevice = deviceService.isDesktop();
+    isMobile = deviceService.isMobile();
+    isTablet = deviceService.isTablet();
+    isDesktopDevice = deviceService.isDesktop();
   };
   const loadCanvasFromJSON = () => {
     const CANVAS = [];
