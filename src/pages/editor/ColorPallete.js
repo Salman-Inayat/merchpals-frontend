@@ -1,7 +1,30 @@
 import { Stack } from '@mui/material';
 import React from 'react';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(theme => ({
+  colorPallete: {
+    height: '500px',
+    overflow: 'scroll',
+    display: 'inline-block',
+    [theme.breakpoints.down('sm')]: {
+      height: '325px',
+    },
+  },
+  color: {
+    height: '24px',
+    width: '70px',
+    border: '1px solid #000',
+    [theme.breakpoints.down('sm')]: {
+      width: '40px',
+      height: '15px',
+    },
+  },
+}));
 
 const ColorPallete = ({ setCanvasBackground, customClass }) => {
+  const classes = useStyles();
+
   const colors = [
     '#ffffff00',
     '#000000',
@@ -57,16 +80,14 @@ const ColorPallete = ({ setCanvasBackground, customClass }) => {
     '#8c8c88',
   ];
   return (
-    <Stack className={customClass}>
+    <Stack className={classes.colorPallete}>
       {colors.map((bgColor, index) => (
         <div
           key={index}
           style={{
             backgroundColor: bgColor,
-            height: '24px',
-            width: '70px',
-            border: '1px solid #000',
           }}
+          className={classes.color}
           onClick={() => setCanvasBackground(bgColor)}
         />
       ))}
