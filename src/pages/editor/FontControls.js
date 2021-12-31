@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Stack,
@@ -9,10 +9,9 @@ import {
 } from '@mui/material';
 
 const FontColor = props => {
-  const [fontColor, setFontColor] = React.useState('');
+  const [fontColor, setFontColor] = useState('');
 
   const colors = [
-    '#ffffff00',
     '#000000',
     '#FFFFFF',
     '#9c9793',
@@ -104,7 +103,7 @@ const FontColor = props => {
 };
 
 const FontFamily = props => {
-  const [fontFamily, setFontFamily] = React.useState('');
+  const [fontFamily, setFontFamily] = useState('');
 
   const fontFamilies = [
     'Alpha-Slab',
@@ -114,7 +113,6 @@ const FontFamily = props => {
     'BebasNeue',
     'Blackops',
     'Bungee',
-    'BungeeS',
     'Caveat',
     'Cinzel',
     'Dance',
@@ -122,6 +120,7 @@ const FontFamily = props => {
     'Fredoka',
     'RussoOne',
     'Tourney',
+    'BungeeS',
   ];
 
   const handleFontFamilyChange = event => {
@@ -151,64 +150,12 @@ const FontFamily = props => {
                     padding: '2px',
                   }}
                 >
-                  {fontFamily}
-                </div>
-              </Grid>
-            </Grid>
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-};
-
-const FontSize = props => {
-  const [fontSize, setFontSize] = React.useState('');
-
-  const fontSizes = [
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '14',
-    '16',
-    '18',
-    '20',
-    '22',
-    '24',
-    '26',
-    '28',
-  ];
-
-  const handleFontSizeChange = event => {
-    props.setFontSize(event.target.value);
-    setFontSize(event.target.value);
-  };
-
-  return (
-    <FormControl fullWidth>
-      <InputLabel id="demo-simple-select-label">Font Size</InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={fontSize}
-        label="Age"
-        onChange={handleFontSizeChange}
-        autoWidth
-      >
-        {fontSizes.map((fontSize, index) => (
-          <MenuItem value={fontSize} key={index}>
-            <Grid container>
-              <Grid item xs={12}>
-                <div
-                  style={{
-                    height: '24px',
-                    width: '80px',
-                    padding: '2px',
-                  }}
-                >
-                  {fontSize}
+                  <p
+                    id={`style${index + 1}`}
+                    style={{ fontFamily: `${fontFamily}` }}
+                  >
+                    {fontFamily}
+                  </p>
                 </div>
               </Grid>
             </Grid>
@@ -224,20 +171,15 @@ const FontControls = props => {
 
   return (
     <div id="textControls" hidden>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            alignContent="center"
-          >
-            <FontFamily setFontFamily={setFontFamily} />
-            <FontColor setFontColor={setFontColor} />
-            {/* <FontSize setFontSize={setFontSize} /> */}
-          </Stack>
-        </Grid>
-      </Grid>
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        alignContent="center"
+      >
+        <FontFamily setFontFamily={setFontFamily} />
+        <FontColor setFontColor={setFontColor} />
+      </Stack>
     </div>
   );
 };
