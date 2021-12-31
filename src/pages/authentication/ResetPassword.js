@@ -18,7 +18,7 @@ import {
   TextField, IconButton, InputAdornment
 } from "@mui/material";
 import { Icon } from "@iconify/react";
-import {PhoneNumberInput} from "../../components/phone-number-input";
+import PhoneNumberInput from "../../components/phone-number-input";
 import { updatePassword, clearError } from '../../store/redux/actions/auth';
 
 const useStyles = makeStyles((theme) => ({
