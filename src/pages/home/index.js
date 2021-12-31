@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Container, 
   Grid, 
@@ -19,6 +19,7 @@ import {
   SignUp,
   StoreForm,Otp
 } from './steps';
+import { baseURL } from '../../configs/const';
 
 const useStyle = makeStyles(() => ({
   fluid: {
@@ -56,15 +57,30 @@ const useStyle = makeStyles(() => ({
   }
 }))
 const Home = () => {
-  const [step, setStep] = useState(2)
+  const [step, setStep] = useState(1)
   const [showOtpBox, setShowOtpBox] = useState(false)
   const [registrationErrors, setRegistrationErrors] = useState({
     email: '',
     password: '',
     phoneNo: '',
   })
+  const [products, setProducts] = useState([])
   const classes = useStyle();
 
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    axios.get(`${baseURL}/products`)
+      .then(response => {
+        console.log({ response });
+        setProducts(response.data.products)
+      })
+      .catch(err => {
+        console.log({ err });
+      })
+  };
   const nextStep = () => {
     if (showOtpBox) {
       setShowOtpBox(false)
@@ -92,11 +108,21 @@ const Home = () => {
     })
   }
 
-  const createStore = () => {}
+  const createStore = (data) => {
+    console.log({ data });
+
+    axios.post(`${baseURL}/store`, { data })
+      .then(response => {
+        console.log({ response });
+      })
+      .catch(err => {
+        console.log('err', err);
+      })
+  }
   const yieldStep = () => {
     switch (step) {
       case 1:
-        return <Products nextStep={nextStep} />
+        return <Products nextStep={nextStep} products={products} />
       case 2: 
       if (showOtpBox) {
         return <Otp nextStep={nextStep}  />

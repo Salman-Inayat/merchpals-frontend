@@ -31,18 +31,23 @@ const useStyles = makeStyles(() => ({
 }))
 const label = { inputProps: { 'aria-label': 'Select Project' } };
 
-const ProductCard = () => {
+const ProductCard = ({ 
+  product, 
+  onVariantClick = () => {},
+  selectedVariants = {}
+}) => {
+  console.log({ selectedVariants });
   const classes = useStyles();
   const onChange = () => {}
   return (
     <Grid item>
       <Grid className={classes.product}>
-        <Typography align='center'>Shirt</Typography>
+        <Typography align='center'>{product.name}</Typography>
         <Box className={classes.box}>
           <Avatar 
             className={classes.avatar}
             variant="square"
-            src={SHIRT}
+            src={product.image}
           />
 
           <Box className={classes.absolute}>
@@ -52,15 +57,16 @@ const ProductCard = () => {
       </Grid>   
 
       <Grid justifyContent='center' spacing={3} className={classes.colorGrid} container>
-        <Grid item>
-          <Checkbox onChange={onChange} checked={false} />
-        </Grid>
-        <Grid item>
-          <Checkbox onChange={onChange} checked={false} />
-        </Grid>
-        <Grid item>
-          <Checkbox onChange={onChange} checked={false} />
-        </Grid>
+        {product.colors.map((pm,i) => (
+          <Grid key={`colors-${i}`}  item>
+            <Checkbox 
+              onChange={onVariantClick} 
+              checked={selectedVariants[product._id]?.includes(pm.id) ? true : false } 
+              value={`${product._id},${pm.id}`}
+              color={pm.label}
+            />
+          </Grid>
+        ))}
       </Grid>      
     </Grid> 
   )

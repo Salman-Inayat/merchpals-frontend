@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { 
   Button,
   Grid, 
@@ -23,33 +24,42 @@ const useStyles = makeStyles(() => ({
 }))
 const Products = ({
   nextStep = () => {},
+  products = []
 }) => {
+  const [selectedVariants, setSelectedVariants] = useState({});
+
   const classes = useStyles();
+  const onVariantClick = (productVariant) => {
+    const [product, color] = productVariant.split(',')
+    console.log({ product, color });
+    let productColors = [];
+    if (!selectedVariants[product]) {
+       productColors = [color]
+    } else {
+      const colorIndex = selectedVariants[product].findIndex(c => c === color)
+      console.log({ colorIndex });
+      if (colorIndex > -1) {
+        productColors = [...selectedVariants[product]]
+        productColors.splice(colorIndex, 1)
+      } else {
+        productColors = [...selectedVariants[product], color]
+      }
+    }
+    setSelectedVariants({
+      ...selectedVariants,
+      [product]: productColors
+    })
+  };
+
   return (
     <Grid container>
       <Grid container  justifyContent='center' alignItems='center' mt={5} pb={18}>
         <Grid item xs={8}  container  justifyContent='flex-start' alignItems='center' spacing={3}>
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>      
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>      
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>  
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>  
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>  
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>  
-          <Grid mt={5} item>
-              <ProductCard />
-          </Grid>                          
+          { products.map((product, i) => (
+            <Grid mt={5} key={`product-${i}`} item>
+              <ProductCard product={product} onVariantClick={onVariantClick} selectedVariants={selectedVariants}/>
+            </Grid>                               
+          ))}
         </Grid>
       </Grid>
       <Grid container justifyContent='center' alignItems='center' className={classes.footer}>

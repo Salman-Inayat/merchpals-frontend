@@ -49,11 +49,11 @@ export default function RegisterForm({
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
-      .required("First name required")
+      .required("First name is required")
       .min(2, "Too Short!")
       .max(50, "Too Long!"),
     lastName: Yup.string()
-      .required("Last name required")
+      .required("Last name is required")
       .min(2, "Too Short!")
       .max(50, "Too Long!"),
     email: Yup.string()

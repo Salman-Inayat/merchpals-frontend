@@ -5,9 +5,10 @@ const Checkbox = ({
   onChange = () => {},
   label = '',
   checked = true,
+  value = ''
 }) => (
     <label className="container">{label}
-    <input type="checkbox" checked={checked} onChange={onChange}/>
+    <input type="checkbox" checked={checked} onChange={() => onChange(value)}/>
     <span className="checkmark"></span>
   </label>
 )
