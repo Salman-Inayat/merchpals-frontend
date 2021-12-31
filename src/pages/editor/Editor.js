@@ -82,7 +82,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Editor = () => {
+const Editor = ({
+  exportBase64 = () => {}
+}) => {
   const classes = useStyles();
 
   const editorJs = useEditor();
@@ -295,8 +297,18 @@ const Editor = () => {
               >
                 <Delete />
               </Button>
+
             </Stack>
           </Grid>
+          <Grid>   
+            <Button
+              onClick={() => exportBase64(miniature)}
+              variant="contained"
+              color="error"
+              className={`${classes.delete} ${classes.button}`}
+            >
+                Export
+              </Button></Grid>
           <Grid item md={12} sm={6} xs={8} order={{ xs: 2, sm: 2, md: 2 }}>
             <FontControls
               setFontColor={setFontColor}

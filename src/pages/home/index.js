@@ -108,6 +108,8 @@ const Home = () => {
     })
   }
 
+  const exportBase64File = (file) => console.log(file);
+
   const createStore = (data) => {
     console.log({ data });
 
@@ -131,7 +133,7 @@ const Home = () => {
       case 3:
         return <StoreForm createStore={createStore} />
       default:
-        return <Editor nextStep={nextStep} />
+        return <Editor nextStep={nextStep} exportBase64={exportBase64File}/>
     }
   }
   return (

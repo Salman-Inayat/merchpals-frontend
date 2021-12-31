@@ -34,9 +34,9 @@ const label = { inputProps: { 'aria-label': 'Select Project' } };
 const ProductCard = ({ 
   product, 
   onVariantClick = () => {},
+  onProductClick = () => {},
   selectedVariants = {}
 }) => {
-  console.log({ selectedVariants });
   const classes = useStyles();
   const onChange = () => {}
   return (
@@ -51,13 +51,17 @@ const ProductCard = ({
           />
 
           <Box className={classes.absolute}>
-            <Checkbox onChange={onChange} checked={true} />
+            <Checkbox 
+              checked={selectedVariants[product._id] ? true : false } 
+              onChange={onProductClick}
+              value={product._id}
+            />
           </Box>
         </Box>
       </Grid>   
 
       <Grid justifyContent='center' spacing={3} className={classes.colorGrid} container>
-        {product.colors.map((pm,i) => (
+        {(product.colors.length !== 1 && product.colors.label !== 'n/a') && product.colors.map((pm,i) => (
           <Grid key={`colors-${i}`}  item>
             <Checkbox 
               onChange={onVariantClick} 
