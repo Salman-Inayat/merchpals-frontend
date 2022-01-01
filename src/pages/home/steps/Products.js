@@ -23,15 +23,16 @@ const useStyles = makeStyles(() => ({
   }
 }))
 const Products = ({
-  nextStep = () => {},
-  products = []
+  productSelectionCompleted = () => {},
+  products = [],
+  initialDesign = ''
 }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
 
   const classes = useStyles();
   const onVariantClick = (productVariant) => {
     const [product, color] = productVariant.split(',')
-    console.log({ product, color });
+    // console.log({ product, color });
     let removedProduct = false;
     let productColors = [];
 
@@ -90,6 +91,21 @@ const Products = ({
       })
     }
   }
+console.log({products});
+  const formatAndContinue = () => {
+    const selectedProducts = Object.keys(selectedVariants);
+    const formattedVariants = selectedProducts.map(productId => {
+      const productsSelectedVariants = selectedVariants[productId]
+      let productMappings = [];
+      const colors = products.find(p => p._id === productId).colors
+      productsSelectedVariants.forEach(psv => {
+        productMappings = colors.find(c => c.id === psv).relatedProductVariantsId.map(rp => rp._id);
+      })
+        
+      return { productId, productMappings }
+    })
+    productSelectionCompleted(selectedVariants)
+  }
 
 console.log({selectedVariants});
   return (
@@ -103,13 +119,14 @@ console.log({selectedVariants});
                 onVariantClick={onVariantClick} 
                 onProductClick={onProductClick}
                 selectedVariants={selectedVariants}
+                initialDesign={initialDesign}
               />
             </Grid>                               
           ))}
         </Grid>
       </Grid>
       <Grid container justifyContent='center' alignItems='center' className={classes.footer}>
-        <Button onClick={nextStep} className={classes.btn}>Continue</Button>
+        <Button onClick={formatAndContinue} className={classes.btn}>Continue</Button>
       </Grid>
     </Grid>
   )

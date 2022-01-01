@@ -57,7 +57,7 @@ const useStyle = makeStyles(() => ({
   }
 }))
 const Home = () => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [showOtpBox, setShowOtpBox] = useState(false)
   const [registrationErrors, setRegistrationErrors] = useState({
     email: '',
@@ -65,6 +65,7 @@ const Home = () => {
     phoneNo: '',
   })
   const [products, setProducts] = useState([])
+  const [initialDesign, setInitialDesign] = useState('')
   const classes = useStyle();
 
   useEffect(() => {
@@ -85,6 +86,7 @@ const Home = () => {
     if (showOtpBox) {
       setShowOtpBox(false)
     }
+
     setStep( step + 1 );
   }
   const prevStep = () => setStep( step - 1);
@@ -108,7 +110,10 @@ const Home = () => {
     })
   }
 
-  const exportBase64File = (file) => console.log(file);
+  const exportBase64File = (file) => {
+    setInitialDesign(file)
+    localStorage.setItem('initialDesign', file)
+  }
 
   const createStore = (data) => {
     console.log({ data });
@@ -121,10 +126,20 @@ const Home = () => {
         console.log('err', err);
       })
   }
+
+  const productSelectionCompleted = selectedVariants => {
+    console.log({selectedVariants});
+  }
   const yieldStep = () => {
     switch (step) {
       case 1:
-        return <Products nextStep={nextStep} products={products} />
+        return (
+          <Products 
+            products={products} 
+            initialDesign={initialDesign} 
+            productSelectionCompleted={productSelectionCompleted}
+          />
+        )
       case 2: 
       if (showOtpBox) {
         return <Otp nextStep={nextStep}  />

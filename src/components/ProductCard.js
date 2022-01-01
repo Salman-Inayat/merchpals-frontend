@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { 
   Box,
   Grid, 
@@ -16,9 +17,20 @@ const useStyles = makeStyles(() => ({
   box: {
     position: 'relative'
   },
+  imageArea: {
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   avatar: {
     width: '350px',
     height: '400px'
+  },
+  design: {
+    position: "absolute",
+    width: "150px",
+    height: "150px"
   },
   absolute: {
     position: 'absolute',
@@ -31,24 +43,48 @@ const useStyles = makeStyles(() => ({
 }))
 const label = { inputProps: { 'aria-label': 'Select Project' } };
 
-const ProductCard = ({ 
+const ProductCard = ({
   product, 
   onVariantClick = () => {},
   onProductClick = () => {},
-  selectedVariants = {}
+  selectedVariants = {},
+  initialDesign = ''
 }) => {
   const classes = useStyles();
-  const onChange = () => {}
+  const [design, setDesign] = useState('')
+  useEffect(() => {
+    setDesign(localStorage.getItem('initialDesign'))
+  }, [])
+  const renderBgColor = () => {
+    let bgColor = 'white';
+
+    if (selectedVariants[product._id]) {
+      const productSelectedVariants = selectedVariants[product._id];
+      const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length -1]
+      bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label
+      console.log({bgColor});
+    }
+    
+    return bgColor
+  }
+
   return (
     <Grid item>
       <Grid className={classes.product}>
         <Typography align='center'>{product.name}</Typography>
-        <Box className={classes.box}>
-          <Avatar 
-            className={classes.avatar}
-            variant="square"
-            src={product.image}
-          />
+        <Box className={classes.box} style={{backgroundColor: renderBgColor()}}>
+          <Box className={classes.imageArea}>
+            <Avatar 
+              className={classes.avatar}
+              variant="square"
+              src={product.image}
+            />
+            <Avatar 
+              className={classes.design}
+              variant="square"
+              src={design}
+            />            
+          </Box>
 
           <Box className={classes.absolute}>
             <Checkbox 
@@ -59,7 +95,6 @@ const ProductCard = ({
           </Box>
         </Box>
       </Grid>   
-
       <Grid justifyContent='center' spacing={3} className={classes.colorGrid} container>
         {(product.colors.length !== 1 && product.colors.label !== 'n/a') && product.colors.map((pm,i) => (
           <Grid key={`colors-${i}`}  item>
