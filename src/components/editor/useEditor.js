@@ -45,10 +45,6 @@ const useEditor = canvasId => {
     TextDecoration: '',
   };
 
-  // let isMobile = false;
-  // let isTablet = false;
-  // let isDesktopDevice = false;
-
   let json;
   let globalEditor = false;
   let textEditor = false;
@@ -252,7 +248,7 @@ const useEditor = canvasId => {
 
   const addText = () => {
     if (isMobile) {
-      const text = new fabric.IText('Sample Text', {
+      const text = new fabric.Textbox('Sample Text', {
         left: 40,
         top: 100,
         selected: true,
@@ -307,9 +303,6 @@ const useEditor = canvasId => {
         fill: '#000000',
         fontWeight: '',
         hasRotatingPoint: true,
-        // align: 'mid',
-        // originX: 'center',
-        // originY: 'center',
       });
       text.setControlsVisibility({
         mt: false,
@@ -696,22 +689,6 @@ const useEditor = canvasId => {
       return;
     }
     object.set(name, value);
-
-    // const ctx = canvas.getSelectionContext();
-
-    // if (object.type === 'i-text') {
-    //   const text = object;
-
-    //   var actualWidth = text.scaleX * text.width;
-    //   var largest = canvas.getActiveObject().__lineWidths[0];
-    //   var tryWidth = (largest + 5) * text.scaleX;
-    //   canvas.getActiveObject().set('width', tryWidth);
-    //   if (text.left + actualWidth >= canvas.width - 10) {
-    //     text.set('width', canvas.width - text.left - 10);
-    //   }
-    //   canvas.renderAll();
-
-    // }
     canvas.renderAll();
     setMiniature(canvas.toDataURL());
   };
