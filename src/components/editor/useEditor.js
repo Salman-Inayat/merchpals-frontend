@@ -16,17 +16,17 @@ const useEditor = canvasId => {
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const size = {
-    width: 700,
-    height: 500,
+    width: 450,
+    height: 450,
   };
   const sizeMobile = {
-    width: 340,
-    height: 350,
+    width: 225,
+    height: 225,
   };
 
   const sizeTablet = {
-    width: 700,
-    height: 550,
+    width: 340,
+    height: 340,
   };
 
   let canvasProperties = {
@@ -44,10 +44,6 @@ const useEditor = canvasId => {
     fontFamily: 'Alpha-Slab',
     TextDecoration: '',
   };
-
-  // let isMobile = false;
-  // let isTablet = false;
-  // let isDesktopDevice = false;
 
   let json;
   let globalEditor = false;
@@ -95,9 +91,7 @@ const useEditor = canvasId => {
     initCenteringGuidelines(canvas, isMobile);
 
     canvas.on({
-      'object:moving': e => {
-        setMiniature(canvas.toDataURL());
-      },
+      'object:moving': e => {},
       'object:modified': e => {
         const selectedObject = e.target;
 
@@ -224,19 +218,15 @@ const useEditor = canvasId => {
       setMiniature(canvas.toDataURL());
     });
 
-    canvas.on('mouse:moving', e => {
-      setMiniature(canvas.toDataURL());
-    });
+    canvas.on('mouse:moving', e => {});
   });
 
   const undo = () => {
     canvas.undo();
-    // setMiniature(canvas.toDataURL());
   };
 
   const redo = () => {
     canvas.redo();
-    // setMiniature(canvas.toDataURL());
   };
 
   const saveState = () => {
@@ -258,7 +248,7 @@ const useEditor = canvasId => {
 
   const addText = () => {
     if (isMobile) {
-      const text = new fabric.IText('Sample Text', {
+      const text = new fabric.Textbox('Sample Text', {
         left: 40,
         top: 100,
         selected: true,
@@ -313,9 +303,6 @@ const useEditor = canvasId => {
         fill: '#000000',
         fontWeight: '',
         hasRotatingPoint: true,
-        // align: 'mid',
-        // originX: 'center',
-        // originY: 'center',
       });
       text.setControlsVisibility({
         mt: false,
@@ -483,16 +470,14 @@ const useEditor = canvasId => {
     };
 
     image.set({
-      // left: mask.left,
-      // top: mask.top,
-      // width: mask.width,
-      // height: mask.height,
-      // scaleX: mask.scaleX,
-      // scaleY: mask.scaleY,
-      // cropX: mask.left / scale.x,
-      // cropY: mask.top / scale.y,
-      cropX: 150,
-      // cropY: 50,
+      left: mask.left,
+      top: mask.top,
+      width: mask.width,
+      height: mask.height,
+      scaleX: mask.scaleX,
+      scaleY: mask.scaleY,
+      cropX: mask.left / scale.x,
+      cropY: mask.top / scale.y,
     });
 
     image.setCoords();
@@ -704,22 +689,6 @@ const useEditor = canvasId => {
       return;
     }
     object.set(name, value);
-
-    // const ctx = canvas.getSelectionContext();
-
-    // if (object.type === 'i-text') {
-    //   const text = object;
-
-    //   var actualWidth = text.scaleX * text.width;
-    //   var largest = canvas.getActiveObject().__lineWidths[0];
-    //   var tryWidth = (largest + 5) * text.scaleX;
-    //   canvas.getActiveObject().set('width', tryWidth);
-    //   if (text.left + actualWidth >= canvas.width - 10) {
-    //     text.set('width', canvas.width - text.left - 10);
-    //   }
-    //   canvas.renderAll();
-
-    // }
     canvas.renderAll();
     setMiniature(canvas.toDataURL());
   };

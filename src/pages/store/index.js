@@ -1,20 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  Grid,
-  Box,
-  Typography,
-  TextField,
-  Button,
-} from '@mui/material';
+import { Container, Grid, Box, Typography } from '@mui/material';
 import axios from 'axios';
 import Logo from '../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
 import { baseURL } from '../../configs/const';
-import VendorStoreProductCard from '../../components/vendorStoreProductCard';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import StoreProductCard from '../../components/storeProductCard';
 
 const useStyle = makeStyles(() => ({
+  fluid: {
+    maxWidth: '100%',
+    paddingLeft: '0px',
+    paddingRight: '0px',
+  },
+  header: {
+    backgroundColor: '#babdb3',
+    maxWidth: '100%',
+  },
+  avatar: {
+    width: '75px',
+    height: '75px',
+  },
+  content: {
+    marginTop: '100px',
+  },
+  root: {
+    color: 'red',
+  },
+  backArrow: {
+    position: 'absolute',
+    left: '20px',
+    backgroundColor: 'black',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: 'black',
+      color: 'white',
+    },
+  },
+  svg: {
+    width: '0.5em',
+    height: '0.5em',
+  },
   coverContainer: {
     position: 'relative',
     height: '50vh',
@@ -46,7 +71,7 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
-const VendorStore = () => {
+const Store = () => {
   const classes = useStyle();
 
   const [store, setStore] = useState({
@@ -55,10 +80,6 @@ const VendorStore = () => {
     logo: '',
     products: [],
   });
-
-  const [storeURL, setStoreURL] = useState(
-    'http://localhost:3000/store/61ceb5291b1b68fe90827f64',
-  );
 
   useEffect(() => {
     fetchStore();
@@ -101,39 +122,14 @@ const VendorStore = () => {
           {store.products.map(product => {
             return (
               <Grid item md={4} p={4}>
-                <VendorStoreProductCard product={product} />
+                <StoreProductCard product={product} />
               </Grid>
             );
           })}
         </Grid>
       </Grid>
-      <Grid
-        item
-        md={12}
-        sm={12}
-        xs={12}
-        m={10}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <TextField
-          id="outlined-read-only-input"
-          label="Copy Store Link"
-          defaultValue={storeURL}
-          InputProps={{
-            readOnly: true,
-            endAdornment: (
-              <Button onClick={() => navigator.clipboard.writeText(storeURL)}>
-                <ContentCopyIcon color="secondary" />
-              </Button>
-            ),
-          }}
-          style={{ width: '50%' }}
-        />
-      </Grid>
     </Grid>
   );
 };
 
-export { VendorStore as default };
+export { Store as default };

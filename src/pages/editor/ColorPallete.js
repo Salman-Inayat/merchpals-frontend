@@ -4,11 +4,11 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
   colorPallete: {
-    height: '500px',
+    height: '450px',
     overflow: 'scroll',
     display: 'inline-block',
     [theme.breakpoints.down('sm')]: {
-      height: '325px',
+      height: '225px',
     },
   },
   color: {
