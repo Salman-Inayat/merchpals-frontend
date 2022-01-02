@@ -16,17 +16,17 @@ const useEditor = canvasId => {
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const size = {
-    width: 700,
-    height: 500,
+    width: 450,
+    height: 450,
   };
   const sizeMobile = {
-    width: 340,
-    height: 350,
+    width: 225,
+    height: 225,
   };
 
   const sizeTablet = {
-    width: 700,
-    height: 550,
+    width: 340,
+    height: 340,
   };
 
   let canvasProperties = {
@@ -95,9 +95,7 @@ const useEditor = canvasId => {
     initCenteringGuidelines(canvas, isMobile);
 
     canvas.on({
-      'object:moving': e => {
-        setMiniature(canvas.toDataURL());
-      },
+      'object:moving': e => {},
       'object:modified': e => {
         const selectedObject = e.target;
 
@@ -224,19 +222,15 @@ const useEditor = canvasId => {
       setMiniature(canvas.toDataURL());
     });
 
-    canvas.on('mouse:moving', e => {
-      setMiniature(canvas.toDataURL());
-    });
+    canvas.on('mouse:moving', e => {});
   });
 
   const undo = () => {
     canvas.undo();
-    // setMiniature(canvas.toDataURL());
   };
 
   const redo = () => {
     canvas.redo();
-    // setMiniature(canvas.toDataURL());
   };
 
   const saveState = () => {
@@ -483,16 +477,14 @@ const useEditor = canvasId => {
     };
 
     image.set({
-      // left: mask.left,
-      // top: mask.top,
-      // width: mask.width,
-      // height: mask.height,
-      // scaleX: mask.scaleX,
-      // scaleY: mask.scaleY,
-      // cropX: mask.left / scale.x,
-      // cropY: mask.top / scale.y,
-      cropX: 150,
-      // cropY: 50,
+      left: mask.left,
+      top: mask.top,
+      width: mask.width,
+      height: mask.height,
+      scaleX: mask.scaleX,
+      scaleY: mask.scaleY,
+      cropX: mask.left / scale.x,
+      cropY: mask.top / scale.y,
     });
 
     image.setCoords();

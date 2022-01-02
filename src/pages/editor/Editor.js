@@ -11,12 +11,12 @@ import Smileys from './Smileys';
 
 const useStyles = makeStyles(theme => ({
   controlsContainer: {
-    order: 2,
+    // order: 2,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
-      order: 3,
+      // order: 3,
       position: 'fixed',
       bottom: theme.spacing(2),
     },
@@ -26,11 +26,11 @@ const useStyles = makeStyles(theme => ({
     },
   },
   canvasContainer: {
-    order: 3,
-    [theme.breakpoints.down('md')]: {
-      order: 2,
-      marginBottom: '50px',
-    },
+    // order: 3,
+    // [theme.breakpoints.down('md')]: {
+    //   order: 2,
+    //   marginBottom: '50px',
+    // },
   },
   editor: {},
   bottomButtons: {
@@ -61,7 +61,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: '50px',
   },
   shirtImage: {
-    border: '1px solid black',
     width: '150px',
     height: '150px',
     position: 'relative',
@@ -82,9 +81,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Editor = ({
-  exportBase64 = () => {}
-}) => {
+const Editor = ({ exportBase64 = () => {} }) => {
   const classes = useStyles();
 
   const editorJs = useEditor();
@@ -190,37 +187,39 @@ const Editor = ({
   };
 
   return (
-    <Grid container spacing={2} alignItems="center" flexWrap="wrap">
-      <div style={{ height: '10px' }}>
-        <span id="style1"></span>
-        <span id="style2"> </span>
-        <span id="style3"> </span>
-        <span id="style4"> </span>
-        <span id="style5"> </span>
-        <span id="style6"> </span>
-        <span id="style7"> </span>
-        <span id="style8"> </span>
-        <span id="style9"> </span>
-        <span id="style10"> </span>
-        <span id="style11"> </span>
-        <span id="style12"> </span>
-        <span id="style13"> </span>
-        <span id="style14"> </span>
-        <span id="style15"> </span>
-      </div>
-      <Grid item md={12} sm={12} xs={12} order={{ xs: 1, sm: 1, md: 1 }}>
+    <Grid container spacing={2} alignItems="center">
+      <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           Create Your Design Here
         </Typography>
       </Grid>
-      <Grid item md={5} sm={12} order={{ xs: 3, sm: 3, md: 2 }}>
-        <Grid
-          container
-          spacing={2}
-          // order={{ xs: 3, sm: 3, md: 2 }}
-          className={classes.controlsContainer}
-        >
-          <Grid item md={12} sm={12} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
+      <Grid
+        item
+        md={12}
+        spacing={1}
+        sm={12}
+        className={classes.canvasContainer}
+      >
+        <Grid container spacing={1}>
+          <Grid item md={2} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
+            {toggleSmileys && <Smileys addPng={addPng} />}
+          </Grid>
+          <Grid item md={8} xs={10} order={{ xs: 1, sm: 1, md: 2 }}>
+            <Card className={`${classes.editor} fabric-canvas-wrapper`}>
+              <CanvasEditor
+                onReady={editorJs.onReady}
+                class="fabric-canvas-wrapper"
+              />
+            </Card>
+          </Grid>
+          <Grid item md={2} sm={1} xs={1} order={{ xs: 2, sm: 2, md: 3 }}>
+            <ColorPallete setCanvasBackground={setCanvasBackground} />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item md={12} sm={12}>
+        <Grid container spacing={2} className={classes.controlsContainer}>
+          <Grid item md={8} sm={12} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
             <Stack
               direction="row"
               spacing={1}
@@ -242,26 +241,7 @@ const Editor = ({
               >
                 <Redo />
               </Button>
-              <div id="crop-image-button" hidden>
-                <Button
-                  variant="contained"
-                  onClick={cropImage}
-                  className={`${classes.crop} ${classes.button}`}
-                >
-                  Crop
-                </Button>
-              </div>
-              {cropDoneButton && (
-                <Button
-                  variant="contained"
-                  onClick={cropImageDone}
-                  id="crop-image-done-button"
-                  hidden
-                  className={`${classes.cropDone} ${classes.button}`}
-                >
-                  Done
-                </Button>
-              )}
+
               <Button
                 variant="contained"
                 onClick={addText}
@@ -297,57 +277,67 @@ const Editor = ({
               >
                 <Delete />
               </Button>
-
+              <Button
+                onClick={() => exportBase64(miniature)}
+                variant="contained"
+              >
+                Export
+              </Button>
             </Stack>
           </Grid>
-          <Grid>   
-            <Button
-              onClick={() => exportBase64(miniature)}
-              variant="contained"
-              color="error"
-              className={`${classes.delete} ${classes.button}`}
-            >
-                Export
-              </Button></Grid>
-          <Grid item md={12} sm={6} xs={8} order={{ xs: 2, sm: 2, md: 2 }}>
-            <FontControls
-              setFontColor={setFontColor}
-              setFontFamily={setFontFamily}
-            />
-          </Grid>
-          <Grid md={6} sm={4} xs={6} order={{ xs: 1, sm: 1, md: 3 }}>
+
+          <Grid md={4} sm={4} xs={6} order={{ xs: 1, sm: 1, md: 3 }}>
             <div className={classes.miniatureContaienr}>
               <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
               <img src={miniature} className={classes.miniature} />
             </div>
           </Grid>
         </Grid>
-      </Grid>
-
-      <Grid
-        item
-        md={6}
-        spacing={2}
-        sm={12}
-        order={{ xs: 2, sm: 2, md: 3 }}
-        className={classes.canvasContainer}
-      >
-        <Grid container spacing={2}>
-          <Grid item md={1} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
-            {toggleSmileys && <Smileys addPng={addPng} />}
-          </Grid>
-          <Grid item md={10} xs={10} order={{ xs: 1, sm: 1, md: 2 }}>
-            <Card className={`${classes.editor} fabric-canvas-wrapper`}>
-              <CanvasEditor
-                onReady={editorJs.onReady}
-                class="fabric-canvas-wrapper"
-              />
-            </Card>
-          </Grid>
-          <Grid item md={1} sm={1} xs={1} order={{ xs: 2, sm: 2, md: 3 }}>
-            <ColorPallete setCanvasBackground={setCanvasBackground} />
-          </Grid>
+        <Grid item md={6} sm={6} xs={8} order={{ xs: 2, sm: 2, md: 2 }}>
+          <div id="crop-image-button" hidden>
+            <Button
+              variant="contained"
+              onClick={cropImage}
+              className={`${classes.crop} ${classes.button}`}
+            >
+              Crop
+            </Button>
+          </div>
+          {cropDoneButton && (
+            <Button
+              variant="contained"
+              onClick={cropImageDone}
+              id="crop-image-done-button"
+              hidden
+              className={`${classes.cropDone} ${classes.button}`}
+            >
+              Done
+            </Button>
+          )}
+          <FontControls
+            setFontColor={setFontColor}
+            setFontFamily={setFontFamily}
+          />
         </Grid>
+      </Grid>
+      <Grid item md={1}>
+        <div style={{ height: '1px', width: '1px' }}>
+          <span id="style1"></span>
+          <span id="style2"> </span>
+          <span id="style3"> </span>
+          <span id="style4"> </span>
+          <span id="style5"> </span>
+          <span id="style6"> </span>
+          <span id="style7"> </span>
+          <span id="style8"> </span>
+          <span id="style9"> </span>
+          <span id="style10"> </span>
+          <span id="style11"> </span>
+          <span id="style12"> </span>
+          <span id="style13"> </span>
+          <span id="style14"> </span>
+          <span id="style15"> </span>
+        </div>
       </Grid>
     </Grid>
   );

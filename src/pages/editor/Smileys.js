@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
   smileyContainer: {
-    height: '500px',
+    height: '450px',
     overflow: 'scroll',
     [theme.breakpoints.down('md')]: {
       overflowX: 'scroll',
