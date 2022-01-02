@@ -56,9 +56,7 @@ const VendorStore = () => {
     products: [],
   });
 
-  const [storeURL, setStoreURL] = useState(
-    'http://localhost:3000/store/61ceb5291b1b68fe90827f64',
-  );
+  const [storeURL, setStoreURL] = useState();
 
   useEffect(() => {
     fetchStore();
@@ -66,10 +64,14 @@ const VendorStore = () => {
 
   const fetchStore = () => {
     axios
-      .get(`${baseURL}/store/61ceb5291b1b68fe90827f64`)
+      .get(`${baseURL}/store`,{
+        headers: {
+          'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        }})
       .then(response => {
-        console.log(response.data.store);
+        console.log({store: response.data.store});
         const store = response.data.store;
+        setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`)
         setStore({
           name: store.name,
           coverAvatar: store.coverAvatar,
@@ -119,8 +121,8 @@ const VendorStore = () => {
       >
         <TextField
           id="outlined-read-only-input"
-          label="Copy Store Link"
-          defaultValue={storeURL}
+          label={!storeURL && "Copy Store Link"}
+          value={storeURL}
           InputProps={{
             readOnly: true,
             endAdornment: (
