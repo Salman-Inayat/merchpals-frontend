@@ -3,21 +3,30 @@ import 'fabric-history';
 import * as changedpi from 'changedpi';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
-import StateManager from './stateManager';
-import { useEffect } from 'react';
-// import { saveStateHistory, undoState, redoState } from './state';
+import { useState, useLayoutEffect, useRef } from 'react';
+import 'fabric-history';
+import { useMediaQuery } from 'react-responsive';
 
 const useEditor = canvasId => {
-  let canvas;
-  let stateManager;
+  let [canvas, setCanvas] = useState();
+  let [miniature, setMiniature] = useState();
+
+  let isDesktop = useMediaQuery({ minWidth: 992 });
+  let isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const size = {
-    width: 450,
-    height: 450,
+    width: 700,
+    height: 500,
   };
   const sizeMobile = {
-    width: 225,
-    height: 225,
+    width: 340,
+    height: 350,
+  };
+
+  const sizeTablet = {
+    width: 700,
+    height: 550,
   };
 
   let canvasProperties = {
@@ -36,9 +45,9 @@ const useEditor = canvasId => {
     TextDecoration: '',
   };
 
-  let isMobile = false;
-  let isTablet = false;
-  let isDesktopDevice = false;
+  // let isMobile = false;
+  // let isTablet = false;
+  // let isDesktopDevice = false;
 
   let json;
   let globalEditor = false;
@@ -51,137 +60,90 @@ const useEditor = canvasId => {
   let textSelection;
   let url = '';
 
-  useEffect(() => {
-    canvas = new fabric.Canvas(canvasId, {
-      hoverCursor: 'pointer',
-      selection: false,
-      selectionBorderColor: 'blue',
-      fireRightClick: true, // <-- enable firing of right click events
-      fireMiddleClick: true, // <-- enable firing of middle click events
-      stopContextMenu: true, // <--  prevent context menu from showing
-    });
+  const firstUpdate = useRef(true);
 
-    stateManager = new StateManager(canvas);
+  const applyProperties = selectedObject => {
+    selectedObject.hasRotatingPoint = true;
+    selectedObject.transparentCorners = false;
+    selectedObject.cornerColor = 'white';
+    selectedObject.cornerStyle = 'circle';
+    selectedObject.transparentCorners = false;
+    selectedObject.cornerStrokeColor = '#116dff';
+    selectedObject.padding = 5;
+    selectedObject.cornerSize = 30;
+    selectedObject.rotatingPointOffset = 30;
+    selectedObject.setControlsVisibility({
+      mt: false,
+      mb: false,
+      ml: false,
+      mr: false,
+      bl: false,
+      br: true,
+      tl: false,
+      tr: false,
+      mtr: true,
+    });
+  };
+
+  useLayoutEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
 
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
 
     canvas.on({
-      'object:moving': e => {},
+      'object:moving': e => {
+        setMiniature(canvas.toDataURL());
+      },
       'object:modified': e => {
-        // saveStateHistory(canvas, true);
-        // saveState();
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
+
+        applyProperties(selectedObject);
+        setMiniature(canvas.toDataURL());
+
         resetPanels();
       },
       'object:added': e => {
-        // saveStateHistory(canvas, true);
-        // saveState();
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
+        applyProperties(selectedObject);
+        setMiniature(canvas.toDataURL());
         resetPanels();
       },
       'selection:updated': e => {
         const selectedObject = e.target;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
+        applyProperties(selectedObject);
+
         resetPanels();
-        if (selectedObject.type !== 'i-text') {
+        if (selectedObject.type !== 'textbox') {
           document.getElementById('textControls').hidden = true;
+        }
+
+        if (selectedObject.type === 'textbox') {
+          document.getElementById('textControls').hidden = false;
+        }
+
+        if (selectedObject.type !== 'image') {
+          document.getElementById('crop-image-button').hidden = true;
         }
 
         if (selectedObject.type == 'i-text') {
           // textSelection.emit("addText");
-          document.getElementById('textControls').hidden = false;
+          // document.getElementById('textControls').hidden = false;
         } else if (
           selectedObject.type == 'path' ||
           selectedObject.type == 'group'
         ) {
           // textSelection.emit("addsmiley");
         } else if (selectedObject.type == 'image') {
-          // textSelection.emit("image");
+          // // textSelection.emit("image")
         }
       },
       'object:selected': e => {
         const selectedObject = e.target;
-        selected = selectedObject;
-        selectedObject.hasRotatingPoint = true;
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerColor = 'white';
-        selectedObject.cornerStyle = 'circle';
-        selectedObject.transparentCorners = false;
-        selectedObject.cornerStrokeColor = '#116dff';
-        selectedObject.padding = 5;
-        selectedObject.cornerSize = 30;
-        selectedObject.rotatingPointOffset = 30;
-        selectedObject.setControlsVisibility({
-          mt: false,
-          mb: false,
-          ml: false,
-          mr: false,
-          bl: false,
-          br: true,
-          tl: false,
-          tr: false,
-          mtr: true,
-        });
+        applyProperties(selectedObject);
         resetPanels();
 
         if (selectedObject.type !== 'group' && selectedObject) {
@@ -220,16 +182,18 @@ const useEditor = canvasId => {
       },
       'selection:created': e => {
         const selectedObject = e.target;
-        if (selectedObject.type === 'i-text') {
-          console.log('Text box');
+        if (selectedObject.type === 'textbox') {
           document.getElementById('textControls').hidden = false;
-        } else {
+        } else if (selectedObject.type === 'image') {
+          document.getElementById('crop-image-button').hidden = false;
           document.getElementById('textControls').hidden = true;
         }
       },
       'before:selection:cleared': e => {
-        if (e.target.type === 'i-text') {
+        if (e.target.type === 'textbox') {
           document.getElementById('textControls').hidden = true;
+        } else if (e.target.type === 'image') {
+          document.getElementById('crop-image-button').hidden = true;
         }
       },
       'selection:cleared': e => {
@@ -243,34 +207,43 @@ const useEditor = canvasId => {
       },
     });
 
-    if (!isMobile) {
-      canvas.setWidth(size.width);
-      canvas.setHeight(size.height);
-    } else {
+    if (isMobile) {
       canvas.setWidth(sizeMobile.width);
       canvas.setHeight(sizeMobile.height);
+    } else if (isTablet) {
+      canvas.setWidth(sizeTablet.width);
+      canvas.setHeight(sizeTablet.height);
+    } else {
+      canvas.setWidth(size.width);
+      canvas.setHeight(size.height);
     }
 
     // get references to the html canvas element & its context
     canvas.on('mouse:down', e => {
       const canvasElement = document.getElementById('canvas');
+      setMiniature(canvas.toDataURL());
     });
-  }, []);
+
+    canvas.on('mouse:moving', e => {
+      setMiniature(canvas.toDataURL());
+    });
+  });
 
   const undo = () => {
-    stateManager.undo();
-    // undoState();
+    canvas.undo();
+    // setMiniature(canvas.toDataURL());
   };
 
   const redo = () => {
-    stateManager.redo();
-    // redoState();
+    canvas.redo();
+    // setMiniature(canvas.toDataURL());
   };
 
   const saveState = () => {
     stateManager.saveState();
     canvas.renderAll();
   };
+
   const changeSize = () => {
     if (!isMobile) {
       canvas.setWidth(size.width);
@@ -296,6 +269,7 @@ const useEditor = canvasId => {
         scaleY: 0.6,
         fontWeight: '',
         hasRotatingPoint: true,
+        scaleToWidth: true,
       });
 
       text.setControlsVisibility({
@@ -309,9 +283,10 @@ const useEditor = canvasId => {
         tr: false,
         mtr: true,
       });
+
       canvas.on({
         'text:editing:entered': e => {
-          if (e.target.type === 'i-text') {
+          if (e.target.type === 'textbox') {
             if (e.target.text === 'Sample Text') {
               e.target.text = '';
               e.target.hiddenTextarea.value = ''; // NEW
@@ -328,16 +303,19 @@ const useEditor = canvasId => {
       canvas.renderAll();
     }
     if (!isMobile) {
-      const text = new fabric.IText('Sample Text', {
+      const text = new fabric.Textbox('Sample Text', {
         left: 50,
         top: 150,
-        fontFamily: 'Alpha-Slab',
+        fontFamily: 'Caveat',
         angle: 0,
         scaleX: 1.5,
         scaleY: 1.5,
         fill: '#000000',
         fontWeight: '',
         hasRotatingPoint: true,
+        // align: 'mid',
+        // originX: 'center',
+        // originY: 'center',
       });
       text.setControlsVisibility({
         mt: false,
@@ -352,7 +330,7 @@ const useEditor = canvasId => {
       });
       canvas.on({
         'text:editing:entered': e => {
-          if (e.target.type === 'i-text') {
+          if (e.target.type === 'textbox') {
             if (e.target.text === 'Sample Text') {
               e.target.text = '';
               e.target.hiddenTextarea.value = ''; // NEW
@@ -361,6 +339,7 @@ const useEditor = canvasId => {
           }
         },
       });
+
       canvas.discardActiveObject().renderAll();
       canvas.add(text);
       canvas.setActiveObject(text);
@@ -462,6 +441,67 @@ const useEditor = canvasId => {
     }
   };
 
+  const cropImage = () => {
+    var image;
+
+    image = canvas.getActiveObject();
+
+    const tl = image.aCoords.tl;
+    const tr = image.aCoords.tr;
+    const bl = image.aCoords.bl;
+
+    var mask = new fabric.Rect({
+      fill: 'rgba(0,0,0,0.5)',
+      left: image.aCoords.tl.x,
+      top: image.aCoords.tl.y,
+      width: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
+      height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+    });
+
+    mask.set({
+      maxWidth: image.width,
+      maxHeight: image.height,
+    });
+
+    canvas.add(mask);
+    canvas.bringToFront(mask);
+    canvas.setActiveObject(mask);
+    canvas.renderAll();
+    setMiniature(canvas.toDataURL());
+  };
+
+  const cropImageDone = () => {
+    var image;
+    var mask;
+
+    mask = canvas.getActiveObject();
+    image = canvas._objects[canvas._objects.length - 2];
+
+    var scale = {
+      x: image.scaleX,
+      y: image.scaleY,
+    };
+
+    image.set({
+      // left: mask.left,
+      // top: mask.top,
+      // width: mask.width,
+      // height: mask.height,
+      // scaleX: mask.scaleX,
+      // scaleY: mask.scaleY,
+      // cropX: mask.left / scale.x,
+      // cropY: mask.top / scale.y,
+      cropX: 150,
+      // cropY: 50,
+    });
+
+    image.setCoords();
+    canvas.remove(mask);
+    canvas.setActiveObject(image);
+    canvas.renderAll();
+    setMiniature(canvas.toDataURL());
+  };
+
   const readUrl = event => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
@@ -541,6 +581,7 @@ const useEditor = canvasId => {
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
     }
+    setMiniature(canvas.toDataURL());
   };
 
   const extend = (obj, id) => {
@@ -662,8 +703,25 @@ const useEditor = canvasId => {
     if (!object) {
       return;
     }
-    object.set(name, value).setCoords();
+    object.set(name, value);
+
+    // const ctx = canvas.getSelectionContext();
+
+    // if (object.type === 'i-text') {
+    //   const text = object;
+
+    //   var actualWidth = text.scaleX * text.width;
+    //   var largest = canvas.getActiveObject().__lineWidths[0];
+    //   var tryWidth = (largest + 5) * text.scaleX;
+    //   canvas.getActiveObject().set('width', tryWidth);
+    //   if (text.left + actualWidth >= canvas.width - 10) {
+    //     text.set('width', canvas.width - text.left - 10);
+    //   }
+    //   canvas.renderAll();
+
+    // }
     canvas.renderAll();
+    setMiniature(canvas.toDataURL());
   };
 
   const clone = () => {
@@ -729,6 +787,7 @@ const useEditor = canvasId => {
 
   const setFill = () => {
     setActiveStyle('fill', canvasProperties.fill, null);
+    setMiniature(canvas.toDataURL());
   };
 
   const getLineHeight = () => {
@@ -834,6 +893,8 @@ const useEditor = canvasId => {
         self.canvas.remove(object);
       });
     }
+
+    setMiniature(canvas.toDataURL());
   };
 
   const bringToFront = () => {
@@ -903,9 +964,9 @@ const useEditor = canvasId => {
     localStorage.setItem('Kanvas', json);
   };
   const deviceDetect = () => {
-    // isMobile = deviceService.isMobile();
-    // isTablet = deviceService.isTablet();
-    // isDesktopDevice = deviceService.isDesktop();
+    isMobile = deviceService.isMobile();
+    isTablet = deviceService.isTablet();
+    isDesktopDevice = deviceService.isDesktop();
   };
   const loadCanvasFromJSON = () => {
     const CANVAS = [];
@@ -1025,7 +1086,16 @@ const useEditor = canvasId => {
     // });
   };
 
+  const canvasReady = canvasReady => {
+    setCanvas(canvasReady);
+  };
+
+  const getMiniature = () => {
+    return miniature;
+  };
+
   return {
+    onReady: canvasReady,
     resetPanels,
     undo,
     redo,
@@ -1040,6 +1110,9 @@ const useEditor = canvasId => {
     setFontColor,
     setFontSize,
     setCanvasFill,
+    cropImage,
+    cropImageDone,
+    getMiniature,
   };
 };
 

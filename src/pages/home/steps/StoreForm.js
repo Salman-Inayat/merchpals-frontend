@@ -29,7 +29,7 @@ const StoreForm = ({
     phoneNo: '',
     message: ''
   });
-
+  const [images, setImages] = useState({logo: '', coverAvatar: ''});
   const classes = useStyle();
   
   const storeSchema = Yup.object().shape({
@@ -49,13 +49,34 @@ const StoreForm = ({
 
   const onSubmit = (data) => {
     // console.log({ data });
-    createStore(data)
+    console.log({images});
+    createStore({...data, ...images})
   };
 
   const onError = (err) => {
     console.log('err', err);
   }
+  
+  const toDataURL = (url, callback) => {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        callback(reader.result);
+      }
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  }
 
+//   const setImage = async (name, file) => {
+//     toDataURL('https://www.avatar.com/avatar/d50c83cc0c6523b4d3f6085295c953e0', function (dataUrl) {
+//   console.log('RESULT:', dataUrl)
+// })
+//     // setImages({...images, [name]: base64Image})
+//   }
   return (
     <Grid container>
       <Grid container justifyContent='center' alignItems='center' mt={5} pb={18}>
@@ -107,7 +128,12 @@ const StoreForm = ({
                 <Grid xs={3} item> Logo </Grid>
                 <Grid xs={5} item>
                   <label htmlFor="logo-button-file">
-                    <Input name="logo" accept="image/*" id="logo-button-file" type="file" {...register("logo")}/>
+                    <Input 
+                      name="logo" 
+                      accept="image/*" 
+                      id="logo-button-file" type="file" 
+                      onChange={(e) => setImage('logo', e.target.files[0])}
+                    />
                     <Button variant="contained" component="span">
                       Upload
                     </Button>
@@ -119,7 +145,13 @@ const StoreForm = ({
                 <Grid xs={3} item> Cover Photo </Grid>
                 <Grid xs={5} item>
                   <label htmlFor="coverAvatar-button-file">
-                    <Input name="coverAvatar" accept="image/*" id="coverAvatar-button-file" type="file" {...register("coverAvatar")}/>
+                    <Input 
+                      name="coverAvatar" 
+                      accept="image/*" 
+                      id="coverAvatar-button-file" 
+                      type="file"  
+                      onChange={(e) => setImage('coverAvatar', e.target.files[0])}
+                    />
                     <Button variant="contained" component="span">
                       Upload
                     </Button>

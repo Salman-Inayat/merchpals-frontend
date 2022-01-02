@@ -1,169 +1,141 @@
-import React, { useEffect, useState } from 'react';
-import { fabric } from 'fabric';
-import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { Button, Card, Grid, Stack, Typography, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Delete, Undo } from '@mui/icons-material';
+import { Delete, Undo, Redo } from '@mui/icons-material';
 import { bgcolor, Box } from '@mui/system';
 import ColorPallete from './ColorPallete';
-import FabricEditor from '../../components/editor/useEditor';
 import useEditor from '../../components/editor/useEditor';
 import FontControls from './FontControls';
+import CanvasEditor from '../../components/editor/canvasEditor';
+import Smileys from './Smileys';
 
-const useStyles = makeStyles({
-  editor: {
-    width: '500px',
-    height: '500px',
+const useStyles = makeStyles(theme => ({
+  controlsContainer: {
+    order: 2,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      order: 3,
+      position: 'fixed',
+      bottom: theme.spacing(2),
+    },
+    [theme.breakpoints.down('sm')]: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+    },
   },
-  images: {
-    height: '500px',
-    overflow: 'scroll',
-    display: 'inline-block',
+  canvasContainer: {
+    order: 3,
+    [theme.breakpoints.down('md')]: {
+      order: 2,
+      marginBottom: '50px',
+    },
   },
-  colorPallete: {
-    height: '500px',
-    overflow: 'scroll',
-    display: 'inline-block',
-  },
+  editor: {},
   bottomButtons: {
     alignItems: 'center',
     alignContent: 'center',
   },
-});
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      justifyContent: 'space-between',
+    },
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'space-between',
+    },
+  },
+  button: {
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '50px',
+      padding: '6px',
+    },
+  },
+  miniatureContaienr: {
+    display: 'inline-block',
+    textAlign: 'center',
+    position: 'relative',
+    marginLeft: '50px',
+  },
+  shirtImage: {
+    border: '1px solid black',
+    width: '150px',
+    height: '150px',
+    position: 'relative',
+    top: '0',
+    left: '0',
+    [theme.breakpoints.down('sm')]: {
+      width: '250px',
+      height: '150px',
+    },
+  },
+  miniature: {
+    position: 'absolute',
+    top: '50px',
+    left: '50px',
+    width: '50px',
+    height: '50px',
+    border: 'none',
+  },
+}));
 
-const Editor = () => {
+const Editor = ({
+  exportBase64 = () => {}
+}) => {
   const classes = useStyles();
-  const editorJs = useEditor('canvas');
-  const { selectedObjects, editor, onReady } = useFabricJSEditor();
+
+  const editorJs = useEditor();
+  const [toggleSmileys, setToggleSmileys] = useState(false);
+  const [cropDoneButton, setCropDoneButton] = useState(false);
+  const [miniature, setMiniature] = useState();
 
   useEffect(() => {
-    editor?.canvas.setWidth('500px');
-    editor?.canvas.setHeight('500px');
+    var style1 = document.getElementById('style1');
+    var style2 = document.getElementById('style2');
+    var style3 = document.getElementById('style3');
+    var style4 = document.getElementById('style4');
+    var style5 = document.getElementById('style5');
+    var style6 = document.getElementById('style6');
+    var style7 = document.getElementById('style7');
+    var style8 = document.getElementById('style8');
+    var style9 = document.getElementById('style9');
+    var style10 = document.getElementById('style10');
+    var style11 = document.getElementById('style11');
+    var style12 = document.getElementById('style12');
+    var style13 = document.getElementById('style13');
+    var style14 = document.getElementById('style14');
+    var style15 = document.getElementById('style15');
+
+    style1.style.fontFamily = 'Alpha-Slab';
+    style2.style.fontFamily = 'Anton';
+    style3.style.fontFamily = 'Arbutus';
+    style4.style.fontFamily = 'Bangers';
+    style5.style.fontFamily = 'BebasNeue';
+    style6.style.fontFamily = 'Blackops';
+    style7.style.fontFamily = 'Bungee';
+    style8.style.fontFamily = 'Caveat';
+    style9.style.fontFamily = 'Cinzel';
+    style10.style.fontFamily = 'Dance';
+    style11.style.fontFamily = 'DelaGothic';
+    style12.style.fontFamily = 'Fredoka';
+    style13.style.fontFamily = 'RussoOne';
+    style14.style.fontFamily = 'Tourney';
+    style15.style.fontFamily = 'BungeeS';
   }, []);
-  const images = [
-    '1.svg',
-    '2.svg',
-    '3.svg',
-    '4.svg',
-    '5.svg',
-    '6.svg',
-    '7.svg',
-    '8.svg',
-    '9.svg',
-    '10.svg',
-    '11.svg',
-    '12.svg',
-    '13.svg',
-    '14.svg',
-    '15.svg',
-    '16.svg',
-    '17.svg',
-    '18.svg',
-    '19.svg',
-    '20.svg',
 
-    '21.svg',
-    '22.svg',
-    '23.svg',
-    '24.svg',
-    '25.svg',
-    '26.svg',
-    '27.svg',
-    '28.svg',
-    '29.svg',
-    '30.svg',
-    '31.svg',
-    '32.svg',
-    '33.svg',
-    '34.svg',
-    '35.svg',
-    '36.svg',
-    '37.svg',
-    '38.svg',
-    '39.svg',
-    '40.svg',
+  const firstUpdate = useRef(true);
 
-    '41.svg',
-    '42.svg',
-    '43.svg',
-    '44.svg',
-    '45.svg',
-    '46.svg',
-    '47.svg',
-    '48.svg',
-    '49.svg',
-    '50.svg',
-    '51.svg',
-    '52.svg',
-    '53.svg',
-    '54.svg',
-    '55.svg',
-    '56.svg',
-    '57.svg',
-    '58.svg',
-    '59.svg',
-    '60.svg',
+  useLayoutEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
 
-    '61.svg',
-    '62.svg',
-    '63.svg',
-    '64.svg',
-    '65.svg',
-    '66.svg',
-    '67.svg',
-    '68.svg',
-    '69.svg',
-    '70.svg',
-    '71.svg',
-    '72.svg',
-    '73.svg',
-    '74.svg',
-    '75.svg',
-    '76.svg',
-    '77.svg',
-    '78.svg',
-    '79.svg',
-    '80.svg',
-
-    '81.svg',
-    '82.svg',
-    '83.svg',
-    '84.svg',
-    '85.svg',
-    '86.svg',
-    '87.svg',
-    '88.svg',
-    '89.svg',
-    '90.svg',
-    '91.svg',
-    '92.svg',
-    '93.svg',
-    '94.svg',
-    '95.svg',
-    '96.svg',
-    '97.svg',
-    '98.svg',
-    '99.svg',
-    '100.svg',
-  ];
-
-  const fontFamilies = [
-    'Alpha-Slab',
-    'Anton',
-    'Arbutus',
-    'Bangers',
-    'BebasNeue',
-    'Blackops',
-    'Bungee',
-    'BungeeS',
-    'Caveat',
-    'Cinzel',
-    'Dance',
-    'DelaGothic',
-    'Fredoka',
-    'RussoOne',
-    'Tourney',
-  ];
+    setMiniature(editorJs.getMiniature());
+  });
 
   const addText = () => {
     editorJs.addText();
@@ -175,7 +147,6 @@ const Editor = () => {
 
   const deleteSelected = () => {
     editorJs.removeSelected();
-    // editor?.deleteSelected();
   };
 
   const setCanvasBackground = bgColor => {
@@ -188,10 +159,6 @@ const Editor = () => {
 
   const setFontFamily = fontFamily => {
     editorJs?.setFontFamily(fontFamily);
-  };
-
-  const setFontSize = fontSize => {
-    editorJs?.setFontSize(fontSize);
   };
 
   const addImage = e => {
@@ -208,70 +175,179 @@ const Editor = () => {
     editorJs.undo();
   };
 
+  const redo = () => {
+    editorJs.redo();
+  };
+
+  const cropImage = () => {
+    editorJs.cropImage();
+    setCropDoneButton(true);
+  };
+
+  const cropImageDone = () => {
+    editorJs.cropImageDone();
+    setCropDoneButton(false);
+  };
+
   return (
-    <Grid container spacing={2} alignItems="center">
-      <Grid item xs={12}>
+    <Grid container spacing={2} alignItems="center" flexWrap="wrap">
+      <div style={{ height: '10px' }}>
+        <span id="style1"></span>
+        <span id="style2"> </span>
+        <span id="style3"> </span>
+        <span id="style4"> </span>
+        <span id="style5"> </span>
+        <span id="style6"> </span>
+        <span id="style7"> </span>
+        <span id="style8"> </span>
+        <span id="style9"> </span>
+        <span id="style10"> </span>
+        <span id="style11"> </span>
+        <span id="style12"> </span>
+        <span id="style13"> </span>
+        <span id="style14"> </span>
+        <span id="style15"> </span>
+      </div>
+      <Grid item md={12} sm={12} xs={12} order={{ xs: 1, sm: 1, md: 1 }}>
         <Typography variant="h3" align="center">
           Create Your Design Here
         </Typography>
       </Grid>
-      <Grid item xs={1}>
-        <Stack direction="column" className={classes.images}>
-          {images.map((oneImage, index) => (
-            <img
-              src={`/svg-icons/${oneImage}`}
-              onClick={() => addPng(`/svg-icons/${oneImage}`)}
-              style={{
-                width: '100%',
-                height: '75px',
-                overflow: 'auto',
-              }}
-              key={index}
-            />
-          ))}
-        </Stack>
-      </Grid>
-      <Grid item xs={5}>
-        <Card className={classes.editor}>
-          {/* <FabricJSCanvas className={classes.editor} onReady={onReady} /> */}
-          {/* <FabricEditor /> */}
-          <canvas id="canvas"></canvas>
-        </Card>
-      </Grid>
-      <Grid item xs={1}>
-        <ColorPallete
-          customClass={classes.colorPallete}
-          setCanvasBackground={setCanvasBackground}
-        />
-      </Grid>
-      <Grid item md={12} xs={2}>
-        <FontControls
-          setFontColor={setFontColor}
-          setFontFamily={setFontFamily}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <Stack
-          direction="row"
+      <Grid item md={5} sm={12} order={{ xs: 3, sm: 3, md: 2 }}>
+        <Grid
+          container
           spacing={2}
-          alignItems="center"
-          alignContent="center"
+          // order={{ xs: 3, sm: 3, md: 2 }}
+          className={classes.controlsContainer}
         >
-          <Button variant="contained" onClick={undo}>
-            <Undo />
-          </Button>
-          <Button variant="contained" onClick={addText}>
-            {' '}
-            Add Text{' '}
-          </Button>
-          <Button variant="contained" component="label">
-            Upload a picture
-            <input type="file" hidden onChange={e => addImage(e)} />
-          </Button>
-          <Button onClick={deleteSelected} variant="contained" color="error">
-            <Delete />
-          </Button>
-        </Stack>
+          <Grid item md={12} sm={12} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              alignContent="center"
+              className={classes.buttonContainer}
+            >
+              <Button
+                variant="contained"
+                onClick={undo}
+                className={`${classes.undo} ${classes.button}`}
+              >
+                <Undo />
+              </Button>
+              <Button
+                variant="contained"
+                onClick={redo}
+                className={`${classes.redo} ${classes.button}`}
+              >
+                <Redo />
+              </Button>
+              <div id="crop-image-button" hidden>
+                <Button
+                  variant="contained"
+                  onClick={cropImage}
+                  className={`${classes.crop} ${classes.button}`}
+                >
+                  Crop
+                </Button>
+              </div>
+              {cropDoneButton && (
+                <Button
+                  variant="contained"
+                  onClick={cropImageDone}
+                  id="crop-image-done-button"
+                  hidden
+                  className={`${classes.cropDone} ${classes.button}`}
+                >
+                  Done
+                </Button>
+              )}
+              <Button
+                variant="contained"
+                onClick={addText}
+                className={`${classes.addText} ${classes.button}`}
+              >
+                Text
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => setToggleSmileys(!toggleSmileys)}
+                className={`${classes.smileys} ${classes.button}`}
+              >
+                Smileys
+              </Button>
+              <Button
+                variant="contained"
+                component="label"
+                className={`${classes.imageUpload} ${classes.button}`}
+              >
+                Image
+                <input
+                  type="file"
+                  hidden
+                  onChange={e => addImage(e)}
+                  accept="image/png, image/jpeg"
+                />
+              </Button>
+              <Button
+                onClick={deleteSelected}
+                variant="contained"
+                color="error"
+                className={`${classes.delete} ${classes.button}`}
+              >
+                <Delete />
+              </Button>
+
+            </Stack>
+          </Grid>
+          <Grid>   
+            <Button
+              onClick={() => exportBase64(miniature)}
+              variant="contained"
+              color="error"
+              className={`${classes.delete} ${classes.button}`}
+            >
+                Export
+              </Button></Grid>
+          <Grid item md={12} sm={6} xs={8} order={{ xs: 2, sm: 2, md: 2 }}>
+            <FontControls
+              setFontColor={setFontColor}
+              setFontFamily={setFontFamily}
+            />
+          </Grid>
+          <Grid md={6} sm={4} xs={6} order={{ xs: 1, sm: 1, md: 3 }}>
+            <div className={classes.miniatureContaienr}>
+              <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
+              <img src={miniature} className={classes.miniature} />
+            </div>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <Grid
+        item
+        md={6}
+        spacing={2}
+        sm={12}
+        order={{ xs: 2, sm: 2, md: 3 }}
+        className={classes.canvasContainer}
+      >
+        <Grid container spacing={2}>
+          <Grid item md={1} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
+            {toggleSmileys && <Smileys addPng={addPng} />}
+          </Grid>
+          <Grid item md={10} xs={10} order={{ xs: 1, sm: 1, md: 2 }}>
+            <Card className={`${classes.editor} fabric-canvas-wrapper`}>
+              <CanvasEditor
+                onReady={editorJs.onReady}
+                class="fabric-canvas-wrapper"
+              />
+            </Card>
+          </Grid>
+          <Grid item md={1} sm={1} xs={1} order={{ xs: 2, sm: 2, md: 3 }}>
+            <ColorPallete setCanvasBackground={setCanvasBackground} />
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );

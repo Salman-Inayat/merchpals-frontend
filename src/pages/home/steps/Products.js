@@ -23,47 +23,115 @@ const useStyles = makeStyles(() => ({
   }
 }))
 const Products = ({
-  nextStep = () => {},
-  products = []
+  productSelectionCompleted = () => {},
+  products = [],
+  initialDesign = ''
 }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
 
   const classes = useStyles();
   const onVariantClick = (productVariant) => {
     const [product, color] = productVariant.split(',')
-    console.log({ product, color });
+    // console.log({ product, color });
+    let removedProduct = false;
     let productColors = [];
+
     if (!selectedVariants[product]) {
        productColors = [color]
     } else {
       const colorIndex = selectedVariants[product].findIndex(c => c === color)
-      console.log({ colorIndex });
+      
       if (colorIndex > -1) {
         productColors = [...selectedVariants[product]]
-        productColors.splice(colorIndex, 1)
+
+        if(productColors.length === 1) {
+          let prevSelectedProducts = {...selectedVariants};
+          delete prevSelectedProducts[product];
+          removedProduct = true;
+
+          setSelectedVariants({
+            ...prevSelectedProducts,
+          })
+        } else {
+          productColors.splice(colorIndex, 1)
+        }
+
       } else {
         productColors = [...selectedVariants[product], color]
       }
     }
-    setSelectedVariants({
-      ...selectedVariants,
-      [product]: productColors
-    })
+
+    if (!removedProduct) {
+      setSelectedVariants({
+        ...selectedVariants,
+        [product]: [...new Set(productColors)]
+      })      
+    }
   };
 
+  const onProductClick = (productId) => {
+    let prevSelectedProducts = {...selectedVariants};
+
+    if (prevSelectedProducts[productId]) {
+      delete prevSelectedProducts[productId]
+      setSelectedVariants({
+        ...prevSelectedProducts,
+      })
+    } else {
+      const relatedProduct = products.find(p => p._id === productId)
+
+      const variantsOfProduct = relatedProduct.colors.reduce((color, curr) => {
+        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color)
+        return [...color, ...relatedMappings]
+      }, [])
+
+      const uniqVariantIds = variantsOfProduct.filter(function(item, pos) {
+        return variantsOfProduct.indexOf(item) == pos;
+    })
+
+      setSelectedVariants({
+        ...selectedVariants,
+        [productId]: [...uniqVariantIds]
+      })
+    }
+  }
+console.log({products});
+  const formatAndContinue = () => {
+    const selectedProducts = Object.keys(selectedVariants);
+    const formattedVariants = selectedProducts.map(productId => {
+      const productsSelectedVariants = selectedVariants[productId]
+      let productMappings = [];
+      const colors = products.find(p => p._id === productId).colors
+      productsSelectedVariants.forEach(psv => {
+        productMappings = colors.find(c => c.id === psv).relatedProductVariantsId.map(rp => rp._id);
+      })
+        
+      return { productId, productMappings }
+    })
+    console.log({formattedVariants});
+    productSelectionCompleted(formattedVariants)
+  }
+
+console.log({selectedVariants});
   return (
     <Grid container>
       <Grid container  justifyContent='center' alignItems='center' mt={5} pb={18}>
-        <Grid item xs={8}  container  justifyContent='flex-start' alignItems='center' spacing={3}>
+        <Grid item xs={8}  container  justifyContent='flex-start' alignItems='flex-start' spacing={3}>
           { products.map((product, i) => (
             <Grid mt={5} key={`product-${i}`} item>
-              <ProductCard product={product} onVariantClick={onVariantClick} selectedVariants={selectedVariants}/>
+              <ProductCard 
+                product={product} 
+                onVariantClick={onVariantClick} 
+                onProductClick={onProductClick}
+                selectedVariants={selectedVariants}
+                initialDesign={initialDesign}
+              />
             </Grid>                               
           ))}
         </Grid>
       </Grid>
       <Grid container justifyContent='center' alignItems='center' className={classes.footer}>
-        <Button onClick={nextStep} className={classes.btn}>Continue</Button>
+        <Button onClick={formatAndContinue} className={classes.btn}>Continue</Button>
       </Grid>
     </Grid>
   )
