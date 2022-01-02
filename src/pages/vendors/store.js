@@ -5,6 +5,7 @@ import {
   Box,
   Typography,
   TextField,
+  Avatar,
   Button,
 } from '@mui/material';
 import axios from 'axios';
@@ -77,6 +78,7 @@ const VendorStore = () => {
           coverAvatar: store.coverAvatar,
           logo: store.logo,
           products: store.products,
+          design: store.designs && store.designs[0]?.url ? store.designs[0].url : ''
         });
       })
       .catch(err => {
@@ -88,7 +90,7 @@ const VendorStore = () => {
     <Grid container spacing={3}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
         <img
-          src={store.coverAvatar}
+          src='https://picsum.photos/seed/picsum/900/400'
           alt="image"
           className={classes.coverImage}
         />
@@ -96,14 +98,14 @@ const VendorStore = () => {
           {store.name}
         </Typography>
 
-        <img src={store.logo} className={classes.logo} />
+        <img src='https://picsum.photos/seed/picsum/400/400' className={classes.logo} />
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
         <Grid container spacing={5} p={5} pt={10}>
           {store.products.map(product => {
             return (
               <Grid item md={4} p={4}>
-                <VendorStoreProductCard product={product} />
+                <VendorStoreProductCard product={product} design={store.design}/>
               </Grid>
             );
           })}

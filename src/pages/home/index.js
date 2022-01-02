@@ -125,24 +125,18 @@ const Home = () => {
   const createStore = (data) => {
     console.log({ data, selectedVariants, initialDesign });
     let store = new FormData();
-    store.append('name', data.append);
-    store.append('slug', data.slug);
+    store.append('name', data.name);
+    store.append('slug', data.slug.split(' ').join('-'));
+    store.append('facebook', data.facebook);
+    store.append('instagram', data.instagram);
+    store.append('twitter', data.twitter);
     store.append('logo', data.logo);
     store.append('coverAvatar', data.coverAvatar);
-    // store.append('designs', [{ name: `${+new Date()}`, url: localStorage.getItem('initialDesign') }])
-    // store.append('products', [...selectedVariants]);
+    store.append('designs', localStorage.getItem('initialDesign') )
+    store.append('products', JSON.stringify([...selectedVariants]));
 console.log({store});
-
-for (var value of store.values()) {
-  console.log(value);
-}
-    // const store = {
-    //   ...data,
-    //   designs: [{ name: `${+new Date()}`, url: localStorage.getItem('initialDesign') }],
-    //   products: [...selectedVariants]
-    // }
     
-    axios.post(`${baseURL}/store`, { store },{
+    axios.post(`${baseURL}/store`, store ,{
       headers: {
         'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
         'Content-Type': 'multipart/form-data'
@@ -150,11 +144,11 @@ for (var value of store.values()) {
       .then(response => {
         console.log({ response });
 
-        // setShowWelcomeMessage(true);
-        // setTimeout(() => {
-        //   setShowWelcomeMessage(false);
-        //   navigate('/store', { replace: true })
-        // }, 3500)
+        setShowWelcomeMessage(true);
+        setTimeout(() => {
+          setShowWelcomeMessage(false);
+          navigate('/vendor/store', { replace: true })
+        }, 3500)
       })
       .catch(err => {
         console.log('err', err);
@@ -175,12 +169,12 @@ for (var value of store.values()) {
             productSelectionCompleted={productSelectionCompleted}
           />
         )
-      case 21: 
+      case 2: 
       if (showOtpBox) {
         return <Otp nextStep={nextStep}  />
       }
         return <SignUp registerVendor={registerVendor} registrationErrors={registrationErrors} />
-      case 2:
+      case 3:
         if (showWelcomeMessage) {
           return <WelcomeMessage /> 
         }
