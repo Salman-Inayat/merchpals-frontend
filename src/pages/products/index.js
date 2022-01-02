@@ -25,17 +25,26 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const useStyle = makeStyles(() => ({
   image: {
     height: '100%',
     width: '100%',
   },
+  price: {
+    fontSize: '3.5rem',
+    fontWeight: '400',
+  },
+  backButton: {
+    margin: '20px',
+  },
 }));
 
 const Product = () => {
   const classes = useStyle();
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState({
     name: '',
@@ -101,8 +110,22 @@ const Product = () => {
     setSize(event.target.value);
   };
 
+  const handleBackButton = event => {
+    navigate(-1);
+  };
+
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={1}>
+      <Grid item md={12} xs={12}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleBackButton}
+          className={classes.backButton}
+        >
+          Back
+        </Button>
+      </Grid>
       <Grid item md={12} xs={12}>
         <Grid container>
           <Grid
@@ -140,7 +163,7 @@ const Product = () => {
           </Grid>
           <Grid
             item
-            md={5}
+            md={4}
             p={5}
             display="flex"
             justifyContent="center"
@@ -206,11 +229,20 @@ const Product = () => {
                   })}
                 </RadioGroup>
               </FormControl>
-              <Stack direction="row" spacing={2}>
-                <Typography gutterBottom variant="h3" component="div">
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography
+                  gutterBottom
+                  variant="h3"
+                  component="div"
+                  className={classes.price}
+                >
                   {product.cost} $
                 </Typography>
-                <Button color="primary" variant="outlined">
+                <Button color="secondary" variant="outlined" size="large">
                   {' '}
                   Add to Cart
                 </Button>

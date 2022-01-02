@@ -17,6 +17,10 @@ const useStyles = makeStyles(() => ({
   card: {
     padding: '30px',
   },
+  productName: {
+    fontWeight: '500',
+    fontSize: '1.4rem',
+  },
 }));
 
 const StoreProductCard = ({ product }) => {
@@ -37,7 +41,12 @@ const StoreProductCard = ({ product }) => {
           alt="green iguana"
         />
       </CardContent>
-      <Typography gutterBottom variant="h5" component="div">
+      <Typography
+        gutterBottom
+        variant="h4"
+        component="div"
+        className={classes.productName}
+      >
         {product.name}
       </Typography>
       <CardActions>

@@ -72,9 +72,6 @@ const useStyle = makeStyles(() => ({
 }));
 
 const Store = () => {
-  const [products, setProducts] = useState([]);
-  const [storeCoverAvatar, setStoreCoverAvatar] = useState();
-  const [storeLogo, setStoreLogo] = useState();
   const classes = useStyle();
 
   const [store, setStore] = useState({
