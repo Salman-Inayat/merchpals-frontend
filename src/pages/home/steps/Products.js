@@ -64,7 +64,7 @@ const Products = ({
     if (!removedProduct) {
       setSelectedVariants({
         ...selectedVariants,
-        [product]: productColors
+        [product]: [...new Set(productColors)]
       })      
     }
   };
@@ -85,9 +85,13 @@ const Products = ({
         return [...color, ...relatedMappings]
       }, [])
 
+      const uniqVariantIds = variantsOfProduct.filter(function(item, pos) {
+        return variantsOfProduct.indexOf(item) == pos;
+    })
+
       setSelectedVariants({
         ...selectedVariants,
-        [productId]: variantsOfProduct
+        [productId]: [...uniqVariantIds]
       })
     }
   }
@@ -104,7 +108,8 @@ console.log({products});
         
       return { productId, productMappings }
     })
-    productSelectionCompleted(selectedVariants)
+    console.log({formattedVariants});
+    productSelectionCompleted(formattedVariants)
   }
 
 console.log({selectedVariants});

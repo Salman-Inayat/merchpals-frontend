@@ -10,14 +10,16 @@ import {
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
 import {
   Editor,
   Products,
   SignUp,
-  StoreForm,Otp
+  StoreForm,
+  Otp,
+  WelcomeMessage,
 } from './steps';
 import { baseURL } from '../../configs/const';
 
@@ -66,7 +68,10 @@ const Home = () => {
   })
   const [products, setProducts] = useState([])
   const [initialDesign, setInitialDesign] = useState('')
+  const [selectedVariants, setSelectedVariants] = useState([])
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false)
   const classes = useStyle();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts()
@@ -94,6 +99,8 @@ const Home = () => {
   const registerVendor = (data) => {
     console.log({ data });
     axios.post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data }).then(response => {
+      console.log({response});
+      localStorage.setItem('MERCHPAL_AUTH_TOKEN', response.data.token)
       localStorage.setItem('phoneNoForOTP', data.phoneNo);
       setShowOtpBox(true)
     }).catch(error => {
@@ -116,19 +123,34 @@ const Home = () => {
   }
 
   const createStore = (data) => {
-    console.log({ data });
-
-    axios.post(`${baseURL}/store`, { data })
+    console.log({ data, selectedVariants, initialDesign });
+    const store = {
+      ...data,
+      designs: [{ name: `${+new Date()}`, url: localStorage.getItem('initialDesign') }],
+      products: [...selectedVariants]
+    }
+    
+    axios.post(`${baseURL}/store`, { store },{
+      headers: {
+        'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN')
+      }})
       .then(response => {
         console.log({ response });
+
+        setShowWelcomeMessage(true);
+        setTimeout(() => {
+          setShowWelcomeMessage(false);
+          navigate('/store', { replace: true })
+        }, 3500)
       })
       .catch(err => {
         console.log('err', err);
       })
   }
 
-  const productSelectionCompleted = selectedVariants => {
-    console.log({selectedVariants});
+  const productSelectionCompleted = data => {
+    setSelectedVariants(data)
+    nextStep()
   }
   const yieldStep = () => {
     switch (step) {
@@ -146,6 +168,9 @@ const Home = () => {
       }
         return <SignUp registerVendor={registerVendor} registrationErrors={registrationErrors} />
       case 3:
+        if (showWelcomeMessage) {
+          return <WelcomeMessage /> 
+        }
         return <StoreForm createStore={createStore} />
       default:
         return <Editor nextStep={nextStep} exportBase64={exportBase64File}/>

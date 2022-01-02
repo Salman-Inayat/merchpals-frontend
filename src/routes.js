@@ -12,6 +12,7 @@ import ResetPassword from "./pages/authentication/ResetPassword";
 import Editor from "./pages/editor/Editor";
 import Home from "./pages/home";
 import VendorDashboard from './pages/vendors';
+import Store from './pages/vendors/store';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -24,6 +25,7 @@ export default function Router() {
     { path: "/forgot-password", element: <ForgotPassword /> },
     { path: "/reset-password", element: <ResetPassword />},
     { path: "/editor", element: <Editor /> },
-    { path: "/dashboard", element: <VendorDashboard /> }
+    { path: "/dashboard", element: <VendorDashboard /> },
+    { path: "/store", element: <Store /> }
   ]);
 }
