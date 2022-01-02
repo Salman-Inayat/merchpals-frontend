@@ -124,24 +124,37 @@ const Home = () => {
 
   const createStore = (data) => {
     console.log({ data, selectedVariants, initialDesign });
-    const store = {
-      ...data,
-      designs: [{ name: `${+new Date()}`, url: localStorage.getItem('initialDesign') }],
-      products: [...selectedVariants]
-    }
+    let store = new FormData();
+    store.append('name', data.append);
+    store.append('slug', data.slug);
+    store.append('logo', data.logo);
+    store.append('coverAvatar', data.coverAvatar);
+    // store.append('designs', [{ name: `${+new Date()}`, url: localStorage.getItem('initialDesign') }])
+    // store.append('products', [...selectedVariants]);
+console.log({store});
+
+for (var value of store.values()) {
+  console.log(value);
+}
+    // const store = {
+    //   ...data,
+    //   designs: [{ name: `${+new Date()}`, url: localStorage.getItem('initialDesign') }],
+    //   products: [...selectedVariants]
+    // }
     
     axios.post(`${baseURL}/store`, { store },{
       headers: {
-        'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN')
+        'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        'Content-Type': 'multipart/form-data'
       }})
       .then(response => {
         console.log({ response });
 
-        setShowWelcomeMessage(true);
-        setTimeout(() => {
-          setShowWelcomeMessage(false);
-          navigate('/store', { replace: true })
-        }, 3500)
+        // setShowWelcomeMessage(true);
+        // setTimeout(() => {
+        //   setShowWelcomeMessage(false);
+        //   navigate('/store', { replace: true })
+        // }, 3500)
       })
       .catch(err => {
         console.log('err', err);
@@ -162,12 +175,12 @@ const Home = () => {
             productSelectionCompleted={productSelectionCompleted}
           />
         )
-      case 2: 
+      case 21: 
       if (showOtpBox) {
         return <Otp nextStep={nextStep}  />
       }
         return <SignUp registerVendor={registerVendor} registrationErrors={registrationErrors} />
-      case 3:
+      case 2:
         if (showWelcomeMessage) {
           return <WelcomeMessage /> 
         }
