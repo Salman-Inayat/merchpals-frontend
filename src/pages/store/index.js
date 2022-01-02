@@ -121,7 +121,7 @@ const Store = () => {
         <img src={store.logo} className={classes.logo} />
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
-        <Grid container spacing={5} p={5}>
+        <Grid container spacing={5} p={5} pt={10}>
           {store.products.map(product => {
             return (
               <Grid item md={4} p={4}>
