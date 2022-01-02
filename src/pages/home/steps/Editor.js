@@ -4,7 +4,15 @@ import Editor from '../../editor/Editor';
 const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {} }) => {
   return (
     <Grid container justifyContent="center" alignItems="center">
-      <Grid item xs={6}>
+      <Grid
+        item
+        xs={6}
+        container
+        justifyContent="center"
+        alignItems="center"
+        spacing={3}
+        style={{ marginTop: '20px' }}
+      >
         <Editor exportBase64={exportBase64} />
         <Button variant="contained" onClick={nextStep}>
           Proceed to Products

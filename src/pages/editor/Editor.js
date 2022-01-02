@@ -219,7 +219,8 @@ const Editor = ({ exportBase64 = () => {} }) => {
       </Grid>
       <Grid item md={12} sm={12}>
         <Grid container spacing={2} className={classes.controlsContainer}>
-          <Grid item md={8} sm={12} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
+          <Grid item md={2}></Grid>
+          <Grid item md={10} sm={12} xs={12}>
             <Stack
               direction="row"
               spacing={1}
@@ -285,39 +286,38 @@ const Editor = ({ exportBase64 = () => {} }) => {
               </Button>
             </Stack>
           </Grid>
-
-          <Grid md={4} sm={4} xs={6} order={{ xs: 1, sm: 1, md: 3 }}>
+          <Grid md={4} sm={4} xs={6}>
             <div className={classes.miniatureContaienr}>
               <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
               <img src={miniature} className={classes.miniature} />
             </div>
           </Grid>
-        </Grid>
-        <Grid item md={6} sm={6} xs={8} order={{ xs: 2, sm: 2, md: 2 }}>
-          <div id="crop-image-button" hidden>
-            <Button
-              variant="contained"
-              onClick={cropImage}
-              className={`${classes.crop} ${classes.button}`}
-            >
-              Crop
-            </Button>
-          </div>
-          {cropDoneButton && (
-            <Button
-              variant="contained"
-              onClick={cropImageDone}
-              id="crop-image-done-button"
-              hidden
-              className={`${classes.cropDone} ${classes.button}`}
-            >
-              Done
-            </Button>
-          )}
-          <FontControls
-            setFontColor={setFontColor}
-            setFontFamily={setFontFamily}
-          />
+          <Grid item md={5} sm={6} xs={8}>
+            <div id="crop-image-button" hidden>
+              <Button
+                variant="contained"
+                onClick={cropImage}
+                className={`${classes.crop} ${classes.button}`}
+              >
+                Crop
+              </Button>
+            </div>
+            {cropDoneButton && (
+              <Button
+                variant="contained"
+                onClick={cropImageDone}
+                id="crop-image-done-button"
+                hidden
+                className={`${classes.cropDone} ${classes.button}`}
+              >
+                Done
+              </Button>
+            )}
+            <FontControls
+              setFontColor={setFontColor}
+              setFontFamily={setFontFamily}
+            />
+          </Grid>
         </Grid>
       </Grid>
       <Grid item md={1}>
