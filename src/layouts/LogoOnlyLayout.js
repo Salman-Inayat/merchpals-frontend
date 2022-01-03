@@ -3,6 +3,7 @@ import { Link as RouterLink, Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 // components
 import Logo from '../components/Logo';
+import { colors } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -11,11 +12,12 @@ const HeaderStyle = styled('header')(({ theme }) => ({
   left: 0,
   lineHeight: 0,
   width: '100%',
+  background: colors.amber[0],
   position: 'absolute',
   padding: theme.spacing(3, 3, 0),
   [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(5, 5, 0)
-  }
+    padding: theme.spacing(5, 5, 0),
+  },
 }));
 
 // ----------------------------------------------------------------------

@@ -32,7 +32,10 @@ const useStyles = makeStyles(theme => ({
     //   marginBottom: '50px',
     // },
   },
-  editor: {},
+  editor: {
+    height: '450px',
+    width: '450px'
+  },
   bottomButtons: {
     alignItems: 'center',
     alignContent: 'center',

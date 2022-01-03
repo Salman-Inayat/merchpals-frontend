@@ -8,6 +8,7 @@ import {
   CardContent,
   CardActions,
   CardMedia,
+  colors,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Checkbox from '../components/Checkbox';
@@ -203,7 +204,7 @@ const ProductCard = ({
                 value={`${product._id},${pm.id}`}
                 // color={pm.label}
                 sx={{
-                  color: `${pm.label}`,
+                  backgroundColor: colors.pink[600],
                   '&.Mui-checked': {
                     color: pink[600],
                   },

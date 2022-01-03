@@ -30,16 +30,16 @@ const useStyle = makeStyles(() => ({
     paddingRight: '0px',
   },
   header: {
-    backgroundColor: '#ffffff',
-    boxShadow: '3px 3px 5px 6px #ccc',
+    backgroundColor: '#fff',
     maxWidth: '100%',
+    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
   },
   avatar: {
-    width: '250px',
-    height: '75px',
+    width: '150px',
+    height: '50px',
   },
   content: {
-    marginTop: '100px',
+    marginTop: '16px',
   },
   root: {
     color: 'red',
@@ -133,31 +133,32 @@ const Home = () => {
 
   const createStore = data => {
     console.log({ data, selectedVariants, initialDesign });
-    const store = {
-      ...data,
-      designs: [
-        { name: `${+new Date()}`, url: localStorage.getItem('initialDesign') },
-      ],
-      products: [...selectedVariants],
-    };
+    let store = new FormData();
+    store.append('name', data.name);
+    store.append('slug', data.slug.split(' ').join('-'));
+    store.append('facebook', data.facebook);
+    store.append('instagram', data.instagram);
+    store.append('twitter', data.twitter);
+    store.append('logo', data.logo);
+    store.append('coverAvatar', data.coverAvatar);
+    store.append('designs', localStorage.getItem('initialDesign'));
+    store.append('products', JSON.stringify([...selectedVariants]));
+    console.log({ store });
 
     axios
-      .post(
-        `${baseURL}/store`,
-        { store },
-        {
-          headers: {
-            Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          },
+      .post(`${baseURL}/store`, store, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'multipart/form-data',
         },
-      )
+      })
       .then(response => {
         console.log({ response });
 
         setShowWelcomeMessage(true);
         setTimeout(() => {
           setShowWelcomeMessage(false);
-          navigate('/store', { replace: true });
+          navigate('/vendor/store', { replace: true });
         }, 3500);
       })
       .catch(err => {

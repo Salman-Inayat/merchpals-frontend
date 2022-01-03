@@ -87,7 +87,7 @@ const Store = () => {
 
   const fetchStore = () => {
     axios
-      .get(`${baseURL}/store/61ceb5291b1b68fe90827f64`)
+      .get(`${baseURL}/store/somecoolname`)
       .then(response => {
         console.log(response.data.store);
         const store = response.data.store;

@@ -5,7 +5,8 @@ import { styled } from '@mui/material/styles';
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import axios from 'axios';
+import { baseURL } from '../../../configs/const';
 const useStyle = makeStyles(() => ({
   heading: {
     fontSize: '20px',
@@ -31,6 +32,7 @@ const StoreForm = ({
   });
   const [images, setImages] = useState({logo: '', coverAvatar: ''});
   const classes = useStyle();
+  const [slugMessage, setSlugMessage] = useState('');
   
   const storeSchema = Yup.object().shape({
     name: Yup.string()
@@ -57,26 +59,53 @@ const StoreForm = ({
     console.log('err', err);
   }
   
-  const toDataURL = (url, callback) => {
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
+  const readFile = (file) => {
+    if (!file) {
+      return;
+    }
+  
+    return new Promise(function (resolve, reject) {
       var reader = new FileReader();
-      reader.onloadend = function() {
-        callback(reader.result);
-      }
-      reader.readAsDataURL(xhr.response);
-    };
-    xhr.open('GET', url);
-    xhr.responseType = 'blob';
-    xhr.send();
+  
+      reader.onload = function (event) {
+        var _event$target;
+        resolve(
+          event === null || event === void 0
+            ? void 0
+            : (_event$target = event.target) === null || _event$target === void 0
+            ? void 0
+            : _event$target.result
+        );
+      };
+  
+      reader.onerror = function (event) {
+        reader.abort();
+        reject(event);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+  
+
+  const setImage = async (name, file) => {
+    // const base64Image = await readFile(file)
+    // console.log({base64Image});
+    console.log({file});
+    setImages({...images, [name]: file})
   }
 
-//   const setImage = async (name, file) => {
-//     toDataURL('https://www.avatar.com/avatar/d50c83cc0c6523b4d3f6085295c953e0', function (dataUrl) {
-//   console.log('RESULT:', dataUrl)
-// })
-//     // setImages({...images, [name]: base64Image})
-//   }
+  const isSlugValid = () => {
+    const slug = watch('slug');
+    axios.get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
+    .then(response => {
+      console.log({ response });
+      setSlugMessage('')
+    })
+    .catch(err => {
+      console.log({ errp: err.response.data });
+      setSlugMessage(err.response.data.message)
+    })
+  }
   return (
     <Grid container>
       <Grid container justifyContent='center' alignItems='center' mt={5} pb={18}>
@@ -96,8 +125,9 @@ const StoreForm = ({
                 fullWidth
                 label="Slug"
                 {...register("slug")}
-                error={Boolean(errors.slug?.message)}
-                helperText={errors.slug?.message}
+                error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
+                helperText={errors.slug?.message || slugMessage}
+                onBlur={isSlugValid}
               />
 
               <TextField
