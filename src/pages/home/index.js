@@ -11,7 +11,7 @@ import {
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import Logo from '../../assets/images/logo.png';
+import Logo from '../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
 import {
   Editor,
@@ -30,15 +30,16 @@ const useStyle = makeStyles(() => ({
     paddingRight: '0px'
   },
   header: {
-    backgroundColor: '#babdb3',
-    maxWidth: '100%'
+    backgroundColor: '#fff',
+    maxWidth: '100%',
+    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
   },
   avatar: {
-    width: '75px',
-    height: '75px'
+    width: '150px',
+    height: '50px'
   },
   content: {
-    marginTop: '100px'
+    marginTop: '16px'
   },
   root: {
     color: 'red'

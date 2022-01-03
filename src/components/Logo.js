@@ -9,5 +9,5 @@ Logo.propTypes = {
 };
 
 export default function Logo({ sx }) {
-  return <Box component="img" src="/static/logo.png" sx={{ width: 100, height: 80, ...sx }} />;
+  return <Box component="img" src="/assets/images/merchpals-logo.png" sx={{ width: 100, height: 80, ...sx }} />;
 }
