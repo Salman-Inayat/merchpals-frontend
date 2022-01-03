@@ -220,7 +220,7 @@ const Home = () => {
       </Grid>
       <Grid container className={classes.content}>
         <Grid container justifyContent="center" alignItems="center">
-          <Grid item xs={6}>
+          <Grid item md={6} xs={12}>
             <Stepper activeStep={step}>
               {[1, 2, 3, 4].map(label => (
                 <Step key={label}>

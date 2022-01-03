@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ProductCard from '../../../components/ProductCard';
+import { useMediaQuery } from 'react-responsive';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   footer: {
     // backgroundColor: '#babdb3',
     maxWidth: '100%',
@@ -19,7 +20,10 @@ const useStyles = makeStyles(() => ({
     },
   },
   productsContainer: {
-    // padding: '2rem 8rem',
+    padding: '2rem 8rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0.2rem',
+    },
   },
 }));
 const Products = ({
@@ -30,6 +34,10 @@ const Products = ({
   const [selectedVariants, setSelectedVariants] = useState({});
 
   const classes = useStyles();
+
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const onVariantClick = productVariant => {
     const [product, color] = productVariant.split(',');
@@ -131,9 +139,9 @@ const Products = ({
           justifyContent="flex-start"
           alignItems="flex-start"
           spacing={3}
-          style={{ padding: '0rem 9rem ' }}
+          // style={{ padding: '0rem 9rem ' }}
         >
-          <Grid>
+          <Grid item md={12} sm={12} xs={12}>
             <Typography
               align="center"
               variant="h3"
@@ -149,9 +157,13 @@ const Products = ({
               Please select products for your design
             </Typography>
           </Grid>
-          <Grid container spacing={10} className={classes.productsContainer}>
+          <Grid
+            container
+            spacing={isMobile ? 1 : 10}
+            className={classes.productsContainer}
+          >
             {products.map((product, i) => (
-              <Grid item md={4} mt={5} key={`product-${i}`}>
+              <Grid item md={4} mt={5} xs={6} key={`product-${i}`}>
                 <ProductCard
                   product={product}
                   onVariantClick={onVariantClick}

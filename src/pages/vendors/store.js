@@ -14,8 +14,9 @@ import { makeStyles } from '@mui/styles';
 import { baseURL } from '../../configs/const';
 import VendorStoreProductCard from '../../components/vendorStoreProductCard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useMediaQuery } from 'react-responsive';
 
-const useStyle = makeStyles(() => ({
+const useStyle = makeStyles(theme => ({
   coverContainer: {
     position: 'relative',
     height: '50vh',
@@ -45,6 +46,19 @@ const useStyle = makeStyles(() => ({
     fontWeight: '500',
     textTransform: 'uppercase',
   },
+  productsContainer: {
+    padding: '2rem 8rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1rem',
+      spacing: '5',
+    },
+  },
+  copyLinkText: {
+    width: '50%',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+  },
 }));
 
 const VendorStore = () => {
@@ -59,26 +73,32 @@ const VendorStore = () => {
 
   const [storeURL, setStoreURL] = useState();
 
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
   useEffect(() => {
     fetchStore();
   }, []);
 
   const fetchStore = () => {
     axios
-      .get(`${baseURL}/store`,{
+      .get(`${baseURL}/store`, {
         headers: {
-          'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-        }})
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
       .then(response => {
-        console.log({store: response.data.store});
+        console.log({ store: response.data.store });
         const store = response.data.store;
-        setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`)
+        setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
         setStore({
           name: store.name,
           coverAvatar: store.coverAvatar,
           logo: store.logo,
           products: store.products,
-          design: store.designs && store.designs[0]?.url ? store.designs[0].url : ''
+          design:
+            store.designs && store.designs[0]?.url ? store.designs[0].url : '',
         });
       })
       .catch(err => {
@@ -90,7 +110,7 @@ const VendorStore = () => {
     <Grid container spacing={3}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
         <img
-          src='https://picsum.photos/seed/picsum/900/400'
+          src="https://picsum.photos/seed/picsum/900/400"
           alt="image"
           className={classes.coverImage}
         />
@@ -98,14 +118,25 @@ const VendorStore = () => {
           {store.name}
         </Typography>
 
-        <img src='https://picsum.photos/seed/picsum/400/400' className={classes.logo} />
+        <img
+          src="https://picsum.photos/seed/picsum/400/400"
+          className={classes.logo}
+        />
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
-        <Grid container spacing={5} p={5} pt={10}>
+        <Grid
+          container
+          spacing={isMobile ? 2 : 10}
+          mt={1}
+          className={classes.productsContainer}
+        >
           {store.products.map(product => {
             return (
-              <Grid item md={4} p={4}>
-                <VendorStoreProductCard product={product} design={store.design}/>
+              <Grid item md={4} xs={6}>
+                <VendorStoreProductCard
+                  product={product}
+                  design={store.design}
+                />
               </Grid>
             );
           })}
@@ -123,7 +154,7 @@ const VendorStore = () => {
       >
         <TextField
           id="outlined-read-only-input"
-          label={!storeURL && "Copy Store Link"}
+          label={!storeURL && 'Copy Store Link'}
           value={storeURL}
           InputProps={{
             readOnly: true,
@@ -133,7 +164,7 @@ const VendorStore = () => {
               </Button>
             ),
           }}
-          style={{ width: '50%' }}
+          className={classes.copyLinkText}
         />
       </Grid>
     </Grid>

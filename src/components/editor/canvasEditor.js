@@ -31,7 +31,7 @@ const CanvasEditor = _ref => {
       stopContextMenu: true, // <--  prevent context menu from showing
     });
 
-    canvas.setDimensions({ width: 500, height: 500 });
+    canvas.setDimensions({ width: 450, height: 450 });
 
     console.log(canvas);
     // if (isDesktop){

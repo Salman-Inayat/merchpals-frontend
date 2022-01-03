@@ -6,18 +6,15 @@ const useStyles = makeStyles(theme => ({
   smileyContainer: {
     height: '450px',
     overflow: 'scroll',
-    [theme.breakpoints.down('md')]: {
-      overflowX: 'scroll',
-      overflowY: 'hidden',
-      whiteSpace: 'nowrap',
-      height: '50px',
-    },
+    // [theme.breakpoints.down('md')]: {
+    //   overflowX: 'scroll',
+    //   overflowY: 'hidden',
+    //   whiteSpace: 'nowrap',
+    //   height: '50px',
+    // },
 
     [theme.breakpoints.down('sm')]: {
-      overflowX: 'scroll',
-      overflowY: 'hidden',
-      whiteSpace: 'nowrap',
-      height: '50px',
+      height: '225px',
     },
   },
   smileys: {

@@ -6,7 +6,8 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {} }) => {
     <Grid container justifyContent="center" alignItems="center">
       <Grid
         item
-        xs={6}
+        md={6}
+        xs={12}
         container
         justifyContent="center"
         alignItems="center"
