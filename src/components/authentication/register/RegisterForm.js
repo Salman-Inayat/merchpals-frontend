@@ -1,16 +1,15 @@
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
-import { useFormik, Form, FormikProvider } from "formik";
 import eyeFill from "@iconify/icons-eva/eye-fill";
 import eyeOffFill from "@iconify/icons-eva/eye-off-fill";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-// material
 import { makeStyles } from "@mui/styles";
 import { Grid, Stack, TextField, IconButton, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { PhoneNumberInput } from "../../phone-number-input";
+import PhoneNumberInput  from "../../phone-number-input";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const useStyles = makeStyles((theme) => ({
   error: {
@@ -20,30 +19,50 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.75rem'
   }
 }))
-export default function RegisterForm() {
+export default function RegisterForm({
+  registerVendor = () => {},
+  registrationErrors = {},
+}) {
   const [showPassword, setShowPassword] = useState(false);
-  const [phoneNo, setPhoneNo] = useState();
+  const [phoneNo, setPhoneNo] = useState('');
   const [formErrors, setFormErrors] = useState({
-    email: '',
     phoneNo: '',
     message: ''
   });
+  const [loading, setLoading] = useState(false)
 
-  const navigate = useNavigate();
   const classes = useStyles();
+
+  useEffect(() => {
+    if (registrationErrors.email) {
+      setError("email", {
+        type: "manual",
+        message: registrationErrors.email,
+      });
+      setLoading(false);
+    }
+    
+    if (registrationErrors.phoneNo) {
+     setFormErrors({
+      phoneNo: registrationErrors.phoneNo
+     })
+     setLoading(false);
+    }
+        
+  }, [registrationErrors])
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
+      .required("First name is required")
       .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("First name required"),
+      .max(50, "Too Long!"),
     lastName: Yup.string()
+      .required("Last name is required")
       .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Last name required"),
+      .max(50, "Too Long!"),
     email: Yup.string()
-      .email("Email must be a valid email address")
-      .required("Email is required"),
+      .required("Email is required")
+      .email("Email must be a valid email address"),
     password: Yup.string()
       .required("Password is required")
       .min(8, 'Password is too short - should be 8 chars minimum.'),
@@ -52,100 +71,81 @@ export default function RegisterForm() {
         return this.parent.password === value
       })
   });
-
-  const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      phoneNo: "",
-      email: "",
-      password: "",
-      confirmPassword: ""
-    },
-    validationSchema: RegisterSchema,
-    onSubmit: (values, actions) => {
-        const formattedPhoneNo = `+${phoneNo}`;
-        const data = {
-          ...values,
-          phoneNo: formattedPhoneNo,
-        }
-        
-        axios.post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data }).then(response => {
-          localStorage.setItem('phoneNoForOTP', formattedPhoneNo);
-          navigate("/otp-verification", { replace: true });
-        }).catch(error => {
-          actions.setSubmitting(false);
-          let err = error.response.data.message;
-          if (error.response.data.name === 'object') {
-            err = JSON.parse(error.response.data.message);
-          }
-          if(typeof err === 'string'){
-            setFormErrors({ phoneNo: '', email: '', message: err })
-          } else {
-            setFormErrors({phoneNo: err.phoneNo, email: err.email , message: '' })
-          }
-        })
-    },
+  
+  const { register, handleSubmit, watch, setError, formState: { errors } } = useForm({ 
+    resolver: yupResolver(RegisterSchema)
   });
+  
+  const password = watch('password');
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const onSubmit = (data) => {
+    if (phoneNo.length < 5) {
+      setFormErrors({phoneNo: 'Please provide a valid phone number'})
+      return;
+    }
+
+    const formattedPhoneNo = `+${phoneNo}`
+    registerVendor({ ...data, phoneNo: formattedPhoneNo })
+    setLoading(true)
+  };
+
+  const onError = (err) => {
+    if (!phoneNo || phoneNo.length < 5) {
+      setFormErrors({phoneNo: 'Please provide a valid phone number'})
+      return;
+    }
+  }
 
   return (
-    <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <Stack spacing={3}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <TextField
               fullWidth
               label="First name"
-              {...getFieldProps("firstName")}
-              error={Boolean(touched.firstName && errors.firstName)}
-              helperText={touched.firstName && errors.firstName}
+              {...register("firstName")}
+              error={Boolean(errors.firstName?.message)}
+              helperText={errors.firstName?.message}
             />
 
             <TextField
               fullWidth
               label="Last name"
-              {...getFieldProps("lastName")}
-              error={Boolean(touched.lastName && errors.lastName)}
-              helperText={touched.lastName && errors.lastName}
+              {...register("lastName")}
+              error={Boolean(errors.lastName?.message)}
+              helperText={errors.lastName?.message}
             />
           </Stack>
 
-          {
-            formik.values.lastName?.length > 0 && (
-              <PhoneNumberInput 
-                phoneNo={phoneNo} 
-                setPhoneNo={(value) => {
-                  setFormErrors({...formErrors, phoneNo: ''});
-                  setPhoneNo(value)
-                  }
-                } 
-                error={formErrors.phoneNo} 
-              />
-            )
-          }
+          <PhoneNumberInput 
+            phoneNo={phoneNo} 
+            setPhoneNo={(value) => {
+                setFormErrors({...formErrors, phoneNo: ''});
+                setPhoneNo(value)
+              }
+            } 
+            error={formErrors.phoneNo} 
+          />
 
-          { phoneNo?.length > 0 && (
+          { phoneNo?.length > 2 && (
             <TextField
               fullWidth
               autoComplete="email"
               type="email"
               label="Email address"
-              {...getFieldProps("email")}
+              {...register("email")}
               onKeyUp={() => setFormErrors({...formErrors, email: ''})}
-              error={Boolean(touched.email && errors.email) || Boolean(formErrors.email)}
-              helperText={(touched.email && errors.email) || formErrors.email}
+              error={Boolean(errors.email?.message)}
+              helperText={(errors.email?.message)}
             />
           )}
 
-          {formik.values?.email && (
           <TextField
               fullWidth
-              autoComplete="password"
+              autoComplete= 'new-password'
               type={showPassword ? "text" : "password"}
               label="Password"
-              {...getFieldProps("password")}
+              {...register("password")}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -158,17 +158,16 @@ export default function RegisterForm() {
                   </InputAdornment>
                 ),
               }}
-              error={Boolean(touched.password && errors.password)}
-              helperText={touched.password && errors.password}
+              error={Boolean(errors.password?.message)}
+              helperText={errors.password?.message}
             />
-          )}
 
-          {formik.values.password?.length > 7 && <TextField
+          {password?.length > 7 && <TextField
             fullWidth
             autoComplete={+new Date()}
             type={showPassword ? "text" : "password"}
             label="Confirm Password"
-            {...getFieldProps("confirmPassword")}
+            {...register("confirmPassword")}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -181,13 +180,13 @@ export default function RegisterForm() {
                 </InputAdornment>
               ),
             }}
-            error={Boolean(touched.confirmPassword && errors.confirmPassword)}
-            helperText={touched.confirmPassword && errors.confirmPassword}
+            error={Boolean(errors.confirmPassword?.message)}
+            helperText={errors.confirmPassword?.message}
           />}
 
-          {formErrors.message && 
+          {formErrors?.message && 
             <Grid className={classes.error} item>
-              {formErrors.message}
+              {formErrors?.message}
             </Grid>
           }
 
@@ -196,12 +195,11 @@ export default function RegisterForm() {
             size="large"
             type="submit"
             variant="contained"
-            loading={isSubmitting}
+            loading={loading}
           >
             Register
           </LoadingButton>
         </Stack>
-      </Form>
-    </FormikProvider>
+      </form>
   );
 }

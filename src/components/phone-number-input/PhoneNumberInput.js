@@ -25,6 +25,7 @@ const PhoneNumberInput = ({ phoneNo, setPhoneNo, error }) => {
         country={"us"}
         value={phoneNo}
         onChange={(phone) => setPhoneNo(phone)}
+        isValid={!error}
       />
       {error && <Typography className={classes.error}>{error}</Typography>}
     

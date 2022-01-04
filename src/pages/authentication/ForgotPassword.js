@@ -14,7 +14,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {PhoneNumberInput} from "../../components/phone-number-input";
+import PhoneNumberInput from "../../components/phone-number-input";
 import { sendOTPForResetPassword, clearError } from '../../store/redux/actions/auth';
 
 const useStyles = makeStyles((theme) => ({

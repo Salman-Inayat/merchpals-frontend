@@ -53,6 +53,8 @@ const useStyles = makeStyles((theme) => ({
 const OtpVerification = ({
   verifyOTP = () => {},
   sendOTP = () => {},
+  nextStep = () => {},
+  fireNextStep = false,
   otpVerified = false,
   otpSent = false,
   verificationError = '',
@@ -69,7 +71,11 @@ const OtpVerification = ({
   useEffect(() => {
     if(otpVerified){
       localStorage.removeItem('phoneNoForOTP')
-      navigate('/login', { replace: true })
+      if(fireNextStep){
+        nextStep()
+      } else {
+        navigate('/login', { replace: true })
+      }
     } else if(verificationError) {
       setError(verificationError);
       clearError()
