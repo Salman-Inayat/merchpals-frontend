@@ -1,31 +1,36 @@
 import { useEffect, useState } from 'react';
-import { 
-  Button,
-  Grid, 
-} from '@mui/material';
+import { useState } from 'react';
+import { Button, Grid, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ProductCard from '../../../components/ProductCard';
+import { useMediaQuery } from 'react-responsive';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   footer: {
-    backgroundColor: '#babdb3',
+    // backgroundColor: '#babdb3',
     maxWidth: '100%',
-    position: 'fixed',
+    // position: 'fixed',
     bottom: '0',
-    padding: '10px 0px'
+    padding: '10px 0px',
   },
   btn: {
     color: '#fff',
     fontSize: '18px',
-    '&:hover':{
-      backgroundColor: '#aaa'
-    }
-  }
-}))
+    '&:hover': {
+      backgroundColor: '#aaa',
+    },
+  },
+  productsContainer: {
+    padding: '2rem 8rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0.2rem',
+    },
+  },
+}));
 const Products = ({
   productSelectionCompleted = () => {},
   products = [],
-  initialDesign = ''
+  initialDesign = '',
 }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const classes = useStyles();
@@ -40,21 +45,27 @@ const Products = ({
   
   const onVariantClick = (productVariant) => {
     const [product, color] = productVariant.split(',')
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  const onVariantClick = productVariant => {
+    const [product, color] = productVariant.split(',');
     // console.log({ product, color });
     let removedProduct = false;
     let productColors = [];
     let updatedVariants = {};
 
     if (!selectedVariants[product]) {
-       productColors = [color]
+      productColors = [color];
     } else {
-      const colorIndex = selectedVariants[product].findIndex(c => c === color)
-      
-      if (colorIndex > -1) {
-        productColors = [...selectedVariants[product]]
+      const colorIndex = selectedVariants[product].findIndex(c => c === color);
 
-        if(productColors.length === 1) {
-          let prevSelectedProducts = {...selectedVariants};
+      if (colorIndex > -1) {
+        productColors = [...selectedVariants[product]];
+
+        if (productColors.length === 1) {
+          let prevSelectedProducts = { ...selectedVariants };
           delete prevSelectedProducts[product];
           removedProduct = true;
 
@@ -63,11 +74,10 @@ const Products = ({
           }
 
         } else {
-          productColors.splice(colorIndex, 1)
+          productColors.splice(colorIndex, 1);
         }
-
       } else {
-        productColors = [...selectedVariants[product], color]
+        productColors = [...selectedVariants[product], color];
       }
     }
 
@@ -82,25 +92,25 @@ const Products = ({
     localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
   };
 
-  const onProductClick = (productId) => {
-    let prevSelectedProducts = {...selectedVariants};
+  const onProductClick = productId => {
+    let prevSelectedProducts = { ...selectedVariants };
 
     if (prevSelectedProducts[productId]) {
-      delete prevSelectedProducts[productId]
+      delete prevSelectedProducts[productId];
       setSelectedVariants({
         ...prevSelectedProducts,
-      })
+      });
     } else {
-      const relatedProduct = products.find(p => p._id === productId)
+      const relatedProduct = products.find(p => p._id === productId);
 
       const variantsOfProduct = relatedProduct.colors.reduce((color, curr) => {
-        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color)
-        return [...color, ...relatedMappings]
-      }, [])
+        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
+        return [...color, ...relatedMappings];
+      }, []);
 
-      const uniqVariantIds = variantsOfProduct.filter(function(item, pos) {
+      const uniqVariantIds = variantsOfProduct.filter(function (item, pos) {
         return variantsOfProduct.indexOf(item) == pos;
-    })
+      });
 
       const updatedVariants = {
         ...selectedVariants,
@@ -110,47 +120,97 @@ const Products = ({
       setSelectedVariants(updatedVariants)
       localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
     }
-  }
-console.log({products});
+  };
+  console.log({ products });
+
   const formatAndContinue = () => {
     const selectedProducts = Object.keys(selectedVariants);
     const formattedVariants = selectedProducts.map(productId => {
-      const productsSelectedVariants = selectedVariants[productId]
+      const productsSelectedVariants = selectedVariants[productId];
       let productMappings = [];
-      const colors = products.find(p => p._id === productId).colors
+      const colors = products.find(p => p._id === productId).colors;
       productsSelectedVariants.forEach(psv => {
-        productMappings = colors.find(c => c.id === psv).relatedProductVariantsId.map(rp => rp._id);
-      })
-        
-      return { productId, productMappings }
-    })
-    console.log({formattedVariants});
-    productSelectionCompleted(formattedVariants)
-  }
+        productMappings = colors
+          .find(c => c.id === psv)
+          .relatedProductVariantsId.map(rp => rp._id);
+      });
 
-console.log({selectedVariants});
+      return { productId, productMappings };
+    });
+    console.log({ formattedVariants });
+    productSelectionCompleted(formattedVariants);
+  };
+
+  console.log({ selectedVariants });
   return (
     <Grid container>
-      <Grid container  justifyContent='center' alignItems='center' mt={5} pb={18}>
-        <Grid item xs={8}  container  justifyContent='flex-start' alignItems='flex-start' spacing={3}>
-          { products.map((product, i) => (
-            <Grid mt={5} key={`product-${i}`} item>
-              <ProductCard 
-                product={product} 
-                onVariantClick={onVariantClick} 
-                onProductClick={onProductClick}
-                selectedVariants={selectedVariants}
-                initialDesign={initialDesign}
-              />
-            </Grid>                               
-          ))}
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        mt={5}
+        pb={18}
+      >
+        <Grid
+          item
+          xs={12}
+          justifyContent="flex-start"
+          alignItems="flex-start"
+          spacing={3}
+        >
+          <Grid item md={12} sm={12} xs={12}>
+            <Typography
+              align="center"
+              variant="h3"
+              style={{ color: '#0097a7' }}
+            >
+              Product Selection
+            </Typography>
+            <Typography
+              align="center"
+              variant="h5"
+              style={{ fontWeight: 'normal' }}
+            >
+              Please select products for your design
+            </Typography>
+          </Grid>
+          <Grid
+            container
+            spacing={isMobile ? 1 : 10}
+            className={classes.productsContainer}
+          >
+            {products.map((product, i) => (
+              <Grid item md={4} mt={5} xs={6} key={`product-${i}`}>
+                <ProductCard
+                  product={product}
+                  onVariantClick={onVariantClick}
+                  onProductClick={onProductClick}
+                  selectedVariants={selectedVariants}
+                  initialDesign={initialDesign}
+                />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
       </Grid>
-      <Grid container justifyContent='center' alignItems='center' className={classes.footer}>
-        <Button onClick={formatAndContinue} className={classes.btn}>Continue</Button>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        className={classes.footer}
+      >
+        <Button
+          onClick={formatAndContinue}
+          className={classes.btn}
+          size="large"
+          color="primary"
+          variant="contained"
+        >
+          Continue
+        </Button>
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
-export { Products as default }
+export { Products as default };

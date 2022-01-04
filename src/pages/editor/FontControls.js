@@ -72,7 +72,7 @@ const FontColor = props => {
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="demo-simple-select-label">Font Color</InputLabel>
+      <InputLabel id="demo-simple-select-label">Color</InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -130,7 +130,7 @@ const FontFamily = props => {
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="demo-simple-select-label">Font Family</InputLabel>
+      <InputLabel id="demo-simple-select-label">Style</InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -172,7 +172,7 @@ const FontControls = props => {
   return (
     <div id="textControls" hidden>
       <Stack
-        direction="row"
+        direction="column"
         spacing={2}
         alignItems="center"
         alignContent="center"
