@@ -94,6 +94,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
 
   const editorJs = useEditor();
   const [toggleSmileys, setToggleSmileys] = useState(false);
+  const [toggleFontControls, setToggleFontControls] = useState(false);
   const [cropDoneButton, setCropDoneButton] = useState(false);
   const [miniature, setMiniature] = useState();
 
@@ -199,6 +200,16 @@ const Editor = ({ exportBase64 = () => {} }) => {
     exportBase64(editorState);
   };
 
+  const handleControlsToggle = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+
+    smileyControls.hidden = smileyControls.hidden == true ? false : true;
+    fontControls.hidden = true;
+    imageControls.hidden = true;
+  };
+
   return (
     <Grid
       container
@@ -221,7 +232,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
       >
         <Grid container spacing={1}>
           <Grid item md={2} sm={2} xs={2}>
-            {toggleSmileys && <Smileys addPng={addPng} />}
+            <Smileys addPng={addPng} />
             <FontControls
               setFontColor={setFontColor}
               setFontFamily={setFontFamily}
@@ -320,7 +331,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
               </Button>
               <Button
                 variant="contained"
-                onClick={() => setToggleSmileys(!toggleSmileys)}
+                onClick={handleControlsToggle}
                 className={`${classes.smileys} ${classes.button}`}
               >
                 Smileys

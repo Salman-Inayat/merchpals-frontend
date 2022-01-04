@@ -148,7 +148,7 @@ const Smileys = ({ addPng, className }) => {
   ];
 
   return (
-    <div className={classes.smileyContainer}>
+    <div className={classes.smileyContainer} id="smileyContainer" hidden>
       {images.map((oneImage, index) => (
         <img
           key={index}

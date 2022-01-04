@@ -135,6 +135,7 @@ const useEditor = canvasId => {
 
         if (selectedObject.type === 'textbox') {
           document.getElementById('textControls').hidden = false;
+          document.getElementById('smileyContainer').hidden = true;
         }
 
         if (selectedObject.type !== 'image') {
@@ -196,9 +197,11 @@ const useEditor = canvasId => {
         const selectedObject = e.target;
         if (selectedObject.type === 'textbox') {
           document.getElementById('textControls').hidden = false;
+          document.getElementById('smileyContainer').hidden = true;
         } else if (selectedObject.type === 'image') {
           document.getElementById('crop-image-button').hidden = false;
           document.getElementById('textControls').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
         }
       },
       'before:selection:cleared': e => {
@@ -238,17 +241,38 @@ const useEditor = canvasId => {
     });
 
     canvas.on('mouse:moving', e => {});
+
+    canvas.on({
+      'text:editing:entered': e => {
+        console.log('Editing text');
+        if (e.target.type === 'textbox') {
+          if (e.target.text === 'Sample Text') {
+            e.target.text = '';
+            e.target.hiddenTextarea.value = ''; // NEW
+            canvas.renderAll();
+          }
+        }
+      },
+    });
   });
 
-  function copy(copiedCanvas) {
+  function copy(copiedCanvas, canvas) {
+    if (canvas.backgroundColor === '#ffffff00') {
+      console.log('clearing');
+      ctx2.fillStyle = '#ffffff';
+      ctx2.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     ctx2.drawImage(copiedCanvas, 0, 0);
+
+    console.log(copiedCanvas);
   }
 
   function afterRender() {
     console.log('Calling afterRender');
     var originalVP = canvas.viewportTransform;
     canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
-    copy(canvas.toCanvasElement());
+    copy(canvas.toCanvasElement(), canvas);
     canvas.viewportTransform = originalVP;
   }
 
