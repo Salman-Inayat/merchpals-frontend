@@ -86,24 +86,6 @@ const Product = () => {
 
   const handleColorChange = event => {
     setColor(event.target.value);
-    //  switch (event.target.value) {
-    //      case "1":
-    //          setProductColor("black")
-    //          break;
-    //         case "2":
-    //             setProductColor("white")
-    //             break;
-    //         case "3":
-    //             setProductColor("navy")
-    //             break;
-    //         case "4":
-    //             setProductColor("grey")
-    //             break;
-    //         case "8":
-    //             setProductColor("red")
-    //      default:
-    //          break;
-    //  }
   };
 
   const handleSizeChange = event => {

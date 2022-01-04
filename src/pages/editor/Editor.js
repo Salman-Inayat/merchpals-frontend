@@ -10,6 +10,14 @@ import CanvasEditor from '../../components/editor/canvasEditor';
 import Smileys from './Smileys';
 
 const useStyles = makeStyles(theme => ({
+  editor: {
+    width: '450px',
+    height: '450px',
+    [theme.breakpoints.down('sm')]: {
+      width: '225px',
+      height: '225px',
+    },
+  },
   controlsContainer: {
     // order: 2,
     display: 'flex',
@@ -17,12 +25,12 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {
       // order: 3,
-      position: 'fixed',
-      bottom: theme.spacing(2),
+      // position: 'fixed',
+      // bottom: theme.spacing(2),
     },
     [theme.breakpoints.down('sm')]: {
-      position: 'fixed',
-      bottom: theme.spacing(2),
+      // position: 'fixed',
+      // bottom: theme.spacing(2),
     },
   },
   canvasContainer: {
@@ -32,7 +40,6 @@ const useStyles = makeStyles(theme => ({
     //   marginBottom: '50px',
     // },
   },
-  editor: {},
   bottomButtons: {
     alignItems: 'center',
     alignContent: 'center',
@@ -58,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block',
     textAlign: 'center',
     position: 'relative',
-    marginLeft: '50px',
+    margin: '20px 0px',
   },
   shirtImage: {
     width: '150px',
@@ -67,14 +74,15 @@ const useStyles = makeStyles(theme => ({
     top: '0',
     left: '0',
     [theme.breakpoints.down('sm')]: {
-      width: '250px',
+      width: '150px',
       height: '150px',
     },
   },
   miniature: {
     position: 'absolute',
-    top: '50px',
-    left: '50px',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
     width: '50px',
     height: '50px',
     border: 'none',
@@ -86,6 +94,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
 
   const editorJs = useEditor();
   const [toggleSmileys, setToggleSmileys] = useState(false);
+  const [toggleFontControls, setToggleFontControls] = useState(false);
   const [cropDoneButton, setCropDoneButton] = useState(false);
   const [miniature, setMiniature] = useState();
 
@@ -132,14 +141,14 @@ const Editor = ({ exportBase64 = () => {} }) => {
 
   const firstUpdate = useRef(true);
 
-  useLayoutEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
+  // useLayoutEffect(() => {
+  //   if (firstUpdate.current) {
+  //     firstUpdate.current = false;
+  //     return;
+  //   }
 
-    setMiniature(editorJs.getMiniature());
-  });
+  //   setMiniature(editorJs.getMiniature());
+  // });
 
   const addText = () => {
     editorJs.addText();
@@ -193,8 +202,28 @@ const Editor = ({ exportBase64 = () => {} }) => {
     setCropDoneButton(false);
   };
 
+  const handleExportButton = () => {
+    const editorState = editorJs.exportCanvas();
+    exportBase64(editorState);
+  };
+
+  const handleControlsToggle = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+
+    smileyControls.hidden = smileyControls.hidden == true ? false : true;
+    fontControls.hidden = true;
+    imageControls.hidden = true;
+  };
+
   return (
-    <Grid container spacing={2} alignItems="center">
+    <Grid
+      container
+      spacing={2}
+      alignItems="center"
+      style={{ marginLeft: '10px' }}
+    >
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           Create Your Design Here
@@ -205,13 +234,45 @@ const Editor = ({ exportBase64 = () => {} }) => {
         md={12}
         spacing={1}
         sm={12}
+        xs={12}
         className={classes.canvasContainer}
       >
         <Grid container spacing={1}>
-          <Grid item md={2} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
-            {toggleSmileys && <Smileys addPng={addPng} />}
+          <Grid item md={2} sm={2} xs={2}>
+            <Smileys addPng={addPng} />
+            <FontControls
+              setFontColor={setFontColor}
+              setFontFamily={setFontFamily}
+            />
+            <div id="crop-image-button" hidden>
+              <Button
+                variant="contained"
+                onClick={cropImage}
+                className={`${classes.crop} ${classes.button}`}
+              >
+                Crop
+              </Button>
+            </div>
+            {cropDoneButton && (
+              <Button
+                variant="contained"
+                onClick={cropImageDone}
+                id="crop-image-done-button"
+                hidden
+                className={`${classes.cropDone} ${classes.button}`}
+              >
+                Done
+              </Button>
+            )}
           </Grid>
-          <Grid item md={8} xs={10} order={{ xs: 1, sm: 1, md: 2 }}>
+          <Grid
+            item
+            md={8}
+            xs={8}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
             <Card className={`${classes.editor} fabric-canvas-wrapper`}>
               <CanvasEditor
                 onReady={editorJs.onReady}
@@ -219,14 +280,33 @@ const Editor = ({ exportBase64 = () => {} }) => {
               />
             </Card>
           </Grid>
-          <Grid item md={2} sm={1} xs={1} order={{ xs: 2, sm: 2, md: 3 }}>
+          <Grid item md={2} sm={1} xs={2}>
             <ColorPallete setCanvasBackground={setCanvasBackground} />
           </Grid>
         </Grid>
       </Grid>
-      <Grid item md={12} sm={12}>
+      <Grid item md={12} sm={12} xs={12}>
         <Grid container spacing={2} className={classes.controlsContainer}>
-          <Grid item md={8} sm={12} xs={12} order={{ xs: 3, sm: 3, md: 1 }}>
+          <Grid
+            md={12}
+            sm={12}
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <div className={classes.miniatureContaienr}>
+              <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
+              <canvas
+                id="static"
+                width="50"
+                height="50"
+                className={classes.miniature}
+              ></canvas>
+            </div>
+          </Grid>
+          <Grid item md={2} xs={12}></Grid>
+          <Grid item md={8} sm={12} xs={12}>
             <Stack
               direction="row"
               spacing={1}
@@ -258,7 +338,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
               </Button>
               <Button
                 variant="contained"
-                onClick={() => setToggleSmileys(!toggleSmileys)}
+                onClick={handleControlsToggle}
                 className={`${classes.smileys} ${classes.button}`}
               >
                 Smileys
@@ -284,47 +364,21 @@ const Editor = ({ exportBase64 = () => {} }) => {
               >
                 <Delete />
               </Button>
-              {false && <Button
-                onClick={() => exportBase64(miniature)}
-                variant="contained"
-              >
-                Export
-              </Button>}
             </Stack>
           </Grid>
-
-          <Grid md={4} sm={4} xs={6} order={{ xs: 1, sm: 1, md: 3 }}>
-            <div className={classes.miniatureContaienr}>
-              <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
-              <img src={miniature} className={classes.miniature} />
-            </div>
+          <Grid item md={2} xs={12}></Grid>
+          <Grid
+            item
+            md={12}
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Button onClick={handleExportButton} variant="contained">
+              Export
+            </Button>
           </Grid>
-        </Grid>
-        <Grid item md={6} sm={6} xs={8} order={{ xs: 2, sm: 2, md: 2 }}>
-          <div id="crop-image-button" hidden>
-            <Button
-              variant="contained"
-              onClick={cropImage}
-              className={`${classes.crop} ${classes.button}`}
-            >
-              Crop
-            </Button>
-          </div>
-          {cropDoneButton && (
-            <Button
-              variant="contained"
-              onClick={cropImageDone}
-              id="crop-image-done-button"
-              hidden
-              className={`${classes.cropDone} ${classes.button}`}
-            >
-              Done
-            </Button>
-          )}
-          <FontControls
-            setFontColor={setFontColor}
-            setFontFamily={setFontFamily}
-          />
         </Grid>
       </Grid>
       <Grid item md={1}>
@@ -346,6 +400,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
           <span id="style15"> </span>
         </div>
       </Grid>
+      <Grid>{/* <canvas id="static" width="50" height="50"></canvas> */}</Grid>
     </Grid>
   );
 };
