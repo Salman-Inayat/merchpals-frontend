@@ -123,6 +123,13 @@ const Editor = ({ exportBase64 = () => {} }) => {
     style15.style.fontFamily = 'BungeeS';
   }, []);
 
+  useEffect(() => {
+    // return () => {
+      localStorage.setItem('initialDesign', miniature)
+      console.log('unmount')
+    // };
+  })
+
   const firstUpdate = useRef(true);
 
   useLayoutEffect(() => {
@@ -277,12 +284,12 @@ const Editor = ({ exportBase64 = () => {} }) => {
               >
                 <Delete />
               </Button>
-              <Button
+              {false && <Button
                 onClick={() => exportBase64(miniature)}
                 variant="contained"
               >
                 Export
-              </Button>
+              </Button>}
             </Stack>
           </Grid>
 

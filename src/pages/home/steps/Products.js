@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   Button,
   Grid, 
@@ -28,13 +28,22 @@ const Products = ({
   initialDesign = ''
 }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
-
   const classes = useStyles();
+
+  useEffect(() => {
+    const existingVariants = localStorage.getItem('selectedVariants')
+    if(existingVariants) {
+      const formattedVariants = JSON.parse(existingVariants);
+      setSelectedVariants(formattedVariants)
+    }
+  }, [])
+  
   const onVariantClick = (productVariant) => {
     const [product, color] = productVariant.split(',')
     // console.log({ product, color });
     let removedProduct = false;
     let productColors = [];
+    let updatedVariants = {};
 
     if (!selectedVariants[product]) {
        productColors = [color]
@@ -49,9 +58,10 @@ const Products = ({
           delete prevSelectedProducts[product];
           removedProduct = true;
 
-          setSelectedVariants({
+          updatedVariants = {
             ...prevSelectedProducts,
-          })
+          }
+
         } else {
           productColors.splice(colorIndex, 1)
         }
@@ -62,11 +72,14 @@ const Products = ({
     }
 
     if (!removedProduct) {
-      setSelectedVariants({
+      updatedVariants = {
         ...selectedVariants,
         [product]: [...new Set(productColors)]
-      })      
+      }   
     }
+
+    setSelectedVariants(updatedVariants)
+    localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
   };
 
   const onProductClick = (productId) => {
@@ -89,10 +102,13 @@ const Products = ({
         return variantsOfProduct.indexOf(item) == pos;
     })
 
-      setSelectedVariants({
+      const updatedVariants = {
         ...selectedVariants,
         [productId]: [...uniqVariantIds]
-      })
+      };
+
+      setSelectedVariants(updatedVariants)
+      localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
     }
   }
 console.log({products});

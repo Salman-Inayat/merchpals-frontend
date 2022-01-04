@@ -74,7 +74,11 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProducts()
+    if (localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
+      navigate('/vendor/store', { replace: true })
+    } else {
+      fetchProducts()
+    }
   }, [])
 
   const fetchProducts = async () => {
@@ -134,7 +138,6 @@ const Home = () => {
     store.append('coverAvatar', data.coverAvatar);
     store.append('designs', localStorage.getItem('initialDesign') )
     store.append('products', JSON.stringify([...selectedVariants]));
-console.log({store});
     
     axios.post(`${baseURL}/store`, store ,{
       headers: {
@@ -142,7 +145,8 @@ console.log({store});
         'Content-Type': 'multipart/form-data'
       }})
       .then(response => {
-        console.log({ response });
+        localStorage.removeItem('initialDesign');
+        localStorage.removeItem('selectedVariants');
 
         setShowWelcomeMessage(true);
         setTimeout(() => {
@@ -165,7 +169,7 @@ console.log({store});
         return (
           <Products 
             products={products} 
-            initialDesign={initialDesign} 
+            initialDesign={localStorage.getItem('initialDesign')} 
             productSelectionCompleted={productSelectionCompleted}
           />
         )

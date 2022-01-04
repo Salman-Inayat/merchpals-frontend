@@ -29,6 +29,7 @@ export default function RegisterForm({
     phoneNo: '',
     message: ''
   });
+  const [loading, setLoading] = useState(false)
 
   const classes = useStyles();
 
@@ -38,11 +39,14 @@ export default function RegisterForm({
         type: "manual",
         message: registrationErrors.email,
       });
+      setLoading(false);
     }
+    
     if (registrationErrors.phoneNo) {
      setFormErrors({
       phoneNo: registrationErrors.phoneNo
      })
+     setLoading(false);
     }
         
   }, [registrationErrors])
@@ -82,6 +86,7 @@ export default function RegisterForm({
 
     const formattedPhoneNo = `+${phoneNo}`
     registerVendor({ ...data, phoneNo: formattedPhoneNo })
+    setLoading(true)
   };
 
   const onError = (err) => {
@@ -190,6 +195,7 @@ export default function RegisterForm({
             size="large"
             type="submit"
             variant="contained"
+            loading={loading}
           >
             Register
           </LoadingButton>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Grid, Stack, TextField, Button, Typography, Label } from "@mui/material";
+import { Grid, Stack, TextField, Button, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/material/styles';
 import * as Yup from "yup";
@@ -7,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
+
 const useStyle = makeStyles(() => ({
   heading: {
     fontSize: '20px',
@@ -33,6 +35,7 @@ const StoreForm = ({
   const [images, setImages] = useState({logo: '', coverAvatar: ''});
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   
   const storeSchema = Yup.object().shape({
     name: Yup.string()
@@ -41,6 +44,7 @@ const StoreForm = ({
       .max(50, "Too Long!"),
     slug: Yup.string()
       .required("Store slug is required")
+      .matches(/^[a-z0-9]+[a-z0-9-]+[a-z0-9]$/, "Only alpha numeric characters with hyphen (-) are allowed")
       .min(2, "Too Short!")
       .max(15, "Too Long!"),
   });
@@ -50,7 +54,7 @@ const StoreForm = ({
   });
 
   const onSubmit = (data) => {
-    // console.log({ data });
+    setLoading(true);
     console.log({images});
     createStore({...data, ...images})
   };
@@ -96,12 +100,15 @@ const StoreForm = ({
 
   const isSlugValid = () => {
     const slug = watch('slug');
+    setLoading(true);
     axios.get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
     .then(response => {
       console.log({ response });
       setSlugMessage('')
+      setLoading(false);
     })
     .catch(err => {
+      setLoading(false);
       console.log({ errp: err.response.data });
       setSlugMessage(err.response.data.message)
     })
@@ -123,7 +130,7 @@ const StoreForm = ({
 
               <TextField
                 fullWidth
-                label="Slug"
+                label="Store url"
                 {...register("slug")}
                 error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
                 helperText={errors.slug?.message || slugMessage}
@@ -132,10 +139,18 @@ const StoreForm = ({
 
               <TextField
                 fullWidth
-                label="Facebook"
-                {...register("facebook")}
-                error={Boolean(errors.facebook?.message)}
-                helperText={errors.facebook?.message}
+                label="twtich"
+                {...register("twtich")}
+                error={Boolean(errors.twtich?.message)}
+                helperText={errors.twtich?.message}
+              />
+
+              <TextField
+                fullWidth
+                label="youtube"
+                {...register("youtube")}
+                error={Boolean(errors.youtube?.message)}
+                helperText={errors.youtube?.message}
               />
 
               <TextField
@@ -148,10 +163,10 @@ const StoreForm = ({
 
               <TextField
                 fullWidth
-                label="Twitter"
-                {...register("twitter")}
-                error={Boolean(errors.twitter?.message)}
-                helperText={errors.twitter?.message}
+                label="Tiktok"
+                {...register("Tiktok")}
+                error={Boolean(errors.Tiktok?.message)}
+                helperText={errors.Tiktok?.message}
               />
 
               <Grid container>
@@ -189,14 +204,15 @@ const StoreForm = ({
                 </Grid>
               </Grid>
 
-              <Button
+              <LoadingButton
                 fullWidth
                 size="large"
                 type="submit"
                 variant="contained"
+                loading={loading}
               >
                 Create Store
-              </Button>
+              </LoadingButton>
               </Stack>
             </form>
         </Grid>
