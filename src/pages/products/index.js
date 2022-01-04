@@ -26,6 +26,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { addToCart } from '../../store/redux/actions/cart';
 
 const useStyle = makeStyles(() => ({
   image: {
@@ -41,12 +43,13 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
-const Product = () => {
+const Product = ({ addToCart }) => {
   const classes = useStyle();
   const { productId } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState({
+    id: '',
     name: '',
     description: '',
     image: '',
@@ -69,7 +72,9 @@ const Product = () => {
       .get(`${baseURL}/products/${productId}`)
       .then(response => {
         const product = response.data.product;
+
         setProduct({
+          id: product._id,
           name: product.name,
           description: product.description,
           image: product.image,
@@ -96,9 +101,17 @@ const Product = () => {
     navigate(-1);
   };
 
+  const handleAddToCart = () => {
+    addToCart(product);
+  };
+
+  const handleCartButton = () => {
+    navigate('/cart');
+  };
+
   return (
     <Grid container spacing={1}>
-      <Grid item md={12} xs={12}>
+      <Grid item md={6} xs={12}>
         <Button
           variant="contained"
           color="primary"
@@ -106,6 +119,16 @@ const Product = () => {
           className={classes.backButton}
         >
           Back
+        </Button>
+      </Grid>
+      <Grid item md={6} xs={12}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCartButton}
+          className={classes.backButton}
+        >
+          Cart
         </Button>
       </Grid>
       <Grid item md={12} xs={12}>
@@ -224,8 +247,12 @@ const Product = () => {
                 >
                   {product.cost} $
                 </Typography>
-                <Button color="secondary" variant="outlined" size="large">
-                  {' '}
+                <Button
+                  color="secondary"
+                  variant="outlined"
+                  size="large"
+                  onClick={handleAddToCart}
+                >
                   Add to Cart
                 </Button>
               </Stack>
@@ -237,4 +264,13 @@ const Product = () => {
   );
 };
 
-export { Product as default };
+const mapDispatch = dispatch => ({
+  addToCart: product => {
+    dispatch(addToCart(product));
+  },
+});
+
+const mapState = state => ({});
+export default connect(mapState, mapDispatch)(Product);
+
+// export { Product as default };

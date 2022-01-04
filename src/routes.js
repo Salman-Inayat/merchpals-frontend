@@ -15,6 +15,7 @@ import VendorDashboard from './pages/vendors';
 import Store from './pages/store';
 import Product from './pages/products';
 import VendorStore from './pages/vendors/store';
+import Cart from './pages/cart';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -31,5 +32,6 @@ export default function Router() {
     { path: '/store', element: <Store /> },
     { path: '/products/:productId', element: <Product /> },
     { path: '/vendor/store', element: <VendorStore /> },
+    { path: '/cart', element: <Cart /> },
   ]);
 }
