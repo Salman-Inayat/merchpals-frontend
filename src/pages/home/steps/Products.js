@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ProductCard from '../../../components/ProductCard';
@@ -34,7 +33,10 @@ const Products = ({
 }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const classes = useStyles();
-
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  
   useEffect(() => {
     const existingVariants = localStorage.getItem('selectedVariants')
     if(existingVariants) {
@@ -42,12 +44,6 @@ const Products = ({
       setSelectedVariants(formattedVariants)
     }
   }, [])
-  
-  const onVariantClick = (productVariant) => {
-    const [product, color] = productVariant.split(',')
-  const isDesktop = useMediaQuery({ minWidth: 992 });
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const onVariantClick = productVariant => {
     const [product, color] = productVariant.split(',');
