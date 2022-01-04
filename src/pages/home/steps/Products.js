@@ -139,7 +139,6 @@ const Products = ({
           justifyContent="flex-start"
           alignItems="flex-start"
           spacing={3}
-          // style={{ padding: '0rem 9rem ' }}
         >
           <Grid item md={12} sm={12} xs={12}>
             <Typography

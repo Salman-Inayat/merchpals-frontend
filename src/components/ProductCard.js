@@ -113,6 +113,15 @@ const useStyles = makeStyles(theme => ({
     },
   },
   productImage: {},
+  checkboxContainer: {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    [theme.breakpoints.down('sm')]: {
+      top: '10px',
+      right: '5px',
+    },
+  },
 }));
 const label = { inputProps: { 'aria-label': 'Select Project' } };
 
@@ -153,13 +162,7 @@ const ProductCard = ({
         className={classes.productCard}
         style={{ backgroundColor: renderBgColor() }}
       >
-        <Box
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-          }}
-        >
+        <Box className={classes.checkboxContainer}>
           <Checkbox
             checked={selectedVariants[product._id] ? true : false}
             onChange={onProductClick}
@@ -199,7 +202,7 @@ const ProductCard = ({
         {product.colors.length !== 1 &&
           product.colors.label !== 'n/a' &&
           product.colors.map((pm, i) => (
-            <Grid key={`colors-${i}`} item>
+            <Grid key={`colors-${i}`} item md={2} xs={1}>
               <Checkbox
                 onChange={onVariantClick}
                 checked={

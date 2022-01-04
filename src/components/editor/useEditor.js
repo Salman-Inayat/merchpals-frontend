@@ -3,7 +3,7 @@ import 'fabric-history';
 import * as changedpi from 'changedpi';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
-import { useState, useLayoutEffect, useRef } from 'react';
+import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import 'fabric-history';
 import { useMediaQuery } from 'react-responsive';
 
@@ -56,6 +56,11 @@ const useEditor = canvasId => {
   let textSelection;
   let url = '';
 
+  // let c2;
+  // let ctx2;
+
+  const [c2, setC2] = useState();
+  const [ctx2, setCtx2] = useState();
   const firstUpdate = useRef(true);
 
   const applyProperties = selectedObject => {
@@ -79,7 +84,18 @@ const useEditor = canvasId => {
       tr: false,
       mtr: true,
     });
+
+    if (selectedObject.type === 'textbox') {
+      selectedObject.setControlsVisibility({
+        mr: true,
+      });
+    }
   };
+
+  useEffect(() => {
+    setC2(document.getElementById('static'));
+    setCtx2(document.getElementById('static').getContext('2d'));
+  }, []);
 
   useLayoutEffect(() => {
     if (firstUpdate.current) {
@@ -96,14 +112,16 @@ const useEditor = canvasId => {
         const selectedObject = e.target;
 
         applyProperties(selectedObject);
-        setMiniature(canvas.toDataURL());
+        //setMiniature(canvas.toDataURL());
+        afterRender();
 
         resetPanels();
       },
       'object:added': e => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
-        setMiniature(canvas.toDataURL());
+        //setMiniature(canvas.toDataURL());
+        afterRender();
         resetPanels();
       },
       'selection:updated': e => {
@@ -215,11 +233,24 @@ const useEditor = canvasId => {
     // get references to the html canvas element & its context
     canvas.on('mouse:down', e => {
       const canvasElement = document.getElementById('canvas');
-      setMiniature(canvas.toDataURL());
+      //setMiniature(canvas.toDataURL());
+      afterRender();
     });
 
     canvas.on('mouse:moving', e => {});
   });
+
+  function copy(copiedCanvas) {
+    ctx2.drawImage(copiedCanvas, 0, 0);
+  }
+
+  function afterRender() {
+    console.log('Calling afterRender');
+    var originalVP = canvas.viewportTransform;
+    canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
+    copy(canvas.toCanvasElement());
+    canvas.viewportTransform = originalVP;
+  }
 
   const undo = () => {
     canvas.undo();
@@ -266,7 +297,7 @@ const useEditor = canvasId => {
         mt: false,
         mb: false,
         ml: false,
-        mr: false,
+        mr: true,
         bl: false,
         br: true,
         tl: false,
@@ -308,7 +339,7 @@ const useEditor = canvasId => {
         mt: false,
         mb: false,
         ml: false,
-        mr: false,
+        mr: true,
         bl: false,
         br: true,
         tl: false,
@@ -454,7 +485,8 @@ const useEditor = canvasId => {
     canvas.bringToFront(mask);
     canvas.setActiveObject(mask);
     canvas.renderAll();
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
+    afterRender();
   };
 
   const cropImageDone = () => {
@@ -484,7 +516,8 @@ const useEditor = canvasId => {
     canvas.remove(mask);
     canvas.setActiveObject(image);
     canvas.renderAll();
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
+    afterRender();
   };
 
   const readUrl = event => {
@@ -566,7 +599,8 @@ const useEditor = canvasId => {
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
     }
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
+    afterRender();
   };
 
   const extend = (obj, id) => {
@@ -690,7 +724,8 @@ const useEditor = canvasId => {
     }
     object.set(name, value);
     canvas.renderAll();
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
+    afterRender();
   };
 
   const clone = () => {
@@ -756,7 +791,8 @@ const useEditor = canvasId => {
 
   const setFill = () => {
     setActiveStyle('fill', canvasProperties.fill, null);
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
+    afterRender();
   };
 
   const getLineHeight = () => {
@@ -863,7 +899,8 @@ const useEditor = canvasId => {
       });
     }
 
-    setMiniature(canvas.toDataURL());
+    //setMiniature(canvas.toDataURL());
+    afterRender();
   };
 
   const bringToFront = () => {
@@ -1063,6 +1100,10 @@ const useEditor = canvasId => {
     return miniature;
   };
 
+  const exportCanvas = () => {
+    return canvas.toDataURL();
+  };
+
   return {
     onReady: canvasReady,
     resetPanels,
@@ -1082,6 +1123,7 @@ const useEditor = canvasId => {
     cropImage,
     cropImageDone,
     getMiniature,
+    exportCanvas,
   };
 };
 

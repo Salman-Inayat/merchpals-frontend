@@ -133,14 +133,14 @@ const Editor = ({ exportBase64 = () => {} }) => {
 
   const firstUpdate = useRef(true);
 
-  useLayoutEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
+  // useLayoutEffect(() => {
+  //   if (firstUpdate.current) {
+  //     firstUpdate.current = false;
+  //     return;
+  //   }
 
-    setMiniature(editorJs.getMiniature());
-  });
+  //   setMiniature(editorJs.getMiniature());
+  // });
 
   const addText = () => {
     editorJs.addText();
@@ -192,6 +192,11 @@ const Editor = ({ exportBase64 = () => {} }) => {
   const cropImageDone = () => {
     editorJs.cropImageDone();
     setCropDoneButton(false);
+  };
+
+  const handleExportButton = () => {
+    const editorState = editorJs.exportCanvas();
+    exportBase64(editorState);
   };
 
   return (
@@ -274,7 +279,12 @@ const Editor = ({ exportBase64 = () => {} }) => {
           >
             <div className={classes.miniatureContaienr}>
               <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
-              <img src={miniature} className={classes.miniature} />
+              <canvas
+                id="static"
+                width="50"
+                height="50"
+                className={classes.miniature}
+              ></canvas>
             </div>
           </Grid>
           <Grid item md={2} xs={12}></Grid>
@@ -347,35 +357,9 @@ const Editor = ({ exportBase64 = () => {} }) => {
             justifyContent="center"
             alignItems="center"
           >
-            <Button onClick={() => exportBase64(miniature)} variant="contained">
+            <Button onClick={handleExportButton} variant="contained">
               Export
             </Button>
-          </Grid>
-          <Grid item md={5} sm={6} xs={8}>
-            {/* <div id="crop-image-button" hidden>
-              <Button
-                variant="contained"
-                onClick={cropImage}
-                className={`${classes.crop} ${classes.button}`}
-              >
-                Crop
-              </Button>
-            </div>
-            {cropDoneButton && (
-              <Button
-                variant="contained"
-                onClick={cropImageDone}
-                id="crop-image-done-button"
-                hidden
-                className={`${classes.cropDone} ${classes.button}`}
-              >
-                Done
-              </Button>
-            )} */}
-            {/* <FontControls
-              setFontColor={setFontColor}
-              setFontFamily={setFontFamily}
-            /> */}
           </Grid>
         </Grid>
       </Grid>
@@ -398,6 +382,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
           <span id="style15"> </span>
         </div>
       </Grid>
+      <Grid>{/* <canvas id="static" width="50" height="50"></canvas> */}</Grid>
     </Grid>
   );
 };
