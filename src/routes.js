@@ -12,10 +12,11 @@ import ResetPassword from './pages/authentication/ResetPassword';
 import Editor from './pages/editor/Editor';
 import Home from './pages/home';
 import VendorDashboard from './pages/vendors';
-import Store from './pages/store';
+import Store from './pages/customer/store';
 import Product from './pages/products';
 import VendorStore from './pages/vendors/store';
 import Cart from './pages/cart';
+import Checkout from './pages/checkout';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -33,5 +34,6 @@ export default function Router() {
     { path: '/products/:productId', element: <Product /> },
     { path: '/vendor/store', element: <VendorStore /> },
     { path: '/cart', element: <Cart /> },
+    { path: '/checkout', element: <Checkout /> },
   ]);
 }

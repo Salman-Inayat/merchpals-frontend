@@ -1,48 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Grid, Box, Typography } from '@mui/material';
 import axios from 'axios';
-import Logo from '../../assets/images/logo.png';
+import Logo from '../../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
-import { baseURL } from '../../configs/const';
-import StoreProductCard from '../../components/storeProductCard';
+import { baseURL } from '../../../configs/const';
+import StoreProductCard from '../../../components/storeProductCard';
+import { useMediaQuery } from 'react-responsive';
 
-const useStyle = makeStyles(() => ({
-  fluid: {
-    maxWidth: '100%',
-    paddingLeft: '0px',
-    paddingRight: '0px',
-  },
-  header: {
-    backgroundColor: '#babdb3',
-    maxWidth: '100%',
-  },
-  avatar: {
-    width: '75px',
-    height: '75px',
-  },
-  content: {
-    marginTop: '100px',
-  },
-  root: {
-    color: 'red',
-  },
-  backArrow: {
-    position: 'absolute',
-    left: '20px',
-    backgroundColor: 'black',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: 'black',
-      color: 'white',
-    },
-  },
-  svg: {
-    width: '0.5em',
-    height: '0.5em',
-  },
+const useStyle = makeStyles(theme => ({
   coverContainer: {
     position: 'relative',
     height: '50vh',
+    [theme.breakpoints.down('sm')]: {
+      height: '30vh',
+    },
   },
   coverImage: {
     position: 'absolute',
@@ -59,6 +30,12 @@ const useStyle = makeStyles(() => ({
     width: '120px',
     height: '120px',
     borderRadius: '100px',
+    [theme.breakpoints.down('sm')]: {
+      top: '85%',
+      left: '10%',
+      width: '90px',
+      height: '90px',
+    },
   },
   storeName: {
     position: 'absolute',
@@ -68,12 +45,23 @@ const useStyle = makeStyles(() => ({
     fontSize: '3rem',
     fontWeight: '500',
     textTransform: 'uppercase',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2rem',
+    },
+  },
+  productsContainer: {
+    padding: '2rem 8rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1rem',
+      spacing: '5',
+    },
   },
 }));
 
 const Store = () => {
   const classes = useStyle();
 
+  const isMobile = useMediaQuery({ maxWidth: 767 });
   const [store, setStore] = useState({
     name: '',
     coverAvatar: '',
@@ -111,17 +99,21 @@ const Store = () => {
           alt="image"
           className={classes.coverImage}
         />
-        <Typography variant="h1" className={classes.storeName}>
+        <Typography variant="h1" className={classes.storeName} align="center">
           {store.name}
         </Typography>
 
         <img src={store.logo} className={classes.logo} />
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
-        <Grid container spacing={5} p={5} pt={10}>
+        <Grid
+          container
+          spacing={isMobile ? 1 : 10}
+          className={classes.productsContainer}
+        >
           {store.products.map(product => {
             return (
-              <Grid item md={4} p={4}>
+              <Grid item md={4} xs={6}>
                 <StoreProductCard product={product} />
               </Grid>
             );
