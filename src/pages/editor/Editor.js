@@ -8,6 +8,7 @@ import useEditor from '../../components/editor/useEditor';
 import FontControls from './FontControls';
 import CanvasEditor from '../../components/editor/canvasEditor';
 import Smileys from './Smileys';
+import ShirtSVG from '../../assets/images/gray-tshirt.svg';
 
 const useStyles = makeStyles(theme => ({
   editor: {
@@ -288,7 +289,7 @@ const Editor = ({ exportBase64 = () => {} }) => {
             alignItems="center"
           >
             <div className={classes.miniatureContaienr}>
-              <img src="/assets/img/OGG1.png" className={classes.shirtImage} />
+              <img src={ShirtSVG} className={classes.shirtImage} />
               <canvas
                 id="static"
                 width="50"

@@ -261,18 +261,12 @@ const useEditor = canvasId => {
 
   function copy(copiedCanvas, canvas) {
     if (canvas.backgroundColor === '#ffffff00') {
-      console.log('clearing');
-      ctx2.fillStyle = '#ffffff';
-      ctx2.fillRect(0, 0, canvas.width, canvas.height);
+      ctx2.clearRect(0, 0, canvas.width, canvas.height);
     }
-
     ctx2.drawImage(copiedCanvas, 0, 0);
-
-    console.log(copiedCanvas);
   }
 
   function afterRender() {
-    console.log('Calling afterRender');
     var originalVP = canvas.viewportTransform;
     canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
     copy(canvas.toCanvasElement(), canvas);
@@ -996,6 +990,7 @@ const useEditor = canvasId => {
     const json = JSON.stringify(canvas);
     localStorage.setItem('Kanvas', json);
   };
+
   const deviceDetect = () => {
     isMobile = deviceService.isMobile();
     isTablet = deviceService.isTablet();
