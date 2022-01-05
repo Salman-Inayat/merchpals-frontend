@@ -68,7 +68,7 @@ const Home = () => {
     phoneNo: '',
   });
   const [products, setProducts] = useState([]);
-  const [initialDesign, setInitialDesign] = useState('');
+  const [design, setDesign] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const classes = useStyle();
@@ -131,12 +131,12 @@ const Home = () => {
   };
 
   const exportBase64File = file => {
-    setInitialDesign(file);
-    localStorage.setItem('initialDesign', file);
+    setDesign(file);
+    localStorage.setItem('design', file);
   };
 
   const createStore = data => {
-    console.log({ data, selectedVariants, initialDesign });
+    console.log({ data, selectedVariants, design });
     let store = new FormData();
     store.append('name', data.name);
     store.append('slug', data.slug.split(' ').join('-'));
@@ -145,7 +145,7 @@ const Home = () => {
     store.append('twitter', data.twitter);
     store.append('logo', data.logo);
     store.append('coverAvatar', data.coverAvatar);
-    store.append('designs', localStorage.getItem('initialDesign'));
+    store.append('designs', localStorage.getItem('design'));
     store.append('products', JSON.stringify([...selectedVariants]));
     
     axios.post(`${baseURL}/store`, store ,{
@@ -154,7 +154,7 @@ const Home = () => {
         'Content-Type': 'multipart/form-data'
       }})
       .then(response => {
-        localStorage.removeItem('initialDesign');
+        localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
         setShowWelcomeMessage(true);
@@ -178,7 +178,7 @@ const Home = () => {
         return (
           <Products 
             products={products} 
-            initialDesign={localStorage.getItem('initialDesign')} 
+            design={localStorage.getItem('design')} 
             productSelectionCompleted={productSelectionCompleted}
           />
         );

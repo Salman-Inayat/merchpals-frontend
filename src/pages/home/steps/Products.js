@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 const Products = ({
   productSelectionCompleted = () => {},
   products = [],
-  initialDesign = '',
 }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const classes = useStyles();
@@ -42,8 +41,34 @@ const Products = ({
     if(existingVariants) {
       const formattedVariants = JSON.parse(existingVariants);
       setSelectedVariants(formattedVariants)
+    } else {
+      selectAllProductsAndVariants()
     }
   }, [])
+
+  const selectAllProductsAndVariants = () => {
+    let tmpVariants = {};
+
+    products.forEach(product => {
+    const variantsOfProduct = product.colors.reduce((color, curr) => {
+      const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
+      return [...color, ...relatedMappings];
+    }, []);
+
+    const uniqVariantIds = variantsOfProduct.filter(function (item, pos) {
+      return variantsOfProduct.indexOf(item) == pos;
+    });
+
+    tmpVariants = {
+      ...tmpVariants,
+      [product._id]: [...uniqVariantIds]
+    };
+
+    setSelectedVariants(tmpVariants)
+   })
+
+    localStorage.setItem('selectedVariants', JSON.stringify(tmpVariants))
+  }
 
   const onVariantClick = productVariant => {
     const [product, color] = productVariant.split(',');
@@ -182,7 +207,6 @@ const Products = ({
                   onVariantClick={onVariantClick}
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}
-                  initialDesign={initialDesign}
                 />
               </Grid>
             ))}
