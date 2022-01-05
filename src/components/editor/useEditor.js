@@ -260,7 +260,10 @@ const useEditor = canvasId => {
   });
 
   function copy(copiedCanvas, canvas) {
-    if (canvas.backgroundColor === '#ffffff00') {
+    if (
+      canvas.backgroundColor === '#ffffff00' ||
+      canvas.backgroundColor === ''
+    ) {
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
     }
     ctx2.drawImage(copiedCanvas, 0, 0);
