@@ -134,10 +134,10 @@ const Editor = ({ exportBase64 = () => {} }) => {
 
   useEffect(() => {
     // return () => {
-      localStorage.setItem('initialDesign', miniature)
-      console.log('unmount')
+    localStorage.setItem('initialDesign', miniature);
+    console.log('unmount');
     // };
-  })
+  });
 
   const firstUpdate = useRef(true);
 
