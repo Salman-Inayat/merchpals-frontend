@@ -112,7 +112,9 @@ const useEditor = canvasId => {
         const selectedObject = e.target;
 
         applyProperties(selectedObject);
+
         //setMiniature(canvas.toDataURL());
+        localStorage.setItem('design', canvas.toDataURL())
         afterRender();
 
         resetPanels();
@@ -120,6 +122,7 @@ const useEditor = canvasId => {
       'object:added': e => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
+        localStorage.setItem('design', canvas.toDataURL())
         //setMiniature(canvas.toDataURL());
         afterRender();
         resetPanels();

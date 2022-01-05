@@ -130,13 +130,12 @@ const ProductCard = ({
   onVariantClick = () => {},
   onProductClick = () => {},
   selectedVariants = {},
-  initialDesign = '',
 }) => {
   const classes = useStyles();
   const [design, setDesign] = useState('');
 
   useEffect(() => {
-    setDesign(localStorage.getItem('initialDesign'));
+    setDesign(localStorage.getItem('design'));
     console.log(product.colors);
   }, []);
 

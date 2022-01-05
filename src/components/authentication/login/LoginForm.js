@@ -46,7 +46,7 @@ const LoginForm = ({
 
   useEffect(() => {
     if (isLoggedIn || localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
-      navigate('/dashboard', { replace: true })
+      navigate('/vendor/store', { replace: true })
     }
   }, [loginError, isLoggedIn])
 

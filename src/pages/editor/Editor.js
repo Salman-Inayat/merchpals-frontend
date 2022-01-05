@@ -133,13 +133,6 @@ const Editor = ({ exportBase64 = () => {} }) => {
     style15.style.fontFamily = 'BungeeS';
   }, []);
 
-  useEffect(() => {
-    // return () => {
-    localStorage.setItem('initialDesign', miniature);
-    console.log('unmount');
-    // };
-  });
-
   const firstUpdate = useRef(true);
 
   // useLayoutEffect(() => {
@@ -205,7 +198,6 @@ const Editor = ({ exportBase64 = () => {} }) => {
 
   const handleExportButton = () => {
     const editorState = editorJs.exportCanvas();
-    exportBase64(editorState);
   };
 
   const handleControlsToggle = () => {
@@ -368,18 +360,6 @@ const Editor = ({ exportBase64 = () => {} }) => {
             </Stack>
           </Grid>
           <Grid item md={2} xs={12}></Grid>
-          <Grid
-            item
-            md={12}
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Button onClick={handleExportButton} variant="contained">
-              Export
-            </Button>
-          </Grid>
         </Grid>
       </Grid>
       <Grid item md={1}>
