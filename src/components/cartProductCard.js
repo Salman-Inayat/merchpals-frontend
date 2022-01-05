@@ -124,8 +124,8 @@ const mapDispatch = dispatch => ({
 });
 
 const mapState = state => {
-  const cart = state.cart;
-  return { cart };
+  const cartProduct = state.cart;
+  return { cartProduct };
 };
 
 export default connect(mapState, mapDispatch)(CartProductCard);

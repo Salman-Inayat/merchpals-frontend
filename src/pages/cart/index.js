@@ -5,6 +5,7 @@ import { Grid, Button, Typography } from '@mui/material';
 import CartProductCard from '../../components/cartProductCard';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
+import LogoOnlyLayout from '../../layouts/LogoOnlyLayout';
 
 const useStyle = makeStyles(theme => ({
   productsContainer: {
@@ -16,19 +17,18 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-const Cart = ({ cart, removeFromCart, emptyCart }) => {
+const Cart = ({ cartProducts, removeFromCart, emptyCart }) => {
   const classes = useStyle();
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setProducts(cart);
+    setProducts(cartProducts);
   }, []);
 
   useEffect(() => {
-    console.log(cart);
-    setProducts(cart);
-  }, [cart]);
+    setProducts(cartProducts);
+  }, [cartProducts]);
 
   const handleCheckout = () => {
     navigate('/checkout');
@@ -106,8 +106,8 @@ const mapDispatch = dispatch => ({
 });
 
 const mapState = state => {
-  const cart = state.cart;
-  return { cart };
+  const cartProducts = state.cart;
+  return { cartProducts };
 };
 
 export default connect(mapState, mapDispatch)(Cart);
