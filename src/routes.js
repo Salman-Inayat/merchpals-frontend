@@ -15,7 +15,7 @@ import VendorDashboard from './pages/vendors';
 import Store from './pages/store';
 import Product from './pages/products';
 import VendorStore from './pages/vendors/store';
-// ----------------------------------------------------------------------
+import Checkout from './pages/customers/checkout';
 
 export default function Router() {
   return useRoutes([
@@ -28,8 +28,9 @@ export default function Router() {
     { path: '/reset-password', element: <ResetPassword /> },
     { path: '/editor', element: <Editor /> },
     { path: '/dashboard', element: <VendorDashboard /> },
-    { path: '/store', element: <Store /> },
     { path: '/products/:productId', element: <Product /> },
     { path: '/vendor/store', element: <VendorStore /> },
+    { path: '/store', element: <Store /> },
+    { path: '/customer/checkout', element: <Checkout /> },
   ]);
 }
