@@ -13,13 +13,29 @@ import {
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
-  card: {
+const useStyles = makeStyles(theme => ({
+  productImage: {
+    height: '100%',
+  },
+  container: {
     padding: '30px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      padding: '10px',
+    },
+  },
+  button: {
+    backgroundColor: '#116DFF',
+    marginTop: '20px',
   },
   productName: {
+    color: '#0097a7',
+    width: '90%',
+    margin: 'auto',
     fontWeight: '500',
-    fontSize: '1.4rem',
   },
 }));
 
@@ -32,34 +48,33 @@ const StoreProductCard = ({ product }) => {
   };
 
   return (
-    <Card variant="outlined" className={classes.card}>
-      <CardContent>
-        <CardMedia
-          component="img"
-          height="250"
-          image={`${product.image}`}
-          alt="green iguana"
-        />
-      </CardContent>
+    <Box className={classes.container}>
       <Typography
         gutterBottom
         variant="h4"
         component="div"
+        align="center"
         className={classes.productName}
       >
         {product.name}
       </Typography>
-      <CardActions>
-        <Button
-          size="small"
-          variant="outlined"
-          color="primary"
-          onClick={exploreProduct}
-        >
-          Explore
-        </Button>
-      </CardActions>
-    </Card>
+      <Card variant="outlined" className={classes.card}>
+        <CardMedia
+          component="img"
+          image={`${product.image}`}
+          alt="green iguana"
+          className={classes.productImage}
+        />
+      </Card>
+      <Button
+        size="medium"
+        variant="contained"
+        onClick={exploreProduct}
+        className={classes.button}
+      >
+        Explore
+      </Button>
+    </Box>
   );
 };
 

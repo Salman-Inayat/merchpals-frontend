@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Container,
   Grid,
-  Avatar,
-  Stepper,
-  Step,
-  StepLabel,
-  IconButton,
   Button,
-  Paper,
   Stack,
+  Snackbar,
   Typography,
+  Badge,
+  IconButton,
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
@@ -18,7 +14,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import Logo from '../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
 import { baseURL } from '../../configs/const';
-import StoreProductcard from '../../components/storeProductCard';
+import { styled } from '@mui/material/styles';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -26,6 +22,15 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { addToCart } from '../../store/redux/actions/cart';
+import Slide from '@mui/material/Slide';
+import MuiAlert from '@mui/material/Alert';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const useStyle = makeStyles(() => ({
   image: {
@@ -41,12 +46,22 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
-const Product = () => {
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
+
+const Product = ({ addToCart, cart }) => {
   const classes = useStyle();
   const { productId } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState({
+    id: '',
     name: '',
     description: '',
     image: '',
@@ -59,17 +74,26 @@ const Product = () => {
   const [color, setColor] = useState('');
   const [size, setSize] = useState('');
   const [productColor, setProductColor] = useState('');
+  const [snackBarToggle, setSnackBarToggle] = useState(false);
+  const [cartProducts, setCartProducts] = useState([]);
 
   useEffect(() => {
     fetchProduct(productId);
+    setCartProducts(cart);
   }, []);
+
+  useEffect(() => {
+    setCartProducts(cart);
+  }, [cart]);
 
   const fetchProduct = async productId => {
     axios
       .get(`${baseURL}/products/${productId}`)
       .then(response => {
         const product = response.data.product;
+
         setProduct({
+          id: product._id,
           name: product.name,
           description: product.description,
           image: product.image,
@@ -96,9 +120,22 @@ const Product = () => {
     navigate(-1);
   };
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    setSnackBarToggle(true);
+  };
+
+  const handleCartButton = () => {
+    navigate('/cart');
+  };
+
+  const handleSnackBarClose = () => {
+    setSnackBarToggle(false);
+  };
+
   return (
     <Grid container spacing={1}>
-      <Grid item md={12} xs={12}>
+      <Grid item md={6} xs={12}>
         <Button
           variant="contained"
           color="primary"
@@ -107,6 +144,18 @@ const Product = () => {
         >
           Back
         </Button>
+      </Grid>
+      <Grid item md={6} xs={12}>
+        <IconButton
+          aria-label="cart"
+          onClick={handleCartButton}
+          size="large"
+          style={{ height: '50px', width: '50px' }}
+        >
+          <StyledBadge badgeContent={cartProducts.length} color="secondary">
+            <ShoppingCartIcon />
+          </StyledBadge>
+        </IconButton>
       </Grid>
       <Grid item md={12} xs={12}>
         <Grid container>
@@ -224,10 +273,21 @@ const Product = () => {
                 >
                   {product.cost} $
                 </Typography>
-                <Button color="secondary" variant="outlined" size="large">
-                  {' '}
+                <Button
+                  color="secondary"
+                  variant="outlined"
+                  size="large"
+                  onClick={handleAddToCart}
+                >
                   Add to Cart
                 </Button>
+                <Snackbar
+                  open={snackBarToggle}
+                  autoHideDuration={3000}
+                  onClose={handleSnackBarClose}
+                >
+                  <Alert severity="success">Item added to cart</Alert>
+                </Snackbar>
               </Stack>
             </Stack>
           </Grid>
@@ -237,4 +297,17 @@ const Product = () => {
   );
 };
 
-export { Product as default };
+const mapDispatch = dispatch => ({
+  addToCart: product => {
+    dispatch(addToCart(product));
+  },
+});
+
+const mapState = state => {
+  const cart = state.cart;
+  return { cart };
+};
+
+export default connect(mapState, mapDispatch)(Product);
+
+// export { Product as default };
