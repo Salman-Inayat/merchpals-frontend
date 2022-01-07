@@ -6,6 +6,7 @@ import { makeStyles } from '@mui/styles';
 import { baseURL } from '../../../configs/const';
 import StoreProductCard from '../../../components/storeProductCard';
 import { useMediaQuery } from 'react-responsive';
+import { useParams } from "react-router-dom";
 
 const useStyle = makeStyles(theme => ({
   coverContainer: {
@@ -68,6 +69,7 @@ const Store = () => {
     logo: '',
     products: [],
   });
+  const { storeUrl } = useParams();
 
   useEffect(() => {
     fetchStore();
@@ -75,7 +77,7 @@ const Store = () => {
 
   const fetchStore = () => {
     axios
-      .get(`${baseURL}/store/somecoolname`)
+      .get(`${baseURL}/store/${storeUrl}`)
       .then(response => {
         console.log(response.data.store);
         const store = response.data.store;
@@ -114,7 +116,7 @@ const Store = () => {
           {store.products.map(product => {
             return (
               <Grid item md={4} xs={6}>
-                <StoreProductCard product={product} />
+                <StoreProductCard product={product} storeUrl={storeUrl}/>
               </Grid>
             );
           })}

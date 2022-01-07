@@ -39,12 +39,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const StoreProductCard = ({ product }) => {
+const StoreProductCard = ({ product, storeUrl }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   const exploreProduct = () => {
-    navigate({ pathname: `/products/${product._id}` });
+    navigate({ pathname: `/store/${storeUrl}/products/${product._id}` });
   };
 
   return (

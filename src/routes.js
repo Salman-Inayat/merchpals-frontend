@@ -16,7 +16,6 @@ import Store from './pages/customer/store';
 import Product from './pages/products';
 import VendorStore from './pages/vendors/store';
 import Cart from './pages/cart';
-// import Checkout from './pages/checkout';
 import Checkout from './pages/customers/checkout';
 // ----------------------------------------------------------------------
 
@@ -31,11 +30,10 @@ export default function Router() {
     { path: '/reset-password', element: <ResetPassword /> },
     { path: '/editor', element: <Editor /> },
     { path: '/dashboard', element: <VendorDashboard /> },
-    { path: '/products/:productId', element: <Product /> },
+    { path: '/store/:storeUrl/products/:productId', element: <Product /> },
     { path: '/vendor/store', element: <VendorStore /> },
     { path: '/cart', element: <Cart /> },
-    { path: '/checkout', element: <Checkout /> },
-    { path: '/store', element: <Store /> },
+    { path: '/store/:storeUrl', element: <Store /> },
     { path: '/customer/checkout', element: <Checkout /> },
   ]);
 }

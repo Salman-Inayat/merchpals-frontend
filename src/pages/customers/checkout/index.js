@@ -2,7 +2,8 @@ import { useState } from "react";
 import { 
   Grid,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import {
   Customer,
   PaymentInfo,
@@ -16,12 +17,16 @@ const [completedPayment, setCompletedPayment] = useState(false);
 const [customer, setCustomer] = useState({});
 const [billingAddress, setBillingAddress] = useState({});
 const [payment, setPayment] = useState({});
-const [loading, setLoading] = useState(false);
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const markCustomerInfoComplete = (isCompleted) => setCompletedCustomerInfo(isCompleted);
 const markAddressComplete = (isCompleted) => setCompletedAddress(isCompleted);
 const markPaymentComplete = (isCompleted) => setCompletedPayment(isCompleted);
 
+const placeOrder = () => {
+  
+}
   return (
     <Grid justifyContent='center' alignItems='center' mt={12} container>
       <Grid xs={6} item>
@@ -30,33 +35,22 @@ const markPaymentComplete = (isCompleted) => setCompletedPayment(isCompleted);
           setCustomer={setCustomer}
         />
         
-        {completedCustomerInfo && (
+        {completedCustomerInfo &&
           <BillingAddress 
             markAddressComplete={markAddressComplete} 
             setBillingAddress={setBillingAddress}
           />
-        )}
+        }
 
-        {completedAddress && (
-          <PaymentInfo 
-            markPaymentComplete={markPaymentComplete} 
-            setPayment={setPayment}
-          />
-        )}
-        
-        <Grid mt={3} item>
-          <LoadingButton
-            fullWidth
-            size="large"
-            type="submit"
-            variant="contained"
-            disabled={!completedCustomerInfo || !completedAddress || !completedPayment}
-            loading={loading}
-          >
-            Register
-          </LoadingButton>
-
-        </Grid>
+        {completedAddress &&
+          <Elements stripe={stripePromise}>
+            <PaymentInfo 
+              completedCustomerInfo={completedCustomerInfo}
+              completedAddress={completedAddress}
+              placeOrder={placeOrder}
+            />
+          </Elements>
+        }
       </Grid>
     </Grid>
   )

@@ -57,7 +57,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const Product = ({ addToCart, cart }) => {
   const classes = useStyle();
-  const { productId } = useParams();
+  const { productId, storeUrl } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState({
@@ -71,15 +71,22 @@ const Product = ({ addToCart, cart }) => {
     sizes: [],
   });
 
-  const [color, setColor] = useState('');
-  const [size, setSize] = useState('');
+  const [color, setColor] = useState({id: '', label: ''});
+  const [size, setSize] = useState({id: '', label: ''});
   const [productColor, setProductColor] = useState('');
   const [snackBarToggle, setSnackBarToggle] = useState(false);
   const [cartProducts, setCartProducts] = useState([]);
+  const [cartsVariants, setCartsVariants] = useState([]);
 
   useEffect(() => {
     fetchProduct(productId);
     setCartProducts(cart);
+    const storedCart = localStorage.getItem('MERCHPALS_CART')
+    if (storedCart) {
+      const parsedCart = JSON.parse(storedCart)
+      setCartsVariants(parsedCart)
+    }
+    
   }, []);
 
   useEffect(() => {
@@ -88,20 +95,26 @@ const Product = ({ addToCart, cart }) => {
 
   const fetchProduct = async productId => {
     axios
-      .get(`${baseURL}/products/${productId}`)
+      .get(`${baseURL}/products/${storeUrl}/product/${productId}`)
       .then(response => {
         const product = response.data.product;
-
-        setProduct({
+        console.log({productInResponse: product});
+        const formattedProduct = {
           id: product._id,
           name: product.name,
           description: product.description,
           image: product.image,
-          cost: product.basePrice,
+          cost: product.price,
           slug: product.slug,
-          colors: product.colors,
-          sizes: product.variants,
-        });
+          productMappings: product.productMappings,
+          colors: product.productMappings.map(p => p.color),
+          sizes: product.productMappings.map(p => p.variant),
+          productNumberedId: product.productMappings[0].productNumberedId
+        };
+
+        setProduct(formattedProduct);
+        setSize(formattedProduct.sizes[0])
+        setColor(formattedProduct.colors[0])
       })
       .catch(err => {
         console.log({ err });
@@ -109,11 +122,13 @@ const Product = ({ addToCart, cart }) => {
   };
 
   const handleColorChange = event => {
-    setColor(event.target.value);
+    const selectedColor = product.colors.find(c => c.id === event.target.value)
+    setColor(selectedColor);
   };
 
   const handleSizeChange = event => {
-    setSize(event.target.value);
+    const selectedSize = product.sizes.find(c => c.id === event.target.value)
+    setSize(selectedSize);
   };
 
   const handleBackButton = event => {
@@ -121,7 +136,28 @@ const Product = ({ addToCart, cart }) => {
   };
 
   const handleAddToCart = () => {
-    addToCart(product);
+    const keyId = `${product.productNumberedId}-${size.id}-${color.id}`
+    console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
+    const productMappingId = product.productMappings.find(p => p.keyId === keyId)._id;
+    let updatedCart = {};
+
+    const prevRelatedVariants = cartsVariants.find(v => v.productId === product.id);
+    if (prevRelatedVariants) {
+      updatedCart = {
+        ...prevRelatedVariants,
+        productMappings: [...prevRelatedVariants, productMappingId]
+      }
+    } else {
+      updatedCart = {
+        productId: product.id,
+        productMappings: [productMappingId]
+      }
+    }
+
+    const updatedCartList = [updatedCart, ...cartsVariants];
+    setCartsVariants(updatedCartList)
+    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
+    addToCart(`${product.productNumberedId}-${size.id}-${color.id}`);
     setSnackBarToggle(true);
   };
 
@@ -176,7 +212,7 @@ const Product = ({ addToCart, cart }) => {
             >
               <div
                 style={{
-                  backgroundColor: 'red',
+                  backgroundColor: color.label,
                   width: '80%',
                   height: '80%',
                   display: 'flex',
@@ -225,15 +261,15 @@ const Product = ({ addToCart, cart }) => {
                   row
                   aria-label="color"
                   name="controlled-radio-buttons-group"
-                  value={size}
+                  value={size.id}
                   onChange={handleSizeChange}
                 >
-                  {product.sizes.map(arr => {
+                  {product.sizes.map(({id, label}) => {
                     return (
                       <FormControlLabel
-                        value={arr}
+                        value={id}
                         control={<Radio />}
-                        label={arr}
+                        label={label}
                       />
                     );
                   })}
@@ -246,15 +282,15 @@ const Product = ({ addToCart, cart }) => {
                   row
                   aria-label="color"
                   name="controlled-radio-buttons-group"
-                  value={color}
+                  value={color.id}
                   onChange={handleColorChange}
                 >
-                  {product.colors.map(arr => {
+                  {product.colors.map(({id, label}) => {
                     return (
                       <FormControlLabel
-                        value={arr}
+                        value={id}
                         control={<Radio />}
-                        label={arr}
+                        label={label}
                       />
                     );
                   })}
