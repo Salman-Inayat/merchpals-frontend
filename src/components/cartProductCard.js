@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -12,11 +11,6 @@ import { makeStyles } from '@mui/styles';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  removeFromCart,
-  addQuantity,
-  subtractQuantity,
-} from '../store/redux/actions/cart';
 
 const useStyles = makeStyles(theme => ({
   productImage: {
@@ -45,28 +39,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CartProductCard = ({
-  product,
+  productId,
+  variant,
   removeFromCart,
-  addQuantity,
-  subtractQuantity,
+  updateQuantity,
+  name,
+  image,
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-
-  const [quantity, setQuantity] = useState(1);
-
-  const handleIncrement = () => {
-    setQuantity(quantity + 1);
-    addQuantity(product.id);
-  };
-
-  const handleDecrement = () => {
-    setQuantity(quantity - 1);
-    subtractQuantity(product.id);
-  };
-
   return (
-    <Box className={classes.container}>
+    variant ? <Box className={classes.container}>
       <Typography
         gutterBottom
         variant="h4"
@@ -74,12 +57,13 @@ const CartProductCard = ({
         align="center"
         className={classes.productName}
       >
-        {product.name}
+        {name}
       </Typography>
       <Card variant="outlined" className={classes.card}>
         <CardMedia
+          style={{backgroundColor: variant.color}}
           component="img"
-          image={`${product.image}`}
+          image={`${image}`}
           alt="green iguana"
           className={classes.productImage}
         />
@@ -88,44 +72,28 @@ const CartProductCard = ({
         <Box>
           <ButtonGroup size="small" aria-label="small outlined button group">
             <Button
-              disabled={quantity == 1 ? true : false}
-              onClick={handleDecrement}
+              disabled={variant.quantity == 1 ? true : false}
+              onClick={() => updateQuantity(productId, variant.id, 'minus')}
             >
               -
             </Button>
 
-            <Button disabled>{quantity}</Button>
-            <Button onClick={handleIncrement}>+</Button>
+            <Button disabled>{variant.quantity}</Button>
+            <Button onClick={() => updateQuantity(productId, variant.id, 'add')}>+</Button>
           </ButtonGroup>
         </Box>
         <Button
           size="medium"
           variant="contained"
-          onClick={() => removeFromCart(product.id)}
+          onClick={() => removeFromCart(productId, variant.id)}
           className={classes.button}
         >
           <DeleteIcon />
         </Button>
       </Stack>
     </Box>
+    : null
   );
 };
 
-const mapDispatch = dispatch => ({
-  removeFromCart: productId => {
-    dispatch(removeFromCart(productId));
-  },
-  addQuantity: productId => {
-    dispatch(addQuantity(productId));
-  },
-  subtractQuantity: productId => {
-    dispatch(subtractQuantity(productId));
-  },
-});
-
-const mapState = state => {
-  const cartProduct = state.cart;
-  return { cartProduct };
-};
-
-export default connect(mapState, mapDispatch)(CartProductCard);
+export default CartProductCard;

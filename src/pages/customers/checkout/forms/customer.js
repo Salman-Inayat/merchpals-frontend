@@ -8,17 +8,11 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-import PhoneNumberInput from '../../../../components/phone-number-input';
 
 const Customer = ({
   markCustomerInfoComplete = () => {},
   setCustomer = {}
 }) => {
-  const [phoneNo, setPhoneNo] = useState('');
-  const [formErrors, setFormErrors] = useState({
-    phoneNo: '',
-    message: ''
-  });
 
   const CustomerSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -29,43 +23,30 @@ const Customer = ({
       .required("Last name is required")
       .min(2, "Too Short!")
       .max(50, "Too Long!"),
-    email: Yup.string()
-      .required("Email is required")
-      .email("Email must be a valid email address"),
   });
   
   const { register, trigger, watch, formState: { errors }  } = useForm({ 
     resolver: yupResolver(CustomerSchema)
   });
 
-  const onSubmit = (data) => {
-    if (phoneNo.length < 5) {
-      setFormErrors({phoneNo: 'Please provide a valid phone number'})
-      return;
-    }
-
-  };
-
-  const [firstName, lastName, email] = watch(['firstName', 'lastName', 'email']);
+  const [firstName, lastName] = watch(['firstName', 'lastName']);
   
   useEffect(()=> {
     validateForm()
-  }, [firstName, lastName, email, phoneNo]);
+  }, [firstName, lastName]);
 
   const validateForm = async () => {
-    if (firstName, lastName, email) {
+    if (firstName, lastName) {
       let isvalid = await trigger()
-      if (!phoneNo) {
-        setFormErrors({phoneNo: 'Phone number is required' });
-      }
-      if (isvalid && phoneNo) {
+
+      if (isvalid) {
         markCustomerInfoComplete(true);
       }
     } else {
       markCustomerInfoComplete(false)
     }
     setCustomer({
-      firstName, lastName, email, phoneNo
+      firstName, lastName
     })
   }
   return (
@@ -99,33 +80,7 @@ const Customer = ({
                 helperText={errors.lastName?.message}
               />
             </Grid>
-          </Grid>
-          {(firstName || lastName) &&<Grid item>
-            <PhoneNumberInput 
-              phoneNo={phoneNo} 
-              setPhoneNo={(value) => {
-                  setFormErrors({...formErrors, phoneNo: ''});
-                  setPhoneNo(value)
-                }
-              } 
-              error={formErrors.phoneNo} 
-            />
-          </Grid>}
-
-          <Grid item>
-          {phoneNo?.length > 2 && (
-            <TextField
-              fullWidth
-              autoComplete="email"
-              type="email"
-              label="Email address"
-              {...register("email")}
-              onKeyUp={() => setFormErrors({...formErrors, email: ''})}
-              error={Boolean(errors.email?.message)}
-              helperText={(errors.email?.message)}
-            />
-          )}
-          </Grid>          
+          </Grid>       
         </Grid>
       </Stack>
     </form>

@@ -4,8 +4,7 @@ import { removeFromCart, emptyCart } from '../../store/redux/actions/cart';
 import { Grid, Button, Typography } from '@mui/material';
 import CartProductCard from '../../components/cartProductCard';
 import { makeStyles } from '@mui/styles';
-import { useNavigate } from 'react-router-dom';
-import LogoOnlyLayout from '../../layouts/LogoOnlyLayout';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const useStyle = makeStyles(theme => ({
   productsContainer: {
@@ -17,23 +16,107 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-const Cart = ({ cartProducts, removeFromCart, emptyCart }) => {
+const Cart = ({ cartProducts }) => {
   const classes = useStyle();
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const [store, setStore] = useState(null)
+  const [selectedProducts, setSelectedProducts] = useState([])
+  const { storeUrl } = useParams();
 
   useEffect(() => {
-    setProducts(cartProducts);
+    const storedCart = localStorage.getItem('MERCHPALS_CART')
+    if (storedCart) {
+      const parsedCart = JSON.parse(storedCart)
+      console.log({parsedCart});
+      setSelectedProducts(parsedCart)
+    }
   }, []);
 
-  useEffect(() => {
-    setProducts(cartProducts);
-  }, [cartProducts]);
-
   const handleCheckout = () => {
-    navigate('/checkout');
+    navigate(`/checkout/${storeUrl}`);
   };
 
+  const total = () => {
+    let totalCartPrice = 0;
+    for(let i=0; i< selectedProducts.length; i++){
+      const product = selectedProducts[i];
+      const quantities = product.productMappings.reduce((sum, cur) => sum + cur.quantity, 0);
+      // console.log({quantities});
+      const productPrice = product.price * quantities;
+      totalCartPrice = totalCartPrice + productPrice;
+    }
+
+    return totalCartPrice;
+  }
+
+  const updateQuantity = (productId, variantId, op) => {
+    let updatedCart = {};
+    
+    const prevProduct = selectedProducts.find(v => v.productId === productId);
+      const variant = prevProduct.productMappings.find(prv => prv.id === variantId)
+      let mappings = [...prevProduct.productMappings]
+      
+      if (variant) {
+        mappings = mappings.filter(m => m.id !== variantId)
+      }
+
+     if (op === 'add') {
+      updatedCart = {
+        ...prevProduct,
+        productMappings: [
+          ...mappings, 
+          { 
+            ...variant,
+            quantity: variant.quantity + 1
+          }
+        ]
+      }       
+     } else { 
+        const newQuantity = variant.quantity - 1 > -1 ? variant.quantity - 1 : 0
+        updatedCart = {
+          ...prevProduct,
+          productMappings: [
+            ...mappings, 
+            { 
+              ...variant,
+              quantity: newQuantity
+            }
+          ]
+        }            
+     }
+
+    const otherProductVariants = selectedProducts.filter(cv => cv.productId !== productId)
+    const updatedCartList = [updatedCart, ...otherProductVariants];
+    setSelectedProducts(updatedCartList)
+    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
+  }
+
+  const emptyCart = () => {
+    localStorage.removeItem('MERCHPALS_CART');
+    navigate(`/store/${storeUrl}`);
+  }
+
+  const removeFromCart = (productId, variantId) => {
+    let updatedCart = {};
+    
+    const prevProduct = selectedProducts.find(v => v.productId === productId);
+    let mappings = [...prevProduct.productMappings]
+    mappings = mappings.filter(m => m.id !== variantId)
+
+    updatedCart = {
+      ...prevProduct,
+      productMappings: [
+        ...mappings, 
+      ]
+    }
+
+    const otherProductVariants = selectedProducts.filter(cv => cv.productId !== productId)
+    const updatedCartList = [updatedCart, ...otherProductVariants];
+    setSelectedProducts(updatedCartList)
+    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
+  }
+  
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -42,7 +125,7 @@ const Cart = ({ cartProducts, removeFromCart, emptyCart }) => {
         </Typography>
       </Grid>
 
-      {products.length > 0 && (
+      {selectedProducts.length > 0 && (
         <Grid item xs={12} display="flex" justifyContent="flex-end">
           <Button onClick={() => emptyCart()} variant="contained" color="error">
             Empty Cart
@@ -50,16 +133,23 @@ const Cart = ({ cartProducts, removeFromCart, emptyCart }) => {
         </Grid>
       )}
 
-      {products.length > 0 ? (
+      {selectedProducts.length > 0 ? (
         <Grid item md={12} xs={12} className={classes.productsContainer}>
           <Grid container spacing={2}>
-            {products.map(product => (
-              <Grid item md={4} xs={6} key={product.id}>
-                <CartProductCard
-                  product={product}
-                  removeFromCart={removeFromCart}
-                />
-              </Grid>
+            {selectedProducts.map(product => (
+              product.productMappings.map(variant => (
+                <Grid item md={4} xs={6} key={product.id}>
+                  <CartProductCard
+                    variant={variant}
+                    name={product.name}
+                    image={product.image}
+                    price={product.price}
+                    productId={product.productId}
+                    updateQuantity={updateQuantity}
+                    removeFromCart={removeFromCart}
+                  />
+                </Grid>
+              ))
             ))}
           </Grid>
           <Grid
@@ -71,9 +161,7 @@ const Cart = ({ cartProducts, removeFromCart, emptyCart }) => {
           >
             <Typography variant="h5">
               Total: $
-              {products.reduce((acc, product) => {
-                return acc + product.cost * product.quantity;
-              }, 0)}
+              {total()}
             </Typography>
 
             <Button
@@ -96,18 +184,4 @@ const Cart = ({ cartProducts, removeFromCart, emptyCart }) => {
   );
 };
 
-const mapDispatch = dispatch => ({
-  removeFromCart: productId => {
-    dispatch(removeFromCart(productId));
-  },
-  emptyCart: () => {
-    dispatch(emptyCart());
-  },
-});
-
-const mapState = state => {
-  const cartProducts = state.cart;
-  return { cartProducts };
-};
-
-export default connect(mapState, mapDispatch)(Cart);
+export default Cart;

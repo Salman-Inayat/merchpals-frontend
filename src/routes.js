@@ -32,8 +32,8 @@ export default function Router() {
     { path: '/dashboard', element: <VendorDashboard /> },
     { path: '/store/:storeUrl/products/:productId', element: <Product /> },
     { path: '/vendor/store', element: <VendorStore /> },
-    { path: '/cart', element: <Cart /> },
+    { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
-    { path: '/customer/checkout', element: <Checkout /> },
+    { path: '/checkout/:storeUrl', element: <Checkout /> },
   ]);
 }

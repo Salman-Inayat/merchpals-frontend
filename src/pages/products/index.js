@@ -74,9 +74,14 @@ const Product = ({ addToCart, cart }) => {
   const [color, setColor] = useState({id: '', label: ''});
   const [size, setSize] = useState({id: '', label: ''});
   const [productColor, setProductColor] = useState('');
-  const [snackBarToggle, setSnackBarToggle] = useState(false);
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: 'success',
+    message: 'Added to cart'
+  });
   const [cartProducts, setCartProducts] = useState([]);
   const [cartsVariants, setCartsVariants] = useState([]);
+  const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0)
 
   useEffect(() => {
     fetchProduct(productId);
@@ -84,6 +89,7 @@ const Product = ({ addToCart, cart }) => {
     const storedCart = localStorage.getItem('MERCHPALS_CART')
     if (storedCart) {
       const parsedCart = JSON.parse(storedCart)
+      console.log({parsedCart});
       setCartsVariants(parsedCart)
     }
     
@@ -98,6 +104,8 @@ const Product = ({ addToCart, cart }) => {
       .get(`${baseURL}/products/${storeUrl}/product/${productId}`)
       .then(response => {
         const product = response.data.product;
+        const colorsArr = product.productMappings.map(c => c.color);
+        const variantArr = product.productMappings.map(c => c.variant);
         console.log({productInResponse: product});
         const formattedProduct = {
           id: product._id,
@@ -107,8 +115,8 @@ const Product = ({ addToCart, cart }) => {
           cost: product.price,
           slug: product.slug,
           productMappings: product.productMappings,
-          colors: product.productMappings.map(p => p.color),
-          sizes: product.productMappings.map(p => p.variant),
+          colors:  [...new Map(colorsArr.map((item) => [item["id"], item])).values()],
+          sizes: [...new Map(variantArr.map((item) => [item["id"], item])).values()],
           productNumberedId: product.productMappings[0].productNumberedId
         };
 
@@ -120,7 +128,7 @@ const Product = ({ addToCart, cart }) => {
         console.log({ err });
       });
   };
-
+// console.log({formattedProduct: product});
   const handleColorChange = event => {
     const selectedColor = product.colors.find(c => c.id === event.target.value)
     setColor(selectedColor);
@@ -137,38 +145,82 @@ const Product = ({ addToCart, cart }) => {
 
   const handleAddToCart = () => {
     const keyId = `${product.productNumberedId}-${size.id}-${color.id}`
+    const selectedVariant = product.productMappings.find(p => p.keyId === keyId);
+    if (!selectedVariant) {
+      setSnackBarToggle({
+        visible: true,
+        type: 'error',
+        message: 'Variant not available'
+      });
+      return;
+    }
     console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
-    const productMappingId = product.productMappings.find(p => p.keyId === keyId)._id;
+    const productMappingId = selectedVariant._id;
     let updatedCart = {};
+console.log({selectedVariant});
+    const prevProduct = cartsVariants.find(v => v.productId === product.id);
+    console.log({prevProduct});
 
-    const prevRelatedVariants = cartsVariants.find(v => v.productId === product.id);
-    if (prevRelatedVariants) {
+    // if there are any previous items selected then go into if
+    // other wise execute else block
+    if (prevProduct) {
+      const isSameVariantAlreadySelected = prevProduct.productMappings.find(prv => prv.id === selectedVariant._id)
+      let mappings = [...prevProduct.productMappings]
+      if (isSameVariantAlreadySelected) {
+        mappings = mappings.filter(m => m.id !== selectedVariant._id)
+      }
       updatedCart = {
-        ...prevRelatedVariants,
-        productMappings: [...prevRelatedVariants, productMappingId]
+        ...prevProduct,
+        productMappings: [
+          ...mappings, 
+          { 
+            id: productMappingId, 
+            quantity: isSameVariantAlreadySelected ? isSameVariantAlreadySelected.quantity + 1 : 1,
+            color: selectedVariant.color.label,
+            variant: selectedVariant.variant.label
+          }
+        ]
       }
     } else {
       updatedCart = {
         productId: product.id,
-        productMappings: [productMappingId]
+        productMappings: [{ 
+          id: productMappingId, 
+          quantity: 1,
+          color: selectedVariant.color.label,
+          variant: selectedVariant.variant.label          
+        }],
+        price: product.cost,
+        name: product.name,
+        image: product.image,
       }
     }
-
-    const updatedCartList = [updatedCart, ...cartsVariants];
+    console.log({ updatedCart });
+    const otherProductVariants = cartsVariants.filter(cv => cv.productId !== product.id)
+    const updatedCartList = [updatedCart, ...otherProductVariants];
+    console.log({ updatedCartList });
     setCartsVariants(updatedCartList)
     localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
     addToCart(`${product.productNumberedId}-${size.id}-${color.id}`);
-    setSnackBarToggle(true);
+    setSnackBarToggle({
+      visible: true,
+      type: 'success',
+      message: 'Added to cart'
+    });
+    const totalItems = updatedCartList.reduce((total, cur) => total + cur.productMappings.length, 0)
+    setTotalNumberOfVariants(totalItems)
   };
 
   const handleCartButton = () => {
-    navigate('/cart');
+    navigate(`/cart/${storeUrl}`);
   };
 
   const handleSnackBarClose = () => {
-    setSnackBarToggle(false);
+    setSnackBarToggle({
+      visible: false
+    });
   };
-
+console.log({totalNumberOfVariants});
   return (
     <Grid container spacing={1}>
       <Grid item md={6} xs={12}>
@@ -188,7 +240,7 @@ const Product = ({ addToCart, cart }) => {
           size="large"
           style={{ height: '50px', width: '50px' }}
         >
-          <StyledBadge badgeContent={cartProducts.length} color="secondary">
+          <StyledBadge badgeContent={totalNumberOfVariants} color="secondary">
             <ShoppingCartIcon />
           </StyledBadge>
         </IconButton>
@@ -267,6 +319,7 @@ const Product = ({ addToCart, cart }) => {
                   {product.sizes.map(({id, label}) => {
                     return (
                       <FormControlLabel
+                      key={`sizes-${id}`}
                         value={id}
                         control={<Radio />}
                         label={label}
@@ -288,6 +341,7 @@ const Product = ({ addToCart, cart }) => {
                   {product.colors.map(({id, label}) => {
                     return (
                       <FormControlLabel
+                      key={`colors-${id}`}
                         value={id}
                         control={<Radio />}
                         label={label}
@@ -318,11 +372,11 @@ const Product = ({ addToCart, cart }) => {
                   Add to Cart
                 </Button>
                 <Snackbar
-                  open={snackBarToggle}
+                  open={snackBarToggle.visible}
                   autoHideDuration={3000}
                   onClose={handleSnackBarClose}
                 >
-                  <Alert severity="success">Item added to cart</Alert>
+                  <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
                 </Snackbar>
               </Stack>
             </Stack>
