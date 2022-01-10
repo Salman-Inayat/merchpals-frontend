@@ -94,9 +94,9 @@ const VendorStoreProductCard = ({ product, design }) => {
           className={classes.productImage}
           alt="green iguana"
         />
-        {design && (
+        {product?.designId && (
           <img
-            src={design}
+            src={product.designId.url}
             className={[
               classes.design,
               product.name === 'Poster'

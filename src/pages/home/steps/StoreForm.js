@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, Stack, TextField, Button, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { makeStyles } from '@mui/styles';
@@ -24,7 +24,8 @@ const Input = styled('input')({
 });
 
 const StoreForm = ({
-  createStore
+  createStore,
+  createStoreError = false
 }) => {
   const [phoneNo, setPhoneNo] = useState();
   const [formErrors, setFormErrors] = useState({
@@ -36,7 +37,11 @@ const StoreForm = ({
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  
+  useEffect(() => {
+    if (createStoreError) {
+      setLoading(false);
+    }
+  }, [createStoreError])
   const storeSchema = Yup.object().shape({
     name: Yup.string()
       .required("Store name is required")
@@ -63,38 +68,8 @@ const StoreForm = ({
     console.log('err', err);
   }
   
-  const readFile = (file) => {
-    if (!file) {
-      return;
-    }
-  
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-  
-      reader.onload = function (event) {
-        var _event$target;
-        resolve(
-          event === null || event === void 0
-            ? void 0
-            : (_event$target = event.target) === null || _event$target === void 0
-            ? void 0
-            : _event$target.result
-        );
-      };
-  
-      reader.onerror = function (event) {
-        reader.abort();
-        reject(event);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-  
 
   const setImage = async (name, file) => {
-    // const base64Image = await readFile(file)
-    // console.log({base64Image});
-    console.log({file});
     setImages({...images, [name]: file})
   }
 
@@ -139,10 +114,10 @@ const StoreForm = ({
 
               <TextField
                 fullWidth
-                label="twtich"
-                {...register("twtich")}
-                error={Boolean(errors.twtich?.message)}
-                helperText={errors.twtich?.message}
+                label="twitch"
+                {...register("twitch")}
+                error={Boolean(errors.twitch?.message)}
+                helperText={errors.twitch?.message}
               />
 
               <TextField

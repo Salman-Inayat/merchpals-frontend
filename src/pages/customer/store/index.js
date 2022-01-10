@@ -81,12 +81,7 @@ const Store = () => {
       .then(response => {
         console.log(response.data.store);
         const store = response.data.store;
-        setStore({
-          name: store.name,
-          coverAvatar: store.coverAvatar,
-          logo: store.logo,
-          products: store.products,
-        });
+        setStore(store);
       })
       .catch(err => {
         console.log({ err });
@@ -113,7 +108,7 @@ const Store = () => {
           spacing={isMobile ? 1 : 10}
           className={classes.productsContainer}
         >
-          {store.products.map(product => {
+          {store.vendorProductIds?.map(product => {
             return (
               <Grid item md={4} xs={6}>
                 <StoreProductCard product={product} storeUrl={storeUrl}/>

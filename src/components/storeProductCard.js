@@ -44,7 +44,7 @@ const StoreProductCard = ({ product, storeUrl }) => {
   const navigate = useNavigate();
 
   const exploreProduct = () => {
-    navigate({ pathname: `/store/${storeUrl}/products/${product._id}` });
+    navigate({ pathname: `/store/${storeUrl}/products/${product.productId}` });
   };
 
   return (

@@ -71,6 +71,7 @@ const Home = () => {
   const [design, setDesign] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
+  const [createStoreError, setCreateStoreError] = useState(false);
   const classes = useStyle();
   const navigate = useNavigate();
 
@@ -110,7 +111,8 @@ const Home = () => {
         console.log({ response });
         localStorage.setItem('MERCHPAL_AUTH_TOKEN', response.data.token);
         localStorage.setItem('phoneNoForOTP', data.phoneNo);
-        setShowOtpBox(true);
+        nextStep();
+        // setShowOtpBox(true);
       })
       .catch(error => {
         console.log({ error });
@@ -128,11 +130,6 @@ const Home = () => {
           });
         }
       });
-  };
-
-  const exportBase64File = file => {
-    setDesign(file);
-    localStorage.setItem('design', file);
   };
 
   const createStore = data => {
@@ -154,6 +151,7 @@ const Home = () => {
         'Content-Type': 'multipart/form-data'
       }})
       .then(response => {
+        console.log({ createstore: response });
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
@@ -165,6 +163,7 @@ const Home = () => {
       })
       .catch(err => {
         console.log('err', err);
+        setCreateStoreError(true)
       });
   };
 
@@ -196,9 +195,9 @@ const Home = () => {
         if (showWelcomeMessage) {
           return <WelcomeMessage />;
         }
-        return <StoreForm createStore={createStore} />;
+        return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
-        return <Editor nextStep={nextStep} exportBase64={exportBase64File} />;
+        return <Editor nextStep={nextStep} />;
     }
   };
   return (

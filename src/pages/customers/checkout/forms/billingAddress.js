@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from 'yup';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -6,13 +6,24 @@ import {
   Grid,
   TextField,
   Stack,
-  Typography
+  Typography,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+  Select,
+  MenuItem,
 } from '@mui/material';
+import { Country, State, City }  from 'country-state-city';
 
 const BillingAddress = ({
   markAddressComplete = () => {},
-  setBillingAddress = () => {}
+  setBillingAddress = () => {},
+  taxError = '',
+  shippingError = ''
 }) => {
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+
   const CustomerSchema = Yup.object().shape({
     aptNo: Yup.string()
       .required("Apartment Number is required"),
@@ -31,9 +42,17 @@ const BillingAddress = ({
   });
 
   const [aptNo, zip, street, city, state, country] = watch(['aptNo', 'zip', 'street', 'city', 'state', 'country']);
+  
+  useEffect(() => {
+    setCountries(Country.getAllCountries())
+  }, [])
+  
+  useEffect(() => {
+    setStates(State.getStatesOfCountry(country))
+  }, [country])
 
   useEffect(() => {
- validateForm();
+    validateForm();
   }, [aptNo, zip, street, city, state, country]);
 
   const validateForm = async () => {
@@ -50,6 +69,11 @@ const BillingAddress = ({
       aptNo, zip, street, city, state, country
     })
   }
+console.log({
+  aptNo, zip, street, city, state, country
+});
+
+console.log({states});
   return (
     <form id='billingForm'>
       <Stack spacing={3} mt={3}>
@@ -61,7 +85,21 @@ const BillingAddress = ({
           >
             Billing Address
           </Typography>
-        </Grid>          
+        </Grid>
+        <Grid item>
+          <Typography 
+            style={{ fontSize: '14px', fontWeight: '500', color: 'red' }} 
+            align='center'
+          >
+            {taxError}
+          </Typography>
+          <Typography 
+            style={{ fontSize: '14px', fontWeight: '500', color: 'red' }} 
+            align='center'
+          >
+            {shippingError}
+          </Typography>
+        </Grid>        
           <Grid xs={12} spacing={3} direction='row' container item>
             <Grid xs={6} item>
               <TextField
@@ -92,6 +130,21 @@ const BillingAddress = ({
               helperText={errors.street?.message}
             />            
           </Grid>
+          <Grid item>
+            <FormControl fullWidth error={Boolean(errors.country?.message)}>
+              <InputLabel id="country">Country</InputLabel>
+              <Select
+                labelId="country"
+                id="country"
+                {...register('country')}
+              >
+                {countries.map(country => <MenuItem value={country.isoCode}>{country.name}</MenuItem>)}
+              </Select>
+              <FormHelperText>
+              {errors.country?.message}
+              </FormHelperText>
+            </FormControl>
+          </Grid>          
           <Grid xs={12} spacing={3} direction='row' container item>
             <Grid xs={6} item>
               <TextField
@@ -103,25 +156,23 @@ const BillingAddress = ({
               />              
             </Grid>
             <Grid xs={6} item>
-              <TextField
-                fullWidth
-                label="state"
-                {...register("state")}
-                error={Boolean(errors.state?.message)}
-                helperText={errors.state?.message}
-              />
+            
+            <FormControl fullWidth error={Boolean(errors.state?.message)}>
+              <InputLabel id="state">State</InputLabel>
+              <Select
+                labelId="state"
+                id="state"
+                {...register('state')}
+              >
+                {states.map(state => <MenuItem value={state.isoCode}>{state.name}</MenuItem>)}
+              </Select>
+              <FormHelperText>
+              {errors.country?.message}
+              </FormHelperText>
+            </FormControl>
+          
             </Grid>
           </Grid>  
-
-          <Grid item>
-            <TextField
-              fullWidth
-              label="Country"
-              {...register("country")}
-              error={Boolean(errors.country?.message)}
-              helperText={errors.country?.message}
-            />            
-          </Grid>
         </Grid>
       </Stack>
     </form>  
