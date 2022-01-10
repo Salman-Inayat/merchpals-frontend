@@ -112,7 +112,7 @@ const Home = () => {
         localStorage.setItem('MERCHPAL_AUTH_TOKEN', response.data.token);
         localStorage.setItem('phoneNoForOTP', data.phoneNo);
         nextStep();
-        // setShowOtpBox(true);
+        setShowOtpBox(true);
       })
       .catch(error => {
         console.log({ error });
