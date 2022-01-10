@@ -220,7 +220,7 @@ console.log({selectedVariant});
       visible: false
     });
   };
-console.log({totalNumberOfVariants});
+console.log({product});
   return (
     <Grid container spacing={1}>
       <Grid item md={6} xs={12}>

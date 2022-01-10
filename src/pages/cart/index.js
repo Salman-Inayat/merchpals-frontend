@@ -51,45 +51,41 @@ const Cart = ({ cartProducts }) => {
   }
 
   const updateQuantity = (productId, variantId, op) => {
-    let updatedCart = {};
-    
-    const prevProduct = selectedProducts.find(v => v.productId === productId);
-      const variant = prevProduct.productMappings.find(prv => prv.id === variantId)
-      let mappings = [...prevProduct.productMappings]
-      
-      if (variant) {
-        mappings = mappings.filter(m => m.id !== variantId)
-      }
+    let updatedCart = [...selectedProducts];
+    let updatedVariant = {};
+    let updatedProduct = {};
+
+    const prevProductIndex = selectedProducts.findIndex(v => v.productId === productId);
+    const prevProduct = selectedProducts[prevProductIndex];
+
+    const variantIndex = prevProduct.productMappings.findIndex(prv => prv.id === variantId)
+    const variant = {...prevProduct.productMappings[variantIndex]}
+    let mappings = [...prevProduct.productMappings]
+
 
      if (op === 'add') {
-      updatedCart = {
-        ...prevProduct,
-        productMappings: [
-          ...mappings, 
-          { 
-            ...variant,
-            quantity: variant.quantity + 1
-          }
-        ]
-      }       
+       console.log('add - operator');
+        updatedVariant =  { 
+          ...variant,
+          quantity: variant.quantity + 1
+        }
      } else { 
-        const newQuantity = variant.quantity - 1 > -1 ? variant.quantity - 1 : 0
-        updatedCart = {
-          ...prevProduct,
-          productMappings: [
-            ...mappings, 
-            { 
-              ...variant,
-              quantity: newQuantity
-            }
-          ]
-        }            
+      const newQuantity = variant.quantity - 1 > -1 ? variant.quantity - 1 : 0
+
+      updatedVariant =  { 
+        ...variant,
+        quantity: newQuantity
+      }
      }
 
-    const otherProductVariants = selectedProducts.filter(cv => cv.productId !== productId)
-    const updatedCartList = [updatedCart, ...otherProductVariants];
-    setSelectedProducts(updatedCartList)
-    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
+    mappings.splice(variantIndex, 1, updatedVariant);
+    updatedProduct = {
+      ...prevProduct,
+      productMappings: mappings
+    };
+    updatedCart.splice(prevProductIndex, 1, updatedProduct)
+    setSelectedProducts(updatedCart)
+    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCart))
   }
 
   const emptyCart = () => {
