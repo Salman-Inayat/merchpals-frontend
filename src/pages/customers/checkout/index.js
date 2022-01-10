@@ -200,8 +200,8 @@ const placeOrder = (token) => {
     .then(response => {
       console.log({orderplacementResponse: response});
       setLoading(false)
-      // localStorage.removeItem('MERCHPALS_CART')
-      // navigate(`/store/${storeUrl}`)
+      localStorage.removeItem('MERCHPALS_CART')
+      navigate(`/store/${storeUrl}`)
     })
     .catch(error => {
       setLoading(false)
