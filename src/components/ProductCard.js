@@ -136,7 +136,7 @@ const ProductCard = ({
 
   useEffect(() => {
     setDesign(localStorage.getItem('design'));
-    console.log(product.colors);
+    // console.log(product.colors);
   }, []);
 
   const renderBgColor = () => {
@@ -147,7 +147,7 @@ const ProductCard = ({
       const lastSelectedColor =
         productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
-      console.log({ bgColor });
+      // console.log({ bgColor });
     }
     return bgColor;
   };

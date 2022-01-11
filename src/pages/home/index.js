@@ -104,14 +104,13 @@ const Home = () => {
   const prevStep = () => setStep(step - 1);
 
   const registerVendor = data => {
-    console.log({ data });
     axios
       .post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data })
       .then(response => {
         console.log({ response });
         localStorage.setItem('MERCHPAL_AUTH_TOKEN', response.data.token);
         localStorage.setItem('phoneNoForOTP', data.phoneNo);
-        nextStep();
+        // nextStep();
         setShowOtpBox(true);
       })
       .catch(error => {
