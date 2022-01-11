@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { 
   Grid,
-  CardContent,
+  Avatar,
   Typography
 } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
@@ -14,6 +14,18 @@ import {
 } from './forms';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const'
+import { makeStyles } from '@mui/styles';
+import Lock from '../../../assets/images/icons/lock1.png'
+const useStyles = makeStyles(theme => ({
+  card: {
+    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+  },
+  heading: {
+    fontWeight: 'bolder',
+    fontSize: '24px',
+    color: 'black'
+  }
+}));
 
 const Checkout = () => {
 const [completedCustomerInfo, setCompletedCustomerInfo] = useState(false);
@@ -24,7 +36,8 @@ const [billingAddress, setBillingAddress] = useState({});
 const [payment, setPayment] = useState({});
 const [cart, setCart] = useState({
   amount: 0,
-  products: []
+  products: [],
+  savedProducts: []
 })
 const [phoneNo, setPhoneNo] = useState('');
 const [email, setEmail] = useState('');
@@ -40,7 +53,7 @@ const [loading, setLoading] = useState(false);
 const [tax, setTax] = useState(0);
 const [shippingCost, setShippingCost] = useState(0);
 const [printfulData, setPrintfulData] = useState(null);
-
+const classes = useStyles();
 const { storeUrl } = useParams();
 const navigate = useNavigate();
 
@@ -60,7 +73,7 @@ useEffect(()=> {
   const storedCart = localStorage.getItem('MERCHPALS_CART')
   if (storedCart) {
     const products = JSON.parse(storedCart)
-    // console.log({products});
+    console.log({products});
     const amount = total(products);
 
     let formattedProducts = []
@@ -209,55 +222,24 @@ const placeOrder = (token) => {
     })
 }
   return (
-    <Grid justifyContent='space-between' alignItems='center' mt={12} p={3} container>
-      <Grid xs={6} item>
-        <Customer 
-          markCustomerInfoComplete={markCustomerInfoComplete} 
-          setCustomer={setCustomer}
-        />
-        
-        {
-          <BillingAddress 
-            taxError={printfulMessage.tax}
-            shippingError={printfulMessage.shipping}
-            markAddressComplete={markAddressComplete} 
-            setBillingAddress={setBillingAddress}
-          />
-        }
-
-        { completedAddress && 
-          <Elements stripe={stripePromise}>
-            <PaymentInfo 
-              completedCustomerInfo={completedCustomerInfo}
-              completedAddress={completedAddress}
-              placeOrder={placeOrder}
-              setPhoneNo={setPhoneNo}
-              setEmail={setEmail}
-              setFormErrors={setFormErrors}
-              phoneNo={phoneNo}
-              email={email}
-              formErrors={formErrors}
-              loading={loading}
-              setLoading={setLoading}
-            />
-          </Elements>
-        }
-      </Grid>
-      <Grid xs={4} item>
-        <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Amount: {cart.amount}
-          </Typography>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Shipping Cost: {shippingCost}
-          </Typography>
-          <Typography  sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Tax: {tax}
-          </Typography>
-          <Typography  variant="h5" component="div">
-            Total: {Number(cart.amount) + Number(tax) + Number(shippingCost)}
-          </Typography>
-        </CardContent>
+    <Grid justifyContent='center' alignItems='center' mt={12} p={3} container>
+      <Grid className={classes.card} xs={7} item>
+        <Grid container alignItems='center' justifyContent='flex-end' xs={12} item>
+          <Grid xs={6} item style={{padding: '10px'}}>
+            <Typography align='left' className={classes.heading}>Checkout</Typography>
+          </Grid>
+          <Grid xs={1} item>
+            <Avatar src={Lock} style={{ width: '20px', height: '20px'}} />
+          </Grid>
+        </Grid>
+        <Customer setCustomer={setCustomer} products={cart.savedProducts} setProducts={(p) => {
+          setCart({...setCart,
+          savedProducts: p
+        })}}/>
+        <BillingAddress />
+        <Elements stripe={stripePromise}>
+          <PaymentInfo/>
+        </Elements>
       </Grid>
     </Grid>
   )

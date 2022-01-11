@@ -4,16 +4,65 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Grid,
-  TextField,
-  Stack,
+  Button, 
+  AccordionSummary, 
   Typography,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-  Select,
-  MenuItem,
+  Input,
+  InputLabel
 } from '@mui/material';
 import { Country, State, City }  from 'country-state-city';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(theme => ({
+  accordian: {
+    backgroundColor: '#0A0A0A',
+    color: '#fff',
+    minHeight: '64px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: '0px 16px'
+  },
+  heading: {
+    fontWeight: 'bold',
+    fontSize: '16px',
+    textTransform: 'uppercase'
+  },
+  box: {
+    padding: '30px 20px',
+
+  },
+  textField: {
+    border: '1px solid #ddd',
+    height: '45px',
+    width: '100%',
+    padding: '8px 10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    '&:after': {
+      border: '1px solid #ddd',
+    }
+  },
+  label: {
+    marginLeft: '3px',
+    fontWeight: 'bolder',
+    color: 'black',
+    textTransform: 'uppercase'
+  },
+  required: {
+    color: 'red'
+  },
+  continueBtn: {
+    width: '80%',
+    color: 'black',
+    backgroundColor: 'yellow',
+    borderRadius: '20px',
+    '&:hover': {
+      color: 'black',
+      backgroundColor: 'yellow',
+    }
+  }
+}));
 
 const BillingAddress = ({
   markAddressComplete = () => {},
@@ -23,7 +72,7 @@ const BillingAddress = ({
 }) => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
-
+  const classes = useStyles();
   const CustomerSchema = Yup.object().shape({
     aptNo: Yup.string()
       .required("Apartment Number is required"),
@@ -75,107 +124,61 @@ console.log({
 
 console.log({states});
   return (
-    <form id='billingForm'>
-      <Stack spacing={3} mt={3}>
-        <Grid direction='column' spacing={2} container>
-        <Grid item>
-          <Typography 
-            style={{ fontSize: '24px', fontWeight: '600' }} 
-            align='center'
-          >
-            Billing Address
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography 
-            style={{ fontSize: '14px', fontWeight: '500', color: 'red' }} 
-            align='center'
-          >
-            {taxError}
-          </Typography>
-          <Typography 
-            style={{ fontSize: '14px', fontWeight: '500', color: 'red' }} 
-            align='center'
-          >
-            {shippingError}
-          </Typography>
-        </Grid>        
-          <Grid xs={12} spacing={3} direction='row' container item>
-            <Grid xs={6} item>
-              <TextField
-                fullWidth
-                label="Apartment No"
-                {...register("aptNo")}
-                error={Boolean(errors.aptNo?.message)}
-                helperText={errors.aptNo?.message}
-              />              
-            </Grid>
-            <Grid xs={6} item>
-              <TextField
-                fullWidth
-                label="Zip code"
-                {...register("zip")}
-                error={Boolean(errors.zip?.message)}
-                helperText={errors.zip?.message}
-              />
-            </Grid>
-          </Grid>  
-
-          <Grid item>
-            <TextField
-              fullWidth
-              label="Street"
-              {...register("street")}
-              error={Boolean(errors.street?.message)}
-              helperText={errors.street?.message}
-            />            
+    <Grid item>
+      <Grid className={classes.accordian}>
+          <Typography className={classes.heading}>1. Shipping</Typography>
+      </Grid>
+      <Grid direction='row' className={classes.box} container>
+        <Grid justifyContent='space-between' mt={3} container>
+          <Grid direction='column' container item xs={6}>
+            <InputLabel className={classes.label}>First Name <span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='First name' />
           </Grid>
-          <Grid item>
-            <FormControl fullWidth error={Boolean(errors.country?.message)}>
-              <InputLabel id="country">Country</InputLabel>
-              <Select
-                labelId="country"
-                id="country"
-                {...register('country')}
-              >
-                {countries.map(country => <MenuItem value={country.isoCode}>{country.name}</MenuItem>)}
-              </Select>
-              <FormHelperText>
-              {errors.country?.message}
-              </FormHelperText>
-            </FormControl>
-          </Grid>          
-          <Grid xs={12} spacing={3} direction='row' container item>
-            <Grid xs={6} item>
-              <TextField
-                fullWidth
-                label="city"
-                {...register("city")}
-                error={Boolean(errors.city?.message)}
-                helperText={errors.city?.message}
-              />              
-            </Grid>
-            <Grid xs={6} item>
-            
-            <FormControl fullWidth error={Boolean(errors.state?.message)}>
-              <InputLabel id="state">State</InputLabel>
-              <Select
-                labelId="state"
-                id="state"
-                {...register('state')}
-              >
-                {states.map(state => <MenuItem value={state.isoCode}>{state.name}</MenuItem>)}
-              </Select>
-              <FormHelperText>
-              {errors.country?.message}
-              </FormHelperText>
-            </FormControl>
-          
-            </Grid>
-          </Grid>  
+          <Grid direction='column' container item xs={5}>
+            <InputLabel className={classes.label}>Last Name<span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='Last name' />
+          </Grid>
+        </Grid>    
+
+        <Grid justifyContent='space-between' mt={3} container>
+          <Grid direction='column' container item xs={6}>
+            <InputLabel className={classes.label}>Street Address<span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='Street Address' />
+          </Grid>
+          <Grid direction='column' container item xs={5}>
+            <InputLabel className={classes.label}>APT. / Suite</InputLabel>
+            <Input className={classes.textField} placeholder='APT.' />
+          </Grid>
+        </Grid>    
+        
+        <Grid justifyContent='space-between' mt={3} container>
+          <Grid direction='column' container item xs={6}>
+            <InputLabel className={classes.label}>City<span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='City' />
+          </Grid>
+          <Grid direction='column' container item xs={5}>
+            <InputLabel className={classes.label}>Postal Code<span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='Zip' />
+          </Grid>
+        </Grid> 
+
+        <Grid justifyContent='space-between' mt={3} container>
+          <Grid direction='column' container item xs={6}>
+            <InputLabel className={classes.label}>State<span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='State' />
+          </Grid>
+          <Grid direction='column' container item xs={5}>
+            <InputLabel className={classes.label}>Country<span className={classes.required}>*</span></InputLabel>
+            <Input className={classes.textField} placeholder='country' />
+          </Grid>
         </Grid>
-      </Stack>
-    </form>  
+        
+        <Grid justifyContent='center' mt={3} container>
+          <Button className={classes.continueBtn}> Continue </Button>
+        </Grid>
+        
+      </Grid>
+    </Grid>
   )
 }
 

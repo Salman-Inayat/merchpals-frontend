@@ -154,15 +154,13 @@ const Product = ({ addToCart, cart }) => {
       });
       return;
     }
-    console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
+    // console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
     const productMappingId = selectedVariant._id;
     let updatedCart = {};
-console.log({selectedVariant});
+    // console.log({selectedVariant});
     const prevProduct = cartsVariants.find(v => v.productId === product.id);
-    console.log({prevProduct});
+    // console.log({prevProduct});
 
-    // if there are any previous items selected then go into if
-    // other wise execute else block
     if (prevProduct) {
       const isSameVariantAlreadySelected = prevProduct.productMappings.find(prv => prv.id === selectedVariant._id)
       let mappings = [...prevProduct.productMappings]
@@ -195,10 +193,10 @@ console.log({selectedVariant});
         image: product.image,
       }
     }
-    console.log({ updatedCart });
+    // console.log({ updatedCart });
     const otherProductVariants = cartsVariants.filter(cv => cv.productId !== product.id)
     const updatedCartList = [updatedCart, ...otherProductVariants];
-    console.log({ updatedCartList });
+    // console.log({ updatedCartList });
     setCartsVariants(updatedCartList)
     localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
     addToCart(`${product.productNumberedId}-${size.id}-${color.id}`);
@@ -207,6 +205,7 @@ console.log({selectedVariant});
       type: 'success',
       message: 'Added to cart'
     });
+    navigate(`/checkout/${storeUrl}`)
     const totalItems = updatedCartList.reduce((total, cur) => total + cur.productMappings.length, 0)
     setTotalNumberOfVariants(totalItems)
   };
