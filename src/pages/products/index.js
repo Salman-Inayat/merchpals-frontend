@@ -97,7 +97,7 @@ const Product = ({ addToCart, cart }) => {
       console.log({parsedCart});
       setCartsVariants(parsedCart)
     }
-    
+
   }, []);
 
   useEffect(() => {
@@ -160,7 +160,7 @@ const Product = ({ addToCart, cart }) => {
       });
       return;
     }
-    
+
     // console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
     const productMappingId = selectedVariant._id;
     let updatedCart = {};
@@ -174,15 +174,17 @@ const Product = ({ addToCart, cart }) => {
       if (isSameVariantAlreadySelected) {
         mappings = mappings.filter(m => m.id !== selectedVariant._id)
       }
+      console.log({ selectedVariant});
       updatedCart = {
         ...prevProduct,
         productMappings: [
-          ...mappings, 
-          { 
-            id: productMappingId, 
+          ...mappings,
+          {
+            id: productMappingId,
             quantity: isSameVariantAlreadySelected ? isSameVariantAlreadySelected.quantity + 1 : 1,
             color: selectedVariant.color.label,
             variant: selectedVariant.variant.label,
+            variantId: selectedVariant.variantId,
             design: product.design
           }
         ]
@@ -191,17 +193,18 @@ const Product = ({ addToCart, cart }) => {
     } else {
       updatedCart = {
         productId: product.id,
-        productMappings: [{ 
-          id: productMappingId, 
+        productMappings: [{
+          id: productMappingId,
           quantity: 1,
           color: selectedVariant.color.label,
           variant: selectedVariant.variant.label,
-          design: product.design  
+          design: product.design,
+          variantId: selectedVariant.variantId,
         }],
         price: product.cost,
         name: product.name,
         image: product.image,
-      }     
+      }
     }
 
     // console.log({ updatedCart });
@@ -376,7 +379,7 @@ console.log({product});
                   component="div"
                   className={classes.price}
                 >
-                  {product.cost} $
+                  {product?.cost ? product.cost.toFixed(2) : 0} $
                 </Typography>
                 <Button
                   color="secondary"

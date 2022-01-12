@@ -5,8 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Grid,
   Stack,
-  Accordion, 
-  AccordionSummary, 
+  Accordion,
+  AccordionSummary,
   Typography,
   AccordionDetails,
   Avatar,
@@ -93,7 +93,7 @@ const Customer = ({
   tax,
   shippingCost
 }) => {
-  
+
   const classes = useStyles();
   const updateQuantity = (productId, variantId, op) => {
     let updatedCart = [...products];
@@ -110,14 +110,14 @@ const Customer = ({
 
      if (op === 'add') {
        console.log('add - operator');
-        updatedVariant =  { 
+        updatedVariant =  {
           ...variant,
           quantity: variant.quantity + 1
         }
-     } else { 
+     } else {
       const newQuantity = variant.quantity - 1 > -1 ? variant.quantity - 1 : 0
 
-      updatedVariant =  { 
+      updatedVariant =  {
         ...variant,
         quantity: newQuantity
       }
@@ -135,7 +135,7 @@ const Customer = ({
 
   const removeFromCart = (productId, variantId) => {
     let updatedCart = {};
-    
+
     const prevProduct = products.find(v => v.productId === productId);
 // console.log({prevProduct});
     let mappings = [...prevProduct.productMappings]
@@ -144,7 +144,7 @@ const Customer = ({
     updatedCart = {
       ...prevProduct,
       productMappings: [
-        ...mappings, 
+        ...mappings,
       ]
     }
 
@@ -164,11 +164,11 @@ const Customer = ({
       totalCartPrice = totalCartPrice + productPrice;
     }
 
-    return totalCartPrice;
+    return Number(totalCartPrice.toFixed(2));
   }
   const taxAmount = () => {
     const subTotalAmount = subTotal();
-    return (subTotalAmount * tax)
+    return Number((subTotalAmount * tax).toFixed(2))
   }
 
   const total = () => {
@@ -192,17 +192,17 @@ const Customer = ({
               product.productMappings.map(variant => (
           <Grid direction='row' xs={12} item container mt={1}>
             <Grid xs={4} item className={classes.imageCard}>
-              <Avatar 
+              <Avatar
                 className={classes.avatar}
                 style={{backgroundColor: variant.color}}
                 src={product.image}
                 variant="square"
               />
-              <Avatar 
+              <Avatar
                 className={classes.design}
                 src={variant.design}
                 variant="square"
-              />            
+              />
             </Grid>
             <Grid spacing={2} direction='column' container xs={5} item>
               <Grid className={classes.text} item> Style: {product.name} </Grid>
@@ -223,34 +223,34 @@ const Customer = ({
           </Grid>
             ))
           ))}
-          <hr className={classes.separator} />          
+          <hr className={classes.separator} />
           <Grid container rowSpacing={1}>
             <Grid justifyContent='space-between' item container>
-              <Typography  className={classes.summaryText} >Sub Total</Typography> 
+              <Typography  className={classes.summaryText} >Sub Total</Typography>
               <Typography  className={classes.summaryText} align='right'>${subTotal()}</Typography>
-            </Grid>    
+            </Grid>
             <Grid justifyContent='space-between' item container>
               <Grid xs={3} alignItems='center' item container>
-                <Typography  className={classes.summaryText} >Estimated Shipping</Typography> 
+                <Typography  className={classes.summaryText} >Estimated Shipping</Typography>
                 <Tooltip placement='top' describeChild title='Shipping description'>
                 <IconButton className={classes.infoBtn}>
                   <QuestionMark className={classes.infoIcon} />
-                </IconButton>  
+                </IconButton>
                 </Tooltip>
               </Grid>
               <Grid xs={2} item>
                 <Typography  className={classes.summaryText} align='right'>
-                {shippingCost === 'Free' ? 'Free' : `$${shippingCost}`}
+                {shippingCost === 'Free' ? 'Free' : `$${shippingCost.toFixed(2)}`}
                 </Typography>
               </Grid>
             </Grid>
             <Grid justifyContent='space-between' item container>
               <Grid xs={3} alignItems='center' item container>
-                <Typography  className={classes.summaryText} >Estimated Tax</Typography> 
+                <Typography  className={classes.summaryText} >Estimated Tax</Typography>
                 <Tooltip placement='top' describeChild title='Tax description'>
                 <IconButton className={classes.infoBtn}>
                   <QuestionMark className={classes.infoIcon} />
-                </IconButton>  
+                </IconButton>
                 </Tooltip>
               </Grid>
               <Grid xs={2} item>
@@ -258,9 +258,9 @@ const Customer = ({
               </Grid>
             </Grid>
             <Grid justifyContent='space-between' item container>
-              <Typography  className={classes.summaryText} >Total</Typography> 
+              <Typography  className={classes.summaryText} >Total</Typography>
               <Typography className={classes.totalText} align='right'>${total()}</Typography>
-            </Grid>                                   
+            </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>

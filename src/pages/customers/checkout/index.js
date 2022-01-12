@@ -98,7 +98,6 @@ const updateCart = (products) => {
     })
   }
   
-console.log({ savedProducts: products });
   setCart({
     amount,
     products: formattedProducts,
@@ -118,7 +117,7 @@ const updateTaxAndShipping = () => {
       let curProduct = cart.savedProducts[i];
       for(let j=0; j < curProduct.productMappings.length; j++) {
         const curVariant = curProduct.productMappings[j];
-        items.push({ quantity: curVariant.quantity, variant_id: 200 })
+        items.push({ quantity: curVariant.quantity, variant_id: curVariant.variantId })
       }
     }
     
@@ -132,6 +131,7 @@ const updateTaxAndShipping = () => {
       },
       items
     }
+    console.log({ items });
     setPrintfulData(data)
     getTax(data);
     if (billingAddress.country !== 'US') {

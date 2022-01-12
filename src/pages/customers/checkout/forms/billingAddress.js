@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Grid,
-  Button, 
+  Button,
   FormControl,
   MenuItem,
   FormHelperText,
-  Select, 
+  Select,
   Typography,
   Input,
-  InputLabel
+  InputLabel,
 } from '@mui/material';
-import { Country, State, City }  from 'country-state-city';
+import { Country, State, City } from 'country-state-city';
 import { makeStyles } from '@mui/styles';
 import PhoneNumberInput from '../../../../components/phone-number-input';
 
@@ -25,16 +25,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: '0px 16px'
+    padding: '0px 16px',
   },
   heading: {
     fontWeight: 'bold',
     fontSize: '16px',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   box: {
     padding: '30px 20px',
-
   },
   textField: {
     border: '1px solid #ddd',
@@ -45,16 +44,16 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '4px',
     '&:after': {
       border: '1px solid #ddd',
-    }
+    },
   },
   label: {
     marginLeft: '3px',
     fontWeight: 'bolder',
     color: 'black',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   required: {
-    color: 'red'
+    color: 'red',
   },
   continueBtn: {
     width: '80%',
@@ -64,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       color: 'black',
       backgroundColor: 'yellow',
-    }
+    },
   },
   error: {
     color: 'red',
@@ -72,9 +71,9 @@ const useStyles = makeStyles(theme => ({
   },
   fieldError: {
     color: 'red',
-    fontWeight: 400, 
-    fontSize: '11px'
-  }
+    fontWeight: 400,
+    fontSize: '11px',
+  },
 }));
 
 const BillingAddress = ({
@@ -88,7 +87,7 @@ const BillingAddress = ({
   setFormErrors,
   phoneNo,
   email,
-  formErrors = {},  
+  formErrors = {},
 }) => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -97,48 +96,62 @@ const BillingAddress = ({
 
   const classes = useStyles();
   const CustomerSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .required("First name is required"),
-    lastName: Yup.string()
-      .required("Last name is required"),
-    aptNo: Yup.string()
-      .required("Apartment Number is required"),
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    aptNo: Yup.string().required('Apartment Number is required'),
     zip: Yup.string()
-      .required("Postal Code is required")
-      .min("5", "Postal code should be 5 digits"),
-    street: Yup.string()
-      .required("Street Address is required"),
-    city: Yup.string()
-      .required("City name is required"),
-    state: Yup.string()
-      .required("State name is required"),      
-    country: Yup.string()
-      .required("Country Name is required"),
+      .required('Postal Code is required')
+      .min('5', 'Postal code should be 5 digits'),
+    street: Yup.string().required('Street Address is required'),
+    city: Yup.string().required('City name is required'),
+    state: Yup.string().required('State name is required'),
+    country: Yup.string().required('Country Name is required'),
   });
-  
-  const { register, trigger,watch, formState: { errors }  } = useForm({ 
+
+  const {
+    register,
+    trigger,
+    watch,
+    formState: { errors },
+  } = useForm({
     mode: 'onBlur',
     reValidateMode: 'onBlur',
     resolver: yupResolver(CustomerSchema),
   });
 
-  const [firstName, lastName, aptNo, zip, street, city, state, country] = watch([
-    'firstName', 'lastName', 'aptNo', 'zip', 'street', 'city', 'state', 'country'
-  ]);
-  
+  const [firstName, lastName, aptNo, zip, street, city, state, country] = watch(
+    [
+      'firstName',
+      'lastName',
+      'aptNo',
+      'zip',
+      'street',
+      'city',
+      'state',
+      'country',
+    ],
+  );
+
   useEffect(() => {
-    setCountries(Country.getAllCountries())
-  }, [])
-  
+    setCountries(Country.getAllCountries());
+  }, []);
+
   useEffect(() => {
-    setStates(State.getStatesOfCountry(country))
-  }, [country])
-  
+    setStates(State.getStatesOfCountry(country));
+  }, [country]);
+
   useEffect(() => {
     setBillingAddress({
-      firstName, lastName, aptNo, zip, street, city, state, country
-    })
-  }, [firstName, lastName, aptNo, zip, street, city, state, country])
+      firstName,
+      lastName,
+      aptNo,
+      zip,
+      street,
+      city,
+      state,
+      country,
+    });
+  }, [firstName, lastName, aptNo, zip, street, city, state, country]);
 
   const validateAndContinue = async () => {
     if (!phoneNo) {
@@ -154,174 +167,243 @@ const BillingAddress = ({
     const isValid = await trigger();
     if (isValid) {
       markAddressComplete(true);
-      updateTaxAndShipping()
+      updateTaxAndShipping();
     } else {
-      markAddressComplete(false); 
+      markAddressComplete(false);
     }
-  }
+  };
 
-// console.log({
-//   firstName, lastName, aptNo, zip, street, city, state, country
-// });
-console.log({taxError, shippingError});
-// console.log({errors});
+  // console.log({
+  //   firstName, lastName, aptNo, zip, street, city, state, country
+  // });
+  // console.log({taxError, shippingError});
+  // console.log({errors});
   return (
     <Grid item>
       <Grid className={classes.accordian}>
-          <Typography className={classes.heading}>1. Shipping</Typography>
+        <Typography className={classes.heading}>1. Shipping</Typography>
       </Grid>
-      <Grid direction='row' className={classes.box} container>
-        <Grid justifyContent='space-between' mt={3} container>
-          <Grid direction='column' container item xs={6}>
-            <InputLabel className={classes.label}>First Name <span className={classes.required}>*</span></InputLabel>
-            <Input {...register("firstName",{ 
-              onChange: (e) => {
-                if (errors.firstName) {
-                  trigger('firstName')
-                }
-              } 
-            })} className={classes.textField} placeholder='First name' />
-            <span className={classes.fieldError}>{errors?.firstName?.message}</span>
+      <Grid direction="row" className={classes.box} container>
+        <Grid justifyContent="space-between" mt={3} container>
+          <Grid direction="column" container item xs={6}>
+            <InputLabel className={classes.label}>
+              First Name <span className={classes.required}>*</span>
+            </InputLabel>
+            <Input
+              {...register('firstName', {
+                onChange: e => {
+                  if (errors.firstName) {
+                    trigger('firstName');
+                  }
+                },
+              })}
+              className={classes.textField}
+              placeholder="First name"
+            />
+            <span className={classes.fieldError}>
+              {errors?.firstName?.message}
+            </span>
           </Grid>
-          <Grid direction='column' container item xs={5}>
-            <InputLabel className={classes.label}>Last Name<span className={classes.required}>*</span></InputLabel>
-            <Input  {...register("lastName",{ 
-              onChange: (e) => {
-                if (errors.lastName) {
-                  trigger('lastName')
-                }
-              } 
-            })} className={classes.textField} placeholder='Last name' />
-            <span className={classes.fieldError}>{errors?.lastName?.message}</span>
+          <Grid direction="column" container item xs={5}>
+            <InputLabel className={classes.label}>
+              Last Name<span className={classes.required}>*</span>
+            </InputLabel>
+            <Input
+              {...register('lastName', {
+                onChange: e => {
+                  if (errors.lastName) {
+                    trigger('lastName');
+                  }
+                },
+              })}
+              className={classes.textField}
+              placeholder="Last name"
+            />
+            <span className={classes.fieldError}>
+              {errors?.lastName?.message}
+            </span>
           </Grid>
-        </Grid>    
+        </Grid>
 
-        <Grid justifyContent='space-between' mt={3} container>
-          <Grid direction='column' container item xs={6}>
-            <InputLabel className={classes.label}>Street Address<span className={classes.required}>*</span></InputLabel>
-            <Input  {...register("street",{ 
-              onChange: (e) => {
-                if (errors.street) {
-                  trigger('street')
-                }
-              } 
-            })} className={classes.textField} placeholder='Street Address' />
-            <span className={classes.fieldError}>{errors?.street?.message}</span>
+        <Grid justifyContent="space-between" mt={3} container>
+          <Grid direction="column" container item xs={6}>
+            <InputLabel className={classes.label}>
+              Street Address<span className={classes.required}>*</span>
+            </InputLabel>
+            <Input
+              {...register('street', {
+                onChange: e => {
+                  if (errors.street) {
+                    trigger('street');
+                  }
+                },
+              })}
+              className={classes.textField}
+              placeholder="Street Address"
+            />
+            <span className={classes.fieldError}>
+              {errors?.street?.message}
+            </span>
           </Grid>
-          <Grid direction='column' container item xs={5}>
+          <Grid direction="column" container item xs={5}>
             <InputLabel className={classes.label}>APT. / Suite</InputLabel>
-            <Input  {...register("aptNo",{ 
-              onChange: (e) => {
-                if (errors.aptNo) {
-                  trigger('aptNo')
-                }
-              } 
-            })} className={classes.textField} placeholder='APT.' />
+            <Input
+              {...register('aptNo', {
+                onChange: e => {
+                  if (errors.aptNo) {
+                    trigger('aptNo');
+                  }
+                },
+              })}
+              className={classes.textField}
+              placeholder="APT."
+            />
             <span className={classes.fieldError}>{errors?.aptNo?.message}</span>
           </Grid>
-        </Grid>    
-        
-        <Grid justifyContent='space-between' mt={3} container>
-          <Grid direction='column' container item xs={6}>
-            <InputLabel className={classes.label}>City<span className={classes.required}>*</span></InputLabel>
-            <Input  {...register("city",{ 
-                onChange: (e) => {
+        </Grid>
+
+        <Grid justifyContent="space-between" mt={3} container>
+          <Grid direction="column" container item xs={6}>
+            <InputLabel className={classes.label}>
+              City<span className={classes.required}>*</span>
+            </InputLabel>
+            <Input
+              {...register('city', {
+                onChange: e => {
                   if (errors.city) {
-                    trigger('city')
+                    trigger('city');
                   }
-                } 
-              })} className={classes.textField} placeholder='City' />
+                },
+              })}
+              className={classes.textField}
+              placeholder="City"
+            />
             <span className={classes.fieldError}>{errors?.city?.message}</span>
           </Grid>
-          <Grid direction='column' container item xs={5}>
-            <InputLabel className={classes.label}>Postal Code<span className={classes.required}>*</span></InputLabel>
-            <Input  {...register("zip",{ 
-              onChange: (e) => {
-                if (errors.zip) {
-                  trigger('zip')
-                }
-              } 
-            })} className={classes.textField} placeholder='Zip' />
+          <Grid direction="column" container item xs={5}>
+            <InputLabel className={classes.label}>
+              Postal Code<span className={classes.required}>*</span>
+            </InputLabel>
+            <Input
+              {...register('zip', {
+                onChange: e => {
+                  if (errors.zip) {
+                    trigger('zip');
+                  }
+                },
+              })}
+              className={classes.textField}
+              placeholder="Zip"
+            />
             <span className={classes.fieldError}>{errors?.zip?.message}</span>
           </Grid>
-        </Grid> 
+        </Grid>
 
-        <Grid justifyContent='space-between' mt={3} container>
-          <Grid direction='column' container item xs={6}>
-            <InputLabel className={classes.label}>State<span className={classes.required}>*</span></InputLabel>
-              <Select
-                style={{height: '45px'}}
-                {...register('state', {
-                  onChange: () => {
-                    if (errors.state) {
-                      trigger(state)
-                    }
+        <Grid justifyContent="space-between" mt={3} container>
+          <Grid direction="column" container item xs={6}>
+            <InputLabel className={classes.label}>
+              Country<span className={classes.required}>*</span>
+            </InputLabel>
+            <Select
+              style={{ height: '45px' }}
+              {...register('country', {
+                onChange: () => {
+                  if (errors.country) {
+                    trigger(country);
                   }
-                })}
-              >
-                {states.map(state => <MenuItem value={state.isoCode}>{state.name}</MenuItem>)}
-              </Select>
-            <span className={classes.fieldError}>{errors?.state?.message}</span>  
+                },
+              })}
+            >
+              {countries.map(country => (
+                <MenuItem value={country.isoCode}>{country.name}</MenuItem>
+              ))}
+            </Select>
+            <span className={classes.fieldError}>
+              {errors?.country?.message}
+            </span>
           </Grid>
-          <Grid direction='column' container item xs={5}>
-            <InputLabel className={classes.label}>Country<span className={classes.required}>*</span></InputLabel>
-              <Select
-                style={{height: '45px'}}
-                {...register('country', {
-                  onChange: () => {
-                    if (errors.country) {
-                      trigger(country)
-                    }
+          <Grid direction="column" container item xs={5}>
+            <InputLabel className={classes.label}>
+              State<span className={classes.required}>*</span>
+            </InputLabel>
+            <Select
+              style={{ height: '45px' }}
+              {...register('state', {
+                onChange: () => {
+                  if (errors.state) {
+                    trigger(state);
                   }
-                })}
-              >
-                {countries.map(country => <MenuItem value={country.isoCode}>{country.name}</MenuItem>)}
-              </Select>
-              <span className={classes.fieldError}>{errors?.country?.message}</span>
+                },
+              })}
+            >
+              {states.map(state => (
+                <MenuItem value={state.isoCode}>{state.name}</MenuItem>
+              ))}
+            </Select>
+            <span className={classes.fieldError}>{errors?.state?.message}</span>
           </Grid>
         </Grid>
-        {firstName, lastName, aptNo, zip, street, city, state, country && <Grid mt={3} justifyContent='space-between' item container>
-          <Grid direction='column' container item xs={6}>
-            <InputLabel className={classes.label}>Phone Number<span className={classes.required}>*</span></InputLabel>
-            <PhoneNumberInput
-            inputStyle={{height: '45px', paddingLeft: '55px'}}
-              phoneNo={phoneNo} 
-              setPhoneNo={(value) => {
-                  setFormErrors({...formErrors, phoneNo: ''});
-                  setPhoneNo(value)
-                  setPhoneErr('')
-                }
-              } 
-              error={formErrors.phoneNo || phoneErr} 
-            />
-          </Grid>
-          <Grid direction='column' container item xs={5}>
-            <InputLabel className={classes.label}>Email</InputLabel>
-            <Input  
-              value={email} 
-              onChange={(e) => {
-                setEmailErr('')
-                setEmail(e.target.value)}
-              } 
-              onKeyUp={() => setFormErrors({...formErrors, email: ''})}
-              className={classes.textField} placeholder='Email' />
-            <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
-          </Grid>
-        </Grid>}        
-        <Grid justifyContent='center' mt={3} container>
-          {taxError && <Typography className={classes.error}>{taxError}</Typography>}
-          {shippingError && <Typography className={classes.error}>{shippingError}</Typography>}
+        {
+          (firstName,
+          lastName,
+          aptNo,
+          zip,
+          street,
+          city,
+          state,
+          country && (
+            <Grid mt={3} justifyContent="space-between" item container>
+              <Grid direction="column" container item xs={6}>
+                <InputLabel className={classes.label}>
+                  Phone Number<span className={classes.required}>*</span>
+                </InputLabel>
+                <PhoneNumberInput
+                  inputStyle={{ height: '45px', paddingLeft: '55px' }}
+                  phoneNo={phoneNo}
+                  setPhoneNo={value => {
+                    setFormErrors({ ...formErrors, phoneNo: '' });
+                    setPhoneNo(value);
+                    setPhoneErr('');
+                  }}
+                  error={formErrors.phoneNo || phoneErr}
+                />
+              </Grid>
+              <Grid direction="column" container item xs={5}>
+                <InputLabel className={classes.label}>Email</InputLabel>
+                <Input
+                  value={email}
+                  onChange={e => {
+                    setEmailErr('');
+                    setEmail(e.target.value);
+                  }}
+                  onKeyUp={() => setFormErrors({ ...formErrors, email: '' })}
+                  className={classes.textField}
+                  placeholder="Email"
+                />
+                <span className={classes.fieldError}>
+                  {formErrors.email || emailErr}
+                </span>
+              </Grid>
+            </Grid>
+          ))
+        }
+        <Grid justifyContent="center" mt={3} container>
+          {taxError && (
+            <Typography className={classes.error}>{taxError}</Typography>
+          )}
+          {shippingError && (
+            <Typography className={classes.error}>{shippingError}</Typography>
+          )}
         </Grid>
-        <Grid justifyContent='center' mt={3} container>
-          <Button
-            onClick={validateAndContinue}
-            className={classes.continueBtn}
-          > Continue </Button>
+        <Grid justifyContent="center" mt={3} container>
+          <Button onClick={validateAndContinue} className={classes.continueBtn}>
+            {' '}
+            Continue{' '}
+          </Button>
         </Grid>
-        
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
-export { BillingAddress as default }
+export { BillingAddress as default };
