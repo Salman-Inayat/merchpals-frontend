@@ -80,27 +80,31 @@ useEffect(()=> {
   const storedCart = localStorage.getItem('MERCHPALS_CART')
   if (storedCart) {
     const products = JSON.parse(storedCart)
-    // console.log({products});
-    const amount = total(products);
+    updateCart(products)
 
-    let formattedProducts = []
-    for(let i = 0; i < products.length; i++){
-      const product = products[i];
-      const variantIds = product.productMappings.map(pm => pm.id)
-      formattedProducts.push({
-        productId: product.productId,
-        productMappings: variantIds
-      })
-    }
-console.log({ savedProducts: products });
-    setCart({
-      amount,
-      products: formattedProducts,
-      savedProducts: products
-    })
   }
 }, [])
 
+const updateCart = (products) => {
+  const amount = total(products);
+
+  let formattedProducts = []
+  for(let i = 0; i < products.length; i++){
+    const product = products[i];
+    const variantIds = product.productMappings.map(pm => pm.id)
+    formattedProducts.push({
+      productId: product.productId,
+      productMappings: variantIds
+    })
+  }
+  
+console.log({ savedProducts: products });
+  setCart({
+    amount,
+    products: formattedProducts,
+    savedProducts: products
+  })
+}
 const updateTaxAndShipping = () => {
   if (billingAddress.country === 'US') {
     setShippingCost('Free')
@@ -152,7 +156,7 @@ const getTax = async(data) => {
     setTaxErrorStr(err.response.data.message)
   })
 }
-console.log({taxErrorStr});
+// console.log({taxErrorStr});
 const getShippingCost = async (data) => {
   axios.post(`${baseURL}/printful/calculate-shipping`, { data })
   .then(response => {
@@ -168,7 +172,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 const markCustomerInfoComplete = (isCompleted) => setCompletedCustomerInfo(isCompleted);
 const markAddressComplete = (isCompleted) => setCompletedAddress(isCompleted);
 const markPaymentComplete = (isCompleted) => setCompletedPayment(isCompleted);
-
+console.log('cart.products',cart.products);
 const placeOrder = (token) => {
   let error = false;
   let errors = {};
@@ -245,10 +249,7 @@ const placeOrder = (token) => {
         <Customer 
           setCustomer={setCustomer} 
           products={cart.savedProducts} 
-          setProducts={(p) => {
-            setCart({...setCart,
-            savedProducts: p
-          })}}
+          setProducts={updateCart}
           tax={tax}
           shippingCost={shippingCost}
         />

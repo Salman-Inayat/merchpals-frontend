@@ -137,6 +137,7 @@ const Customer = ({
     let updatedCart = {};
     
     const prevProduct = products.find(v => v.productId === productId);
+// console.log({prevProduct});
     let mappings = [...prevProduct.productMappings]
     mappings = mappings.filter(m => m.id !== variantId)
 
@@ -149,6 +150,7 @@ const Customer = ({
 
     const otherProductVariants = products.filter(cv => cv.productId !== productId)
     const updatedCartList = [updatedCart, ...otherProductVariants];
+    console.log({updatedCartList});
     setProducts(updatedCartList)
     localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
   }
