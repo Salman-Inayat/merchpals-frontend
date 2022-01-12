@@ -75,54 +75,26 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bolder',
     fontSize: '14px',
     color: 'red'
+  },
+  imageCard: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative'
+  },
+  design: {
+    position: 'absolute'
   }
 }));
 
 const Customer = ({
-  markCustomerInfoComplete = () => {},
-  setCustomer = {},
   products = [],
-  setProducts
+  setProducts,
+  tax,
+  shippingCost
 }) => {
   
   const classes = useStyles();
-
-  const CustomerSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .required("First name is required")
-      .min(2, "Too Short!")
-      .max(50, "Too Long!"),
-    lastName: Yup.string()
-      .required("Last name is required")
-      .min(2, "Too Short!")
-      .max(50, "Too Long!"),
-  });
-  
-  const { register, trigger, watch, formState: { errors }  } = useForm({ 
-    resolver: yupResolver(CustomerSchema)
-  });
-
-  const [firstName, lastName] = watch(['firstName', 'lastName']);
-  
-  useEffect(()=> {
-    validateForm()
-  }, [firstName, lastName]);
-
-  const validateForm = async () => {
-    if (firstName, lastName) {
-      let isvalid = await trigger()
-
-      if (isvalid) {
-        markCustomerInfoComplete(true);
-      }
-    } else {
-      markCustomerInfoComplete(false)
-    }
-    setCustomer({
-      firstName, lastName
-    })
-  }
-
   const updateQuantity = (productId, variantId, op) => {
     let updatedCart = [...products];
     let updatedVariant = {};
@@ -181,6 +153,29 @@ const Customer = ({
     localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
   }
 
+  const subTotal = () => {
+    let totalCartPrice = 0;
+    for(let i=0; i< products.length; i++){
+      const product = products[i];
+      const quantities = product.productMappings.reduce((sum, cur) => sum + cur.quantity, 0);
+      const productPrice = product.price * quantities;
+      totalCartPrice = totalCartPrice + productPrice;
+    }
+
+    return totalCartPrice;
+  }
+  const taxAmount = () => {
+    const subTotalAmount = subTotal();
+    return (subTotalAmount * tax)
+  }
+
+  const total = () => {
+    const subTotalAmount = subTotal();
+    const taxAmountNo = taxAmount();
+    const shippingCostCal = shippingCost === 'Free' ? 0 : Number(shippingCost)
+    return (Number(subTotalAmount) + shippingCostCal + Number(taxAmountNo)).toFixed(2);
+  }
+
   return (
     <Grid item>
       <Accordion defaultExpanded>
@@ -194,13 +189,18 @@ const Customer = ({
         {products.map(product => (
               product.productMappings.map(variant => (
           <Grid direction='row' xs={12} item container mt={1}>
-            <Grid xs={4} item>
+            <Grid xs={4} item className={classes.imageCard}>
               <Avatar 
                 className={classes.avatar}
                 style={{backgroundColor: variant.color}}
                 src={product.image}
                 variant="square"
               />
+              <Avatar 
+                className={classes.design}
+                src={variant.design}
+                variant="square"
+              />            
             </Grid>
             <Grid spacing={2} direction='column' container xs={5} item>
               <Grid className={classes.text} item> Style: {product.name} </Grid>
@@ -225,7 +225,7 @@ const Customer = ({
           <Grid container rowSpacing={1}>
             <Grid justifyContent='space-between' item container>
               <Typography  className={classes.summaryText} >Sub Total</Typography> 
-              <Typography  className={classes.summaryText} align='right'>$90</Typography>
+              <Typography  className={classes.summaryText} align='right'>${subTotal()}</Typography>
             </Grid>    
             <Grid justifyContent='space-between' item container>
               <Grid xs={3} alignItems='center' item container>
@@ -237,7 +237,9 @@ const Customer = ({
                 </Tooltip>
               </Grid>
               <Grid xs={2} item>
-                <Typography  className={classes.summaryText} align='right'>$0</Typography>
+                <Typography  className={classes.summaryText} align='right'>
+                {shippingCost === 'Free' ? 'Free' : `$${shippingCost}`}
+                </Typography>
               </Grid>
             </Grid>
             <Grid justifyContent='space-between' item container>
@@ -250,12 +252,12 @@ const Customer = ({
                 </Tooltip>
               </Grid>
               <Grid xs={2} item>
-                <Typography  className={classes.summaryText} align='right'>$0</Typography>
+                <Typography  className={classes.summaryText} align='right'>${taxAmount()}</Typography>
               </Grid>
             </Grid>
             <Grid justifyContent='space-between' item container>
               <Typography  className={classes.summaryText} >Total</Typography> 
-              <Typography className={classes.totalText} align='right'>$90</Typography>
+              <Typography className={classes.totalText} align='right'>${total()}</Typography>
             </Grid>                                   
           </Grid>
         </AccordionDetails>

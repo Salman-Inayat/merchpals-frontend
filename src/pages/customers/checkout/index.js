@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { 
   Grid,
   Avatar,
-  Typography
+  Typography,
+  Button
 } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useNavigate, useParams } from 'react-router-dom';
+
 import {
   Customer,
   PaymentInfo,
-  BillingAddress
+  BillingAddress,
 } from './forms';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const'
@@ -24,6 +26,9 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bolder',
     fontSize: '24px',
     color: 'black'
+  },
+  back: {
+    color: '#000'
   }
 }));
 
@@ -45,10 +50,12 @@ const [formErrors, setFormErrors] = useState({
   phoneNo: '',
   message: ''
 });
-const [printfulMessage, setPrintfulMessage] = useState({
-  tax: '',
-  shipping: '',
-})
+// const [printfulMessage, setPrintfulMessage] = useState({
+//   tax: '',
+//   shipping: '',
+// })
+const [shippingError,setShippingError] = useState('');
+const [taxErrorStr, setTaxErrorStr] = useState('');
 const [loading, setLoading] = useState(false);
 const [tax, setTax] = useState(0);
 const [shippingCost, setShippingCost] = useState(0);
@@ -73,7 +80,7 @@ useEffect(()=> {
   const storedCart = localStorage.getItem('MERCHPALS_CART')
   if (storedCart) {
     const products = JSON.parse(storedCart)
-    console.log({products});
+    // console.log({products});
     const amount = total(products);
 
     let formattedProducts = []
@@ -85,7 +92,7 @@ useEffect(()=> {
         productMappings: variantIds
       })
     }
-
+console.log({ savedProducts: products });
     setCart({
       amount,
       products: formattedProducts,
@@ -94,8 +101,13 @@ useEffect(()=> {
   }
 }, [])
 
-useEffect(() => {
-  if (billingAddress.country) {
+const updateTaxAndShipping = () => {
+  if (billingAddress.country === 'US') {
+    setShippingCost('Free')
+  } else {
+    setShippingCost(0)
+  }
+  if (billingAddress.country && billingAddress.state) {
     const { aptNo, street, zip, city, state, country } = billingAddress;
     let items = [];
     for(let i =0; i < cart.savedProducts.length; i++) {
@@ -105,6 +117,7 @@ useEffect(() => {
         items.push({ quantity: curVariant.quantity, variant_id: 200 })
       }
     }
+    
     const data = {      
       recipient: {
         address1: `${aptNo} ${street}`,
@@ -117,44 +130,37 @@ useEffect(() => {
     }
     setPrintfulData(data)
     getTax(data);
-    getShippingCost(data);
+    if (billingAddress.country !== 'US') {
+      getShippingCost(data);  
+    }
   }
-}, [billingAddress.country, billingAddress.state, billingAddress.city, billingAddress.zip])
+}
+
+useEffect(() => {
+  updateTaxAndShipping()
+}, [completedAddress, billingAddress.country, billingAddress.state, billingAddress.zip])
 
 const getTax = async(data) => {
   axios.post(`${baseURL}/printful/calculate-tax`, { data })
   .then(response => {
-    console.log(response.data.payload.rate);
+    console.log({tax: response.data.payload.rate});
     setTax(response.data.payload.rate)
-    setPrintfulMessage({
-      ...printfulMessage,
-      tax: ''
+    setTaxErrorStr('')
     })
-  })
-  .catch(error => {
-    console.log({ error: error.response.data });
-    setPrintfulMessage({
-      ...printfulMessage,
-      tax: error.response.data.message
-    })
+  .catch(err => {
+    console.log({ errorTTax: err });
+    setTaxErrorStr(err.response.data.message)
   })
 }
-
+console.log({taxErrorStr});
 const getShippingCost = async (data) => {
   axios.post(`${baseURL}/printful/calculate-shipping`, { data })
   .then(response => {
-    setPrintfulMessage({
-      ...printfulMessage,
-      shipping: ''
-    })
+    setShippingError('')
     setShippingCost(response.data.payload.cost);
   })
   .catch(error => {
-    console.log({ error: error.response.data });
-    setPrintfulMessage({
-      ...printfulMessage,
-      shipping: error.response.data.message
-    })
+    setShippingError(error.response.data.message)
   })
 }
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
@@ -189,6 +195,7 @@ const placeOrder = (token) => {
       setFormErrors(errors)
       return 
     }
+
   const data = {
     printfulData,
     order: {
@@ -225,6 +232,9 @@ const placeOrder = (token) => {
     <Grid justifyContent='center' alignItems='center' mt={12} p={3} container>
       <Grid className={classes.card} xs={7} item>
         <Grid container alignItems='center' justifyContent='flex-end' xs={12} item>
+          <Grid xs={5} item style={{padding: '10px'}}>
+            <Button className={classes.back} onClick={() => navigate(-1)}> Back </Button>
+          </Grid>
           <Grid xs={6} item style={{padding: '10px'}}>
             <Typography align='left' className={classes.heading}>Checkout</Typography>
           </Grid>
@@ -232,14 +242,39 @@ const placeOrder = (token) => {
             <Avatar src={Lock} style={{ width: '20px', height: '20px'}} />
           </Grid>
         </Grid>
-        <Customer setCustomer={setCustomer} products={cart.savedProducts} setProducts={(p) => {
-          setCart({...setCart,
-          savedProducts: p
-        })}}/>
-        <BillingAddress />
-        <Elements stripe={stripePromise}>
-          <PaymentInfo/>
-        </Elements>
+        <Customer 
+          setCustomer={setCustomer} 
+          products={cart.savedProducts} 
+          setProducts={(p) => {
+            setCart({...setCart,
+            savedProducts: p
+          })}}
+          tax={tax}
+          shippingCost={shippingCost}
+        />
+        
+        <BillingAddress
+          taxError={taxErrorStr}
+          shippingError={shippingError}
+          markAddressComplete={markAddressComplete} 
+          setBillingAddress={setBillingAddress}
+          updateTaxAndShipping={updateTaxAndShipping}
+          setPhoneNo={setPhoneNo}
+          setEmail={setEmail}
+          setFormErrors={setFormErrors}
+          phoneNo={phoneNo}
+          email={email}
+          formErrors={formErrors}
+        />
+
+        {completedAddress && <Elements stripe={stripePromise}>
+          <PaymentInfo
+             completedAddress={completedAddress}
+             placeOrder={placeOrder}
+             loading={loading}
+             setLoading={setLoading}          
+          />
+        </Elements>}
       </Grid>
     </Grid>
   )

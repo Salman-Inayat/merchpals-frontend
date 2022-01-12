@@ -4,11 +4,13 @@ import {
   Avatar,
   Grid,
   Typography,
-  Button
+  Button,
+  Input,
+  InputLabel
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import './stripeElement.css';
-import PhoneNumberInput from '../../../../components/phone-number-input';
+
 import { makeStyles } from '@mui/styles';
 import CardsLogos from '../../../../assets/images/icons/credita.png'
 const useStyles = makeStyles(theme => ({
@@ -41,18 +43,32 @@ const useStyles = makeStyles(theme => ({
   },
   banner: {
     width: '500px'
-  }
+  },
+  fieldError: {
+    color: 'red',
+    fontSize: '11px'
+  },
+  textField: {
+    border: '1px solid #ddd',
+    height: '50px',
+    width: '100%',
+    padding: '8px 10px',
+    marginTop: '5px',
+    borderRadius: '4px',
+    '&:after': {
+      border: '1px solid #ddd',
+    }
+  },
+  label: {
+    marginLeft: '3px',
+    fontWeight: 'bolder',
+    color: 'black',
+    textTransform: 'uppercase'
+  },  
 }));
 
 const PaymentInfo = ({
   placeOrder = () => {},
-  setPhoneNo,
-  setEmail,
-  setFormErrors,
-  phoneNo,
-  email,
-  formErrors = {},
-  completedCustomerInfo = false,
   completedAddress = false,
   loading,
   setLoading
@@ -92,19 +108,24 @@ const PaymentInfo = ({
   return (
     <Grid item>
     <Grid className={classes.accordian}>
-        <Typography className={classes.heading}>1. Payment</Typography>
+        <Typography className={classes.heading}>2. Payment</Typography>
     </Grid>
     <Grid direction='row' justifyContent='center' className={classes.box} container>
       <Grid item container justifyContent='center' xs={10} mt={3}>
         <Avatar src={CardsLogos} className={classes.banner} />
-      </Grid>
+      </Grid>        
       <Grid item container justifyContent='center' xs={10} mt={3}>
         <Grid item xs={12} mt={3}>
           <CardElement options={cardOptions} />
         </Grid>
       </Grid>
       <Grid justifyContent='center' mt={3} container>
-          <Button className={classes.continueBtn}> Place your order </Button>
+          <LoadingButton 
+            disabled={!completedAddress}
+            loading={loading}
+            onClick={createToken}          
+            className={classes.continueBtn}
+          > Place your order </LoadingButton>
         </Grid>      
     </Grid>  
     </Grid>  

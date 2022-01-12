@@ -44,6 +44,11 @@ const useStyle = makeStyles(() => ({
   backButton: {
     margin: '20px',
   },
+  design: {
+    position: 'absolute',
+    width: '150px',
+    height: '150px'
+  }
 }));
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -117,7 +122,8 @@ const Product = ({ addToCart, cart }) => {
           productMappings: product.productMappings,
           colors:  [...new Map(colorsArr.map((item) => [item["id"], item])).values()],
           sizes: [...new Map(variantArr.map((item) => [item["id"], item])).values()],
-          productNumberedId: product.productMappings[0].productNumberedId
+          productNumberedId: product.productMappings[0].productNumberedId,
+          design: product.designId.url
         };
 
         setProduct(formattedProduct);
@@ -154,6 +160,7 @@ const Product = ({ addToCart, cart }) => {
       });
       return;
     }
+    
     // console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
     const productMappingId = selectedVariant._id;
     let updatedCart = {};
@@ -175,10 +182,12 @@ const Product = ({ addToCart, cart }) => {
             id: productMappingId, 
             quantity: isSameVariantAlreadySelected ? isSameVariantAlreadySelected.quantity + 1 : 1,
             color: selectedVariant.color.label,
-            variant: selectedVariant.variant.label
+            variant: selectedVariant.variant.label,
+            design: product.design
           }
         ]
       }
+
     } else {
       updatedCart = {
         productId: product.id,
@@ -186,13 +195,15 @@ const Product = ({ addToCart, cart }) => {
           id: productMappingId, 
           quantity: 1,
           color: selectedVariant.color.label,
-          variant: selectedVariant.variant.label          
+          variant: selectedVariant.variant.label,
+          design: product.design  
         }],
         price: product.cost,
         name: product.name,
         image: product.image,
-      }
+      }     
     }
+
     // console.log({ updatedCart });
     const otherProductVariants = cartsVariants.filter(cv => cv.productId !== product.id)
     const updatedCartList = [updatedCart, ...otherProductVariants];
@@ -275,6 +286,11 @@ console.log({product});
                   src={`${product.image}`}
                   alt=""
                   className={classes.image}
+                />
+                <img
+                  src={product.design}
+                  alt="design"
+                  className={classes.design}
                 />
               </div>
             </div>
