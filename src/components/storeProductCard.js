@@ -13,53 +13,123 @@ import {
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
 
-const useStyles = makeStyles(() => ({
-  card: {
+const useStyles = makeStyles(theme => ({
+  productImage: {
+    height: '100%',
+  },
+  container: {
     padding: '30px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      padding: '10px',
+    },
+  },
+  button: {
+    backgroundColor: '#116DFF',
+    marginTop: '20px',
   },
   productName: {
+    color: '#0097a7',
+    width: '90%',
+    margin: 'auto',
     fontWeight: '500',
-    fontSize: '1.4rem',
   },
+  design: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: '100px',
+    width: '100px',
+    [theme.breakpoints.down('sm')]: {
+      height: '70px',
+      width: '70px',
+    },
+  },
+  poster: {
+    height: '190px',
+    width: '190px',
+    borderRadius: '5px',
+    [theme.breakpoints.down('sm')]: {
+      height: '130px',
+      width: '130px',
+    },
+  },
+  phoneCase: {
+    height: '80px',
+    width: '80px',
+    [theme.breakpoints.down('sm')]: {
+      height: '60px',
+      width: '60px',
+      top: '52%',
+    },
+  },
+  mug: {
+    height: '90px',
+    width: '90px',
+    top: '55%',
+    left: '52%',
+    [theme.breakpoints.down('sm')]: {
+      height: '60px',
+      width: '60px',
+    },
+  },  
 }));
 
-const StoreProductCard = ({ product }) => {
+const StoreProductCard = ({ product, storeUrl }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   const exploreProduct = () => {
-    navigate({ pathname: `/products/${product._id}` });
+    navigate({ pathname: `/store/${storeUrl}/products/${product.productId}` });
   };
 
   return (
-    <Card variant="outlined" className={classes.card}>
-      <CardContent>
-        <CardMedia
-          component="img"
-          height="250"
-          image={`${product.image}`}
-          alt="green iguana"
-        />
-      </CardContent>
+    <Box className={classes.container}>
       <Typography
         gutterBottom
         variant="h4"
         component="div"
+        align="center"
         className={classes.productName}
       >
         {product.name}
       </Typography>
-      <CardActions>
-        <Button
-          size="small"
-          variant="outlined"
-          color="primary"
-          onClick={exploreProduct}
-        >
-          Explore
-        </Button>
-      </CardActions>
-    </Card>
+      <Card variant="outlined" className={classes.card}>
+        <CardMedia
+          component="img"
+          image={`${product.image}`}
+          alt="green iguana"
+          className={classes.productImage}
+        />
+        {product?.designId && (
+          <img
+            src={product.designId.url}
+            className={[
+              classes.design,
+              product.name === 'Poster'
+                ? classes.poster
+                : product.name === 'Phone Case'
+                ? classes.phoneCase
+                : product.name === 'Mug'
+                ? classes.mug
+                : '',
+            ].join(' ')}
+          />
+        )}
+      </Card>
+      <Button
+        size="medium"
+        variant="contained"
+        onClick={exploreProduct}
+        className={classes.button}
+      >
+        Explore
+      </Button>
+    </Box>
   );
 };
 

@@ -90,7 +90,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Editor = ({ exportBase64 = () => {} }) => {
+const Editor = ({ triggerExport = 0 }) => {
   const classes = useStyles();
 
   const editorJs = useEditor();
@@ -144,6 +144,12 @@ const Editor = ({ exportBase64 = () => {} }) => {
   //   setMiniature(editorJs.getMiniature());
   // });
 
+  useEffect(() => {
+    if (triggerExport > 0) {
+      exportCanvas()
+    }
+  }, [triggerExport])
+
   const addText = () => {
     editorJs.addText();
   };
@@ -167,6 +173,12 @@ const Editor = ({ exportBase64 = () => {} }) => {
   const setFontFamily = fontFamily => {
     editorJs?.setFontFamily(fontFamily);
   };
+
+  const exportCanvas = () => {
+    const exportedImage = editorJs.exportCanvas();
+    localStorage.setItem('design', exportedImage);
+    console.log({ exportedImage });
+  }
 
   const addImage = e => {
     var file = e.target.files[0];

@@ -92,14 +92,7 @@ const VendorStore = () => {
         console.log({ store: response.data.store });
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
-        setStore({
-          name: store.name,
-          coverAvatar: store.coverAvatar,
-          logo: store.logo,
-          products: store.products,
-          design:
-            store.designs && store.designs[0]?.url ? store.designs[0].url : '',
-        });
+        setStore(store);
       })
       .catch(err => {
         console.log({ err });
@@ -110,7 +103,7 @@ const VendorStore = () => {
     <Grid container spacing={3}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
         <img
-          src="https://picsum.photos/seed/picsum/900/400"
+          src={store.coverAvatar}
           alt="image"
           className={classes.coverImage}
         />
@@ -119,7 +112,7 @@ const VendorStore = () => {
         </Typography>
 
         <img
-          src="https://picsum.photos/seed/picsum/400/400"
+          src={store.logo}
           className={classes.logo}
         />
       </Grid>
@@ -130,9 +123,9 @@ const VendorStore = () => {
           mt={1}
           className={classes.productsContainer}
         >
-          {store.products.map(product => {
+          {store.vendorProductIds?.map((product, i) => {
             return (
-              <Grid item md={4} xs={6}>
+              <Grid item md={4} xs={6} key={`VendorStoreProductCard-${i}`}>
                 <VendorStoreProductCard
                   product={product}
                   design={store.design}

@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   }
 });
 
-const PhoneNumberInput = ({ phoneNo, setPhoneNo, error }) => {
+const PhoneNumberInput = ({ phoneNo, setPhoneNo, error, inputStyle = {} }) => {
   const classes = useStyles();
   return (
     <Grid>
@@ -26,6 +26,7 @@ const PhoneNumberInput = ({ phoneNo, setPhoneNo, error }) => {
         value={phoneNo}
         onChange={(phone) => setPhoneNo(phone)}
         isValid={!error}
+        inputStyle={inputStyle}
       />
       {error && <Typography className={classes.error}>{error}</Typography>}
     

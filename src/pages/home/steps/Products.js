@@ -142,23 +142,23 @@ const Products = ({
       localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
     }
   };
-  console.log({ products });
 
   const formatAndContinue = () => {
     const selectedProducts = Object.keys(selectedVariants);
     const formattedVariants = selectedProducts.map(productId => {
       const productsSelectedVariants = selectedVariants[productId];
-      let productMappings = [];
+      let productMappingsIds = [];
       const colors = products.find(p => p._id === productId).colors;
       productsSelectedVariants.forEach(psv => {
-        productMappings = colors
-          .find(c => c.id === psv)
-          .relatedProductVariantsId.map(rp => rp._id);
+        const allColorsArrs = colors.filter(c => c.id === psv);
+        const productMappings = allColorsArrs.reduce((mapArr, cur) => [...mapArr, ...cur.relatedProductVariantsId], [])
+        productMappingsIds.push(...productMappings.map(rp => rp._id));
+        console.log({productMappingsIds});
       });
 
-      return { productId, productMappings };
+      return { productId, productMappings: productMappingsIds };
     });
-    console.log({ formattedVariants });
+
     productSelectionCompleted(formattedVariants);
   };
 

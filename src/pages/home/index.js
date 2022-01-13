@@ -71,6 +71,7 @@ const Home = () => {
   const [design, setDesign] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
+  const [createStoreError, setCreateStoreError] = useState(false);
   const classes = useStyle();
   const navigate = useNavigate();
 
@@ -103,13 +104,13 @@ const Home = () => {
   const prevStep = () => setStep(step - 1);
 
   const registerVendor = data => {
-    console.log({ data });
     axios
       .post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data })
       .then(response => {
         console.log({ response });
         localStorage.setItem('MERCHPAL_AUTH_TOKEN', response.data.token);
         localStorage.setItem('phoneNoForOTP', data.phoneNo);
+        // nextStep();
         setShowOtpBox(true);
       })
       .catch(error => {
@@ -128,11 +129,6 @@ const Home = () => {
           });
         }
       });
-  };
-
-  const exportBase64File = file => {
-    setDesign(file);
-    localStorage.setItem('design', file);
   };
 
   const createStore = data => {
@@ -154,6 +150,7 @@ const Home = () => {
         'Content-Type': 'multipart/form-data'
       }})
       .then(response => {
+        console.log({ createstore: response });
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
@@ -165,6 +162,7 @@ const Home = () => {
       })
       .catch(err => {
         console.log('err', err);
+        setCreateStoreError(true)
       });
   };
 
@@ -196,9 +194,9 @@ const Home = () => {
         if (showWelcomeMessage) {
           return <WelcomeMessage />;
         }
-        return <StoreForm createStore={createStore} />;
+        return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
-        return <Editor nextStep={nextStep} exportBase64={exportBase64File} />;
+        return <Editor nextStep={nextStep} />;
     }
   };
   return (
