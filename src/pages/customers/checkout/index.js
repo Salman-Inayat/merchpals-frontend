@@ -162,7 +162,7 @@ const getShippingCost = async (data) => {
   .then(response => {
     // console.log('shippingCost',response.data.payload.cost);
     setShippingError('')
-    setShippingCost(response.data.payload.cost);
+    setShippingCost(response.data.payload.rate);
   })
   .catch(error => {
     console.log({shippingError: error});
