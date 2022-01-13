@@ -77,17 +77,17 @@ const Home = () => {
 
   useEffect(() => {
     if (localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
-      navigate('/vendor/store', { replace: true })
+      navigate('/vendor/store', { replace: true });
     } else {
-      fetchProducts()
+      fetchProducts();
     }
-  }, [])
+  }, []);
 
   const fetchProducts = async () => {
     axios
       .get(`${baseURL}/products`)
       .then(response => {
-        console.log({ response });
+        console.log({ response }, 'Calling products');
         setProducts(response.data.products);
       })
       .catch(err => {
@@ -143,12 +143,14 @@ const Home = () => {
     store.append('coverAvatar', data.coverAvatar);
     store.append('designs', localStorage.getItem('design'));
     store.append('products', JSON.stringify([...selectedVariants]));
-    
-    axios.post(`${baseURL}/store`, store ,{
-      headers: {
-        'Authorization': localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-        'Content-Type': 'multipart/form-data'
-      }})
+
+    axios
+      .post(`${baseURL}/store`, store, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then(response => {
         console.log({ createstore: response });
         localStorage.removeItem('design');
@@ -162,7 +164,7 @@ const Home = () => {
       })
       .catch(err => {
         console.log('err', err);
-        setCreateStoreError(true)
+        setCreateStoreError(true);
       });
   };
 
@@ -174,9 +176,9 @@ const Home = () => {
     switch (step) {
       case 1:
         return (
-          <Products 
-            products={products} 
-            design={localStorage.getItem('design')} 
+          <Products
+            products={products}
+            design={localStorage.getItem('design')}
             productSelectionCompleted={productSelectionCompleted}
           />
         );
@@ -194,7 +196,12 @@ const Home = () => {
         if (showWelcomeMessage) {
           return <WelcomeMessage />;
         }
-        return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
+        return (
+          <StoreForm
+            createStore={createStore}
+            createStoreError={createStoreError}
+          />
+        );
       default:
         return <Editor nextStep={nextStep} />;
     }
