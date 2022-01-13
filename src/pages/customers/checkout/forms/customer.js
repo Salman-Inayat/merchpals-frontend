@@ -189,8 +189,8 @@ const Customer = ({
         </AccordionSummary>
         <AccordionDetails>
         {products.map(product => (
-              product.productMappings.map(variant => (
-          <Grid direction='row' xs={12} item container mt={1}>
+              product.productMappings.map((variant, i) => (
+          <Grid direction='row' xs={12} item container mt={1} key={`product-${i}`}>
             <Grid xs={4} item className={classes.imageCard}>
               <Avatar
                 className={classes.avatar}
@@ -240,7 +240,7 @@ const Customer = ({
               </Grid>
               <Grid xs={2} item>
                 <Typography  className={classes.summaryText} align='right'>
-                {shippingCost === 'Free' ? 'Free' : `$${shippingCost.toFixed(2)}`}
+                {shippingCost === 'Free' ? 'Free' : `$${Number(shippingCost).toFixed(2)}`}
                 </Typography>
               </Grid>
             </Grid>

@@ -123,9 +123,9 @@ const VendorStore = () => {
           mt={1}
           className={classes.productsContainer}
         >
-          {store.vendorProductIds?.map(product => {
+          {store.vendorProductIds?.map((product, i) => {
             return (
-              <Grid item md={4} xs={6}>
+              <Grid item md={4} xs={6} key={`VendorStoreProductCard-${i}`}>
                 <VendorStoreProductCard
                   product={product}
                   design={store.design}
