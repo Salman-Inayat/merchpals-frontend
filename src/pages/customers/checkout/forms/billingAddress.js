@@ -184,8 +184,8 @@ const BillingAddress = ({
         <Typography className={classes.heading}>1. Shipping</Typography>
       </Grid>
       <Grid direction="row" className={classes.box} container>
-        <Grid justifyContent="space-between" mt={3} container>
-          <Grid direction="column" container item xs={6}>
+        <Grid justifyContent="space-between" mt={3} container spacing={2}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               First Name <span className={classes.required}>*</span>
             </InputLabel>
@@ -204,7 +204,7 @@ const BillingAddress = ({
               {errors?.firstName?.message}
             </span>
           </Grid>
-          <Grid direction="column" container item xs={5}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               Last Name<span className={classes.required}>*</span>
             </InputLabel>
@@ -225,8 +225,8 @@ const BillingAddress = ({
           </Grid>
         </Grid>
 
-        <Grid justifyContent="space-between" mt={3} container>
-          <Grid direction="column" container item xs={6}>
+        <Grid justifyContent="space-between" mt={3} container spacing={2}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               Street Address<span className={classes.required}>*</span>
             </InputLabel>
@@ -245,7 +245,7 @@ const BillingAddress = ({
               {errors?.street?.message}
             </span>
           </Grid>
-          <Grid direction="column" container item xs={5}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>APT. / Suite</InputLabel>
             <Input
               {...register('aptNo', {
@@ -262,8 +262,8 @@ const BillingAddress = ({
           </Grid>
         </Grid>
 
-        <Grid justifyContent="space-between" mt={3} container>
-          <Grid direction="column" container item xs={6}>
+        <Grid justifyContent="space-between" mt={3} container spacing={2}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               City<span className={classes.required}>*</span>
             </InputLabel>
@@ -280,7 +280,7 @@ const BillingAddress = ({
             />
             <span className={classes.fieldError}>{errors?.city?.message}</span>
           </Grid>
-          <Grid direction="column" container item xs={5}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               Postal Code<span className={classes.required}>*</span>
             </InputLabel>
@@ -299,8 +299,8 @@ const BillingAddress = ({
           </Grid>
         </Grid>
 
-        <Grid justifyContent="space-between" mt={3} container>
-          <Grid direction="column" container item xs={6}>
+        <Grid justifyContent="space-between" mt={3} container spacing={2}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               Country<span className={classes.required}>*</span>
             </InputLabel>
@@ -314,15 +314,17 @@ const BillingAddress = ({
                 },
               })}
             >
-              {countries.map((country,i) => (
-                <MenuItem value={country.isoCode} key={`country-${i}`}>{country.name}</MenuItem>
+              {countries.map((country, i) => (
+                <MenuItem value={country.isoCode} key={`country-${i}`}>
+                  {country.name}
+                </MenuItem>
               ))}
             </Select>
             <span className={classes.fieldError}>
               {errors?.country?.message}
             </span>
           </Grid>
-          <Grid direction="column" container item xs={5}>
+          <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
               State<span className={classes.required}>*</span>
             </InputLabel>
@@ -336,8 +338,10 @@ const BillingAddress = ({
                 },
               })}
             >
-              {states.map((state,i) => (
-                <MenuItem value={state.isoCode} key={`state-${i}`}>{state.name}</MenuItem>
+              {states.map((state, i) => (
+                <MenuItem value={state.isoCode} key={`state-${i}`}>
+                  {state.name}
+                </MenuItem>
               ))}
             </Select>
             <span className={classes.fieldError}>{errors?.state?.message}</span>
@@ -352,8 +356,8 @@ const BillingAddress = ({
           city,
           state,
           country && (
-            <Grid mt={3} justifyContent="space-between" item container>
-              <Grid direction="column" container item xs={6}>
+            <Grid mt={3} justifyContent="space-between" container spacing={2}>
+              <Grid item md={6} xs={12}>
                 <InputLabel className={classes.label}>
                   Phone Number<span className={classes.required}>*</span>
                 </InputLabel>
@@ -368,7 +372,7 @@ const BillingAddress = ({
                   error={formErrors.phoneNo || phoneErr}
                 />
               </Grid>
-              <Grid direction="column" container item xs={5}>
+              <Grid item md={6} xs={12}>
                 <InputLabel className={classes.label}>Email</InputLabel>
                 <Input
                   value={email}
