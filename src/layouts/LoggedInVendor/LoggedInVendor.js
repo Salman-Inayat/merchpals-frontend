@@ -38,7 +38,7 @@ const LoggedInVendor = ({
   useEffect(() => {
     getLoggedInUserInfo();
   }, []);
-  console.log({ isLoggedOut });
+
   return (
     <Grid direction="column" container>
       <Grid xs={12} item>
@@ -57,7 +57,9 @@ const LoggedInVendor = ({
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Merchpals
               </Typography>
-              <Button color="inherit">Logout</Button>
+              <Button color="inherit" onClick={() => logout()}>
+                Logout
+              </Button>
             </Toolbar>
           </AppBar>
         </Box>

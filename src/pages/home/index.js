@@ -133,6 +133,12 @@ const Home = () => {
 
   const createStore = data => {
     console.log({ data, selectedVariants, design });
+    const designData = {
+      base64Image: localStorage.getItem('design'),
+      name: 'default',
+      canvasJson: '',
+    };
+
     let store = new FormData();
     store.append('name', data.name);
     store.append('slug', data.slug.split(' ').join('-'));
@@ -141,7 +147,7 @@ const Home = () => {
     store.append('twitter', data.twitter);
     store.append('logo', data.logo);
     store.append('coverAvatar', data.coverAvatar);
-    store.append('designs', localStorage.getItem('design'));
+    store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
 
     axios
