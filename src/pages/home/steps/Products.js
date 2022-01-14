@@ -20,55 +20,52 @@ const useStyles = makeStyles(theme => ({
     },
   },
   productsContainer: {
-    padding: '2rem 8rem',
+    padding: '2rem 10rem',
     [theme.breakpoints.down('sm')]: {
       padding: '0.2rem',
     },
   },
 }));
-const Products = ({
-  productSelectionCompleted = () => {},
-  products = [],
-}) => {
+const Products = ({ productSelectionCompleted = () => {}, products = [] }) => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const classes = useStyles();
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  
+
   useEffect(() => {
-    const existingVariants = localStorage.getItem('selectedVariants')
-    if(existingVariants) {
+    const existingVariants = localStorage.getItem('selectedVariants');
+    if (existingVariants) {
       const formattedVariants = JSON.parse(existingVariants);
-      setSelectedVariants(formattedVariants)
+      setSelectedVariants(formattedVariants);
     } else {
-      selectAllProductsAndVariants()
+      selectAllProductsAndVariants();
     }
-  }, [])
+  }, []);
 
   const selectAllProductsAndVariants = () => {
     let tmpVariants = {};
 
     products.forEach(product => {
-    const variantsOfProduct = product.colors.reduce((color, curr) => {
-      const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
-      return [...color, ...relatedMappings];
-    }, []);
+      const variantsOfProduct = product.colors.reduce((color, curr) => {
+        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
+        return [...color, ...relatedMappings];
+      }, []);
 
-    const uniqVariantIds = variantsOfProduct.filter(function (item, pos) {
-      return variantsOfProduct.indexOf(item) == pos;
+      const uniqVariantIds = variantsOfProduct.filter(function (item, pos) {
+        return variantsOfProduct.indexOf(item) == pos;
+      });
+
+      tmpVariants = {
+        ...tmpVariants,
+        [product._id]: [...uniqVariantIds],
+      };
+
+      setSelectedVariants(tmpVariants);
     });
 
-    tmpVariants = {
-      ...tmpVariants,
-      [product._id]: [...uniqVariantIds]
-    };
-
-    setSelectedVariants(tmpVariants)
-   })
-
-    localStorage.setItem('selectedVariants', JSON.stringify(tmpVariants))
-  }
+    localStorage.setItem('selectedVariants', JSON.stringify(tmpVariants));
+  };
 
   const onVariantClick = productVariant => {
     const [product, color] = productVariant.split(',');
@@ -92,8 +89,7 @@ const Products = ({
 
           updatedVariants = {
             ...prevSelectedProducts,
-          }
-
+          };
         } else {
           productColors.splice(colorIndex, 1);
         }
@@ -105,12 +101,12 @@ const Products = ({
     if (!removedProduct) {
       updatedVariants = {
         ...selectedVariants,
-        [product]: [...new Set(productColors)]
-      }   
+        [product]: [...new Set(productColors)],
+      };
     }
 
-    setSelectedVariants(updatedVariants)
-    localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
+    setSelectedVariants(updatedVariants);
+    localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants));
   };
 
   const onProductClick = productId => {
@@ -135,11 +131,11 @@ const Products = ({
 
       const updatedVariants = {
         ...selectedVariants,
-        [productId]: [...uniqVariantIds]
+        [productId]: [...uniqVariantIds],
       };
 
-      setSelectedVariants(updatedVariants)
-      localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants))
+      setSelectedVariants(updatedVariants);
+      localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants));
     }
   };
 
@@ -151,9 +147,12 @@ const Products = ({
       const colors = products.find(p => p._id === productId).colors;
       productsSelectedVariants.forEach(psv => {
         const allColorsArrs = colors.filter(c => c.id === psv);
-        const productMappings = allColorsArrs.reduce((mapArr, cur) => [...mapArr, ...cur.relatedProductVariantsId], [])
+        const productMappings = allColorsArrs.reduce(
+          (mapArr, cur) => [...mapArr, ...cur.relatedProductVariantsId],
+          [],
+        );
         productMappingsIds.push(...productMappings.map(rp => rp._id));
-        console.log({productMappingsIds});
+        console.log({ productMappingsIds });
       });
 
       return { productId, productMappings: productMappingsIds };
@@ -197,7 +196,7 @@ const Products = ({
           </Grid>
           <Grid
             container
-            spacing={isMobile ? 1 : 10}
+            spacing={isMobile ? 1 : 14}
             className={classes.productsContainer}
           >
             {products.map((product, i) => (

@@ -224,7 +224,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
                   </Grid>
                   <Grid className={classes.text} item>
                     {' '}
-                    Size: {variant.variant}
+                    Size: {variant.variant.toUpperCase()}{' '}
                   </Grid>
                   <Grid item>
                     <Box>
