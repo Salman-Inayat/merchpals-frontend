@@ -314,8 +314,8 @@ const BillingAddress = ({
                 },
               })}
             >
-              {countries.map(country => (
-                <MenuItem value={country.isoCode}>{country.name}</MenuItem>
+              {countries.map((country,i) => (
+                <MenuItem value={country.isoCode} key={`country-${i}`}>{country.name}</MenuItem>
               ))}
             </Select>
             <span className={classes.fieldError}>
@@ -336,8 +336,8 @@ const BillingAddress = ({
                 },
               })}
             >
-              {states.map(state => (
-                <MenuItem value={state.isoCode}>{state.name}</MenuItem>
+              {states.map((state,i) => (
+                <MenuItem value={state.isoCode} key={`state-${i}`}>{state.name}</MenuItem>
               ))}
             </Select>
             <span className={classes.fieldError}>{errors?.state?.message}</span>

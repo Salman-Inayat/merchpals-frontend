@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { 
+import {
   Grid,
   Avatar,
   Typography,
@@ -97,7 +97,7 @@ const updateCart = (products) => {
       productMappings: variantIds
     })
   }
-  
+
   setCart({
     amount,
     products: formattedProducts,
@@ -120,8 +120,8 @@ const updateTaxAndShipping = () => {
         items.push({ quantity: curVariant.quantity, variant_id: curVariant.variantId })
       }
     }
-    
-    const data = {      
+
+    const data = {
       recipient: {
         address1: `${aptNo} ${street}`,
         city,
@@ -135,7 +135,7 @@ const updateTaxAndShipping = () => {
     setPrintfulData(data)
     getTax(data);
     if (billingAddress.country !== 'US') {
-      getShippingCost(data);  
+      getShippingCost(data);
     }
   }
 }
@@ -147,7 +147,7 @@ useEffect(() => {
 const getTax = async(data) => {
   axios.post(`${baseURL}/printful/calculate-tax`, { data })
   .then(response => {
-    console.log({tax: response.data.payload.rate});
+    // console.log({tax: response.data.payload.rate});
     setTax(response.data.payload.rate)
     setTaxErrorStr('')
     })
@@ -160,10 +160,12 @@ const getTax = async(data) => {
 const getShippingCost = async (data) => {
   axios.post(`${baseURL}/printful/calculate-shipping`, { data })
   .then(response => {
+    // console.log('shippingCost',response.data.payload.cost);
     setShippingError('')
-    setShippingCost(response.data.payload.cost);
+    setShippingCost(response.data.payload.rate);
   })
   .catch(error => {
+    console.log({shippingError: error});
     setShippingError(error.response.data.message)
   })
 }
@@ -172,7 +174,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 const markCustomerInfoComplete = (isCompleted) => setCompletedCustomerInfo(isCompleted);
 const markAddressComplete = (isCompleted) => setCompletedAddress(isCompleted);
 const markPaymentComplete = (isCompleted) => setCompletedPayment(isCompleted);
-console.log('cart.products',cart.products);
+// console.log('cart.products',cart.products);
 const placeOrder = (token) => {
   let error = false;
   let errors = {};
@@ -194,10 +196,10 @@ const placeOrder = (token) => {
     }
     error = true
     }
-  
+
     if(error){
       setFormErrors(errors)
-      return 
+      return
     }
 
   const data = {
@@ -222,7 +224,7 @@ const placeOrder = (token) => {
   setLoading(true)
   axios.post(`${baseURL}/order`, data)
     .then(response => {
-      console.log({orderplacementResponse: response});
+      // console.log({orderplacementResponse: response});
       setLoading(false)
       localStorage.removeItem('MERCHPALS_CART')
       navigate(`/store/${storeUrl}`)
@@ -246,18 +248,18 @@ const placeOrder = (token) => {
             <Avatar src={Lock} style={{ width: '20px', height: '20px'}} />
           </Grid>
         </Grid>
-        <Customer 
-          setCustomer={setCustomer} 
-          products={cart.savedProducts} 
+        <Customer
+          setCustomer={setCustomer}
+          products={cart.savedProducts}
           setProducts={updateCart}
           tax={tax}
           shippingCost={shippingCost}
         />
-        
+
         <BillingAddress
           taxError={taxErrorStr}
           shippingError={shippingError}
-          markAddressComplete={markAddressComplete} 
+          markAddressComplete={markAddressComplete}
           setBillingAddress={setBillingAddress}
           updateTaxAndShipping={updateTaxAndShipping}
           setPhoneNo={setPhoneNo}
@@ -273,7 +275,7 @@ const placeOrder = (token) => {
              completedAddress={completedAddress}
              placeOrder={placeOrder}
              loading={loading}
-             setLoading={setLoading}          
+             setLoading={setLoading}
           />
         </Elements>}
       </Grid>
