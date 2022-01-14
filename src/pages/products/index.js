@@ -421,8 +421,13 @@ const Product = ({ addToCart, cart }) => {
                         value={id}
                         control={
                           <Radio
-                            style={{
-                              display: 'none',
+                            className={classes.radio}
+                            sx={{
+                              '&.Mui-checked': {
+                                '& + .MuiFormControlLabel-label > div': {
+                                  border: '1px solid gray',
+                                },
+                              },
                             }}
                           />
                         }
@@ -435,7 +440,6 @@ const Product = ({ addToCart, cart }) => {
                               display: 'flex',
                               justifyContent: 'center',
                               alignItems: 'center',
-                              borderRadius: '5px',
                             }}
                           >
                             {' '}
@@ -470,21 +474,23 @@ const Product = ({ addToCart, cart }) => {
                         control={
                           <Radio
                             className={classes.radio}
-                            style={{
-                              display: 'none',
+                            sx={{
+                              '&.Mui-checked': {
+                                '& + .MuiFormControlLabel-label > div': {
+                                  backgroundColor: '#c1bdbd;',
+                                },
+                              },
                             }}
                           />
                         }
                         label={
                           <div
                             style={{
-                              backgroundColor: label,
                               width: '50px',
                               height: '50px',
                               display: 'flex',
                               justifyContent: 'center',
                               alignItems: 'center',
-                              background: 'rgb(215, 208, 208)',
                               borderRadius: '5px',
                               marginLeft: '0px',
                             }}

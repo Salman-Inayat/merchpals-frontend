@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    cursor: 'pointer',
     alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
       padding: '10px',
@@ -45,25 +46,25 @@ const useStyles = makeStyles(theme => ({
     height: '100px',
     width: '100px',
     [theme.breakpoints.down('sm')]: {
-      height: '70px',
-      width: '70px',
+      height: '60px',
+      width: '60px',
     },
   },
   poster: {
-    height: '190px',
-    width: '190px',
+    height: '140px',
+    width: '140px',
     borderRadius: '5px',
     [theme.breakpoints.down('sm')]: {
-      height: '130px',
-      width: '130px',
+      height: '90px',
+      width: '90px',
     },
   },
   phoneCase: {
     height: '80px',
     width: '80px',
     [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
+      height: '50px',
+      width: '50px',
       top: '52%',
     },
   },
@@ -76,7 +77,7 @@ const useStyles = makeStyles(theme => ({
       height: '60px',
       width: '60px',
     },
-  },  
+  },
 }));
 
 const StoreProductCard = ({ product, storeUrl }) => {
@@ -88,7 +89,7 @@ const StoreProductCard = ({ product, storeUrl }) => {
   };
 
   return (
-    <Box className={classes.container}>
+    <Box className={classes.container} onClick={exploreProduct}>
       <Typography
         gutterBottom
         variant="h4"
@@ -121,14 +122,14 @@ const StoreProductCard = ({ product, storeUrl }) => {
           />
         )}
       </Card>
-      <Button
+      {/* <Button
         size="medium"
         variant="contained"
         onClick={exploreProduct}
         className={classes.button}
       >
         Explore
-      </Button>
+      </Button> */}
     </Box>
   );
 };

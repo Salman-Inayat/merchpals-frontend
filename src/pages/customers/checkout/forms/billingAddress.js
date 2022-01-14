@@ -305,6 +305,7 @@ const BillingAddress = ({
               Country<span className={classes.required}>*</span>
             </InputLabel>
             <Select
+              fullWidth
               style={{ height: '45px' }}
               {...register('country', {
                 onChange: () => {
@@ -329,6 +330,7 @@ const BillingAddress = ({
               State<span className={classes.required}>*</span>
             </InputLabel>
             <Select
+              fullWidth
               style={{ height: '45px' }}
               {...register('state', {
                 onChange: () => {

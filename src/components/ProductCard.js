@@ -11,10 +11,14 @@ import {
   colors,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Checkbox from '../components/Checkbox';
+// import Checkbox from '../components/Checkbox';
 import SHIRT from '../assets/images/OGG1.png';
-
+import Checkbox from '@mui/material/Checkbox';
 import { pink } from '@mui/material/colors';
+
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import DoneIcon from '@mui/icons-material/Done';
 
 const useStyles = makeStyles(theme => ({
   product: {
@@ -62,7 +66,7 @@ const useStyles = makeStyles(theme => ({
   },
   productCard: {
     position: 'relative',
-    borderRadius: '40px',
+    borderRadius: '16px',
     [theme.breakpoints.down('sm')]: {
       margin: '5px',
     },
@@ -74,8 +78,8 @@ const useStyles = makeStyles(theme => ({
   },
   checkbox: {
     position: 'absolute',
-    top: '20px',
-    right: '20px',
+    top: '15px',
+    right: '15px',
   },
   productName: {
     color: '#0097a7',
@@ -85,12 +89,12 @@ const useStyles = makeStyles(theme => ({
   },
 
   poster: {
-    height: '190px',
-    width: '190px',
+    height: '150px',
+    width: '150px',
     borderRadius: '5px',
     [theme.breakpoints.down('sm')]: {
-      height: '118px',
-      width: '118px',
+      height: '105px',
+      width: '105px',
     },
   },
   phoneCase: {
@@ -115,11 +119,17 @@ const useStyles = makeStyles(theme => ({
   productImage: {},
   checkboxContainer: {
     position: 'absolute',
-    top: '20px',
-    right: '20px',
+    top: '10px',
+    right: '10px',
     [theme.breakpoints.down('sm')]: {
       top: '10px',
       right: '5px',
+    },
+  },
+  colorsCheckbox: {
+    [theme.breakpoints.down('sm')]: {
+      width: '30px',
+      height: '30px',
     },
   },
 }));
@@ -164,8 +174,10 @@ const ProductCard = ({
         <Box className={classes.checkboxContainer}>
           <Checkbox
             checked={selectedVariants[product._id] ? true : false}
-            onChange={onProductClick}
+            onChange={() => onProductClick(event.target.value)}
             value={product._id}
+            icon={<RadioButtonUncheckedIcon />}
+            checkedIcon={<CheckCircleIcon />}
           />
         </Box>
 
@@ -201,19 +213,28 @@ const ProductCard = ({
         {product.colors.length !== 1 &&
           product.colors.label !== 'n/a' &&
           product.colors.map((pm, i) => (
-            <Grid key={`colors-${i}`} item md={2} xs={1}>
+            <Grid key={`colors-${i}`} item md={2} xs={2}>
               <Checkbox
-                onChange={onVariantClick}
+                style={{
+                  backgroundColor:
+                    `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                }}
+                onChange={() => onVariantClick(event.target.value)}
                 checked={
                   selectedVariants[product._id]?.includes(pm.id) ? true : false
                 }
                 value={`${product._id},${pm.id}`}
                 sx={{
-                  backgroundColor: colors.pink[600],
+                  border: '1px solid #000',
+                  color:
+                    `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
                   '&.Mui-checked': {
-                    color: pink[600],
+                    color: `${pm.label}` == 'white' ? 'black' : 'white',
                   },
                 }}
+                iconSize={40}
+                checkedIcon={<DoneIcon />}
+                className={classes.colorsCheckbox}
               />
             </Grid>
           ))}
