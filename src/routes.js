@@ -21,6 +21,8 @@ import Checkout from './pages/customers/checkout';
 import VendorDesigns from './pages/vendors/designs';
 import VendorCreateDesigns from './pages/vendors/designs/create';
 import VendorEditDesigns from './pages/vendors/designs/edit';
+import VendorOrders from './pages/vendors/orders';
+import VendorOrderDetails from './pages/vendors/orderDetails';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -40,6 +42,8 @@ export default function Router() {
     { path: '/vendor/designs', element: <VendorDesigns /> },
     { path: '/vendor/create-design', element: <VendorCreateDesigns /> },
     { path: '/vendor/edit-design/:designId', element: <VendorEditDesigns /> },
+    { path: '/vendor/orders', element: <VendorOrders /> },
+    { path: '/vendor/orders/:orderId', element: <VendorOrderDetails /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },

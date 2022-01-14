@@ -8,6 +8,7 @@ const Dashboard = () => {
     <Grid direction="column" container>
       <Button>Store Products</Button>
       <Button onClick={() => navigate('/vendor/designs')}>Store Designs</Button>
+      <Button onClick={() => navigate('/vendor/orders')}>Store Orders</Button>
     </Grid>
   );
 };
