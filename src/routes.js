@@ -14,9 +14,13 @@ import Home from './pages/home';
 import VendorDashboard from './pages/vendors';
 import Store from './pages/customer/store';
 import Product from './pages/products';
+// import Vendor from './pages/vendors';
 import VendorStore from './pages/vendors/store';
 import Cart from './pages/cart';
 import Checkout from './pages/customers/checkout';
+import VendorDesigns from './pages/vendors/designs';
+import VendorCreateDesigns from './pages/vendors/designs/create';
+import VendorEditDesigns from './pages/vendors/designs/edit';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -29,9 +33,13 @@ export default function Router() {
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/reset-password', element: <ResetPassword /> },
     { path: '/editor', element: <Editor /> },
-    { path: '/dashboard', element: <VendorDashboard /> },
+    // { path: '/dashboard', element: <VendorDashboard /> },
     { path: '/store/:storeUrl/products/:productId', element: <Product /> },
+    { path: '/vendor', element: <VendorDashboard /> },
     { path: '/vendor/store', element: <VendorStore /> },
+    { path: '/vendor/designs', element: <VendorDesigns /> },
+    { path: '/vendor/create-design', element: <VendorCreateDesigns /> },
+    { path: '/vendor/edit-design/:designId', element: <VendorEditDesigns /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
