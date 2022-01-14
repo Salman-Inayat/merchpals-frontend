@@ -152,6 +152,7 @@ const Product = ({ addToCart, cart }) => {
   const handleAddToCart = () => {
     const keyId = `${product.productNumberedId}-${size.id}-${color.id}`
     const selectedVariant = product.productMappings.find(p => p.keyId === keyId);
+    console.log({keyId});
     if (!selectedVariant) {
       setSnackBarToggle({
         visible: true,
