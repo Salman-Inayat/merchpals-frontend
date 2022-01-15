@@ -106,6 +106,15 @@ const useEditor = canvasId => {
 
     if (canvasJSON) {
       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas));
+      afterRender();
+      canvas.on({
+        'selection:created': function () {
+          let selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            applyProperties(selectedObject);
+          }
+        },
+      });
     }
 
     initAligningGuidelines(canvas);

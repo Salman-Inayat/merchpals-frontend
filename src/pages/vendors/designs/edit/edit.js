@@ -58,7 +58,7 @@ const EditDesign = () => {
         localStorage.removeItem('design');
         setTimeout(() => {
           navigate('/vendor/designs');
-        }, 3000);
+        }, 1000);
       })
       .catch(error => console.log({ error }));
   };
