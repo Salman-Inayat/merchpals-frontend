@@ -49,8 +49,8 @@ const VendorDesigns = () => {
           </Button>
         </Grid>
         <Grid colspacing={3} mt={5} container>
-          {designs.map(design => (
-            <Box className={classes.box}>
+          {designs.map((design, i) => (
+            <Box className={classes.box} key={`VendorDesigns-${i}`}>
               <Avatar
                 src={design.url}
                 key={design._id}
