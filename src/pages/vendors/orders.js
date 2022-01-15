@@ -11,7 +11,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
+import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 
 function VendorOrders() {
@@ -19,6 +19,29 @@ function VendorOrders() {
   const navigate = useNavigate();
 
   const [totalProfit, setTotalProfit] = useState(0);
+  let rows = [];
+
+  const columns = [
+    { field: 'no', headerName: 'Order No', width: 70 },
+    { field: 'customer', headerName: 'Customer', width: 130 },
+    { field: 'products', headerName: 'Products', width: 130 },
+    {
+      field: 'totalAmount',
+      headerName: 'Total Amount',
+      type: 'number',
+      width: 90,
+    },
+    {
+      field: 'profit',
+      headerName: 'Profit',
+      type: 'number',
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Created At',
+      type: 'date',
+    },
+  ];
 
   useEffect(() => {
     axios
@@ -32,15 +55,18 @@ function VendorOrders() {
         let orderData = res.data.orders;
         setOrders(orderData);
 
-        let total = 0;
-
-        orderData.products.map(product => {
-          const individualProfit =
-            (product.minPrice - product.basePrice) * 0.75;
-          total += individualProfit;
-        });
-
-        setTotalProfit(total);
+        // orderData.map(order => {
+        //   rows.push({
+        //     no: order.orderId,
+        //     customer:
+        //       order.customerId.firstName + ' ' + order.customerId.lastName,
+        //     products: order.products.length,
+        //     totalAmount: order.totalAmount,
+        //     profit: order.totalAmount,
+        //     createdAt: order.createdAt,
+        //   });
+        //   console.log('Rows: ', rows);
+        // });
       })
       .catch(err => {
         console.log(err);
@@ -55,6 +81,26 @@ function VendorOrders() {
     });
   };
 
+  const Profit = order => {
+    // const profit =
+    //   order.products.reduce(
+    //     (sum, curr) => sum + (curr.minPrice - curr.basePrice),
+    //     0,
+    //   ) * 0.75;
+
+    // return profit.toFixed(2);
+
+    const orderPrice = order.price;
+    const productsTotal = order.products.reduce(
+      (sum, curr) => sum + curr.basePrice,
+      0,
+    );
+
+    const profit = orderPrice - productsTotal;
+
+    return profit.toFixed(2);
+  };
+
   return (
     <LoggedInVendor>
       <Grid container>
@@ -67,6 +113,7 @@ function VendorOrders() {
                 <TableCell align="center">Products</TableCell>
                 <TableCell align="center">Total Amount</TableCell>
                 <TableCell align="center">Profit</TableCell>
+                <TableCell align="center">Added</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -77,7 +124,7 @@ function VendorOrders() {
                   sx={{ cursor: 'pointer' }}
                 >
                   <TableCell component="th" scope="row">
-                    {index}
+                    {index + 1}
                   </TableCell>
 
                   <TableCell component="th" scope="row">
@@ -93,15 +140,30 @@ function VendorOrders() {
                   </TableCell>
 
                   <TableCell component="th" scope="row">
-                    {totalProfit}
+                    {order.totalAmount.toFixed(2)}
                   </TableCell>
 
-                  <TableCell component="th" scope="row"></TableCell>
+                  <TableCell component="th" scope="row">
+                    {Profit(order)}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {new Date(order.createdAt).toDateString()}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* {rows.length > 0 && (
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            checkboxSelection
+          />
+        )} */}
       </Grid>
     </LoggedInVendor>
   );

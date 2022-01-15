@@ -3,7 +3,14 @@ import axios from 'axios';
 import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
 
-import { Typography, Grid, Card, CardMedia, CardContent } from '@mui/material';
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Paper,
+} from '@mui/material';
 
 import { useLocation, useParams } from 'react-router-dom';
 
@@ -26,16 +33,24 @@ function VendorOrderDetails() {
         const orderData = res.data.order;
         setOrder(orderData);
         console.log(orderData);
-        let total = 0;
 
-        orderData.products.map(product => {
-          const individualProfit =
-            (product.minPrice - product.basePrice) * 0.75;
-          total += individualProfit;
-        });
+        // let total = 0;
 
-        console.log(total);
-        setTotalProfit(total);
+        // orderData.products.map(product => {
+        //   const individualProfit =
+        //     (product.minPrice - product.basePrice) * 0.75;
+        //   total += individualProfit;
+        // });
+
+        const orderPrice = orderData.price;
+        const productsTotal = orderData.products.reduce(
+          (sum, curr) => sum + curr.basePrice,
+          0,
+        );
+
+        const profit = orderPrice - productsTotal;
+
+        setTotalProfit(profit);
       })
       .catch(err => {
         console.log(err);
@@ -65,8 +80,8 @@ function VendorOrderDetails() {
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="h5"
-                          component="h2"
+                          variant="p"
+                          component="h5"
                           align="center"
                         >
                           {product.name}
@@ -80,49 +95,55 @@ function VendorOrderDetails() {
             <Grid item md={6} xs={12}>
               <Grid container spacing={4} p={4}>
                 <Grid item xs={12}>
-                  <Typography variant="p" component="p">
-                    Total Products: {order.products.length}
-                  </Typography>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="p" component="p">
+                        Total Products: {order.products.length}
+                      </Typography>
 
-                  <Typography variant="p" component="p">
-                    Total Amount: {order.totalAmount}
-                  </Typography>
+                      <Typography variant="p" component="p">
+                        Total Amount: {order.totalAmount}
+                      </Typography>
 
-                  <Typography variant="p" component="p">
-                    Profit: {totalProfit.toFixed(2)}
-                  </Typography>
+                      <Typography variant="p" component="p">
+                        Profit: {totalProfit.toFixed(2)}
+                      </Typography>
 
-                  <Typography variant="p" component="p">
-                    Store Name: {order.storeId.name}
-                  </Typography>
+                      <Typography variant="p" component="p">
+                        Store Name: {order.storeId.name}
+                      </Typography>
 
-                  <Typography variant="p" component="p">
-                    Order created at: {new Date(order.createdAt).toDateString()}
-                  </Typography>
+                      <Typography variant="p" component="p">
+                        Order added on:{' '}
+                        {new Date(order.createdAt).toDateString()}
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="p" component="p">
-                    Customer:{' '}
-                    {order.customerId.firstName +
-                      ' ' +
-                      order.customerId.lastName}
-                  </Typography>
-                  <Typography variant="p" component="p">
-                    Billing Address:{' '}
-                    {order.billingAddress.aptNo +
-                      ', ' +
-                      order.billingAddress.street +
-                      ', ' +
-                      order.billingAddress.city +
-                      ', ' +
-                      order.billingAddress.state +
-                      ', ' +
-                      order.billingAddress.country}
-                  </Typography>
 
-                  <Typography variant="p" component="p">
-                    Order Status: {order.status}
-                  </Typography>
+                <Grid item xs={12}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="p" component="p">
+                        Order placed by:{' '}
+                        {order.customerId.firstName +
+                          ' ' +
+                          order.customerId.lastName}
+                      </Typography>
+                      <Typography variant="p" component="p">
+                        Billing Address:{' '}
+                        {order.billingAddress.aptNo +
+                          ', ' +
+                          order.billingAddress.street +
+                          ', ' +
+                          order.billingAddress.city +
+                          ', ' +
+                          order.billingAddress.state +
+                          ', ' +
+                          order.billingAddress.country}
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </Grid>
               </Grid>
             </Grid>
