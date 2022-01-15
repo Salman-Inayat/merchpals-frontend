@@ -253,7 +253,7 @@ const ProductCard = ({
         )}
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {product.name}
+            {design.name} {product.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             ${price || productDefaultPrice}
