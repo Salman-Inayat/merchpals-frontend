@@ -64,6 +64,15 @@ const VendorDesigns = () => {
               >
                 Edit
               </Button>
+              <Button
+                variant="outlined"
+                className={classes.btn}
+                onClick={() =>
+                  navigate(`/vendor/edit-design/products/${design._id}`)
+                }
+              >
+                Edit Products
+              </Button>
             </Box>
           ))}
         </Grid>
