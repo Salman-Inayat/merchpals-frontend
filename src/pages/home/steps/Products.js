@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import ProductCard from '../../../components/ProductCard';
+import ProductCard from '../../../components/ProductCard/ProductCard';
 import { useMediaQuery } from 'react-responsive';
 
 const useStyles = makeStyles(theme => ({

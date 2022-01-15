@@ -36,7 +36,10 @@ const VendorDesigns = () => {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
         },
       })
-      .then(response => setDesigns(response.data.designs))
+      .then(response => {
+        setDesigns(response.data.designs);
+        console.log(response.data.designs);
+      })
       .catch(error => console.log({ error }));
   };
 

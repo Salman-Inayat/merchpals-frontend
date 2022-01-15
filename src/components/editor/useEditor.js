@@ -9,6 +9,7 @@ import { useMediaQuery } from 'react-responsive';
 
 const useEditor = canvasId => {
   let [canvas, setCanvas] = useState();
+  let [canvasJSON, setCanvasJSON] = useState();
   let [miniature, setMiniature] = useState();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
@@ -103,6 +104,10 @@ const useEditor = canvasId => {
       return;
     }
 
+    if (canvasJSON) {
+      canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas));
+    }
+
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
 
@@ -114,7 +119,7 @@ const useEditor = canvasId => {
         applyProperties(selectedObject);
 
         //setMiniature(canvas.toDataURL());
-        localStorage.setItem('design', canvas.toDataURL())
+        localStorage.setItem('design', canvas.toDataURL());
         afterRender();
 
         resetPanels();
@@ -122,7 +127,7 @@ const useEditor = canvasId => {
       'object:added': e => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
-        localStorage.setItem('design', canvas.toDataURL())
+        localStorage.setItem('design', canvas.toDataURL());
         //setMiniature(canvas.toDataURL());
         afterRender();
         resetPanels();
@@ -991,7 +996,7 @@ const useEditor = canvasId => {
 
   const saveCanvasToJSON = () => {
     const json = JSON.stringify(canvas);
-    localStorage.setItem('Kanvas', json);
+    return json;
   };
 
   const deviceDetect = () => {
@@ -999,6 +1004,7 @@ const useEditor = canvasId => {
     isTablet = deviceService.isTablet();
     isDesktopDevice = deviceService.isDesktop();
   };
+
   const loadCanvasFromJSON = () => {
     const CANVAS = [];
 
@@ -1032,6 +1038,7 @@ const useEditor = canvasId => {
     number = number.replace('-', '');
     return '+1' + number;
   };
+
   const saveFinalJson = (userDetails, products) => {
     let json = JSON.stringify(canvas);
     json = JSON.parse(json);
@@ -1117,8 +1124,9 @@ const useEditor = canvasId => {
     // });
   };
 
-  const canvasReady = canvasReady => {
+  const canvasReady = (canvasReady, canvasJSON) => {
     setCanvas(canvasReady);
+    setCanvasJSON(canvasJSON);
   };
 
   const getMiniature = () => {
@@ -1149,6 +1157,7 @@ const useEditor = canvasId => {
     cropImageDone,
     getMiniature,
     exportCanvas,
+    saveCanvasToJSON,
   };
 };
 
