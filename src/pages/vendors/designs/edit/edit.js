@@ -72,7 +72,8 @@ const EditDesign = () => {
           </Button>
         </Grid>
         <Grid justifyContent="center" container>
-          <Grid item>
+          <Grid item md={2} xs={12}></Grid>
+          <Grid item md={8} xs={12}>
             {canvasJSON && (
               <Editor
                 canvasJSON={canvasJSON}
@@ -81,6 +82,7 @@ const EditDesign = () => {
               />
             )}
           </Grid>
+          <Grid item md={2} xs={12}></Grid>
           <Grid mt={4} item>
             <Button variant="contained" onClick={finishDesignEdit}>
               Save Design

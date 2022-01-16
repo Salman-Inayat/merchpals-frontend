@@ -105,16 +105,28 @@ const useEditor = canvasId => {
     }
 
     if (canvasJSON) {
-      canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas));
-      afterRender();
-      canvas.on({
-        'selection:created': function () {
-          let selectedObject = canvas.getActiveObject();
-          if (selectedObject) {
-            applyProperties(selectedObject);
-          }
+      canvas.loadFromJSON(
+        canvasJSON,
+        canvas.renderAll.bind(canvas),
+        function (o, object) {
+          canvas.on({
+            'selection:created': function () {
+              let selectedObject = canvas.getActiveObject();
+              if (selectedObject) {
+                applyProperties(selectedObject);
+              }
+            },
+            'object:added': e => {
+              const selectedObject = e.target;
+              applyProperties(selectedObject);
+              localStorage.setItem('design', canvas.toDataURL());
+
+              resetPanels();
+            },
+          });
+          afterRender();
         },
-      });
+      );
     }
 
     initAligningGuidelines(canvas);
@@ -127,7 +139,6 @@ const useEditor = canvasId => {
 
         applyProperties(selectedObject);
 
-        //setMiniature(canvas.toDataURL());
         localStorage.setItem('design', canvas.toDataURL());
         afterRender();
 
@@ -137,7 +148,6 @@ const useEditor = canvasId => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
         localStorage.setItem('design', canvas.toDataURL());
-        //setMiniature(canvas.toDataURL());
         afterRender();
         resetPanels();
       },
@@ -157,6 +167,10 @@ const useEditor = canvasId => {
 
         if (selectedObject.type !== 'image') {
           document.getElementById('crop-image-button').hidden = true;
+        }
+
+        if (selectedObject.type === 'image') {
+          document.getElementById('crop-image-button').hidden = false;
         }
 
         if (selectedObject.type == 'i-text') {
@@ -253,7 +267,6 @@ const useEditor = canvasId => {
     // get references to the html canvas element & its context
     canvas.on('mouse:down', e => {
       const canvasElement = document.getElementById('canvas');
-      //setMiniature(canvas.toDataURL());
       afterRender();
     });
 
@@ -523,8 +536,8 @@ const useEditor = canvasId => {
     canvas.bringToFront(mask);
     canvas.setActiveObject(mask);
     canvas.renderAll();
-    //setMiniature(canvas.toDataURL());
     afterRender();
+    document.getElementById('crop-image-done-button').hidden = false;
   };
 
   const cropImageDone = () => {
@@ -546,16 +559,16 @@ const useEditor = canvasId => {
       height: mask.height,
       scaleX: mask.scaleX,
       scaleY: mask.scaleY,
-      cropX: mask.left / scale.x,
-      cropY: mask.top / scale.y,
+      // cropX: mask.left / scale.x,
+      // cropY: mask.top / scale.y,
     });
 
     image.setCoords();
     canvas.remove(mask);
     canvas.setActiveObject(image);
     canvas.renderAll();
-    //setMiniature(canvas.toDataURL());
     afterRender();
+    document.getElementById('crop-image-done-button').hidden = true;
   };
 
   const readUrl = event => {

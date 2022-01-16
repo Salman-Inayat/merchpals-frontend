@@ -105,7 +105,6 @@ const Editor = forwardRef((props, ref) => {
   const editorJs = useEditor();
   const [toggleSmileys, setToggleSmileys] = useState(false);
   const [toggleFontControls, setToggleFontControls] = useState(false);
-  const [cropDoneButton, setCropDoneButton] = useState(false);
   const [miniature, setMiniature] = useState();
 
   useEffect(() => {
@@ -217,12 +216,10 @@ const Editor = forwardRef((props, ref) => {
 
   const cropImage = () => {
     editorJs.cropImage();
-    setCropDoneButton(true);
   };
 
   const cropImageDone = () => {
     editorJs.cropImageDone();
-    setCropDoneButton(false);
   };
 
   const handleExportButton = () => {
@@ -275,17 +272,16 @@ const Editor = forwardRef((props, ref) => {
                 Crop
               </Button>
             </div>
-            {cropDoneButton && (
+
+            <div id="crop-image-done-button" hidden>
               <Button
                 variant="contained"
                 onClick={cropImageDone}
-                id="crop-image-done-button"
-                hidden
                 className={`${classes.cropDone} ${classes.button}`}
               >
                 Done
               </Button>
-            )}
+            </div>
           </Grid>
           <Grid
             item

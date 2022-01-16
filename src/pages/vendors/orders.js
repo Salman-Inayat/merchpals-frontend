@@ -108,7 +108,7 @@ function VendorOrders() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Order No.</TableCell>
+                <TableCell align="center">Order No.</TableCell>
                 <TableCell align="center">Customer</TableCell>
                 <TableCell align="center">Products</TableCell>
                 <TableCell align="center">Total Amount</TableCell>
@@ -123,30 +123,30 @@ function VendorOrders() {
                   onClick={() => handleOrderClick(order)}
                   sx={{ cursor: 'pointer' }}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {index + 1}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {order.customerId.firstName +
                       ' ' +
                       order.customerId.lastName}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {order.products.map(product => (
                       <div>{product.name}</div>
                     ))}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {order.totalAmount.toFixed(2)}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {Profit(order)}
                   </TableCell>
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {new Date(order.createdAt).toDateString()}
                   </TableCell>
                 </TableRow>

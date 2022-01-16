@@ -10,13 +10,15 @@ import {
   CardMedia,
   CardContent,
   Paper,
+  Button,
 } from '@mui/material';
 
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 function VendorOrderDetails() {
   //   const location = useLocation();
   //   const order = location.state.order;
+  const navigate = useNavigate();
   const [totalProfit, setTotalProfit] = useState(0);
 
   const [order, setOrder] = useState();
@@ -60,6 +62,11 @@ function VendorOrderDetails() {
   return (
     <LoggedInVendor>
       <Grid container>
+        <Grid justifyContent="flex-start" container>
+          <Button onClick={() => navigate('/vendor/orders')} variant="outlined">
+            Back to orders
+          </Button>
+        </Grid>
         <Grid item xs={12}>
           <Typography variant="h4" component="h1" gutterBottom>
             Order Details
@@ -80,7 +87,8 @@ function VendorOrderDetails() {
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="p"
+                          variant="h5"
+                          fontWeight="light"
                           component="h5"
                           align="center"
                         >
