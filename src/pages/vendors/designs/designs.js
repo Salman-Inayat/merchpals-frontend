@@ -1,10 +1,21 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Button, Avatar, Box } from '@mui/material';
+import {
+  Grid,
+  Button,
+  Avatar,
+  Box,
+  Alert as MuiAlert,
+  Snackbar,
+} from '@mui/material';
 import axios from 'axios';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const useStyle = makeStyles(() => ({
   avatar: {
@@ -23,6 +34,13 @@ const useStyle = makeStyles(() => ({
 const VendorDesigns = () => {
   const navigate = useNavigate();
   const [designs, setDesigns] = useState([]);
+  const [fetched, setFetched] = useState(false);
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: 'success',
+    message: 'Design added successfully',
+  });
+
   const classes = useStyle();
 
   useEffect(() => {
@@ -36,17 +54,38 @@ const VendorDesigns = () => {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
         },
       })
-      .then(response => setDesigns(response.data.designs))
+      .then(response => {
+        setFetched(true);
+        setDesigns(response.data.designs);
+      })
       .catch(error => console.log({ error }));
   };
 
+  const navigateToCreate = () => {
+    if (designs.length === 5) {
+      setSnackBarToggle({
+        visible: true,
+        type: 'error',
+        message: 'Designs limit reached',
+      });
+
+      return;
+    }
+    navigate('/vendor/create-design');
+  };
+
+  const handleSnackBarClose = () =>
+    setSnackBarToggle({
+      ...snackBarToggle,
+      visible: false,
+    });
   return (
     <LoggedInVendor>
       <Grid mt={5} container>
         <Grid justifyContent="flex-start" container>
-          <Button onClick={() => navigate('/vendor/create-design')}>
-            Add new Design
-          </Button>
+          {fetched && (
+            <Button onClick={navigateToCreate}>Add new Design</Button>
+          )}
         </Grid>
         <Grid colspacing={3} mt={5} container>
           {designs.map((design, i) => (
@@ -77,6 +116,13 @@ const VendorDesigns = () => {
           ))}
         </Grid>
       </Grid>
+      <Snackbar
+        open={snackBarToggle.visible}
+        autoHideDuration={3000}
+        onClose={handleSnackBarClose}
+      >
+        <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+      </Snackbar>
     </LoggedInVendor>
   );
 };

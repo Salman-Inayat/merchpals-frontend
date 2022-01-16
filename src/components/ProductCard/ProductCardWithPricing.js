@@ -232,6 +232,7 @@ const ProductCard = ({
           image={`${product.image}`}
           alt=""
           className={classes.productImage}
+          style={{ backgroundColor: renderBgColor() }}
         />
 
         {design && (
@@ -253,7 +254,7 @@ const ProductCard = ({
         )}
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {design.name} {product.name}
+            {design?.name} {product.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             ${price || productDefaultPrice}
