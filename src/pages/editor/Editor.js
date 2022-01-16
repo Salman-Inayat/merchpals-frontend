@@ -143,15 +143,6 @@ const Editor = forwardRef((props, ref) => {
 
   const firstUpdate = useRef(true);
 
-  // useLayoutEffect(() => {
-  //   if (firstUpdate.current) {
-  //     firstUpdate.current = false;
-  //     return;
-  //   }
-
-  //   setMiniature(editorJs.getMiniature());
-  // });
-
   useEffect(() => {
     if (triggerExport > 0) {
       exportCanvas();
@@ -161,6 +152,10 @@ const Editor = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     saveDesign() {
       exportCanvas();
+    },
+
+    saveDesignInJSON() {
+      return exportCanvasToJSON();
     },
   }));
 
@@ -194,6 +189,11 @@ const Editor = forwardRef((props, ref) => {
 
     const exportedCanvasJson = editorJs.saveCanvasToJSON();
     localStorage.setItem('designJSON', exportedCanvasJson);
+  };
+
+  const exportCanvasToJSON = () => {
+    const exportedCanvasJson = editorJs.saveCanvasToJSON();
+    return exportedCanvasJson;
   };
 
   const addImage = e => {

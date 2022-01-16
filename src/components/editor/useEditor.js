@@ -109,6 +109,7 @@ const useEditor = canvasId => {
         canvasJSON,
         canvas.renderAll.bind(canvas),
         function (o, object) {
+          afterRender();
           canvas.on({
             'selection:created': function () {
               let selectedObject = canvas.getActiveObject();
@@ -120,11 +121,9 @@ const useEditor = canvasId => {
               const selectedObject = e.target;
               applyProperties(selectedObject);
               localStorage.setItem('design', canvas.toDataURL());
-
               resetPanels();
             },
           });
-          afterRender();
         },
       );
     }

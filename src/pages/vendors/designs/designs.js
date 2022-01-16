@@ -24,6 +24,7 @@ const VendorDesigns = () => {
   const navigate = useNavigate();
   const [designs, setDesigns] = useState([]);
   const classes = useStyle();
+  const [designImage, setDesignImage] = useState([]);
 
   useEffect(() => {
     getDesigns();
@@ -37,8 +38,13 @@ const VendorDesigns = () => {
         },
       })
       .then(response => {
+        response.data.designs.map(design => {
+          setDesignImage(prevState => [
+            ...prevState,
+            { id: design._id, url: design.url },
+          ]);
+        });
         setDesigns(response.data.designs);
-        console.log(response.data.designs);
       })
       .catch(error => console.log({ error }));
   };
@@ -54,12 +60,14 @@ const VendorDesigns = () => {
         <Grid colspacing={3} mt={5} container>
           {designs.map(design => (
             <Box className={classes.box}>
-              <Avatar
-                src={design.url}
-                key={design._id}
-                variant="square"
-                className={classes.avatar}
-              />
+              {designImage.length > 0 && (
+                <Avatar
+                  src={designImage.find(image => image.id === design._id).url}
+                  key={design._id}
+                  variant="square"
+                  className={classes.avatar}
+                />
+              )}
               <Button
                 variant="outlined"
                 className={classes.btn}
