@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 // import Checkbox from '../components/Checkbox';
-import SHIRT from '../assets/images/OGG1.png';
+import SHIRT from '../../assets/images/OGG1.png';
 import Checkbox from '@mui/material/Checkbox';
 import { pink } from '@mui/material/colors';
 
