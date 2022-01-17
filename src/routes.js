@@ -23,6 +23,8 @@ import VendorCreateDesigns from './pages/vendors/designs/create';
 import VendorEditDesigns from './pages/vendors/designs/edit';
 import VendorEditDesignProducts from './pages/vendors/designs/edit/products';
 import ProductSelection from './pages/vendors/products/productSelection';
+import PaymentOnboarding from './pages/vendors/payment';
+import StripeOnboardingReturn from './pages/vendors/payment/return';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -47,6 +49,11 @@ export default function Router() {
       element: <VendorEditDesignProducts />,
     },
     { path: '/vendor/design/product-selection', element: <ProductSelection /> },
+    { path: '/vendor/payment/onboarding', element: <PaymentOnboarding /> },
+    {
+      path: '/vendor/payment/onboarding/return',
+      element: <StripeOnboardingReturn />,
+    },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
