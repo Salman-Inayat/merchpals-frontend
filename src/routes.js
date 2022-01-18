@@ -26,6 +26,7 @@ import VendorOrderDetails from './pages/vendors/orderDetails';
 import VendorEditDesignProducts from './pages/vendors/designs/edit/products';
 import ProductSelection from './pages/vendors/products/productSelection';
 import Settings from './pages/vendors/settings/settings';
+// import ContactSupport from './pages/vendors/contactSupport';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -53,6 +54,7 @@ export default function Router() {
     },
     { path: '/vendor/design/product-selection', element: <ProductSelection /> },
     { path: '/vendor/settings', element: <Settings /> },
+    // { path: '/contact-support', element: <ContactSupport /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
