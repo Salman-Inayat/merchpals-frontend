@@ -3,6 +3,8 @@ import { Typography, Box, Grid, TextField, Button } from '@mui/material';
 import ReactCrop from 'react-image-crop';
 import ImageCrop from '../../../components/imageCrop';
 import Modal from '@mui/material/Modal';
+import axios from 'axios';
+import { baseURL } from '../../../configs/const';
 
 const style = {
   position: 'absolute',
@@ -18,11 +20,117 @@ const style = {
 
 function StoreSettings({ vendorStoreData }) {
   const vendorStore = vendorStoreData;
+  const storeId = vendorStore._id;
   const [storeAvatar, setStoreAvatar] = useState(vendorStoreData.coverAvatar);
   const [storeLogo, setStoreLogo] = useState(vendorStoreData.logo);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [storeName, setStoreName] = useState(vendorStoreData.storeName);
+  const [updatedStoreAvatar, setUpdatedStoreAvatar] = useState('');
+  const [updatedStoreLogo, setUpdatedStoreLogo] = useState('');
+  const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
+  const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
+
+  const handleStoreNameChange = e => {
+    setStoreName(e.target.value);
+  };
+
+  const updateStoreName = () => {
+    const data = {
+      store: {
+        storeName: storeName,
+        storeId: storeId,
+      },
+    };
+
+    console.log('Data: ', data);
+
+    axios
+      .post(`${baseURL}/store/update-store-name`, data, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(res => {
+        console.log(res.data);
+        alert('Store name updated successfully');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const handleChangeStoreAvatarButton = () => {
+    handleOpen();
+    setToggleStoreAvatarButton(!toggleStoreAvatarButton);
+  };
+
+  const handleChangeStoreLogoButton = () => {
+    handleOpen();
+    setToggleStoreLogoButton(!toggleStoreLogoButton);
+  };
+
+  const handleStoreAvatarChange = value => {
+    console.log(value);
+    setStoreAvatar(value);
+    setUpdatedStoreAvatar(value);
+  };
+
+  const handleStoreLogoChange = value => {
+    setStoreLogo(value);
+    setUpdatedStoreLogo(value);
+  };
+
+  const updateStoreAvatar = () => {
+    const data = {
+      store: {
+        storeAvatar: updatedStoreAvatar,
+        storeId: storeId,
+      },
+    };
+
+    console.log('Data: ', data);
+
+    axios
+      .post(`${baseURL}/store/update-store-avatar`, data, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(res => {
+        console.log(res.data);
+        alert('Store avatar updated successfully');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const updateStoreLogo = () => {
+    const data = {
+      store: {
+        storeLogo: updatedStoreLogo,
+        storeId: storeId,
+      },
+    };
+
+    console.log('Data: ', data);
+
+    axios
+      .post(`${baseURL}/store/update-store-logo`, data, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(res => {
+        console.log(res.data);
+        alert('Store logo updated successfully');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   return (
     <Grid container spacing={2}>
@@ -30,13 +138,26 @@ function StoreSettings({ vendorStoreData }) {
         <Grid container spacing={2}>
           <Grid item md={12}>
             <Typography variant="h6">Store Name</Typography>
-            <TextField
-              id="outlined-read-only-input"
-              label="Store Name"
-              value={vendorStore.storeName}
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-            />
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box>
+                <Typography variant="p">Merchpal/store/</Typography>
+                <TextField
+                  id="input-with-sx"
+                  variant="standard"
+                  onChange={handleStoreNameChange}
+                  size="small"
+                />
+              </Box>
+              <Button onClick={updateStoreName} variant="contained">
+                Update Name
+              </Button>
+            </Box>
           </Grid>
           <Grid item md={12}>
             <Grid container>
@@ -44,7 +165,18 @@ function StoreSettings({ vendorStoreData }) {
                 <img src={storeAvatar} />
               </Grid>
               <Grid item md={6}>
-                <Button onClick={handleOpen}>Update Store Avatar</Button>
+                {!toggleStoreAvatarButton ? (
+                  <Button
+                    onClick={handleChangeStoreAvatarButton}
+                    variant="contained"
+                  >
+                    Change Store Avatar
+                  </Button>
+                ) : (
+                  <Button onClick={updateStoreAvatar} variant="contained">
+                    Update Store Avatar
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </Grid>
@@ -54,7 +186,18 @@ function StoreSettings({ vendorStoreData }) {
                 <img src={storeLogo} />
               </Grid>
               <Grid item md={6}>
-                <Button onClick={handleOpen}>Update Store Logo</Button>
+                {!toggleStoreLogoButton ? (
+                  <Button
+                    onClick={handleChangeStoreLogoButton}
+                    variant="contained"
+                  >
+                    Update Store Logo
+                  </Button>
+                ) : (
+                  <Button onClick={updateStoreLogo} variant="contained">
+                    Update Store Logo
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </Grid>
@@ -66,9 +209,11 @@ function StoreSettings({ vendorStoreData }) {
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <ImageCrop />
-                <Button>Crop</Button>
-                <Button onClick={handleClose}>Cancel</Button>
+                <ImageCrop
+                  handleClose={handleClose}
+                  handleStoreAvatarChange={handleStoreAvatarChange}
+                  handleStoreLogoChange={handleStoreLogoChange}
+                />
               </Box>
             </Modal>
           </Grid>

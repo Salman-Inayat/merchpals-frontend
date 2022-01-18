@@ -1,30 +1,9 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import Button from '@mui/material/Button';
+import { Grid, Button } from '@mui/material';
 
-function generateDownload(canvas, crop) {
-  if (!crop || !canvas) {
-    return;
-  }
-
-  canvas.toBlob(
-    blob => {
-      const previewUrl = window.URL.createObjectURL(blob);
-
-      const anchor = document.createElement('a');
-      anchor.download = 'cropPreview.png';
-      anchor.href = URL.createObjectURL(blob);
-      anchor.click();
-
-      window.URL.revokeObjectURL(previewUrl);
-    },
-    'image/png',
-    1,
-  );
-}
-
-export default function ImageCrop() {
+export default function ImageCrop(props) {
   const [upImg, setUpImg] = useState();
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
@@ -76,30 +55,63 @@ export default function ImageCrop() {
     );
   }, [completedCrop]);
 
-  return (
-    <div className="App">
-      <div>
-        <input type="file" accept="image/*" onChange={onSelectFile} />
-      </div>
-      <ReactCrop
-        src={upImg}
-        onImageLoaded={onLoad}
-        crop={crop}
-        onChange={c => setCrop(c)}
-        onComplete={c => setCompletedCrop(c)}
-      />
-      <div>
-        <canvas
-          ref={previewCanvasRef}
-          // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-          style={{
-            width: Math.round(completedCrop?.width ?? 0),
-            height: Math.round(completedCrop?.height ?? 0),
-          }}
-        />
-      </div>
+  const cropImage = (canvas, crop) => {
+    if (!crop || !canvas) {
+      return;
+    }
 
-      <Button
+    const base64Image = canvas.toDataURL('image/jpeg');
+    props.handleStoreAvatarChange(base64Image);
+    props.handleClose();
+  };
+
+  const handleClose = () => {
+    props.handleClose();
+  };
+
+  return (
+    <Grid>
+      <Grid item md={12}>
+        <Button variant="contained" component="label">
+          Upload File
+          <input type="file" accept="image/*" onChange={onSelectFile} hidden />
+        </Button>
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item md={6}>
+          <ReactCrop
+            src={upImg}
+            onImageLoaded={onLoad}
+            crop={crop}
+            onChange={c => setCrop(c)}
+            onComplete={c => setCompletedCrop(c)}
+            style={{ width: '80%' }}
+            circularCrop={true}
+          />
+        </Grid>
+        <Grid item md={6}>
+          <canvas
+            ref={previewCanvasRef}
+            // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+            style={{
+              width: Math.round(completedCrop?.width ?? 0),
+              height: Math.round(completedCrop?.height ?? 0),
+            }}
+          />
+        </Grid>
+      </Grid>
+      <Grid item md={12}>
+        <Button
+          onClick={() => cropImage(previewCanvasRef.current, completedCrop)}
+          variant="contained"
+        >
+          Crop
+        </Button>
+        <Button onClick={handleClose} variant="contained">
+          Cancel
+        </Button>
+      </Grid>
+      {/* <Button
         type="button"
         disabled={!completedCrop?.width || !completedCrop?.height}
         onClick={() =>
@@ -107,7 +119,7 @@ export default function ImageCrop() {
         }
       >
         Download cropped image
-      </Button>
-    </div>
+      </Button> */}
+    </Grid>
   );
 }
