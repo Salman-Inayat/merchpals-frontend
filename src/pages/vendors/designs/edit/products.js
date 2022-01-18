@@ -4,16 +4,33 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
-import {ProductCardWithPricing } from '../../../../components/ProductCard';
+import { ProductCardWithPricing } from '../../../../components/ProductCard';
 
 const EditDesign = () => {
   const navigate = useNavigate();
   const { designId } = useParams();
 
-  const [products, setProducts] = useState();
+  const [selectedVariants, setSelectedVariants] = useState({});
+  const [products, setProducts] = useState([]);
+  const [design, setDesign] = useState();
+  const [vendorUpdatedPrices, setVendorUpdatedPrices] = useState({});
+
   useEffect(() => {
     getDesign();
+    fetchProducts();
   }, [designId]);
+
+  const fetchProducts = async () => {
+    axios
+      .get(`${baseURL}/products`)
+      .then(response => {
+        console.log({ response }, 'Calling products');
+        setProducts(response.data.products);
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+  };
 
   const getDesign = async () => {
     axios
@@ -23,47 +40,24 @@ const EditDesign = () => {
         },
       })
       .then(response => {
-        console.log({ response });
-        const tmpProducts = response.data.design.vendorProductIds.map(vp => ({
-          productId: vp.productId,
-          design: vp.designId.url,
-          colors: vp.productMappings.map(pm => pm.color),
-          image: vp.image,
-          name: vp.name,
-          slug: vp.slug
-        }))
-        setProducts(tmpProducts)
+        console.log({ design: response.data.design });
+        setDesign(response.data.design);
       })
-      .catch(error => console.log({ error }));
+      .catch(error => console.log({ error: error.response.data.message }));
   };
 
-  const [selectedVariants, setSelectedVariants] = useState({});
-
-
   useEffect(() => {
-    const existingVariants = localStorage.getItem('selectedVariants');
-    if (existingVariants) {
-      const formattedVariants = JSON.parse(existingVariants);
-      setSelectedVariants(formattedVariants);
-    } else {
-        selectAllProductsAndVariants();
+    if (design) {
+      selectAllProductsAndVariants();
+      return;
     }
-  }, []);
-
-  useEffect(() => {
-    selectAllProductsAndVariants();
-  }, [products])
+  }, [design]);
 
   const selectAllProductsAndVariants = () => {
     let tmpVariants = {};
-    if(!products){
-      return
-    }
+
     design.vendorProductIds.forEach(product => {
-      const variantsOfProduct = product.colors.reduce((color, curr) => {
-        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
-        return [...color, ...relatedMappings];
-      }, []);
+      const variantsOfProduct = product.productMappings.map(pm => pm.color.id);
 
       const uniqVariantIds = variantsOfProduct.filter(function (item, pos) {
         return variantsOfProduct.indexOf(item) == pos;
@@ -71,18 +65,15 @@ const EditDesign = () => {
 
       tmpVariants = {
         ...tmpVariants,
-        [product._id]: [...uniqVariantIds],
+        [product.productId]: [...uniqVariantIds],
       };
 
       setSelectedVariants(tmpVariants);
     });
-
-    localStorage.setItem('selectedVariants', JSON.stringify(tmpVariants));
   };
 
   const onVariantClick = productVariant => {
     const [product, color] = productVariant.split(',');
-    // console.log({ product, color });
     let removedProduct = false;
     let productColors = [];
     let updatedVariants = {};
@@ -119,7 +110,6 @@ const EditDesign = () => {
     }
 
     setSelectedVariants(updatedVariants);
-    localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants));
   };
 
   const onProductClick = productId => {
@@ -131,7 +121,7 @@ const EditDesign = () => {
         ...prevSelectedProducts,
       });
     } else {
-      const relatedProduct = design.vendorProductIds.find(p => p._id === productId);
+      const relatedProduct = products.find(p => p._id === productId);
 
       const variantsOfProduct = relatedProduct.colors.reduce((color, curr) => {
         const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
@@ -148,16 +138,25 @@ const EditDesign = () => {
       };
 
       setSelectedVariants(updatedVariants);
-      localStorage.setItem('selectedVariants', JSON.stringify(updatedVariants));
     }
+  };
+
+  const updatePrice = (productId, designId, price) => {
+    setVendorUpdatedPrices({
+      ...vendorUpdatedPrices,
+      [productId]: {
+        designId,
+        price,
+      },
+    });
   };
 
   const formatAndContinue = () => {
     const selectedProducts = Object.keys(selectedVariants);
-    const formattedVariants = selectedProducts.map(productId => {
+    const updatedProducts = selectedProducts.map(productId => {
       const productsSelectedVariants = selectedVariants[productId];
       let productMappingsIds = [];
-      const colors = design.vendorProductIds.find(p => p._id === productId).colors;
+      const colors = products.find(p => p._id === productId).colors;
       productsSelectedVariants.forEach(psv => {
         const allColorsArrs = colors.filter(c => c.id === psv);
         const productMappings = allColorsArrs.reduce(
@@ -171,10 +170,41 @@ const EditDesign = () => {
       return { productId, productMappings: productMappingsIds };
     });
 
-    productSelectionCompleted(formattedVariants);
+    axios
+      .put(
+        `${baseURL}/store/design/products/${designId}`,
+        { updatedProducts, vendorUpdatedPrices },
+        {
+          headers: {
+            Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          },
+        },
+      )
+      .then(response => {
+        console.log({ response });
+        navigate('/vendor/designs');
+      })
+      .catch(error => console.log({ error: error.response.data.message }));
   };
 
-console.log({ products });
+  console.log({ vendorUpdatedPrices });
+
+  const productPrice = pr => {
+    let price;
+    if (!design) {
+      return pr.minPrice;
+    }
+
+    if (vendorUpdatedPrices[pr._id]) {
+      return vendorUpdatedPrices[pr._id].price;
+    }
+    price = design.vendorProductIds.find(vp => vp.productId === pr._id)?.price;
+
+    if (!price) {
+      price = pr.minPrice;
+    }
+    return price;
+  };
   return (
     <LoggedInVendor>
       <Grid mt={5} container>
@@ -206,22 +236,36 @@ console.log({ products });
               Please select products for your design
             </Typography>
           </Grid>
-          <Grid
-            container
-          >
+          <Grid justifyContent="center" container>
             {products?.map((product, i) => (
-              <Grid item md={4} mt={5} xs={6} key={`product-${i}`}>
+              <Grid
+                justifyContent="center"
+                container
+                item
+                md={4}
+                mt={5}
+                xs={6}
+                key={`product-${i}`}
+              >
                 <ProductCardWithPricing
+                  design={design}
                   product={product}
+                  price={productPrice(product)}
                   onVariantClick={onVariantClick}
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}
+                  updatePrice={updatePrice}
                 />
               </Grid>
             ))}
+
+            <Grid mt={6} justifyContent="center" container>
+              <Button variant="contained" onClick={formatAndContinue}>
+                Update products
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-              
       </Grid>
     </LoggedInVendor>
   );

@@ -191,7 +191,7 @@ const Product = ({ addToCart, cart }) => {
             ...new Map(variantArr.map(item => [item['id'], item])).values(),
           ],
           productNumberedId: product.productMappings[0].productNumberedId,
-          design: product.designId.url,
+          design: product.designId?.url,
         };
 
         setProduct(formattedProduct);
