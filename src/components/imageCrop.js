@@ -1,14 +1,19 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Box } from '@mui/material';
 
 export default function ImageCrop(props) {
   const [upImg, setUpImg] = useState();
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
-  const [crop, setCrop] = useState({ unit: '%', width: 30, aspect: 16 / 9 });
+  const [crop, setCrop] = useState(
+    props.variant === 'storeLogo'
+      ? { unit: '%', width: 30, aspect: 1 / 1 }
+      : { unit: '%', width: 30, aspect: 16 / 9 },
+  );
   const [completedCrop, setCompletedCrop] = useState(null);
+  const [toggleControls, setToggleControls] = useState(false);
 
   const onSelectFile = e => {
     if (e.target.files && e.target.files.length > 0) {
@@ -16,6 +21,7 @@ export default function ImageCrop(props) {
       reader.addEventListener('load', () => setUpImg(reader.result));
       reader.readAsDataURL(e.target.files[0]);
     }
+    setToggleControls(true);
   };
 
   const onLoad = useCallback(img => {
@@ -61,7 +67,13 @@ export default function ImageCrop(props) {
     }
 
     const base64Image = canvas.toDataURL('image/jpeg');
-    props.handleStoreAvatarChange(base64Image);
+
+    if (props.variant === 'storeLogo') {
+      props.handleStoreLogoChange(base64Image);
+    } else {
+      props.handleStoreAvatarChange(base64Image);
+    }
+
     props.handleClose();
   };
 
@@ -78,48 +90,57 @@ export default function ImageCrop(props) {
         </Button>
       </Grid>
       <Grid container spacing={2}>
-        <Grid item md={6}>
+        <Grid item md={2}></Grid>
+        <Grid
+          item
+          md={8}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           <ReactCrop
             src={upImg}
             onImageLoaded={onLoad}
             crop={crop}
             onChange={c => setCrop(c)}
             onComplete={c => setCompletedCrop(c)}
-            style={{ width: '80%' }}
-            circularCrop={true}
+            circularCrop={props.variant === 'storeLogo' ? true : false}
           />
         </Grid>
-        <Grid item md={6}>
-          <canvas
-            ref={previewCanvasRef}
-            // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-            style={{
-              width: Math.round(completedCrop?.width ?? 0),
-              height: Math.round(completedCrop?.height ?? 0),
+        <Grid item md={2}></Grid>
+        <Grid item md={12}>
+          <div hidden>
+            <canvas
+              ref={previewCanvasRef}
+              // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+              style={{
+                width: Math.round(completedCrop?.width ?? 0),
+                height: Math.round(completedCrop?.height ?? 0),
+              }}
+            />
+          </div>
+        </Grid>
+      </Grid>
+      <Grid item md={3} xs={12}>
+        {toggleControls && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
             }}
-          />
-        </Grid>
+          >
+            <Button
+              onClick={() => cropImage(previewCanvasRef.current, completedCrop)}
+              variant="contained"
+            >
+              Crop
+            </Button>
+            <Button onClick={handleClose} variant="contained">
+              Cancel
+            </Button>
+          </Box>
+        )}
       </Grid>
-      <Grid item md={12}>
-        <Button
-          onClick={() => cropImage(previewCanvasRef.current, completedCrop)}
-          variant="contained"
-        >
-          Crop
-        </Button>
-        <Button onClick={handleClose} variant="contained">
-          Cancel
-        </Button>
-      </Grid>
-      {/* <Button
-        type="button"
-        disabled={!completedCrop?.width || !completedCrop?.height}
-        onClick={() =>
-          generateDownload(previewCanvasRef.current, completedCrop)
-        }
-      >
-        Download cropped image
-      </Button> */}
     </Grid>
   );
 }

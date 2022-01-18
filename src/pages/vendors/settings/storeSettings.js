@@ -11,7 +11,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '60%',
+  width: '50%',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -23,69 +23,59 @@ function StoreSettings({ vendorStoreData }) {
   const storeId = vendorStore._id;
   const [storeAvatar, setStoreAvatar] = useState(vendorStoreData.coverAvatar);
   const [storeLogo, setStoreLogo] = useState(vendorStoreData.logo);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [storeName, setStoreName] = useState(vendorStoreData.storeName);
+  const [openAvatarModal, setOpenAvatarModal] = useState(false);
+  const [openLogoModal, setOpenLogoModal] = useState(false);
+
+  const [storeName, setStoreName] = useState(vendorStore.storeName);
   const [updatedStoreAvatar, setUpdatedStoreAvatar] = useState('');
   const [updatedStoreLogo, setUpdatedStoreLogo] = useState('');
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
 
+  const [updatedData, setUpdatedData] = useState({
+    name: vendorStore.name,
+    coverAvatar: vendorStore.coverAvatar,
+    logo: vendorStore.logo,
+  });
+
+  const handleOpenAvatarModal = () => setOpenAvatarModal(true);
+  const handleCloseAvatarModal = () => setOpenAvatarModal(false);
+
+  const handleOpenLogoModal = () => setOpenLogoModal(true);
+  const handleCloseLogoModal = () => setOpenLogoModal(false);
+
   const handleStoreNameChange = e => {
     setStoreName(e.target.value);
-  };
-
-  const updateStoreName = () => {
-    const data = {
-      store: {
-        storeName: storeName,
-        storeId: storeId,
-      },
-    };
-
-    console.log('Data: ', data);
-
-    axios
-      .post(`${baseURL}/store/update-store-name`, data, {
-        headers: {
-          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-        },
-      })
-      .then(res => {
-        console.log(res.data);
-        alert('Store name updated successfully');
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    setUpdatedData({ ...updatedData, name: e.target.value });
   };
 
   const handleChangeStoreAvatarButton = () => {
-    handleOpen();
+    handleOpenAvatarModal();
     setToggleStoreAvatarButton(!toggleStoreAvatarButton);
   };
 
   const handleChangeStoreLogoButton = () => {
-    handleOpen();
+    handleOpenLogoModal();
     setToggleStoreLogoButton(!toggleStoreLogoButton);
   };
 
   const handleStoreAvatarChange = value => {
-    console.log(value);
+    setUpdatedData({ ...updatedData, coverAvatar: value });
+
     setStoreAvatar(value);
     setUpdatedStoreAvatar(value);
   };
 
   const handleStoreLogoChange = value => {
+    setUpdatedData({ ...updatedData, logo: value });
     setStoreLogo(value);
     setUpdatedStoreLogo(value);
   };
 
-  const updateStoreAvatar = () => {
+  const handleUpdateStore = () => {
     const data = {
       store: {
-        storeAvatar: updatedStoreAvatar,
+        storeData: updatedData,
         storeId: storeId,
       },
     };
@@ -93,39 +83,14 @@ function StoreSettings({ vendorStoreData }) {
     console.log('Data: ', data);
 
     axios
-      .post(`${baseURL}/store/update-store-avatar`, data, {
+      .post(`${baseURL}/store/update-store-data`, data, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
         },
       })
       .then(res => {
         console.log(res.data);
-        alert('Store avatar updated successfully');
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const updateStoreLogo = () => {
-    const data = {
-      store: {
-        storeLogo: updatedStoreLogo,
-        storeId: storeId,
-      },
-    };
-
-    console.log('Data: ', data);
-
-    axios
-      .post(`${baseURL}/store/update-store-logo`, data, {
-        headers: {
-          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-        },
-      })
-      .then(res => {
-        console.log(res.data);
-        alert('Store logo updated successfully');
+        alert('Store data updated successfully');
       })
       .catch(err => {
         console.log(err);
@@ -146,76 +111,130 @@ function StoreSettings({ vendorStoreData }) {
               }}
             >
               <Box>
-                <Typography variant="p">Merchpal/store/</Typography>
+                <Typography variant="p">Merchpals.com/</Typography>
                 <TextField
                   id="input-with-sx"
                   variant="standard"
                   onChange={handleStoreNameChange}
                   size="small"
+                  value={storeName}
                 />
               </Box>
-              <Button onClick={updateStoreName} variant="contained">
-                Update Name
-              </Button>
             </Box>
           </Grid>
-          <Grid item md={12}>
-            <Grid container>
-              <Grid item md={6}>
+          <Grid
+            item
+            md={6}
+            xs={12}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
                 <img src={storeAvatar} />
               </Grid>
-              <Grid item md={6}>
-                {!toggleStoreAvatarButton ? (
-                  <Button
-                    onClick={handleChangeStoreAvatarButton}
-                    variant="contained"
-                  >
-                    Change Store Avatar
-                  </Button>
-                ) : (
-                  <Button onClick={updateStoreAvatar} variant="contained">
-                    Update Store Avatar
-                  </Button>
-                )}
+              <Grid
+                item
+                md={12}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Button
+                  onClick={handleChangeStoreAvatarButton}
+                  variant="contained"
+                >
+                  Change Cover
+                </Button>
               </Grid>
+              <Modal
+                open={openAvatarModal}
+                onClose={handleCloseAvatarModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <ImageCrop
+                    handleClose={handleCloseAvatarModal}
+                    handleStoreAvatarChange={handleStoreAvatarChange}
+                    variant="storeAvatar"
+                  />
+                </Box>
+              </Modal>
             </Grid>
           </Grid>
-          <Grid item md={12}>
-            <Grid container>
-              <Grid item md={6}>
-                <img src={storeLogo} />
-              </Grid>
-              <Grid item md={6}>
-                {!toggleStoreLogoButton ? (
-                  <Button
-                    onClick={handleChangeStoreLogoButton}
-                    variant="contained"
-                  >
-                    Update Store Logo
-                  </Button>
-                ) : (
-                  <Button onClick={updateStoreLogo} variant="contained">
-                    Update Store Logo
-                  </Button>
-                )}
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item md={12}>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style}>
-                <ImageCrop
-                  handleClose={handleClose}
-                  handleStoreAvatarChange={handleStoreAvatarChange}
-                  handleStoreLogoChange={handleStoreLogoChange}
+          <Grid
+            item
+            md={6}
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <img
+                  src={storeLogo}
+                  style={{
+                    width: '200px',
+                    height: '200px',
+                    borderRadius: '50%',
+                  }}
                 />
-              </Box>
-            </Modal>
+              </Grid>
+              <Grid
+                item
+                md={12}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Button
+                  onClick={handleChangeStoreLogoButton}
+                  variant="contained"
+                >
+                  Change Logo
+                </Button>
+              </Grid>
+              <Modal
+                open={openLogoModal}
+                onClose={handleCloseLogoModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <ImageCrop
+                    handleClose={handleCloseLogoModal}
+                    handleStoreLogoChange={handleStoreLogoChange}
+                    variant="storeLogo"
+                  />
+                </Box>
+              </Modal>
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            md={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Button onClick={handleUpdateStore} variant="contained">
+              Update Store
+            </Button>
           </Grid>
         </Grid>
       </Grid>
