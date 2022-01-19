@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
@@ -62,8 +62,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function ContactSupport({ toggleContactModal }) {
-  const navigate = useNavigate();
+const ContactSupport = props => {
   const classes = useStyles();
   const [contactDetails, setContactDetails] = useState({
     email: '',
@@ -71,9 +70,12 @@ function ContactSupport({ toggleContactModal }) {
     phoneNo: '',
     message: '',
   });
+  const [toggleSubmit, setToggleSubmit] = useState(true);
 
   const ContactSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required'),
+    email: Yup.string()
+      .required('Email is required')
+      .email('Invalid email address'),
     name: Yup.string().required('Name is required'),
     phoneNo: Yup.string().required('Phone Number is required'),
     message: Yup.string().required('Message is required'),
@@ -104,13 +106,28 @@ function ContactSupport({ toggleContactModal }) {
       phoneNo,
       message,
     });
+    if (
+      email !== '' &&
+      name !== '' &&
+      phoneNo !== '' &&
+      message !== '' &&
+      !errors.email &&
+      !errors.name &&
+      !errors.phoneNo &&
+      !errors.message
+    ) {
+      setToggleSubmit(false);
+    } else {
+      setToggleSubmit(true);
+    }
   }, [email, name, phoneNo, message]);
 
   const handleSubmit = () => {
+    console.log(contactDetails);
     axios
       .post(`${baseURL}/contact`, contactDetails)
       .then(res => {
-        toggleContactModal();
+        props.handleModalAndSnackbar();
       })
       .catch(err => {
         console.log(err);
@@ -125,7 +142,10 @@ function ContactSupport({ toggleContactModal }) {
         </Typography>
       </Grid>
       <Grid item md={1}>
-        <IconButton aria-label="delete" onClick={() => toggleContactModal()}>
+        <IconButton
+          aria-label="delete"
+          onClick={() => props.toggleContactModal()}
+        >
           <CloseIcon />
         </IconButton>
       </Grid>
@@ -168,20 +188,13 @@ function ContactSupport({ toggleContactModal }) {
         <InputLabel className={classes.label}>
           Email <span className={classes.required}>*</span>
         </InputLabel>
-        {/* <Input
+        <Input
           {...register('email', {
             onChange: e => {
               if (errors.email) {
                 trigger('email');
               }
             },
-
-            // pattern: {
-            //   value:
-            //     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i,
-            //   message: 'Invalid email address',
-            // },
-
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
               message: 'Invalid email address',
@@ -190,27 +203,6 @@ function ContactSupport({ toggleContactModal }) {
           className={classes.textField}
           placeholder="Email"
           type="email"
-        /> */}
-        <input
-          {...register('email', {
-            required: 'Please enter your email address',
-            // pattern: {
-            //   value:
-            //     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            //   message: 'Invalid email address',
-            // },
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Invalid email address',
-            },
-          })}
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="off"
-          //   className={`input w-full ${
-          //     !errors.email && dirtyFields.email && '!bg-green-50'
-          //   }`}
         />
         <span className={classes.fieldError}>{errors.email?.message}</span>
       </Grid>
@@ -228,17 +220,24 @@ function ContactSupport({ toggleContactModal }) {
             },
           })}
           className={classes.textField}
+          style={{ height: '100px' }}
           placeholder="Message"
+          multiline
+          rows={4}
         />
         <span className={classes.fieldError}>{errors?.message?.message}</span>
       </Grid>
       <Grid item md={12}>
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={toggleSubmit}
+        >
           Submit
         </Button>
       </Grid>
     </Grid>
   );
-}
+};
 
 export default ContactSupport;
