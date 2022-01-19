@@ -26,7 +26,11 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
-const Products = ({ productSelectionCompleted = () => {}, products = [] }) => {
+const Products = ({
+  productSelectionCompleted = () => {},
+  products = [],
+  designName,
+}) => {
   const [selectedVariants, setSelectedVariants] = useState({});
   const classes = useStyles();
   const isDesktop = useMediaQuery({ minWidth: 992 });
@@ -203,6 +207,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [] }) => {
               <Grid item md={4} mt={5} xs={6} key={`product-${i}`}>
                 <ProductCard
                   product={product}
+                  designName={designName}
                   onVariantClick={onVariantClick}
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}

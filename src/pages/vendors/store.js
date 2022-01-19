@@ -7,6 +7,8 @@ import {
   TextField,
   Avatar,
   Button,
+  Alert as MuiAlert,
+  Snackbar,
 } from '@mui/material';
 import axios from 'axios';
 import Logo from '../../assets/images/logo.png';
@@ -61,6 +63,10 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const VendorStore = () => {
   const classes = useStyle();
 
@@ -76,6 +82,12 @@ const VendorStore = () => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: 'success',
+    message: 'Copied to clipboard',
+  });
 
   useEffect(() => {
     fetchStore();
@@ -99,6 +111,26 @@ const VendorStore = () => {
       });
   };
 
+  const copyToClipboard = storeURL => {
+    const el = document.createElement('textarea');
+    el.value = storeURL;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setSnackBarToggle({
+      visible: true,
+      type: 'success',
+      message: 'Copied to clipboard',
+    });
+  };
+
+  const handleSnackBarClose = () =>
+    setSnackBarToggle({
+      ...snackBarToggle,
+      visible: false,
+    });
+
   return (
     <Grid container spacing={3}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
@@ -111,10 +143,7 @@ const VendorStore = () => {
           {store.name}
         </Typography>
 
-        <img
-          src={store.logo}
-          className={classes.logo}
-        />
+        <img src={store.logo} className={classes.logo} />
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
         <Grid
@@ -152,7 +181,7 @@ const VendorStore = () => {
           InputProps={{
             readOnly: true,
             endAdornment: (
-              <Button onClick={() => navigator.clipboard.writeText(storeURL)}>
+              <Button onClick={() => copyToClipboard(storeURL)}>
                 <ContentCopyIcon color="secondary" />
               </Button>
             ),
@@ -160,6 +189,13 @@ const VendorStore = () => {
           className={classes.copyLinkText}
         />
       </Grid>
+      <Snackbar
+        open={snackBarToggle.visible}
+        autoHideDuration={1000}
+        onClose={handleSnackBarClose}
+      >
+        <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+      </Snackbar>
     </Grid>
   );
 };

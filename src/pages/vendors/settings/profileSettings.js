@@ -1,23 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Grid, TextField, Button } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Grid,
+  TextField,
+  Button,
+  Alert as MuiAlert,
+  Snackbar,
+} from '@mui/material';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
+import LoggedInVendor from '../../../layouts/LoggedInVendor';
+import BackButton from '../../../components/backButton';
 
-function ProfileSettings({ vendorData }) {
-  const vendor = vendorData;
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+function ProfileSettings() {
+  // const vendor = vendorData;
   const [toggleChangePassword, setToggleChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordsMatched, setPasswordsMatched] = useState(false);
-  const [firstname, setFirstname] = useState(vendor.firstName);
-  const [lastname, setLastname] = useState(vendor.lastName);
+  const [firstname, setFirstname] = useState();
+  const [lastname, setLastname] = useState();
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: 'success',
+    message: 'Message sent successfully',
+  });
+  const [vendorData, setVendorData] = useState({});
 
   useEffect(() => {
-    setFirstname(vendor.firstName);
-    setLastname(vendor.lastName);
+    fetchVendorData();
   }, []);
+
+  const fetchVendorData = () => {
+    axios
+      .get(`${baseURL}/vendor/profile`, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(res => {
+        const vendor = res.data.vendor;
+        setVendorData(vendor);
+        setFirstname(vendor.firstName);
+        setLastname(vendor.lastName);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const handleCurrentPasswordSubmit = () => {
     const data = {
@@ -57,7 +94,11 @@ function ProfileSettings({ vendorData }) {
           },
         })
         .then(res => {
-          alert('Password changed successfully');
+          setSnackBarToggle({
+            visible: true,
+            type: 'success',
+            message: 'Password changed successfully',
+          });
         })
         .catch(err => {
           console.log(err);
@@ -99,134 +140,164 @@ function ProfileSettings({ vendorData }) {
         },
       })
       .then(res => {
-        alert('Name updated successfully');
+        setSnackBarToggle({
+          visible: true,
+          type: 'success',
+          message: 'Name updated successfully',
+        });
       })
       .catch(err => {
         console.log(err);
       });
   };
 
+  const handleSnackBarClose = () =>
+    setSnackBarToggle({
+      ...snackBarToggle,
+      visible: false,
+    });
+
   return (
-    <Grid container spacing={2}>
-      <Grid item md={12} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item md={6}>
-            <TextField
-              id="outlined-read-only-input"
-              label="First Name"
-              value={firstname}
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-              onChange={habdleFirstNameChange}
-            />
-          </Grid>
-          <Grid item md={6}>
-            <TextField
-              label="Last Name"
-              value={lastname}
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-              onChange={handleLastNameChange}
-            />
-          </Grid>
-          <Grid item md={12}>
-            <Button onClick={updateName} variant="contained">
-              Update name
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item md={12} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item md={6}>
-            <TextField
-              label="Email"
-              value={vendor.email}
-              fullWidth
-              disabled
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item md={6}>
-            <TextField
-              label="Phone No"
-              value={vendor.phoneNo}
-              fullWidth
-              disabled
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item md={12} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item md={12}>
-            <Typography variant="h6">Change Pasword</Typography>
-          </Grid>
-          {!toggleChangePassword && (
-            <Grid item md={6}>
-              <TextField
-                label="Current Password"
-                fullWidth
-                type="password"
-                onChange={e => setCurrentPassword(e.target.value)}
-                helperText={passwordError}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleCurrentPasswordSubmit}
-                style={{ marginTop: '15px' }}
-              >
-                Submit
-              </Button>
+    <LoggedInVendor>
+      <Grid container spacing={2}>
+        <Grid item md={2} xs={12}></Grid>
+        <Grid item md={8} xs={12}>
+          <Grid container>
+            <BackButton />
+            <Grid item md={12} xs={12} mb={4}>
+              <Typography variant="h4" align="center">
+                Profile Settings
+              </Typography>
             </Grid>
-          )}
-          {toggleChangePassword && (
-            <Grid item md={6}>
+            <Grid item md={12} xs={12} mb={3}>
               <Grid container spacing={2}>
-                <Grid item md={12} mb={2}>
+                <Grid item md={6}>
                   <TextField
-                    label="New Password"
+                    id="outlined-read-only-input"
+                    label="First Name"
+                    value={firstname}
                     fullWidth
-                    type="password"
-                    onChange={e => {
-                      setNewPassword(e.target.value);
-                    }}
+                    InputLabelProps={{ shrink: true }}
+                    onChange={habdleFirstNameChange}
                   />
                 </Grid>
-              </Grid>
-              <Grid container>
-                <Grid item md={12} mb={2}>
+                <Grid item md={6}>
                   <TextField
-                    label="Confirm Password"
+                    label="Last Name"
+                    value={lastname}
                     fullWidth
-                    type="password"
-                    onChange={e => {
-                      setConfirmPassword(e.target.value);
-                    }}
-                    helperText={
-                      !passwordsMatched ? '' : "Passwords don't match"
-                    }
+                    InputLabelProps={{ shrink: true }}
+                    onChange={handleLastNameChange}
                   />
                 </Grid>
-              </Grid>
-              <Grid container>
-                <Button onClick={handlePasswordChange} variant="contained">
-                  {' '}
-                  Change Password
-                </Button>
+                <Grid item md={12}>
+                  <Button onClick={updateName} variant="contained">
+                    Update name
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
-          )}
+            <Grid item md={12} xs={12} mb={2}>
+              <Grid container spacing={2}>
+                <Grid item md={6}>
+                  <TextField
+                    label="Email"
+                    value={vendorData.email}
+                    fullWidth
+                    disabled
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item md={6}>
+                  <TextField
+                    label="Phone No"
+                    value={vendorData.phoneNo}
+                    fullWidth
+                    disabled
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Grid container spacing={2}>
+                <Grid item md={12}>
+                  <Typography variant="h6">Change Pasword</Typography>
+                </Grid>
+                {!toggleChangePassword && (
+                  <Grid item md={6}>
+                    <TextField
+                      label="Current Password"
+                      fullWidth
+                      type="password"
+                      onChange={e => setCurrentPassword(e.target.value)}
+                      helperText={passwordError}
+                    />
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCurrentPasswordSubmit}
+                      style={{ marginTop: '15px' }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                )}
+                {toggleChangePassword && (
+                  <Grid item md={6}>
+                    <Grid container spacing={2}>
+                      <Grid item md={12} mb={2}>
+                        <TextField
+                          label="New Password"
+                          fullWidth
+                          type="password"
+                          onChange={e => {
+                            setNewPassword(e.target.value);
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item md={12} mb={2}>
+                        <TextField
+                          label="Confirm Password"
+                          fullWidth
+                          type="password"
+                          onChange={e => {
+                            setConfirmPassword(e.target.value);
+                          }}
+                          helperText={
+                            !passwordsMatched ? '' : "Passwords don't match"
+                          }
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Button
+                        onClick={handlePasswordChange}
+                        variant="contained"
+                      >
+                        {' '}
+                        Change Password
+                      </Button>
+                    </Grid>
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
+        <Grid item md={2} xs={12}></Grid>
+
+        <Snackbar
+          open={snackBarToggle.visible}
+          autoHideDuration={2000}
+          onClose={handleSnackBarClose}
+        >
+          <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+        </Snackbar>
       </Grid>
-      {/* <Grid item md={12} xs={12}>
-        <Button variant="outlined" color="primary">
-          Save Changes
-        </Button>
-      </Grid> */}
-    </Grid>
+    </LoggedInVendor>
   );
 }
 

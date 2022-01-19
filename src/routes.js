@@ -26,6 +26,8 @@ import VendorOrderDetails from './pages/vendors/orderDetails';
 import VendorEditDesignProducts from './pages/vendors/designs/edit/products';
 import ProductSelection from './pages/vendors/products/productSelection';
 import Settings from './pages/vendors/settings/settings';
+import ProfileSettings from './pages/vendors/settings/profileSettings';
+import StoreSettings from './pages/vendors/settings/storeSettings';
 // import ContactSupport from './pages/vendors/contactSupport';
 // ----------------------------------------------------------------------
 
@@ -54,6 +56,8 @@ export default function Router() {
     },
     { path: '/vendor/design/product-selection', element: <ProductSelection /> },
     { path: '/vendor/settings', element: <Settings /> },
+    { path: '/vendor/profile-settings', element: <ProfileSettings /> },
+    { path: '/vendor/store-settings', element: <StoreSettings /> },
     // { path: '/contact-support', element: <ContactSupport /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },

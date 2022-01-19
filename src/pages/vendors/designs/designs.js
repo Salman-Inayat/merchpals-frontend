@@ -12,6 +12,7 @@ import axios from 'axios';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
+import BackButton from '../../../components/backButton';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -88,6 +89,7 @@ const VendorDesigns = () => {
     });
   return (
     <LoggedInVendor>
+      <BackButton />
       <Grid mt={5} container>
         <Grid justifyContent="flex-start" container>
           {fetched && (

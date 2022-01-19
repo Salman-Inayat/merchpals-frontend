@@ -5,6 +5,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
+import BackButton from '../../../../components/backButton';
 
 const EditDesign = () => {
   const navigate = useNavigate();
@@ -66,11 +67,7 @@ const EditDesign = () => {
   return (
     <LoggedInVendor>
       <Grid mt={5} container>
-        <Grid justifyContent="flex-start" container>
-          <Button onClick={() => navigate('/vendor/designs')}>
-            Back to designs
-          </Button>
-        </Grid>
+        <BackButton />
         <Grid justifyContent="center" container>
           <Grid item md={2} xs={12}></Grid>
           <Grid item md={8} xs={12}>

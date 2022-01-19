@@ -91,6 +91,7 @@ const ProductSelection = ({ designName }) => {
     <Grid container>
       <Products
         products={products}
+        designName={location.state.name}
         productSelectionCompleted={productSelectionCompleted}
       />
       <Snackbar

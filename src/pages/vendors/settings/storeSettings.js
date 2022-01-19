@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Grid, TextField, Button } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Grid,
+  TextField,
+  Button,
+  Alert as MuiAlert,
+  Snackbar,
+} from '@mui/material';
 import ReactCrop from 'react-image-crop';
 import ImageCrop from '../../../components/imageCrop';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
+import LoggedInVendor from '../../../layouts/LoggedInVendor';
+import BackButton from '../../../components/backButton';
 
 const style = {
   position: 'absolute',
@@ -18,25 +28,61 @@ const style = {
   p: 4,
 };
 
-function StoreSettings({ vendorStoreData }) {
-  const vendorStore = vendorStoreData;
-  const storeId = vendorStore._id;
-  const [storeAvatar, setStoreAvatar] = useState(vendorStoreData.coverAvatar);
-  const [storeLogo, setStoreLogo] = useState(vendorStoreData.logo);
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+function StoreSettings() {
+  const [storeId, setStoreId] = useState();
+  const [storeAvatar, setStoreAvatar] = useState();
+  const [storeLogo, setStoreLogo] = useState();
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
   const [openLogoModal, setOpenLogoModal] = useState(false);
 
-  const [storeName, setStoreName] = useState(vendorStore.storeName);
-  const [updatedStoreAvatar, setUpdatedStoreAvatar] = useState('');
-  const [updatedStoreLogo, setUpdatedStoreLogo] = useState('');
+  const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
-
+  const [vendorStoreData, setVendorStoreData] = useState({});
   const [updatedData, setUpdatedData] = useState({
-    name: vendorStore.name,
-    coverAvatar: vendorStore.coverAvatar,
-    logo: vendorStore.logo,
+    name: '',
+    coverAvatar: '',
+    logo: '',
   });
+
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: 'success',
+    message: 'Message sent successfully',
+  });
+
+  useEffect(() => {
+    fetchVendorStoreData();
+  }, []);
+
+  const fetchVendorStoreData = () => {
+    axios
+      .get(`${baseURL}/store/`, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(res => {
+        const vendorStore = res.data.store;
+        setVendorStoreData(vendorStore);
+        setStoreName(vendorStore.name);
+        setStoreAvatar(vendorStore.coverAvatar);
+        setStoreLogo(vendorStore.logo);
+        setUpdatedData({
+          name: vendorStore.name,
+          coverAvatar: vendorStore.coverAvatar,
+          logo: vendorStore.logo,
+        });
+        setStoreId(vendorStore._id);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const handleOpenAvatarModal = () => setOpenAvatarModal(true);
   const handleCloseAvatarModal = () => setOpenAvatarModal(false);
@@ -45,8 +91,11 @@ function StoreSettings({ vendorStoreData }) {
   const handleCloseLogoModal = () => setOpenLogoModal(false);
 
   const handleStoreNameChange = e => {
-    setStoreName(e.target.value);
-    setUpdatedData({ ...updatedData, name: e.target.value });
+    setStoreName(e.target.value.replace(/\s/g, '-'));
+    setUpdatedData({
+      ...updatedData,
+      name: e.target.value.replace(/\s/g, '-'),
+    });
   };
 
   const handleChangeStoreAvatarButton = () => {
@@ -63,13 +112,11 @@ function StoreSettings({ vendorStoreData }) {
     setUpdatedData({ ...updatedData, coverAvatar: value });
 
     setStoreAvatar(value);
-    setUpdatedStoreAvatar(value);
   };
 
   const handleStoreLogoChange = value => {
     setUpdatedData({ ...updatedData, logo: value });
     setStoreLogo(value);
-    setUpdatedStoreLogo(value);
   };
 
   const handleUpdateStore = () => {
@@ -90,155 +137,182 @@ function StoreSettings({ vendorStoreData }) {
       })
       .then(res => {
         console.log(res.data);
-        alert('Store data updated successfully');
+        setSnackBarToggle({
+          visible: true,
+          type: 'success',
+          message: 'Store updated successfully',
+        });
       })
       .catch(err => {
         console.log(err);
       });
   };
 
+  const handleSnackBarClose = () =>
+    setSnackBarToggle({
+      ...snackBarToggle,
+      visible: false,
+    });
+
   return (
-    <Grid container spacing={2}>
-      <Grid item md={12} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item md={12}>
-            <Typography variant="h6">Store Name</Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box>
-                <Typography variant="p">Merchpals.com/</Typography>
-                <TextField
-                  id="input-with-sx"
-                  variant="standard"
-                  onChange={handleStoreNameChange}
-                  size="small"
-                  value={storeName}
-                />
+    <LoggedInVendor>
+      <Grid container spacing={2}>
+        <Grid item md={2} xs={12}></Grid>
+        <Grid item md={8} xs={12}>
+          <Grid container spacing={2}>
+            <BackButton />
+            <Grid item md={12} xs={12} mb={4}>
+              <Typography variant="h4" align="center">
+                Store Settings
+              </Typography>
+            </Grid>
+            <Grid item md={12}>
+              <Typography variant="h6">Store URL</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Box>
+                  <Typography variant="p">Merchpals.com/</Typography>
+                  <TextField
+                    id="input-with-sx"
+                    variant="standard"
+                    onChange={handleStoreNameChange}
+                    size="small"
+                    value={storeName}
+                  />
+                </Box>
               </Box>
-            </Box>
-          </Grid>
-          <Grid
-            item
-            md={6}
-            xs={12}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Grid container spacing={2}>
-              <Grid
-                item
-                md={12}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <img src={storeAvatar} />
-              </Grid>
-              <Grid
-                item
-                md={12}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Button
-                  onClick={handleChangeStoreAvatarButton}
-                  variant="contained"
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Grid container spacing={2}>
+                <Grid
+                  item
+                  md={12}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
                 >
-                  Change Cover
-                </Button>
+                  <img src={storeAvatar} />
+                </Grid>
+                <Grid
+                  item
+                  md={12}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Button
+                    onClick={handleChangeStoreAvatarButton}
+                    variant="contained"
+                  >
+                    Change Cover
+                  </Button>
+                </Grid>
+                <Modal
+                  open={openAvatarModal}
+                  onClose={handleCloseAvatarModal}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={style}>
+                    <ImageCrop
+                      handleClose={handleCloseAvatarModal}
+                      handleStoreAvatarChange={handleStoreAvatarChange}
+                      variant="storeAvatar"
+                    />
+                  </Box>
+                </Modal>
               </Grid>
-              <Modal
-                open={openAvatarModal}
-                onClose={handleCloseAvatarModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <ImageCrop
-                    handleClose={handleCloseAvatarModal}
-                    handleStoreAvatarChange={handleStoreAvatarChange}
-                    variant="storeAvatar"
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Grid container spacing={2}>
+                <Grid
+                  item
+                  md={12}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <img
+                    src={storeLogo}
+                    style={{
+                      width: '200px',
+                      height: '200px',
+                      borderRadius: '50%',
+                    }}
                   />
-                </Box>
-              </Modal>
+                </Grid>
+                <Grid
+                  item
+                  md={12}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Button
+                    onClick={handleChangeStoreLogoButton}
+                    variant="contained"
+                  >
+                    Change Logo
+                  </Button>
+                </Grid>
+                <Modal
+                  open={openLogoModal}
+                  onClose={handleCloseLogoModal}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={style}>
+                    <ImageCrop
+                      handleClose={handleCloseLogoModal}
+                      handleStoreLogoChange={handleStoreLogoChange}
+                      variant="storeLogo"
+                    />
+                  </Box>
+                </Modal>
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              md={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Button onClick={handleUpdateStore} variant="contained">
+                Update Store
+              </Button>
             </Grid>
           </Grid>
-          <Grid
-            item
-            md={6}
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Grid container spacing={2}>
-              <Grid
-                item
-                md={12}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <img
-                  src={storeLogo}
-                  style={{
-                    width: '200px',
-                    height: '200px',
-                    borderRadius: '50%',
-                  }}
-                />
-              </Grid>
-              <Grid
-                item
-                md={12}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Button
-                  onClick={handleChangeStoreLogoButton}
-                  variant="contained"
-                >
-                  Change Logo
-                </Button>
-              </Grid>
-              <Modal
-                open={openLogoModal}
-                onClose={handleCloseLogoModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <ImageCrop
-                    handleClose={handleCloseLogoModal}
-                    handleStoreLogoChange={handleStoreLogoChange}
-                    variant="storeLogo"
-                  />
-                </Box>
-              </Modal>
-            </Grid>
-          </Grid>
-          <Grid
-            item
-            md={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Button onClick={handleUpdateStore} variant="contained">
-              Update Store
-            </Button>
-          </Grid>
+          <Grid item md={2} xs={12}></Grid>
         </Grid>
+        <Snackbar
+          open={snackBarToggle.visible}
+          autoHideDuration={2000}
+          onClose={handleSnackBarClose}
+        >
+          <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+        </Snackbar>
       </Grid>
-    </Grid>
+    </LoggedInVendor>
   );
 }
 

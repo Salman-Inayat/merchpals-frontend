@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
+import BackButton from '../../components/backButton';
 
 import {
   Typography,
@@ -34,15 +35,6 @@ function VendorOrderDetails() {
       .then(res => {
         const orderData = res.data.order;
         setOrder(orderData);
-        console.log(orderData);
-
-        // let total = 0;
-
-        // orderData.products.map(product => {
-        //   const individualProfit =
-        //     (product.minPrice - product.basePrice) * 0.75;
-        //   total += individualProfit;
-        // });
 
         const orderPrice = orderData.price;
         const productsTotal = orderData.products.reduce(
@@ -62,11 +54,7 @@ function VendorOrderDetails() {
   return (
     <LoggedInVendor>
       <Grid container>
-        <Grid justifyContent="flex-start" container>
-          <Button onClick={() => navigate('/vendor/orders')} variant="outlined">
-            Back to orders
-          </Button>
-        </Grid>
+        <BackButton />
         <Grid item xs={12}>
           <Typography variant="h4" component="h1" gutterBottom>
             Order Details

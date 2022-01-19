@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
+import BackButton from '../../components/backButton';
 
 import Grid from '@mui/material/Grid';
 import Table from '@mui/material/Table';
@@ -104,6 +105,7 @@ function VendorOrders() {
   return (
     <LoggedInVendor>
       <Grid container>
+        <BackButton />
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>

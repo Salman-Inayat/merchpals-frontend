@@ -35,7 +35,8 @@ const useStyles = makeStyles(theme => ({
   },
   label: {
     marginLeft: '3px',
-    fontWeight: 'bolder',
+    fontWeight: 'normal',
+    fontSize: '14px',
     color: 'black',
   },
   required: {
@@ -150,9 +151,9 @@ const ContactSupport = props => {
         </IconButton>
       </Grid>
 
-      <Grid item md={6} xs={12}>
+      <Grid item md={12} xs={12}>
         <InputLabel className={classes.label}>
-          Name <span className={classes.required}>*</span>
+          Your Name <span className={classes.required}>*</span>
         </InputLabel>
         <Input
           {...register('name', {
@@ -167,7 +168,7 @@ const ContactSupport = props => {
         />
         <span className={classes.fieldError}>{errors?.name?.message}</span>
       </Grid>
-      <Grid item md={6} xs={12}>
+      <Grid item md={12} xs={12}>
         <InputLabel className={classes.label}>
           Phone Number <span className={classes.required}>*</span>
         </InputLabel>
@@ -186,7 +187,7 @@ const ContactSupport = props => {
       </Grid>
       <Grid item md={12} xs={12}>
         <InputLabel className={classes.label}>
-          Email <span className={classes.required}>*</span>
+          Your Email <span className={classes.required}>*</span>
         </InputLabel>
         <Input
           {...register('email', {

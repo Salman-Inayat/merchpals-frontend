@@ -54,8 +54,12 @@ const LoggedInVendor = ({
     getLoggedInUserInfo();
   }, []);
 
-  const handleSettingsButton = () => {
-    navigate('/vendor/settings');
+  const handleStoreSettingsButton = () => {
+    navigate('/vendor/store-settings');
+  };
+
+  const handleProfileSettingsButton = () => {
+    navigate('/vendor/profile-settings');
   };
 
   return (
@@ -137,11 +141,17 @@ const LoggedInVendor = ({
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem onClick={handleSettingsButton}>
+                <MenuItem onClick={handleProfileSettingsButton}>
                   <ListItemIcon>
                     <SettingsIcon fontSize="small" />
                   </ListItemIcon>
-                  Settings
+                  Profile Settings
+                </MenuItem>
+                <MenuItem onClick={handleStoreSettingsButton}>
+                  <ListItemIcon>
+                    <SettingsIcon fontSize="small" />
+                  </ListItemIcon>
+                  Store Settings
                 </MenuItem>
                 <MenuItem onClick={() => logout()}>
                   <ListItemIcon>
