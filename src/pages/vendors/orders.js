@@ -55,19 +55,6 @@ function VendorOrders() {
         console.log(res.data.orders);
         let orderData = res.data.orders;
         setOrders(orderData);
-
-        // orderData.map(order => {
-        //   rows.push({
-        //     no: order.orderId,
-        //     customer:
-        //       order.customerId.firstName + ' ' + order.customerId.lastName,
-        //     products: order.products.length,
-        //     totalAmount: order.totalAmount,
-        //     profit: order.totalAmount,
-        //     createdAt: order.createdAt,
-        //   });
-        //   console.log('Rows: ', rows);
-        // });
       })
       .catch(err => {
         console.log(err);
@@ -83,23 +70,15 @@ function VendorOrders() {
   };
 
   const Profit = order => {
-    // const profit =
-    //   order.products.reduce(
-    //     (sum, curr) => sum + (curr.minPrice - curr.basePrice),
-    //     0,
-    //   ) * 0.75;
-
-    // return profit.toFixed(2);
-
     const orderPrice = order.price;
     const productsTotal = order.products.reduce(
       (sum, curr) => sum + curr.basePrice,
       0,
     );
 
-    const profit = orderPrice - productsTotal;
+    const profit = orderPrice - (orderPrice * 0.023 + 30) - productsTotal;
 
-    return profit.toFixed(2);
+    return (profit * 0.75).toFixed(2);
   };
 
   return (

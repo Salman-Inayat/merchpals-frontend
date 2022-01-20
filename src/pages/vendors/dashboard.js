@@ -25,9 +25,11 @@ const useStyles = makeStyles(theme => ({
     transform: 'translate(-50%, -50%)',
     width: '50%',
     backgroundColor: 'white',
-    // border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    [theme.breakpoints.down('sm')]: {
+      width: '90%',
+    },
   },
   copyContent: {
     display: 'flex',
@@ -123,6 +125,7 @@ const Dashboard = () => {
       <Grid
         item
         md={12}
+        xs={12}
         display="flex"
         flexDirection="column"
         justifyContent="center"

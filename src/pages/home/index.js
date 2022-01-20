@@ -156,6 +156,7 @@ const Home = ({ designJSON }) => {
     store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
 
+    console.log(designData);
     axios
       .post(`${baseURL}/store`, store, {
         headers: {

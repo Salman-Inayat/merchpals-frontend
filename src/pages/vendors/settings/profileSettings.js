@@ -12,6 +12,7 @@ import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import BackButton from '../../../components/backButton';
+import { usePasswordValidation } from '../../../hooks/validatePassword';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -24,7 +25,7 @@ function ProfileSettings() {
   const [passwordError, setPasswordError] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordsMatched, setPasswordsMatched] = useState(false);
+  const [passwordsMatched, setPasswordsMatched] = useState(true);
   const [firstname, setFirstname] = useState();
   const [lastname, setLastname] = useState();
   const [snackBarToggle, setSnackBarToggle] = useState({
@@ -33,6 +34,12 @@ function ProfileSettings() {
     message: 'Message sent successfully',
   });
   const [vendorData, setVendorData] = useState({});
+
+  const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] =
+    usePasswordValidation({
+      firstPassword: newPassword,
+      secondPassword: confirmPassword,
+    });
 
   useEffect(() => {
     fetchVendorData();
@@ -82,7 +89,6 @@ function ProfileSettings() {
   };
 
   const handlePasswordChange = () => {
-    const match = checkIfPasswordsMatch();
     if (match == true) {
       const data = {
         newPassword: newPassword,
@@ -104,17 +110,7 @@ function ProfileSettings() {
           console.log(err);
         });
     } else {
-      alert('Passwords do not match');
-    }
-  };
-
-  const checkIfPasswordsMatch = () => {
-    if (newPassword === confirmPassword) {
-      setPasswordsMatched(true);
-      return true;
-    } else {
       setPasswordsMatched(false);
-      return false;
     }
   };
 
@@ -248,27 +244,32 @@ function ProfileSettings() {
                     <Grid container spacing={2}>
                       <Grid item md={12} mb={2}>
                         <TextField
+                          value={newPassword}
                           label="New Password"
                           fullWidth
                           type="password"
                           onChange={e => {
                             setNewPassword(e.target.value);
                           }}
+                          helperText={
+                            !validLength
+                              ? 'Password should be minimum 8 characters'
+                              : ''
+                          }
                         />
                       </Grid>
                     </Grid>
                     <Grid container>
                       <Grid item md={12} mb={2}>
                         <TextField
+                          value={confirmPassword}
                           label="Confirm Password"
                           fullWidth
                           type="password"
                           onChange={e => {
                             setConfirmPassword(e.target.value);
                           }}
-                          helperText={
-                            !passwordsMatched ? '' : "Passwords don't match"
-                          }
+                          helperText={!match ? "Passwords don't match" : ''}
                         />
                       </Grid>
                     </Grid>
@@ -276,6 +277,7 @@ function ProfileSettings() {
                       <Button
                         onClick={handlePasswordChange}
                         variant="contained"
+                        disabled={!match || !validLength}
                       >
                         {' '}
                         Change Password

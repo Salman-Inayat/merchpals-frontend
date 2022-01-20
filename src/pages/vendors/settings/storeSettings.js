@@ -15,6 +15,7 @@ import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import BackButton from '../../../components/backButton';
+import { useMediaQuery } from 'react-responsive';
 
 const style = {
   position: 'absolute',
@@ -54,6 +55,7 @@ function StoreSettings() {
     type: 'success',
     message: 'Message sent successfully',
   });
+  let isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
     fetchVendorStoreData();
@@ -156,17 +158,17 @@ function StoreSettings() {
 
   return (
     <LoggedInVendor>
+      <BackButton />
       <Grid container spacing={2}>
         <Grid item md={2} xs={12}></Grid>
         <Grid item md={8} xs={12}>
           <Grid container spacing={2}>
-            <BackButton />
             <Grid item md={12} xs={12} mb={4}>
               <Typography variant="h4" align="center">
                 Store Settings
               </Typography>
             </Grid>
-            <Grid item md={12}>
+            <Grid item md={12} xs={12} mb={1}>
               <Typography variant="h6">Store URL</Typography>
               <Box
                 sx={{
@@ -199,6 +201,7 @@ function StoreSettings() {
                 <Grid
                   item
                   md={12}
+                  xs={12}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -208,6 +211,7 @@ function StoreSettings() {
                 <Grid
                   item
                   md={12}
+                  xs={12}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -236,6 +240,7 @@ function StoreSettings() {
               </Grid>
             </Grid>
             <Grid
+              mt={isMobile ? '1rem' : '0rem'}
               item
               md={6}
               xs={12}
@@ -247,6 +252,7 @@ function StoreSettings() {
                 <Grid
                   item
                   md={12}
+                  xs={12}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -263,6 +269,7 @@ function StoreSettings() {
                 <Grid
                   item
                   md={12}
+                  xs={12}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -291,8 +298,10 @@ function StoreSettings() {
               </Grid>
             </Grid>
             <Grid
+              mt={isMobile ? '1rem' : '1.5rem'}
               item
               md={12}
+              xs={12}
               display="flex"
               justifyContent="center"
               alignItems="center"

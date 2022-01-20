@@ -42,9 +42,9 @@ function VendorOrderDetails() {
           0,
         );
 
-        const profit = orderPrice - productsTotal;
+        const profit = orderPrice - (orderPrice * 0.023 + 30) - productsTotal;
 
-        setTotalProfit(profit);
+        setTotalProfit(profit * 0.75);
       })
       .catch(err => {
         console.log(err);

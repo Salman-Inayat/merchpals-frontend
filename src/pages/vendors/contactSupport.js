@@ -61,6 +61,14 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 400,
     fontSize: '11px',
   },
+  headingContainer: {
+    position: 'relative',
+  },
+  closeModalButton: {
+    position: 'absolute',
+    top: '1.3rem',
+    right: '0.3rem',
+  },
 }));
 
 const ContactSupport = props => {
@@ -136,21 +144,19 @@ const ContactSupport = props => {
   };
 
   return (
-    <Grid container spacing={2} p={2}>
-      <Grid item md={11}>
+    <Grid container spacing={2} p={2} className={classes.headingContainer}>
+      <Grid item md={12} xs={12}>
         <Typography variant="h4" component="h4">
           Contact Support
         </Typography>
-      </Grid>
-      <Grid item md={1}>
         <IconButton
           aria-label="delete"
           onClick={() => props.toggleContactModal()}
+          className={classes.closeModalButton}
         >
           <CloseIcon />
         </IconButton>
       </Grid>
-
       <Grid item md={12} xs={12}>
         <InputLabel className={classes.label}>
           Your Name <span className={classes.required}>*</span>
@@ -228,7 +234,7 @@ const ContactSupport = props => {
         />
         <span className={classes.fieldError}>{errors?.message?.message}</span>
       </Grid>
-      <Grid item md={12}>
+      <Grid item md={12} display="flex" justifyContent="flex-end">
         <Button
           variant="contained"
           onClick={handleSubmit}
