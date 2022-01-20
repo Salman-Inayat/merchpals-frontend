@@ -131,7 +131,7 @@ const Dashboard = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <Button>Store Products</Button>
+        <Button onClick={() => navigate('/vendor/store')}>My Store</Button>
         <Button onClick={() => navigate('/vendor/designs')}>
           Store Designs
         </Button>
