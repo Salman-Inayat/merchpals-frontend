@@ -27,6 +27,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Slide from '@mui/material/Slide';
+import { useMediaQuery } from 'react-responsive';
+import { calculateProfit } from '../../configs/const';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -83,6 +85,9 @@ const useStyles = makeStyles(theme => ({
       margin: '5px',
     },
   },
+  imageContainer: {
+    position: 'relative',
+  },
   image: {
     height: '100%',
     width: '100%',
@@ -92,6 +97,10 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     top: '15px',
     right: '15px',
+    [theme.breakpoints.down('sm')]: {
+      top: '10px',
+      right: '10px',
+    },
   },
   productName: {
     color: '#0097a7',
@@ -133,9 +142,10 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     top: '10px',
     left: '10px',
+    zIndex: '5',
     [theme.breakpoints.down('sm')]: {
-      top: '10px',
-      left: '5px',
+      top: '1px',
+      left: '1px',
     },
   },
   colorsCheckbox: {
@@ -151,6 +161,8 @@ const ProductCard = ({
   product,
   design,
   price: productDefaultPrice,
+  shippingCost,
+  costPrice,
   onVariantClick = () => {},
   onProductClick = () => {},
   updatePrice = () => {},
@@ -160,6 +172,12 @@ const ProductCard = ({
   const [displayPriceModal, setDisplayPriceModal] = useState(false);
   const [priceError, setPriceError] = useState('');
   const [price, setPrice] = useState('');
+  const [profit, setProfit] = useState(
+    calculateProfit(productDefaultPrice, shippingCost, costPrice),
+  );
+  const [tempProfit, setTempProfit] = useState();
+
+  let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const renderBgColor = () => {
     let bgColor = 'white';
@@ -197,104 +215,118 @@ const ProductCard = ({
       return;
     }
     updatePrice(product._id, design._id, price);
+    updateProfit(price);
     closePriceModal();
   };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   console.log({ design, product });
+
+  const updateProfit = price => {
+    setProfit(calculateProfit(price, shippingCost, costPrice));
+  };
+
   return (
     <Grid>
       <Card sx={{ maxWidth: 345 }}>
-        <CardHeader
-          action={
-            <IconButton
-              aria-describedby={id}
-              variant="contained"
-              onClick={handleClick}
-            >
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title={
-            <Box className={classes.checkboxContainer}>
-              <Checkbox
-                checked={selectedVariants[product._id] ? true : false}
-                onChange={() => onProductClick(event.target.value)}
-                value={product._id}
-                icon={<RadioButtonUncheckedIcon />}
-                checkedIcon={<CheckCircleIcon />}
+        <Box className={classes.checkboxContainer}>
+          <Checkbox
+            checked={selectedVariants[product._id] ? true : false}
+            onChange={() => onProductClick(event.target.value)}
+            value={product._id}
+            icon={<RadioButtonUncheckedIcon />}
+            checkedIcon={<CheckCircleIcon />}
+          />
+        </Box>
+        <Box className={classes.imageContainer}>
+          <CardMedia
+            component="img"
+            image={`${product.image}`}
+            alt=""
+            className={classes.productImage}
+            style={{ backgroundColor: renderBgColor() }}
+          />
+
+          {design && (
+            <Box>
+              <img
+                className={[
+                  classes.design,
+                  product.name === 'Poster'
+                    ? classes.poster
+                    : product.name === 'Phone Case'
+                    ? classes.phoneCase
+                    : product.name === 'Mug'
+                    ? classes.mug
+                    : '',
+                ].join(' ')}
+                src={design.url}
               />
             </Box>
-          }
-        />
-        <CardMedia
-          component="img"
-          image={`${product.image}`}
-          alt=""
-          className={classes.productImage}
-          style={{ backgroundColor: renderBgColor() }}
-        />
-
-        {design && (
-          <Box>
-            <img
-              className={[
-                classes.design,
-                product.name === 'Poster'
-                  ? classes.poster
-                  : product.name === 'Phone Case'
-                  ? classes.phoneCase
-                  : product.name === 'Mug'
-                  ? classes.mug
-                  : '',
-              ].join(' ')}
-              src={design.url}
-            />
-          </Box>
-        )}
+          )}
+        </Box>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
             {design?.name} {product.name}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            onClick={() => setDisplayPriceModal(true)}
+            style={{ cursor: 'pointer' }}
+          >
             ${price || productDefaultPrice}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Profit: ${profit.toFixed(2)}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          {product.colors.length !== 1 && product.colors.label !== 'n/a' ? (
-            product.colors.map((pm, i) => (
-              <Grid key={`colors-${i}`} item md={2} xs={2}>
-                <Checkbox
-                  style={{
-                    backgroundColor:
-                      `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
-                  }}
-                  onChange={() => onVariantClick(event.target.value)}
-                  checked={
-                    selectedVariants[product._id]?.includes(pm.id)
-                      ? true
-                      : false
-                  }
-                  value={`${product._id},${pm.id}`}
-                  sx={{
-                    border: '1px solid #000',
-                    color:
-                      `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
-                    '&.Mui-checked': {
-                      color: `${pm.label}` == 'white' ? 'black' : 'white',
-                    },
-                  }}
-                  iconSize={40}
-                  checkedIcon={<DoneIcon />}
-                  className={classes.colorsCheckbox}
-                />
+          <Grid container spacing={isMobile ? 3 : 1}>
+            {product.colors.length !== 1 && product.colors.label !== 'n/a' ? (
+              product.colors.map((pm, i) => (
+                <Grid key={`colors-${i}`} item md={2} xs={2}>
+                  <Checkbox
+                    style={{
+                      width: `${isMobile ? '25px' : '30px'}`,
+                      height: `${isMobile ? '25px' : '30px'}`,
+                      backgroundColor:
+                        `${pm.label}` === 'transparent'
+                          ? 'white'
+                          : `${pm.label}`,
+                    }}
+                    onChange={() => onVariantClick(event.target.value)}
+                    checked={
+                      selectedVariants[product._id]?.includes(pm.id)
+                        ? true
+                        : false
+                    }
+                    value={`${product._id},${pm.id}`}
+                    sx={{
+                      border: '1px solid #000',
+                      color:
+                        `${pm.label}` === 'transparent'
+                          ? 'white'
+                          : `${pm.label}`,
+                      '&.Mui-checked': {
+                        color: `${pm.label}` == 'white' ? 'black' : 'white',
+                      },
+                    }}
+                    checkedIcon={
+                      <DoneIcon
+                        style={{ fontSize: `${isMobile ? '20px' : '25px'}` }}
+                      />
+                    }
+                    className={classes.colorsCheckbox}
+                  />
+                </Grid>
+              ))
+            ) : (
+              <Grid style={{ opacity: 0 }}>
+                <Checkbox iconSize={40} checkedIcon={<DoneIcon />} />
               </Grid>
-            ))
-          ) : (
-            <Grid style={{ opacity: 0 }}>
-              <Checkbox iconSize={40} checkedIcon={<DoneIcon />} />
-            </Grid>
-          )}
+            )}
+          </Grid>
         </CardActions>
       </Card>
       <Popover
@@ -320,18 +352,25 @@ const ProductCard = ({
             onClose={closePriceModal}
           >
             <DialogTitle>{"Enter product's price!"}</DialogTitle>
-            <DialogContent style={{ width: '500px' }}>
+            <DialogContent style={{ width: `${isMobile ? '80vw' : '500px'}` }}>
               <TextField
                 id="outlined-basic"
                 placeholder={`$${productDefaultPrice}`}
                 variant="outlined"
-                helperText={priceError}
+                helperText={priceError ? priceError : tempProfit}
                 type="number"
                 style={{ marginTop: '15px' }}
                 error={Boolean(priceError)}
                 onChange={e => {
                   setPrice(e.target.value);
                   setPriceError('');
+                  setTempProfit(
+                    calculateProfit(
+                      e.target.value,
+                      shippingCost,
+                      costPrice,
+                    ).toFixed(2),
+                  );
                 }}
                 autoComplete="off"
                 fullWidth

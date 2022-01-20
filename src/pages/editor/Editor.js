@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useLayoutEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { Button, Card, Grid, Stack, Typography, Input } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
@@ -90,13 +97,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Editor = ({ triggerExport = 0 }) => {
+const Editor = forwardRef((props, ref) => {
+  const { triggerExport = 0, canvasJSON, saveEditDesign } = props;
+
   const classes = useStyles();
 
   const editorJs = useEditor();
   const [toggleSmileys, setToggleSmileys] = useState(false);
   const [toggleFontControls, setToggleFontControls] = useState(false);
-  const [cropDoneButton, setCropDoneButton] = useState(false);
   const [miniature, setMiniature] = useState();
 
   useEffect(() => {
@@ -135,20 +143,21 @@ const Editor = ({ triggerExport = 0 }) => {
 
   const firstUpdate = useRef(true);
 
-  // useLayoutEffect(() => {
-  //   if (firstUpdate.current) {
-  //     firstUpdate.current = false;
-  //     return;
-  //   }
-
-  //   setMiniature(editorJs.getMiniature());
-  // });
-
   useEffect(() => {
     if (triggerExport > 0) {
-      exportCanvas()
+      exportCanvas();
     }
-  }, [triggerExport])
+  }, [triggerExport]);
+
+  useImperativeHandle(ref, () => ({
+    saveDesign() {
+      exportCanvas();
+    },
+
+    saveDesignInJSON() {
+      return exportCanvasToJSON();
+    },
+  }));
 
   const addText = () => {
     editorJs.addText();
@@ -177,8 +186,15 @@ const Editor = ({ triggerExport = 0 }) => {
   const exportCanvas = () => {
     const exportedImage = editorJs.exportCanvas();
     localStorage.setItem('design', exportedImage);
-    console.log({ exportedImage });
-  }
+
+    const exportedCanvasJson = editorJs.saveCanvasToJSON();
+    localStorage.setItem('designJSON', exportedCanvasJson);
+  };
+
+  const exportCanvasToJSON = () => {
+    const exportedCanvasJson = editorJs.saveCanvasToJSON();
+    return exportedCanvasJson;
+  };
 
   const addImage = e => {
     var file = e.target.files[0];
@@ -200,12 +216,10 @@ const Editor = ({ triggerExport = 0 }) => {
 
   const cropImage = () => {
     editorJs.cropImage();
-    setCropDoneButton(true);
   };
 
   const cropImageDone = () => {
     editorJs.cropImageDone();
-    setCropDoneButton(false);
   };
 
   const handleExportButton = () => {
@@ -258,17 +272,16 @@ const Editor = ({ triggerExport = 0 }) => {
                 Crop
               </Button>
             </div>
-            {cropDoneButton && (
+
+            <div id="crop-image-done-button" hidden>
               <Button
                 variant="contained"
                 onClick={cropImageDone}
-                id="crop-image-done-button"
-                hidden
                 className={`${classes.cropDone} ${classes.button}`}
               >
                 Done
               </Button>
-            )}
+            </div>
           </Grid>
           <Grid
             item
@@ -282,6 +295,7 @@ const Editor = ({ triggerExport = 0 }) => {
               <CanvasEditor
                 onReady={editorJs.onReady}
                 class="fabric-canvas-wrapper"
+                canvasJSON={canvasJSON}
               />
             </Card>
           </Grid>
@@ -396,6 +410,6 @@ const Editor = ({ triggerExport = 0 }) => {
       <Grid>{/* <canvas id="static" width="50" height="50"></canvas> */}</Grid>
     </Grid>
   );
-};
+});
 
 export default Editor;

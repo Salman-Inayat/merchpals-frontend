@@ -22,6 +22,7 @@ import {
   WelcomeMessage,
 } from './steps';
 import { baseURL } from '../../configs/const';
+import { connect } from 'react-redux';
 
 const useStyle = makeStyles(() => ({
   fluid: {
@@ -59,7 +60,7 @@ const useStyle = makeStyles(() => ({
     height: '0.5em',
   },
 }));
-const Home = () => {
+const Home = ({ designJSON }) => {
   const [step, setStep] = useState(0);
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [registrationErrors, setRegistrationErrors] = useState({
@@ -69,6 +70,7 @@ const Home = () => {
   });
   const [products, setProducts] = useState([]);
   const [design, setDesign] = useState('');
+  const [canvasJSON, setCanvasJSON] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
@@ -82,6 +84,10 @@ const Home = () => {
       fetchProducts();
     }
   }, []);
+
+  useEffect(() => {
+    setCanvasJSON(designJSON.json);
+  }, [designJSON]);
 
   const fetchProducts = async () => {
     axios
@@ -136,7 +142,7 @@ const Home = () => {
     const designData = {
       base64Image: localStorage.getItem('design'),
       name: 'default',
-      canvasJson: '',
+      canvasJson: canvasJSON,
     };
 
     let store = new FormData();
@@ -150,6 +156,7 @@ const Home = () => {
     store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
 
+    console.log(designData);
     axios
       .post(`${baseURL}/store`, store, {
         headers: {
@@ -249,4 +256,9 @@ const Home = () => {
   );
 };
 
-export { Home as default };
+const mapState = state => {
+  const designJSON = state.design;
+  return { designJSON };
+};
+
+export default connect(mapState)(Home);

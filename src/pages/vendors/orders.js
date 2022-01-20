@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
+import BackButton from '../../components/backButton';
 
 import Grid from '@mui/material/Grid';
 import Table from '@mui/material/Table';
@@ -54,19 +55,6 @@ function VendorOrders() {
         console.log(res.data.orders);
         let orderData = res.data.orders;
         setOrders(orderData);
-
-        // orderData.map(order => {
-        //   rows.push({
-        //     no: order.orderId,
-        //     customer:
-        //       order.customerId.firstName + ' ' + order.customerId.lastName,
-        //     products: order.products.length,
-        //     totalAmount: order.totalAmount,
-        //     profit: order.totalAmount,
-        //     createdAt: order.createdAt,
-        //   });
-        //   console.log('Rows: ', rows);
-        // });
       })
       .catch(err => {
         console.log(err);
@@ -82,33 +70,26 @@ function VendorOrders() {
   };
 
   const Profit = order => {
-    // const profit =
-    //   order.products.reduce(
-    //     (sum, curr) => sum + (curr.minPrice - curr.basePrice),
-    //     0,
-    //   ) * 0.75;
-
-    // return profit.toFixed(2);
-
     const orderPrice = order.price;
     const productsTotal = order.products.reduce(
       (sum, curr) => sum + curr.basePrice,
       0,
     );
 
-    const profit = orderPrice - productsTotal;
+    const profit = orderPrice - (orderPrice * 0.023 + 30) - productsTotal;
 
-    return profit.toFixed(2);
+    return (profit * 0.75).toFixed(2);
   };
 
   return (
     <LoggedInVendor>
       <Grid container>
+        <BackButton />
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Order No.</TableCell>
+                <TableCell align="center">Order No.</TableCell>
                 <TableCell align="center">Customer</TableCell>
                 <TableCell align="center">Products</TableCell>
                 <TableCell align="center">Total Amount</TableCell>
@@ -123,30 +104,30 @@ function VendorOrders() {
                   onClick={() => handleOrderClick(order)}
                   sx={{ cursor: 'pointer' }}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {index + 1}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {order.customerId.firstName +
                       ' ' +
                       order.customerId.lastName}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {order.products.map(product => (
                       <div>{product.name}</div>
                     ))}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {order.totalAmount.toFixed(2)}
                   </TableCell>
 
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {Profit(order)}
                   </TableCell>
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" align="center">
                     {new Date(order.createdAt).toDateString()}
                   </TableCell>
                 </TableRow>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
+import BackButton from '../../components/backButton';
 
 import {
   Typography,
@@ -10,13 +11,15 @@ import {
   CardMedia,
   CardContent,
   Paper,
+  Button,
 } from '@mui/material';
 
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 function VendorOrderDetails() {
   //   const location = useLocation();
   //   const order = location.state.order;
+  const navigate = useNavigate();
   const [totalProfit, setTotalProfit] = useState(0);
 
   const [order, setOrder] = useState();
@@ -32,15 +35,6 @@ function VendorOrderDetails() {
       .then(res => {
         const orderData = res.data.order;
         setOrder(orderData);
-        console.log(orderData);
-
-        // let total = 0;
-
-        // orderData.products.map(product => {
-        //   const individualProfit =
-        //     (product.minPrice - product.basePrice) * 0.75;
-        //   total += individualProfit;
-        // });
 
         const orderPrice = orderData.price;
         const productsTotal = orderData.products.reduce(
@@ -48,9 +42,9 @@ function VendorOrderDetails() {
           0,
         );
 
-        const profit = orderPrice - productsTotal;
+        const profit = orderPrice - (orderPrice * 0.023 + 30) - productsTotal;
 
-        setTotalProfit(profit);
+        setTotalProfit(profit * 0.75);
       })
       .catch(err => {
         console.log(err);
@@ -60,6 +54,7 @@ function VendorOrderDetails() {
   return (
     <LoggedInVendor>
       <Grid container>
+        <BackButton />
         <Grid item xs={12}>
           <Typography variant="h4" component="h1" gutterBottom>
             Order Details
@@ -80,7 +75,8 @@ function VendorOrderDetails() {
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="p"
+                          variant="h5"
+                          fontWeight="light"
                           component="h5"
                           align="center"
                         >

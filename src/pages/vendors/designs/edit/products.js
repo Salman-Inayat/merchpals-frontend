@@ -5,6 +5,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import { ProductCardWithPricing } from '../../../../components/ProductCard';
+import BackButton from '../../../../components/backButton';
 
 const EditDesign = () => {
   const navigate = useNavigate();
@@ -205,14 +206,23 @@ const EditDesign = () => {
     }
     return price;
   };
+
+  const productShippingCost = pr => {
+    let shipping_cost = pr.shippingCost;
+
+    return shipping_cost;
+  };
+
+  const productCostPrice = pr => {
+    let cost_price = pr.costPrice;
+
+    return cost_price;
+  };
+
   return (
     <LoggedInVendor>
       <Grid mt={5} container>
-        <Grid justifyContent="flex-start" container>
-          <Button onClick={() => navigate('/vendor/designs')}>
-            Back to designs
-          </Button>
-        </Grid>
+        <BackButton />
         <Grid
           item
           xs={12}
@@ -236,7 +246,7 @@ const EditDesign = () => {
               Please select products for your design
             </Typography>
           </Grid>
-          <Grid justifyContent="center" container>
+          <Grid justifyContent="center" container spacing={2}>
             {products?.map((product, i) => (
               <Grid
                 justifyContent="center"
@@ -251,6 +261,8 @@ const EditDesign = () => {
                   design={design}
                   product={product}
                   price={productPrice(product)}
+                  shippingCost={productShippingCost(product)}
+                  costPrice={productCostPrice(product)}
                   onVariantClick={onVariantClick}
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}
