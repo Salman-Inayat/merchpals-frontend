@@ -20,6 +20,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import PhoneNumberInput from '../../components/phone-number-input/PhoneNumberInput';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -79,6 +80,7 @@ const ContactSupport = props => {
     phoneNo: '',
     message: '',
   });
+  const [phoneNo, setPhoneNo] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(true);
 
   const ContactSchema = Yup.object().shape({
@@ -86,7 +88,6 @@ const ContactSupport = props => {
       .required('Email is required')
       .email('Invalid email address'),
     name: Yup.string().required('Name is required'),
-    phoneNo: Yup.string().required('Phone Number is required'),
     message: Yup.string().required('Message is required'),
   });
 
@@ -101,24 +102,20 @@ const ContactSupport = props => {
     resolver: yupResolver(ContactSchema),
   });
 
-  const [email, name, phoneNo, message] = watch([
-    'email',
-    'name',
-    'phoneNo',
-    'message',
-  ]);
+  const [email, name, message] = watch(['email', 'name', 'message']);
 
   useEffect(() => {
     setContactDetails({
       email,
       name,
-      phoneNo,
+      phoneNo: `+${phoneNo}`,
       message,
     });
     if (
       email !== '' &&
       name !== '' &&
       phoneNo !== '' &&
+      phoneNo.length >= 10 &&
       message !== '' &&
       !errors.email &&
       !errors.name &&
@@ -129,14 +126,15 @@ const ContactSupport = props => {
     } else {
       setToggleSubmit(true);
     }
-  }, [email, name, phoneNo, message]);
+  }, [email, name, message, phoneNo]);
 
   const handleSubmit = () => {
+    props.handleModalAndSnackbar();
     console.log(contactDetails);
     axios
       .post(`${baseURL}/contact`, contactDetails)
       .then(res => {
-        props.handleModalAndSnackbar();
+        console.log(res);
       })
       .catch(err => {
         console.log(err);
@@ -175,19 +173,11 @@ const ContactSupport = props => {
         <span className={classes.fieldError}>{errors?.name?.message}</span>
       </Grid>
       <Grid item md={12} xs={12}>
-        <InputLabel className={classes.label}>
-          Phone Number <span className={classes.required}>*</span>
-        </InputLabel>
-        <Input
-          {...register('phoneNo', {
-            onChange: e => {
-              if (errors.phoneNo) {
-                trigger('phoneNo');
-              }
-            },
-          })}
-          className={classes.textField}
-          placeholder="Phone Number"
+        <PhoneNumberInput
+          phoneNo={contactDetails.phoneNo}
+          setPhoneNo={value => {
+            setPhoneNo(value);
+          }}
         />
         <span className={classes.fieldError}>{errors?.phoneNo?.message}</span>
       </Grid>
