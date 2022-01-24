@@ -60,7 +60,7 @@ export default function Router() {
     {
       path: '/vendor/payment/onboarding/return',
       element: <StripeOnboardingReturn />,
-    },    
+    },
     { path: '/vendor/design/product-selection', element: <ProductSelection /> },
     { path: '/vendor/settings', element: <Settings /> },
     { path: '/vendor/profile-settings', element: <ProfileSettings /> },
