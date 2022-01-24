@@ -18,7 +18,7 @@ const PaymentOnboarding = () => {
     message: 'Payout processed successfully',
   });
 
-  const [vendor, setVendor] = useState({ transactions: [] });
+  const [vendor, setVendor] = useState({ balance: 0, transactions: [] });
 
   useEffect(() => {
     getStripeAcc();
@@ -55,6 +55,7 @@ const PaymentOnboarding = () => {
         },
       )
       .then(response => {
+        setVendor(response.data.vendorHistory);
         setSnackBarToggle({
           visible: true,
           type: 'success',

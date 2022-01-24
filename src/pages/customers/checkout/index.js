@@ -71,7 +71,7 @@ const Checkout = () => {
       const productProfit = (product.price - product.basePrice) * quantities;
 
       totalCartPrice = totalCartPrice + productPrice;
-      totalProfit = productProfit
+      totalProfit = productProfit;
     }
 
     return [Number(totalCartPrice.toFixed(2)), Number(totalProfit.toFixed(2))];
@@ -86,9 +86,9 @@ const Checkout = () => {
   }, []);
 
   const updateCart = products => {
-    console.log({productsTo: products });
+    console.log({ productsTo: products });
     const [amount, profit] = total(products);
-console.log({ amount, profit });
+    console.log({ amount, profit });
     let formattedProducts = [];
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
@@ -243,8 +243,8 @@ console.log({ amount, profit });
       .then(response => {
         // console.log({orderplacementResponse: response});
         setLoading(false);
-        // localStorage.removeItem('MERCHPALS_CART');
-        // navigate(`/store/${storeUrl}`);
+        localStorage.removeItem('MERCHPALS_CART');
+        navigate(`/store/${storeUrl}`);
       })
       .catch(error => {
         setLoading(false);

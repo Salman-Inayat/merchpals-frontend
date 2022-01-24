@@ -14,7 +14,11 @@ import moment from 'moment';
 const TransactionHistory = ({ vendor, initiatePayout }) => {
   return (
     <Grid>
-      <Button variant="outlined" onClick={initiatePayout}>
+      <Button
+        variant="outlined"
+        onClick={initiatePayout}
+        disabled={!vendor.balance > 0}
+      >
         Payout Now
       </Button>
       <Grid container>
@@ -43,7 +47,7 @@ const TransactionHistory = ({ vendor, initiatePayout }) => {
                     <TableCell align="right">
                       {moment(row.updatedAt).format('LLL')}
                     </TableCell>
-                    <TableCell align="right">{row.totalPayout}</TableCell>
+                    <TableCell align="right">{row.totalPayout}$</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
