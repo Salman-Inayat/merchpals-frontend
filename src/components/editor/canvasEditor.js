@@ -13,7 +13,8 @@ import { useMediaQuery } from 'react-responsive';
 
 const CanvasEditor = _ref => {
   var className = _ref.class,
-    onReady = _ref.onReady;
+    onReady = _ref.onReady,
+    canvasJSON = _ref.canvasJSON;
   var canvasElParent = useRef(null);
   var canvasEl = useRef(null);
 
@@ -69,7 +70,7 @@ const CanvasEditor = _ref => {
     window.addEventListener('resize', resizeCanvas, false);
 
     if (onReady) {
-      onReady(canvas);
+      onReady(canvas, canvasJSON);
     }
 
     return function () {

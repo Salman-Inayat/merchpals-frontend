@@ -9,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import BackButton from '../../../../components/backButton';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,21 +40,24 @@ const CreateDesign = () => {
 
   return (
     <LoggedInVendor>
-      <Grid mt={5} container>
-        <Grid justifyContent="flex-start" container>
-          <Button onClick={() => navigate('/vendor/designs')}>
-            Back to designs
-          </Button>
+      <BackButton />
+      <Grid mt={5} container mb={3}>
+        <Grid item md={2} xs={12}></Grid>
+        <Grid item md={8} xs={12}>
+          <Editor triggerExport={triggerExport} />
         </Grid>
-        <Grid justifyContent="center" container>
-          <Grid item>
-            <Editor triggerExport={triggerExport} />
-          </Grid>
-          <Grid mt={4} item>
-            <Button variant="contained" onClick={exportAndTriggerSave}>
-              Save Design
-            </Button>
-          </Grid>
+        <Grid item md={2} xs={12}></Grid>
+        <Grid
+          mt={4}
+          item
+          md={12}
+          display="flex"
+          justifyContent="center"
+          alignItems=" center"
+        >
+          <Button variant="contained" onClick={exportAndTriggerSave}>
+            Save Design
+          </Button>
         </Grid>
       </Grid>
       {displaySave && (

@@ -45,7 +45,7 @@ const ProductSelection = ({ designName }) => {
       design: JSON.stringify({
         base64Image: localStorage.getItem('design'),
         name: location.state.name,
-        canvasJson: '',
+        canvasJson: localStorage.getItem('designJSON'),
       }),
     };
 
@@ -58,6 +58,7 @@ const ProductSelection = ({ designName }) => {
       .then(response => {
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
+        localStorage.removeItem('designJSON');
 
         setSnackBarToggle({
           visible: true,
@@ -90,6 +91,7 @@ const ProductSelection = ({ designName }) => {
     <Grid container>
       <Products
         products={products}
+        designName={location.state.name}
         productSelectionCompleted={productSelectionCompleted}
       />
       <Snackbar

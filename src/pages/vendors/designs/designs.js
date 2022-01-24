@@ -7,27 +7,41 @@ import {
   Box,
   Alert as MuiAlert,
   Snackbar,
+  Card,
+  CardMedia,
+  CardActions,
 } from '@mui/material';
 import axios from 'axios';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
+import BackButton from '../../../components/backButton';
+import { useMediaQuery } from 'react-responsive';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const useStyle = makeStyles(() => ({
-  avatar: {
-    width: '250px',
-    height: '250px',
+const useStyle = makeStyles(theme => ({
+  designContainer: {
+    padding: '1rem 3rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0rem',
+    },
   },
-  box: {
-    marginLeft: '20px',
+
+  card: {
+    borderRadius: '10px',
   },
-  btn: {
+  designImage: {
+    height: '100%',
     width: '100%',
-    marginTop: '10px',
+    objectFit: 'cover',
+  },
+  buttonsContainer: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 }));
 
@@ -42,7 +56,8 @@ const VendorDesigns = () => {
   });
 
   const classes = useStyle();
-
+  const [designImage, setDesignImage] = useState([]);
+  let isMobile = useMediaQuery({ maxWidth: 767 });
   useEffect(() => {
     getDesigns();
   }, []);
@@ -55,6 +70,12 @@ const VendorDesigns = () => {
         },
       })
       .then(response => {
+        response.data.designs.map(design => {
+          setDesignImage(prevState => [
+            ...prevState,
+            { id: design._id, url: design.url },
+          ]);
+        });
         setFetched(true);
         setDesigns(response.data.designs);
       })
@@ -81,41 +102,73 @@ const VendorDesigns = () => {
     });
   return (
     <LoggedInVendor>
-      <Grid mt={5} container>
-        <Grid justifyContent="flex-start" container>
+      <Grid mt={5} container className={classes.designContainer}>
+        <Grid
+          item
+          md={12}
+          mb={2}
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <BackButton />
           {fetched && (
-            <Button onClick={navigateToCreate}>Add new Design</Button>
+            <Button
+              onClick={navigateToCreate}
+              variant="contained"
+              size="medium"
+            >
+              Add new Design
+            </Button>
           )}
         </Grid>
-        <Grid colspacing={3} mt={5} container>
-          {designs.map((design, i) => (
-            <Box className={classes.box} key={`VendorDesigns-${i}`}>
-              <Avatar
-                src={design.url}
-                key={design._id}
-                variant="square"
-                className={classes.avatar}
-              />
-              <Button
-                variant="outlined"
-                className={classes.btn}
-                onClick={() => navigate(`/vendor/edit-design/${design._id}`)}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="outlined"
-                className={classes.btn}
-                onClick={() =>
-                  navigate(`/vendor/edit-design/products/${design._id}`)
-                }
-              >
-                Edit Products
-              </Button>
-            </Box>
-          ))}
+        <Grid item md={12}>
+          <Grid container spacing={isMobile ? 2 : 4}>
+            {designs.map(design => (
+              <Grid item md={3} xs={6}>
+                <Card className={classes.card}>
+                  {designImage.length > 0 && (
+                    <CardMedia
+                      component="img"
+                      src={
+                        designImage.find(image => image.id === design._id).url
+                      }
+                      height="80%"
+                      key={design._id}
+                      variant="square"
+                      className={classes.designImage}
+                    />
+                  )}
+                  <CardActions className={classes.buttonsContainer}>
+                    <Button
+                      variant="outlined"
+                      className={classes.btn}
+                      onClick={() =>
+                        navigate(`/vendor/edit-design/${design._id}`)
+                      }
+                      size="small"
+                    >
+                      Edit Design
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      className={classes.btn}
+                      onClick={() =>
+                        navigate(`/vendor/edit-design/products/${design._id}`)
+                      }
+                      size="small"
+                    >
+                      Edit Products
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
       </Grid>
+
       <Snackbar
         open={snackBarToggle.visible}
         autoHideDuration={3000}

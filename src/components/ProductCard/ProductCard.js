@@ -140,6 +140,7 @@ const ProductCard = ({
   onVariantClick = () => {},
   onProductClick = () => {},
   selectedVariants = {},
+  designName,
 }) => {
   const classes = useStyles();
   const [design, setDesign] = useState('');
@@ -165,7 +166,7 @@ const ProductCard = ({
   return (
     <>
       <Typography align="center" variant="h5" className={classes.productName}>
-        {product.name}
+        {designName ? designName : ''} {product.name}
       </Typography>
       <Card
         className={classes.productCard}
