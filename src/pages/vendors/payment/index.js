@@ -5,6 +5,8 @@ import { baseURL } from '../../../configs/const';
 import Payout from './payout';
 import TransactionHistory from './transactionHistory';
 import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -17,15 +19,25 @@ const PaymentOnboarding = () => {
     type: 'success',
     message: 'Payout processed successfully',
   });
+  const [accountId, setAccountId] = useState('');
 
   const [vendor, setVendor] = useState({ balance: 0, transactions: [] });
+  const [pendingBalance, setPendingBalance] = useState({
+    pendingBalance: 0,
+    numberOfTransactions: 0,
+  });
+  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     getStripeAcc();
     getVendorTransactionHistory();
+    getPendingBalance();
+    getEscrowTransactions();
   }, []);
 
   const getStripeAcc = () => {
+    handleToggle();
     axios
       .get(`${baseURL}/stripe/account`, {
         headers: {
@@ -34,8 +46,13 @@ const PaymentOnboarding = () => {
       })
       .then(response => {
         console.log(response.data.account.id);
+
         if (response.data.account.id) {
           setHasStripeAcc(true);
+          handleClose();
+        } else {
+          setHasStripeAcc(false);
+          handleClose();
         }
       })
       .catch(error => {
@@ -79,6 +96,35 @@ const PaymentOnboarding = () => {
       .catch(error => console.log({ historyError: error }));
   };
 
+  const getEscrowTransactions = () => {
+    axios
+      .get(`${baseURL}/stripe/escrow-transactions`, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(response => {
+        setTransactionHistory(response.data.transactions);
+      })
+      .catch(error => console.log({ escrowError: error }));
+  };
+
+  const getPendingBalance = () => {
+    axios
+      .get(`${baseURL}/stripe/pending-balance`, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(response => {
+        setPendingBalance({
+          pendingBalance: response.data.balanceData.totalPendingBalance,
+          numberOfTransactions: response.data.balanceData.numberOfTransactions,
+        });
+      })
+      .catch(error => console.log({ pendingBalanceError: error }));
+  };
+
   const handleOnboarding = () => {
     const data = {};
     axios
@@ -95,6 +141,28 @@ const PaymentOnboarding = () => {
       });
   };
 
+  const handleViewStripeDashboard = () => {
+    axios
+      .get(`${baseURL}/stripe/account/dashboard`, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(response => {
+        window.location = response.data.link.url;
+      })
+      .catch(error => {
+        console.log({ error });
+      });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
   const handleSnackBarClose = () => {
     setSnackBarToggle({
       visible: false,
@@ -103,10 +171,17 @@ const PaymentOnboarding = () => {
   return (
     <LoggedInVendor>
       {hasStripeAcc ? (
-        <TransactionHistory initiatePayout={initiatePayout} vendor={vendor} />
+        <TransactionHistory
+          initiatePayout={initiatePayout}
+          vendor={vendor}
+          handleViewStripeDashboard={handleViewStripeDashboard}
+          pendingBalance={pendingBalance}
+          transactionHistory={transactionHistory}
+        />
       ) : (
         <Payout handleOnboarding={handleOnboarding} />
       )}
+
       <Snackbar
         open={snackBarToggle.visible}
         autoHideDuration={3000}
@@ -114,6 +189,13 @@ const PaymentOnboarding = () => {
       >
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
+        open={open}
+        onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </LoggedInVendor>
   );
 };

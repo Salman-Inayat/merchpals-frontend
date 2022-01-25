@@ -220,7 +220,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
               <Grid container>
                 <Grid xs={3} item>
                   {' '}
-                  Logo{' '}
+                  Cover Photo{' '}
                 </Grid>
                 <Grid xs={5} item>
                   {/* <label htmlFor="logo-button-file">
@@ -266,7 +266,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
               <Grid container>
                 <Grid xs={3} item>
                   {' '}
-                  Cover Photo{' '}
+                  Logo{' '}
                 </Grid>
                 <Grid xs={5} item>
                   {/* <label htmlFor="coverAvatar-button-file">
