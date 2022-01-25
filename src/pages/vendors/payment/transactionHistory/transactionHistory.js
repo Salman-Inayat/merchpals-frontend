@@ -37,7 +37,7 @@ const TransactionHistory = ({ vendor, initiatePayout }) => {
               <TableBody>
                 {vendor.transactions.map(row => (
                   <TableRow
-                    key={row.name}
+                    key={row._id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
