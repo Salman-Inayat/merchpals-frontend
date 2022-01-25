@@ -33,6 +33,7 @@ const Checkout = () => {
   const [payment, setPayment] = useState({});
   const [cart, setCart] = useState({
     amount: 0,
+    profit: 0,
     products: [],
     savedProducts: [],
   });
@@ -58,6 +59,8 @@ const Checkout = () => {
 
   const total = products => {
     let totalCartPrice = 0;
+    let totalProfit = 0;
+
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
       const quantities = product.productMappings.reduce(
@@ -65,10 +68,13 @@ const Checkout = () => {
         0,
       );
       const productPrice = product.price * quantities;
+      const productProfit = (product.price - product.basePrice) * quantities;
+
       totalCartPrice = totalCartPrice + productPrice;
+      totalProfit = productProfit;
     }
 
-    return totalCartPrice;
+    return [Number(totalCartPrice.toFixed(2)), Number(totalProfit.toFixed(2))];
   };
 
   useEffect(() => {
@@ -80,8 +86,9 @@ const Checkout = () => {
   }, []);
 
   const updateCart = products => {
-    const amount = total(products);
-
+    console.log({ productsTo: products });
+    const [amount, profit] = total(products);
+    console.log({ amount, profit });
     let formattedProducts = [];
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
@@ -94,6 +101,7 @@ const Checkout = () => {
 
     setCart({
       amount,
+      profit,
       products: formattedProducts,
       savedProducts: products,
     });
@@ -174,7 +182,7 @@ const Checkout = () => {
       });
   };
   const stripePromise = loadStripe(
-    process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
+    process.env.REACT_APP_STRIPE_PUBLISHABLE_CUSTOMER_KEY,
   );
 
   const markCustomerInfoComplete = isCompleted =>
@@ -211,6 +219,7 @@ const Checkout = () => {
 
     const data = {
       printfulData,
+      profit: cart.profit,
       order: {
         storeUrl,
         amount: cart.amount,

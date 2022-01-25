@@ -182,6 +182,7 @@ const Product = ({ addToCart, cart }) => {
           description: product.description,
           image: product.image,
           cost: product.price,
+          basePrice: product.basePrice,
           slug: product.slug,
           productMappings: product.productMappings,
           colors: [
@@ -278,6 +279,7 @@ const Product = ({ addToCart, cart }) => {
           },
         ],
         price: product.cost,
+        basePrice: product.basePrice,
         name: product.name,
         image: product.image,
       };

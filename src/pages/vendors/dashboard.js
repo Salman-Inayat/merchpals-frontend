@@ -137,6 +137,9 @@ const Dashboard = () => {
           Store Designs
         </Button>
         <Button onClick={() => navigate('/vendor/orders')}>Store Orders</Button>
+        <Button onClick={() => navigate('/vendor/payment/onboarding')}>
+          Transaction History
+        </Button>
         <Button onClick={toggleContactModal}>Contact Support</Button>
       </Grid>
 
