@@ -29,6 +29,8 @@ import Settings from './pages/vendors/settings/settings';
 import ProfileSettings from './pages/vendors/settings/profileSettings';
 import StoreSettings from './pages/vendors/settings/storeSettings';
 // import ContactSupport from './pages/vendors/contactSupport';
+import PaymentOnboarding from './pages/vendors/payment';
+import StripeOnboardingReturn from './pages/vendors/payment/return';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -53,6 +55,11 @@ export default function Router() {
     {
       path: '/vendor/edit-design/products/:designId',
       element: <VendorEditDesignProducts />,
+    },
+    { path: '/vendor/payment/onboarding', element: <PaymentOnboarding /> },
+    {
+      path: '/vendor/payment/onboarding/return',
+      element: <StripeOnboardingReturn />,
     },
     { path: '/vendor/design/product-selection', element: <ProductSelection /> },
     { path: '/vendor/settings', element: <Settings /> },
