@@ -518,17 +518,40 @@ const useEditor = canvasId => {
     const tr = image.aCoords.tr;
     const bl = image.aCoords.bl;
 
+    var maxScaleX = 1;
+    var maxScaleY = 1;
+
     var mask = new fabric.Rect({
-      fill: 'rgba(0,0,0,0.5)',
+      fill: 'rgba(0,0,0,0.3)',
+      originX: 'left',
+      originY: 'top',
+      stroke: 'black',
+      opacity: 1,
       left: image.aCoords.tl.x,
       top: image.aCoords.tl.y,
       width: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
       height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+      hasRotatingPoint: false,
+      transparentCorners: false,
+      cornerColor: 'white',
+      cornerStrokeColor: 'black',
+      borderColor: 'black',
+      cornerSize: 12,
+      padding: 0,
+      cornerStyle: 'circle',
+      borderDashArray: [5, 5],
+      borderScaleFactor: 1.3,
+      maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
+      maxHeight: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
     });
 
-    mask.set({
-      maxWidth: image.width,
-      maxHeight: image.height,
+    mask.on('scaling', function () {
+      if (this.scaleX > maxScaleX) {
+        this.scaleX = maxScaleX;
+      }
+      if (this.scaleY > maxScaleY) {
+        this.scaleY = maxScaleY;
+      }
     });
 
     canvas.add(mask);
@@ -546,27 +569,39 @@ const useEditor = canvasId => {
     mask = canvas.getActiveObject();
     image = canvas._objects[canvas._objects.length - 2];
 
-    var scale = {
-      x: image.scaleX,
-      y: image.scaleY,
-    };
-
-    image.set({
+    let rect = new fabric.Rect({
       left: mask.left,
       top: mask.top,
-      width: mask.width,
-      height: mask.height,
-      scaleX: mask.scaleX,
-      scaleY: mask.scaleY,
-      // cropX: mask.left / scale.x,
-      // cropY: mask.top / scale.y,
+      width: mask.getScaledWidth(),
+      height: mask.getScaledHeight(),
+      absolutePositioned: true,
     });
 
-    image.setCoords();
+    // add to the current image clicpPath property
+    image.clipPath = rect;
+
     canvas.remove(mask);
-    canvas.setActiveObject(image);
-    canvas.renderAll();
-    afterRender();
+    var cropped = new Image();
+
+    // set src value of canvas croped area as toDataURL
+    cropped.src = canvas.toDataURL({
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
+
+    cropped.onload = function () {
+      let cropped_image = new fabric.Image(cropped);
+      cropped_image.left = rect.left;
+      cropped_image.top = rect.top;
+      cropped_image.setCoords();
+      canvas.add(cropped_image);
+      canvas.remove(image);
+
+      canvas.renderAll();
+    };
+
     document.getElementById('crop-image-done-button').hidden = true;
   };
 

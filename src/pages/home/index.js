@@ -137,31 +137,31 @@ const Home = ({ designJSON }) => {
       });
   };
 
-  const createStore = data => {
-    console.log({ data, selectedVariants, design });
+  const createStore = storeData => {
     const designData = {
       base64Image: localStorage.getItem('design'),
       name: 'default',
       canvasJson: canvasJSON,
     };
+    const data = {
+      storeInfo: {
+        name: storeData.name,
+        slug: storeData.slug.split(' ').join('-'),
+        facebook: storeData.facebook,
+        instagram: storeData.instagram,
+        twitter: storeData.twitter,
+        logo: storeData.logo,
+        coverAvatar: storeData.coverAvatar,
+        design: JSON.stringify(designData),
+        products: JSON.stringify([...selectedVariants]),
+      },
+    };
 
-    let store = new FormData();
-    store.append('name', data.name);
-    store.append('slug', data.slug.split(' ').join('-'));
-    store.append('facebook', data.facebook);
-    store.append('instagram', data.instagram);
-    store.append('twitter', data.twitter);
-    store.append('logo', data.logo);
-    store.append('coverAvatar', data.coverAvatar);
-    store.append('design', JSON.stringify(designData));
-    store.append('products', JSON.stringify([...selectedVariants]));
-
-    console.log(designData);
     axios
-      .post(`${baseURL}/store`, store, {
+      .post(`${baseURL}/store`, data, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       })
       .then(response => {
