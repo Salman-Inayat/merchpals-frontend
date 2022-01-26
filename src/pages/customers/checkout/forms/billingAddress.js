@@ -88,6 +88,7 @@ const BillingAddress = ({
   phoneNo,
   email,
   formErrors = {},
+  setCustomer,
 }) => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -150,6 +151,10 @@ const BillingAddress = ({
       city,
       state,
       country,
+    });
+    setCustomer({
+      firstName,
+      lastName,
     });
   }, [firstName, lastName, aptNo, zip, street, city, state, country]);
 

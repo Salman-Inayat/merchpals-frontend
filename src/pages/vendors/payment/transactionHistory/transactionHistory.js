@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import moment from 'moment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import axios from 'axios';
+import { baseURL } from '../../../../configs/const';
 
 const TransactionHistory = ({
   vendor,
@@ -20,7 +22,24 @@ const TransactionHistory = ({
   pendingBalance,
   transactionHistory,
 }) => {
-  console.log(vendor);
+  const callCronJob = () => {
+    axios
+      .get(`${baseURL}/cron-job`)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  console.log(vendor.transactions);
+  const vendorTransaction = vendor.transactions.filter(
+    transaction => transaction.status === 'succeeded',
+  );
+
+  console.log(vendorTransaction);
+
   return (
     <Grid container spacing={2} p={3}>
       <Grid item md={12} xs={12} mb={3}>
@@ -68,8 +87,9 @@ const TransactionHistory = ({
                 Your Balance
               </Typography>
               <Typography variant="h4" component="p">
-                $ {vendor.balance}
+                $ {vendor.balance.toFixed(2)}
               </Typography>
+              <Button onClick={callCronJob}>Call cron job</Button>
             </Stack>
           </Grid>
           <Grid item md={3}>
@@ -140,7 +160,7 @@ const TransactionHistory = ({
                               {transaction.status}
                             </TableCell>
                             <TableCell align="center" scope="row">
-                              $ {transaction.vendorProfit}
+                              $ {transaction.vendorProfit.toFixed(2)}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -159,7 +179,7 @@ const TransactionHistory = ({
                 </Typography>
               </Grid>
               <Grid item md={12} xs={12}>
-                {vendor.transactions.length > 0 && (
+                {vendorTransaction.length > 0 && (
                   <TableContainer>
                     <Table
                       sx={{ minWidth: 650 }}
@@ -175,7 +195,7 @@ const TransactionHistory = ({
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {vendor.transactions.map(row => (
+                        {vendorTransaction.map(row => (
                           <TableRow
                             key={row._id}
                             sx={{
@@ -201,7 +221,7 @@ const TransactionHistory = ({
                             </TableCell>
 
                             <TableCell align="center" scope="row">
-                              pending
+                              {row.status}
                             </TableCell>
                             <TableCell align="center" scope="row">
                               $ {row.totalPayout}

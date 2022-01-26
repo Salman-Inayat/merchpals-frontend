@@ -16,8 +16,8 @@ const PaymentOnboarding = () => {
   const [hasStripeAcc, setHasStripeAcc] = useState(false);
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
-    type: 'success',
-    message: 'Payout processed successfully',
+    type: '',
+    message: '',
   });
   const [accountId, setAccountId] = useState('');
 
@@ -80,7 +80,15 @@ const PaymentOnboarding = () => {
         });
         console.log({ payoutResponse: response });
       })
-      .catch(error => console.log({ payoutError: error }));
+      .catch(error => {
+        setSnackBarToggle({
+          visible: true,
+          type: 'error',
+          message:
+            'Please complete your account setup by going to your stripe account',
+        });
+        console.log(error.message);
+      });
   };
 
   const getVendorTransactionHistory = () => {
@@ -122,7 +130,9 @@ const PaymentOnboarding = () => {
           numberOfTransactions: response.data.balanceData.numberOfTransactions,
         });
       })
-      .catch(error => console.log({ pendingBalanceError: error }));
+      .catch(error => {
+        console.log({ pendingBalanceError: error });
+      });
   };
 
   const handleOnboarding = () => {
@@ -166,6 +176,8 @@ const PaymentOnboarding = () => {
   const handleSnackBarClose = () => {
     setSnackBarToggle({
       visible: false,
+      type: '',
+      message: '',
     });
   };
   return (
@@ -184,7 +196,7 @@ const PaymentOnboarding = () => {
 
       <Snackbar
         open={snackBarToggle.visible}
-        autoHideDuration={3000}
+        autoHideDuration={5000}
         onClose={handleSnackBarClose}
       >
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
