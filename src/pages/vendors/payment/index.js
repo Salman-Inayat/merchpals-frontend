@@ -19,7 +19,6 @@ const PaymentOnboarding = () => {
     type: '',
     message: '',
   });
-  const [accountId, setAccountId] = useState('');
 
   const [vendor, setVendor] = useState({ balance: 0, transactions: [] });
   const [pendingBalance, setPendingBalance] = useState({
@@ -45,14 +44,13 @@ const PaymentOnboarding = () => {
         },
       })
       .then(response => {
+        handleClose();
         console.log(response.data.account.id);
 
         if (response.data.account.id) {
           setHasStripeAcc(true);
-          handleClose();
         } else {
           setHasStripeAcc(false);
-          handleClose();
         }
       })
       .catch(error => {
@@ -190,6 +188,8 @@ const PaymentOnboarding = () => {
           pendingBalance={pendingBalance}
           transactionHistory={transactionHistory}
         />
+      ) : open ? (
+        ''
       ) : (
         <Payout handleOnboarding={handleOnboarding} />
       )}
