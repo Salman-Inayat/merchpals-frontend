@@ -94,6 +94,7 @@ const TransactionHistory = ({
       .get(`${baseURL}/cron-job`)
       .then(response => {
         console.log(response);
+        alert('Escrow payment released successfully');
       })
       .catch(error => {
         console.log(error);
@@ -165,7 +166,6 @@ const TransactionHistory = ({
               <Typography className={classes.balance}>
                 ${vendor.balance.toFixed(2)}
               </Typography>
-              {/* <Button onClick={callCronJob}>Call cron job</Button> */}
               <Typography
                 variant="p"
                 component="p"
@@ -197,6 +197,16 @@ const TransactionHistory = ({
             </Stack>
           </Grid>
         </Grid>
+      </Grid>
+      <Grid item md={12} xs={12}>
+        <Button
+          onClick={callCronJob}
+          fullWidth
+          variant="contained"
+          color="primary"
+        >
+          Testing purpose: Release Escrow payments
+        </Button>
       </Grid>
 
       <Grid item md={12} xs={12} p={3}>

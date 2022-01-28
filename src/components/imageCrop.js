@@ -86,7 +86,12 @@ export default function ImageCrop(props) {
       <Grid item md={12}>
         <Button variant="contained" component="label">
           Upload File
-          <input type="file" accept="image/*" onChange={onSelectFile} hidden />
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            onChange={onSelectFile}
+            hidden
+          />
         </Button>
       </Grid>
       <Grid container spacing={2}>
