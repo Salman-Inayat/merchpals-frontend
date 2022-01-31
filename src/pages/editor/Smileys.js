@@ -1,4 +1,5 @@
-import { Stack } from '@mui/material';
+import { useState } from 'react';
+import { Grid, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 
 import { makeStyles } from '@mui/styles';
 
@@ -6,13 +7,6 @@ const useStyles = makeStyles(theme => ({
   smileyContainer: {
     height: '450px',
     overflow: 'scroll',
-    // [theme.breakpoints.down('md')]: {
-    //   overflowX: 'scroll',
-    //   overflowY: 'hidden',
-    //   whiteSpace: 'nowrap',
-    //   height: '50px',
-    // },
-
     [theme.breakpoints.down('sm')]: {
       height: '225px',
     },
@@ -147,16 +141,47 @@ const Smileys = ({ addPng, className }) => {
     '100.svg',
   ];
 
+  const [smiley, setSmiley] = useState(images[0]);
+
+  const handleSmileyChange = event => {
+    setSmiley(event.target.value);
+    addPng(`/svg-icons/${event.target.value}`);
+  };
+
   return (
-    <div className={classes.smileyContainer} id="smileyContainer" hidden>
-      {images.map((oneImage, index) => (
-        <img
-          key={index}
-          src={`/svg-icons/${oneImage}`}
-          onClick={() => addPng(`/svg-icons/${oneImage}`)}
-          className={classes.smileys}
-        />
-      ))}
+    // <div className={classes.smileyContainer} id="smileyContainer" hidden>
+    //   {images.map((oneImage, index) => (
+    //     <img
+    //       key={index}
+    //       src={`/svg-icons/${oneImage}`}
+    //       onClick={() => addPng(`/svg-icons/${oneImage}`)}
+    //       className={classes.smileys}
+    //     />
+    //   ))}
+    // </div>
+    <div id="smileyContainer" hidden>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Smiley</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={smiley}
+          label="Color"
+          onChange={handleSmileyChange}
+          autoWidth
+        >
+          {images.map((image, index) => (
+            <MenuItem value={image} key={index}>
+              <img
+                key={index}
+                src={`/svg-icons/${image}`}
+                className={classes.smileys}
+                style={{ width: '40px', height: '40px' }}
+              />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </div>
   );
 };

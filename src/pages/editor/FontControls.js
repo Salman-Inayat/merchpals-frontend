@@ -6,6 +6,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Button,
 } from '@mui/material';
 
 const FontColor = props => {
@@ -169,6 +170,10 @@ const FontFamily = props => {
 const FontControls = props => {
   const { setFontFamily, setFontColor } = props;
 
+  const handleTextEditingFinished = () => {
+    props.handleTextEditingFinished();
+  };
+
   return (
     <div id="textControls" hidden>
       <Stack
@@ -179,6 +184,16 @@ const FontControls = props => {
       >
         <FontFamily setFontFamily={setFontFamily} />
         <FontColor setFontColor={setFontColor} />
+        <div id="editing-button" hidden>
+          <Button
+            onClick={handleTextEditingFinished}
+            variant="contained"
+            color="primary"
+          >
+            {' '}
+            Done
+          </Button>
+        </div>
       </Stack>
     </div>
   );

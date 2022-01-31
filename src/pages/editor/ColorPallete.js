@@ -1,6 +1,14 @@
-import { Stack } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  Grid,
+  Stack,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { color } from '@mui/system';
 
 const useStyles = makeStyles(theme => ({
   colorPallete: {
@@ -79,19 +87,58 @@ const ColorPallete = ({ setCanvasBackground, customClass }) => {
     '#FDC0B3',
     '#8c8c88',
   ];
+
+  const [bgColor, setBgColor] = useState(colors[2]);
+
+  const handleBgColorChange = event => {
+    setBgColor(event.target.value);
+    setCanvasBackground(event.target.value);
+  };
+
+  // return (
+  //   <Stack className={classes.colorPallete}>
+  //     {colors.map((bgColor, index) => (
+  //       <div
+  //         key={index}
+  //         style={{
+  //           backgroundColor: bgColor,
+  //         }}
+  //         className={classes.color}
+  //         onClick={() => setCanvasBackground(bgColor)}
+  //       />
+  //     ))}
+  //   </Stack>
+  // );
+
   return (
-    <Stack className={classes.colorPallete}>
-      {colors.map((bgColor, index) => (
-        <div
-          key={index}
-          style={{
-            backgroundColor: bgColor,
-          }}
-          className={classes.color}
-          onClick={() => setCanvasBackground(bgColor)}
-        />
-      ))}
-    </Stack>
+    <FormControl fullWidth>
+      <InputLabel id="demo-simple-select-label">Color</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={bgColor}
+        label="Color"
+        onChange={handleBgColorChange}
+        autoWidth
+      >
+        {colors.map((bgColor, index) => (
+          <MenuItem value={bgColor} key={index}>
+            <Grid container>
+              <Grid item xs={12}>
+                <div
+                  style={{
+                    backgroundColor: bgColor,
+                    height: '20px',
+                    width: '80px',
+                    border: '1px solid #000',
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

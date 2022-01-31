@@ -91,6 +91,21 @@ const useEditor = canvasId => {
         mr: true,
       });
     }
+
+    if (selectedObject.type === 'rect') {
+      selectedObject.cornerStyle = 'rect';
+      selectedObject.setControlsVisibility({
+        mt: true,
+        mb: true,
+        ml: true,
+        mr: true,
+        bl: false,
+        br: false,
+        tl: false,
+        tr: false,
+        mtr: false,
+      });
+    }
   };
 
   useEffect(() => {
@@ -226,6 +241,10 @@ const useEditor = canvasId => {
       'selection:created': e => {
         const selectedObject = e.target;
         if (selectedObject.type === 'textbox') {
+          selectedObject.set({
+            editable: true,
+            cursorWidth: 1,
+          });
           document.getElementById('textControls').hidden = false;
           document.getElementById('smileyContainer').hidden = true;
         } else if (selectedObject.type === 'image') {
@@ -281,6 +300,25 @@ const useEditor = canvasId => {
             canvas.renderAll();
           }
         }
+      },
+      'text:editing:exited': e => {
+        const activeObject = canvas.getActiveObject();
+
+        activeObject.set({
+          hasControls: true,
+          lockMovementX: false,
+          lockMovementY: false,
+          lockScalingX: false,
+          lockScalingY: false,
+          lockRotation: false,
+          editable: false,
+          cursorWidth: 0,
+          moveCursor: 'pointer',
+        });
+
+        canvas.renderAll();
+        console.log('Exited editing text', activeObject);
+        document.getElementById('editing-button').hidden = true;
       },
     });
   });
@@ -360,6 +398,7 @@ const useEditor = canvasId => {
       canvas.on({
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
+            document.getElementById('editing-button').hidden = false;
             if (e.target.text === 'Sample Text') {
               e.target.text = '';
               e.target.hiddenTextarea.value = ''; // NEW
@@ -373,19 +412,19 @@ const useEditor = canvasId => {
       canvas.discardActiveObject().renderAll();
       canvas.add(text);
       canvas.setActiveObject(text);
+      canvas.centerObject(text);
       canvas.renderAll();
     }
     if (!isMobile) {
       const text = new fabric.Textbox('Sample Text', {
-        left: 50,
-        top: 150,
         fontFamily: 'Caveat',
         angle: 0,
-        scaleX: 1.5,
-        scaleY: 1.5,
+        scaleX: 1.3,
+        scaleY: 1.3,
         fill: '#000000',
         fontWeight: '',
         hasRotatingPoint: true,
+        width: 200,
       });
       text.setControlsVisibility({
         mt: false,
@@ -401,9 +440,10 @@ const useEditor = canvasId => {
       canvas.on({
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
+            document.getElementById('editing-button').hidden = false;
             if (e.target.text === 'Sample Text') {
               e.target.text = '';
-              e.target.hiddenTextarea.value = ''; // NEW
+              e.target.hiddenTextarea.value = '';
               canvas.renderAll();
             }
           }
@@ -413,8 +453,14 @@ const useEditor = canvasId => {
       canvas.discardActiveObject().renderAll();
       canvas.add(text);
       canvas.setActiveObject(text);
+      canvas.centerObject(text);
       canvas.renderAll();
     }
+  };
+
+  const finishTextEditing = () => {
+    const activeObject = canvas.getActiveObject();
+    canvas.fire('text:editing:exited');
   };
 
   const getImgPolaroid = img => {
@@ -513,8 +559,14 @@ const useEditor = canvasId => {
 
   const cropImage = () => {
     var image;
+    var minX, minY, maxX, maxY;
 
     image = canvas.getActiveObject();
+
+    minX = image.oCoords.tl.x;
+    maxX = image.oCoords.br.x;
+    minY = image.oCoords.tl.y;
+    maxY = image.oCoords.br.y;
 
     const tl = image.aCoords.tl;
     const tr = image.aCoords.tr;
@@ -540,7 +592,7 @@ const useEditor = canvasId => {
       borderColor: 'black',
       cornerSize: 12,
       padding: 0,
-      cornerStyle: 'circle',
+      cornerStyle: 'rect',
       borderDashArray: [5, 5],
       borderScaleFactor: 1.3,
       maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
@@ -555,6 +607,23 @@ const useEditor = canvasId => {
         this.scaleY = maxScaleY;
       }
     });
+
+    // mask.on('moving', function () {
+    //   var top = mask.top;
+    //   var bottom = top + mask.height;
+    //   var left = mask.left;
+    //   var right = left + mask.width;
+
+    //   var topBound = image.top;
+    //   var bottomBound = topBound + image.height;
+    //   var leftBound = image.left;
+    //   var rightBound = leftBound + image.width;
+
+    //   mask.set({
+    //     left: Math.min(Math.max(left, leftBound), rightBound - mask.width),
+    //     top: Math.min(Math.max(top, topBound), bottomBound - mask.height),
+    //   });
+    // });
 
     canvas.add(mask);
     canvas.bringToFront(mask);
@@ -600,7 +669,7 @@ const useEditor = canvasId => {
       cropped_image.setCoords();
       canvas.add(cropped_image);
       canvas.remove(image);
-
+      canvas.setActiveObject(cropped_image);
       canvas.renderAll();
     };
 
@@ -1216,6 +1285,7 @@ const useEditor = canvasId => {
     getMiniature,
     exportCanvas,
     saveCanvasToJSON,
+    finishTextEditing,
   };
 };
 
