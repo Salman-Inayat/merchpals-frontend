@@ -14,6 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import { calculateOrderProfit } from '../../configs/const';
 
 function VendorOrders() {
   const [orders, setOrders] = useState([]);
@@ -125,7 +126,7 @@ function VendorOrders() {
                   </TableCell>
 
                   <TableCell component="th" scope="row" align="center">
-                    {Profit(order)}
+                    {calculateOrderProfit(order)}
                   </TableCell>
                   <TableCell component="th" scope="row" align="center">
                     {new Date(order.createdAt).toDateString()}

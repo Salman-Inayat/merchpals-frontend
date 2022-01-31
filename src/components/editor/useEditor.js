@@ -304,10 +304,12 @@ const useEditor = canvasId => {
 
   const undo = () => {
     canvas.undo();
+    afterRender();
   };
 
   const redo = () => {
     canvas.redo();
+    afterRender();
   };
 
   const saveState = () => {

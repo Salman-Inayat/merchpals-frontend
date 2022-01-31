@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { calculateOrderProfit } from '../../configs/const';
 
 function VendorOrderDetails() {
   //   const location = useLocation();
@@ -36,15 +37,8 @@ function VendorOrderDetails() {
         const orderData = res.data.order;
         setOrder(orderData);
 
-        const orderPrice = orderData.price;
-        const productsTotal = orderData.products.reduce(
-          (sum, curr) => sum + curr.basePrice,
-          0,
-        );
-
-        const profit = orderPrice - (orderPrice * 0.023 + 30) - productsTotal;
-
-        setTotalProfit(profit * 0.75);
+        const profit = calculateOrderProfit(orderData);
+        setTotalProfit(profit);
       })
       .catch(err => {
         console.log(err);
@@ -102,7 +96,7 @@ function VendorOrderDetails() {
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Profit: {totalProfit.toFixed(2)}
+                        Profit: {totalProfit}
                       </Typography>
 
                       <Typography variant="p" component="p">

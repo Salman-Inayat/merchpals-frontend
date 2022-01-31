@@ -297,6 +297,7 @@ const Checkout = () => {
           phoneNo={phoneNo}
           email={email}
           formErrors={formErrors}
+          setCustomer={setCustomer}
         />
 
         {completedAddress && (
