@@ -57,9 +57,6 @@ const useEditor = canvasId => {
   let textSelection;
   let url = '';
 
-  // let c2;
-  // let ctx2;
-
   const [c2, setC2] = useState();
   const [ctx2, setCtx2] = useState();
   const firstUpdate = useRef(true);

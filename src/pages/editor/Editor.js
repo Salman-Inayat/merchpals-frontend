@@ -15,6 +15,7 @@ import {
   Input,
   Avatar,
 } from '@mui/material';
+import { fabric } from 'fabric';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
 import { bgcolor, Box } from '@mui/system';
@@ -151,7 +152,39 @@ const Editor = forwardRef((props, ref) => {
     style13.style.fontFamily = 'RussoOne';
     style14.style.fontFamily = 'Tourney';
     style15.style.fontFamily = 'BungeeS';
+
+    // if (isCanvasBlank(canvas)) {
+    //   span.hidden = false;
+    // } else {
+    //   span.hidden = true;
+    // }
   }, []);
+
+  const MINUTE_MS = 500;
+
+  useEffect(() => {
+    var canvas = document.getElementById('canvas');
+    var span = document.getElementById('alt-text');
+    const interval = setInterval(() => {
+      if (isCanvasBlank(canvas)) {
+        span.hidden = false;
+      } else {
+        span.hidden = true;
+      }
+    }, MINUTE_MS);
+
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, []);
+
+  function isCanvasBlank(canvas) {
+    const context = canvas.getContext('2d');
+
+    const pixelBuffer = new Uint32Array(
+      context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+    );
+
+    return !pixelBuffer.some(color => color !== 0);
+  }
 
   const firstUpdate = useRef(true);
 
@@ -357,6 +390,18 @@ const Editor = forwardRef((props, ref) => {
               >
                 <div className={classes.miniatureContaienr}>
                   <img src={ShirtSVG} className={classes.shirtImage} />
+                  <span
+                    id="alt-text"
+                    style={{
+                      height: '50px',
+                      width: '50px',
+                      position: 'absolute',
+                      top: '40%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      border: '2px solid white',
+                    }}
+                  ></span>
                   <canvas
                     id="static"
                     width="50"

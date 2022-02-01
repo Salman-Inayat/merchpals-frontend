@@ -14,6 +14,16 @@ const useStyles = makeStyles(theme => ({
   },
   btn: {
     color: '#fff',
+    margin: '0rem 0.5rem',
+    fontSize: '18px',
+    '&:hover': {
+      backgroundColor: '#aaa',
+    },
+  },
+  unselectBtn: {
+    color: '#000',
+    margin: '0rem 0.5rem',
+    border: '1px solid #000',
     fontSize: '18px',
     '&:hover': {
       backgroundColor: '#aaa',
@@ -36,6 +46,8 @@ const Products = ({
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  const [unselectProducts, setUnselectProducts] = useState(false);
 
   useEffect(() => {
     const existingVariants = localStorage.getItem('selectedVariants');
@@ -165,16 +177,14 @@ const Products = ({
     productSelectionCompleted(formattedVariants);
   };
 
+  const handleUnselectProducts = () => {
+    setUnselectProducts(!unselectProducts);
+  };
+
   console.log({ selectedVariants });
   return (
     <Grid container>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        mt={5}
-        pb={18}
-      >
+      <Grid container justifyContent="center" alignItems="center" mt={5} pb={2}>
         <Grid
           item
           xs={12}
@@ -186,16 +196,9 @@ const Products = ({
             <Typography
               align="center"
               variant="h3"
-              style={{ color: '#0097a7' }}
+              style={{ color: '#000', fontFamily: 'Roboto' }}
             >
-              Product Selection
-            </Typography>
-            <Typography
-              align="center"
-              variant="h5"
-              style={{ fontWeight: 'normal' }}
-            >
-              Please select products for your design
+              Save Your Merch
             </Typography>
           </Grid>
           <Grid
@@ -211,6 +214,7 @@ const Products = ({
                   onVariantClick={onVariantClick}
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}
+                  unselectProducts={unselectProducts}
                 />
               </Grid>
             ))}
@@ -224,13 +228,22 @@ const Products = ({
         className={classes.footer}
       >
         <Button
+          onClick={handleUnselectProducts}
+          className={[classes.btn, classes.unselectBtn].join(' ')}
+          size="large"
+          color="primary"
+          variant="outlined"
+        >
+          {unselectProducts ? 'Done' : 'Unselect'}
+        </Button>
+        <Button
           onClick={formatAndContinue}
           className={classes.btn}
           size="large"
           color="primary"
           variant="contained"
         >
-          Continue
+          Save &#38; Continue
         </Button>
       </Grid>
     </Grid>
