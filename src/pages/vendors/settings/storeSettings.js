@@ -16,24 +16,32 @@ import { baseURL } from '../../../configs/const';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import BackButton from '../../../components/backButton';
 import { useMediaQuery } from 'react-responsive';
+import { makeStyles } from '@mui/styles';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '50%',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+const useStyle = makeStyles(theme => ({
+  modalBox: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '30%',
+    // bgcolor: 'background.paper',
+    backgroundColor: '#fff',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 0,
+    [theme.breakpoints.down('sm')]: {
+      width: '90%',
+    },
+  },
+}));
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 function StoreSettings() {
+  const classes = useStyle();
   const [storeId, setStoreId] = useState();
   const [storeAvatar, setStoreAvatar] = useState();
   const [storeLogo, setStoreLogo] = useState();
@@ -229,7 +237,7 @@ function StoreSettings() {
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
                 >
-                  <Box sx={style}>
+                  <Box className={classes.modalBox}>
                     <ImageCrop
                       handleClose={handleCloseAvatarModal}
                       handleStoreAvatarChange={handleStoreAvatarChange}
@@ -287,7 +295,7 @@ function StoreSettings() {
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
                 >
-                  <Box sx={style}>
+                  <Box className={classes.modalBox}>
                     <ImageCrop
                       handleClose={handleCloseLogoModal}
                       handleStoreLogoChange={handleStoreLogoChange}

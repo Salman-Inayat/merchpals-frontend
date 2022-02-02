@@ -11,6 +11,8 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  Checkbox,
+  Typography,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import PhoneNumberInput from '../../phone-number-input';
@@ -24,11 +26,17 @@ const useStyles = makeStyles(theme => ({
     marginLeft: '14px',
     fontSize: '0.75rem',
   },
+  termsSpan: {
+    // fontSize: '0.75rem',
+    color: '#0043cb',
+    cursor: 'pointer',
+  },
 }));
 export default function RegisterForm({
   registerVendor = () => {},
   registrationErrors = {},
 }) {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNo, setPhoneNo] = useState('');
   const [formErrors, setFormErrors] = useState({
@@ -70,7 +78,7 @@ export default function RegisterForm({
       .email('Email must be a valid email address'),
     password: Yup.string()
       .required('Password is required')
-      .min(8, 'Password is too short - should be 8 chars minimum.'),
+      .min(6, 'Password is too short - should be 6 chars minimum.'),
     confirmPassword: Yup.string().test(
       'passwords-match',
       'Passwords must match',
@@ -78,6 +86,7 @@ export default function RegisterForm({
         return this.parent.password === value;
       },
     ),
+    terms: Yup.boolean(),
   });
 
   const {
@@ -198,6 +207,39 @@ export default function RegisterForm({
             helperText={errors.confirmPassword?.message}
           />
         )}
+
+        <Stack
+          spacing={1}
+          alignItems="center"
+          justifyContent="center"
+          mb={2}
+          direction="row"
+          width="100%"
+        >
+          <Checkbox
+            checked={watch('terms')}
+            onChange={() => setError('terms', { type: 'manual', message: '' })}
+            color="primary"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />
+          <Typography variant="body2" color="textSecondary">
+            I agree to{' '}
+            <span
+              className={classes.termsSpan}
+              onClick={() => navigate('/vendor/store')}
+            >
+              Terms
+            </span>
+            ,{' '}
+            <span
+              className={classes.termsSpan}
+              onClick={() => navigate('/vendor/store')}
+            >
+              Privacy
+            </span>
+            , receiving SMS and email marketing communications{' '}
+          </Typography>
+        </Stack>
 
         {formErrors?.message && (
           <Grid className={classes.error} item>

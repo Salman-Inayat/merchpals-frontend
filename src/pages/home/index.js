@@ -74,6 +74,7 @@ const Home = ({ designJSON }) => {
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
+  const [phoneNo, setPhoneNo] = useState('');
   const classes = useStyle();
   const navigate = useNavigate();
 
@@ -118,6 +119,7 @@ const Home = ({ designJSON }) => {
         localStorage.setItem('phoneNoForOTP', data.phoneNo);
         // nextStep();
         setShowOtpBox(true);
+        setPhoneNo(data.phoneNo);
       })
       .catch(error => {
         console.log({ error });
@@ -197,7 +199,7 @@ const Home = ({ designJSON }) => {
         );
       case 2:
         if (showOtpBox) {
-          return <Otp nextStep={nextStep} />;
+          return <Otp nextStep={nextStep} phoneNo={phoneNo} />;
         }
         return (
           <SignUp

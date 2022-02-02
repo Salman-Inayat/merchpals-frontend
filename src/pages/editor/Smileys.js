@@ -12,20 +12,17 @@ const useStyles = makeStyles(theme => ({
     },
   },
   smileys: {
-    width: '100%',
-    height: '75px',
+    width: '4rem',
+
     overflow: 'auto',
     [theme.breakpoints.down('md')]: {
       width: '60px',
-      height: '30px',
-      margin: '10px 0px',
+
       display: 'inline-block',
     },
 
     [theme.breakpoints.down('sm')]: {
-      width: '60px',
-      height: '30px',
-      margin: '10px 0px',
+      width: '2rem',
       display: 'inline-block',
     },
   },
@@ -149,16 +146,6 @@ const Smileys = ({ addPng, className }) => {
   };
 
   return (
-    // <div className={classes.smileyContainer} id="smileyContainer" hidden>
-    //   {images.map((oneImage, index) => (
-    //     <img
-    //       key={index}
-    //       src={`/svg-icons/${oneImage}`}
-    //       onClick={() => addPng(`/svg-icons/${oneImage}`)}
-    //       className={classes.smileys}
-    //     />
-    //   ))}
-    // </div>
     <div id="smileyContainer" hidden>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Smiley</InputLabel>
@@ -176,7 +163,6 @@ const Smileys = ({ addPng, className }) => {
                 key={index}
                 src={`/svg-icons/${image}`}
                 className={classes.smileys}
-                style={{ width: '40px', height: '40px' }}
               />
             </MenuItem>
           ))}
