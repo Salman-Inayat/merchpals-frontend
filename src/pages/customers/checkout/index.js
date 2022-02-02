@@ -103,7 +103,15 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
         'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY
       }
     })
-      .then(response => setStates(response.data))
+      .then(response => {
+        const sortedStates = response.data.sort((a, b) => {
+          if(a.name < b.name) { return -1; }
+          if(a.name > b.name) { return 1; }
+          return 0;
+      })
+        console.log(sortedStates);
+        setStates(sortedStates)
+      })
       .catch(err => console.log({ err }))    
   }
 

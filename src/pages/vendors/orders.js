@@ -52,11 +52,7 @@ function VendorOrders() {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
         },
       })
-      .then(res => {
-        console.log(res.data.orders);
-        let orderData = res.data.orders;
-        setOrders(orderData);
-      })
+      .then(res => setOrders(res.data.orders))
       .catch(err => {
         console.log(err);
       });
@@ -101,7 +97,7 @@ function VendorOrders() {
             <TableBody>
               {orders.map((order, index) => (
                 <TableRow
-                  key={order.id}
+                  key={order._id}
                   onClick={() => handleOrderClick(order)}
                   sx={{ cursor: 'pointer' }}
                 >
@@ -116,8 +112,8 @@ function VendorOrders() {
                   </TableCell>
 
                   <TableCell component="th" scope="row" align="center">
-                    {order.vendorProductIds.map(product => (
-                      <div>{product.productId.name}</div>
+                    {order.products.map(product => (
+                      <div key={product._id}>{product.vendorProduct.productId.name}</div>
                     ))}
                   </TableCell>
 

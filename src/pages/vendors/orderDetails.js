@@ -107,24 +107,25 @@ function VendorOrderDetails() {
           <Grid container>
             <Grid item md={6} xs={12}>
               <Grid container spacing={4} p={4}>
-                {order.vendorProductIds.map(product => (
+                {order.products.map(product => (
                   <Grid key={product._id} item xs={12} sm={6} md={6} lg={4}>
                     <Card>
                       <CardMedia
-                        src={product.productId.image}
+                        src={product.vendorProduct.productId.image}
+                        style={{ backgroundColor: product.productMapping.color.label }}
                         height="100%"
                         component="img"
                       />
-                      {product?.designId && (
+                      {product?.vendorProduct?.designId && (
                         <img
-                          src={product.designId.url}
+                          src={product.vendorProduct.designId.url}
                           className={[
                             classes.design,
-                            product.productId.name === 'Poster'
+                            product.vendorProduct.productId.name === 'Poster'
                               ? classes.poster
-                              : product.productId.name === 'Phone Case'
+                              : product.vendorProduct.productId.name === 'Phone Case'
                               ? classes.phoneCase
-                              : product.productId.name === 'Mug'
+                              : product.vendorProduct.productId.name === 'Mug'
                               ? classes.mug
                               : '',
                           ].join(' ')}
@@ -138,7 +139,7 @@ function VendorOrderDetails() {
                           component="h5"
                           align="center"
                         >
-                          {product.productId.name}
+                          {product.vendorProduct.productId.name}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -152,7 +153,7 @@ function VendorOrderDetails() {
                   <Card>
                     <CardContent>
                       <Typography variant="p" component="p">
-                        Total Products: {order.vendorProductIds.length}
+                        Total Products: {order.products.length}
                       </Typography>
 
                       <Typography variant="p" component="p">
