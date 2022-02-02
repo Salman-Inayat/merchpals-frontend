@@ -116,8 +116,8 @@ function VendorOrders() {
                   </TableCell>
 
                   <TableCell component="th" scope="row" align="center">
-                    {order.products.map(product => (
-                      <div>{product.name}</div>
+                    {order.vendorProductIds.map(product => (
+                      <div>{product.productId.name}</div>
                     ))}
                   </TableCell>
 

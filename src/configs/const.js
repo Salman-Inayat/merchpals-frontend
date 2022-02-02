@@ -6,8 +6,8 @@ export const calculateProfit = (price, shippingCost, costPrice) => {
 
 export const calculateOrderProfit = order => {
   const orderPrice = order.price;
-  const productsTotal = order.products.reduce(
-    (sum, curr) => sum + curr.basePrice,
+  const productsTotal = order.vendorProductIds.reduce(
+    (sum, curr) => sum + curr.productId.basePrice,
     0,
   );
   const profit = orderPrice - (orderPrice * 0.029 + 0.3) - productsTotal;

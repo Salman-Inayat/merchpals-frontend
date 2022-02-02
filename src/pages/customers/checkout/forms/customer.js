@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { connect } from 'react-redux';
 import {
   Grid,
-  Stack,
   Accordion,
   AccordionSummary,
   Typography,
@@ -19,6 +15,8 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
+import { addToCart, getCart } from '../../../../store/redux/actions/cart';
+
 
 const useStyles = makeStyles(theme => ({
   accordian: {
@@ -91,14 +89,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
+const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, storeUrl }) => {
   const classes = useStyles();
-  const updateQuantity = (productId, variantId, op) => {
+  const updateQuantity = (vendorProduct, variantId, op) => {
     let updatedCart = [...products];
     let updatedVariant = {};
     let updatedProduct = {};
 
-    const prevProductIndex = products.findIndex(v => v.productId === productId);
+    const prevProductIndex = products.findIndex(v => v.vendorProduct === vendorProduct);
     const prevProduct = products[prevProductIndex];
 
     const variantIndex = prevProduct.productMappings.findIndex(
@@ -108,7 +106,6 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
     let mappings = [...prevProduct.productMappings];
 
     if (op === 'add') {
-      console.log('add - operator');
       updatedVariant = {
         ...variant,
         quantity: variant.quantity + 1,
@@ -128,15 +125,15 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
       productMappings: mappings,
     };
     updatedCart.splice(prevProductIndex, 1, updatedProduct);
+    console.log('produucts', updatedCart);
     setProducts(updatedCart);
-    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCart));
+     addToCart(storeUrl, updatedCart);
   };
 
-  const removeFromCart = (productId, variantId) => {
+  const removeFromCart = (vendorProduct, variantId) => {
     let updatedCart = {};
 
-    const prevProduct = products.find(v => v.productId === productId);
-    // console.log({prevProduct});
+    const prevProduct = products.find(v => v.vendorProduct === vendorProduct);
     let mappings = [...prevProduct.productMappings];
     mappings = mappings.filter(m => m.id !== variantId);
 
@@ -146,12 +143,12 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
     };
 
     const otherProductVariants = products.filter(
-      cv => cv.productId !== productId,
+      cv => cv.vendorProduct !== vendorProduct,
     );
     const updatedCartList = [updatedCart, ...otherProductVariants];
     console.log({ updatedCartList });
     setProducts(updatedCartList);
-    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList));
+     addToCart(storeUrl, updatedCartList);
   };
 
   const subTotal = () => {
@@ -207,7 +204,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
                 <Grid xs={4} item className={classes.imageCard}>
                   <Avatar
                     className={classes.avatar}
-                    style={{ backgroundColor: variant.color }}
+                    style={{ backgroundColor: variant.color === 'n/a' ? '#fff' : variant.color }}
                     src={product.image}
                     variant="square"
                   />
@@ -235,7 +232,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
                         <Button
                           onClick={() =>
                             updateQuantity(
-                              product.productId,
+                              product.vendorProduct,
                               variant.id,
                               'minus',
                             )
@@ -248,7 +245,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
                         <Button disabled>{variant.quantity}</Button>
                         <Button
                           onClick={() =>
-                            updateQuantity(product.productId, variant.id, 'add')
+                            updateQuantity(product.vendorProduct, variant.id, 'add')
                           }
                           className={classes.operatorBtn}
                         >
@@ -263,7 +260,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
                   <Button
                     className={classes.removeBtn}
                     onClick={() =>
-                      removeFromCart(product.productId, variant.id)
+                      removeFromCart(product.vendorProduct, variant.id)
                     }
                   >
                     Remove
@@ -333,4 +330,13 @@ const Customer = ({ products = [], setProducts, tax, shippingCost }) => {
   );
 };
 
-export { Customer as default };
+const mapDispatch = dispatch => ({
+  addToCart: (store, products) => dispatch(addToCart(store, products)),
+})
+
+const mapState = state => ({
+  reduxCartProducts: state.cart.cart.products
+})
+
+
+export default connect(mapState, mapDispatch)(Customer)

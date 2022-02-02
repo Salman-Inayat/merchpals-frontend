@@ -38,7 +38,6 @@ const setAuthTokens = data => {
 };
 
 const authReducer = (state = initialState, action) => {
-  console.log({ action });
   switch (action.type) {
     case AUTH_OTP_VERFICATION:
       return { otpVerified: false };

@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { Grid, Avatar, Typography, Button } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import { getCart, emptyCart } from '../../../store/redux/actions/cart';
 import { Customer, PaymentInfo, BillingAddress } from './forms';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import Lock from '../../../assets/images/icons/lock1.png';
+
 const useStyles = makeStyles(theme => ({
   card: {
     boxShadow:
@@ -24,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Checkout = () => {
+const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
   const [completedCustomerInfo, setCompletedCustomerInfo] = useState(false);
   const [completedAddress, setCompletedAddress] = useState(false);
   const [completedPayment, setCompletedPayment] = useState(false);
@@ -43,10 +45,9 @@ const Checkout = () => {
     phoneNo: '',
     message: '',
   });
-  // const [printfulMessage, setPrintfulMessage] = useState({
-  //   tax: '',
-  //   shipping: '',
-  // })
+  const [countries, setCountries] = useState([])
+  const [states, setStates] = useState([]);
+  const [region, setRegion] = useState('America')
   const [shippingError, setShippingError] = useState('');
   const [taxErrorStr, setTaxErrorStr] = useState('');
   const [loading, setLoading] = useState(false);
@@ -78,33 +79,61 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    const storedCart = localStorage.getItem('MERCHPALS_CART');
-    if (storedCart) {
-      const products = JSON.parse(storedCart);
-      updateCart(products);
-    }
+    getCart(storeUrl)
+    getCountries()
   }, []);
 
+  useEffect(() => {
+      updateCart(reduxCartProducts);
+  }, [reduxCartProducts])
+
+  const getCountries = () => {
+    axios.get('https://api.countrystatecity.in/v1/countries', {
+      headers: {
+        'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY
+      }
+    })
+      .then(response => setCountries(response.data))
+      .catch(err => console.log({ err }))
+  }
+
+  const getStatesOfCountry = (country) => {
+    axios.get(`https://api.countrystatecity.in/v1/countries/${country}/states`, {
+      headers: {
+        'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY
+      }
+    })
+      .then(response => setStates(response.data))
+      .catch(err => console.log({ err }))    
+  }
+
+  const getRegionOfCountry =  (country) => {
+    axios.get(`https://restcountries.com/v3.1/alpha/${country}`)
+      .then(response => setRegion(response.data[0].region))
+      .catch(err => console.log({ err }))    
+  }
+
   const updateCart = products => {
-    console.log({ productsTo: products });
     const [amount, profit] = total(products);
-    console.log({ amount, profit });
-    let formattedProducts = [];
-    for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      const variantIds = product.productMappings.map(pm => pm.id);
-      formattedProducts.push({
-        productId: product.productId,
-        productMappings: variantIds,
-      });
-    }
+    // let formattedProducts = [];
+    
+    // for (let i = 0; i < products.length; i++) {
+    //   const product = products[i];
+    //   const variantIds = product.productMappings.map(pm => pm.id);
+    //   formattedProducts.push({
+    //     productId: product.productId,
+    //     productMappings: variantIds,
+    //   });
+    // }
 
     setCart({
       amount,
       profit,
-      products: formattedProducts,
+      // products: formattedProducts,
       savedProducts: products,
     });
+
+    return true;
   };
   const updateTaxAndShipping = () => {
     if (billingAddress.country === 'US') {
@@ -185,11 +214,8 @@ const Checkout = () => {
     process.env.REACT_APP_STRIPE_PUBLISHABLE_CUSTOMER_KEY,
   );
 
-  const markCustomerInfoComplete = isCompleted =>
-    setCompletedCustomerInfo(isCompleted);
   const markAddressComplete = isCompleted => setCompletedAddress(isCompleted);
-  const markPaymentComplete = isCompleted => setCompletedPayment(isCompleted);
-  // console.log('cart.products',cart.products);
+  
   const placeOrder = token => {
     let error = false;
     let errors = {};
@@ -216,14 +242,29 @@ const Checkout = () => {
       setFormErrors(errors);
       return;
     }
+    
+    let cartProducts = [];
+    for (let i = 0; i < reduxCartProducts.length; i++) {
+      let curProduct = reduxCartProducts[i];
+      for (let j = 0; j < curProduct.productMappings.length; j++) {
+        const curVariant = curProduct.productMappings[j];
+        cartProducts.push({
+          quantity: curVariant.quantity,
+          vendorProduct: curProduct.vendorProduct,
+          productMapping: curVariant.id
+        });
+      }
+    }
 
+    setLoading(true);
+    
     const data = {
       printfulData,
       profit: cart.profit,
       order: {
         storeUrl,
         amount: cart.amount,
-        products: cart.products,
+        products: cartProducts,
         billingAddress,
       },
       customer: {
@@ -237,11 +278,11 @@ const Checkout = () => {
       },
     };
     console.log({ data });
-    setLoading(true);
+    
     axios
       .post(`${baseURL}/order`, data)
       .then(response => {
-        // console.log({orderplacementResponse: response});
+        console.log({orderplacementResponse: response});
         setLoading(false);
         localStorage.removeItem('MERCHPALS_CART');
         navigate(`/store/${storeUrl}`);
@@ -283,6 +324,7 @@ const Checkout = () => {
           setProducts={updateCart}
           tax={tax}
           shippingCost={shippingCost}
+          storeUrl={storeUrl}
         />
 
         <BillingAddress
@@ -298,6 +340,10 @@ const Checkout = () => {
           email={email}
           formErrors={formErrors}
           setCustomer={setCustomer}
+          countries={countries}
+          states={states}
+          getStatesOfCountry={getStatesOfCountry}
+          getRegionOfCountry={getRegionOfCountry}
         />
 
         {completedAddress && (
@@ -315,4 +361,13 @@ const Checkout = () => {
   );
 };
 
-export { Checkout as default };
+const mapDispatch = dispatch => ({
+  getCart: (store) => dispatch(getCart(store)),
+  emptyCart: () => dispatch(emptyCart())
+})
+
+const mapState = state => ({
+  reduxCartProducts: state.cart.cart.products
+})
+
+export default connect(mapState, mapDispatch)(Checkout)
