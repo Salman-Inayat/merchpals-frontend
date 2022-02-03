@@ -13,9 +13,56 @@ import {
   Paper,
   Button,
 } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { calculateOrderProfit } from '../../configs/const';
+
+const useStyles = makeStyles(theme => ({
+  design: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: '100px',
+    width: '100px',
+    [theme.breakpoints.down('sm')]: {
+      height: '70px',
+      width: '70px',
+    },
+  },
+  poster: {
+    height: '190px',
+    width: '190px',
+    borderRadius: '5px',
+    [theme.breakpoints.down('sm')]: {
+      height: '130px',
+      width: '130px',
+    },
+  },
+  phoneCase: {
+    height: '80px',
+    width: '80px',
+    [theme.breakpoints.down('sm')]: {
+      height: '60px',
+      width: '60px',
+      top: '52%',
+    },
+  },
+  mug: {
+    height: '90px',
+    width: '90px',
+    top: '55%',
+    left: '52%',
+    [theme.breakpoints.down('sm')]: {
+      height: '60px',
+      width: '60px',
+    },
+  },
+  productImage: {
+    height: '100%',
+  },
+}));
 
 function VendorOrderDetails() {
   //   const location = useLocation();
@@ -25,6 +72,7 @@ function VendorOrderDetails() {
 
   const [order, setOrder] = useState();
   const { orderId } = useParams();
+  const classes = useStyles();
 
   useEffect(() => {
     axios
@@ -35,6 +83,7 @@ function VendorOrderDetails() {
       })
       .then(res => {
         const orderData = res.data.order;
+        console.log({ orderData });
         setOrder(orderData);
 
         const profit = calculateOrderProfit(orderData);
@@ -59,13 +108,29 @@ function VendorOrderDetails() {
             <Grid item md={6} xs={12}>
               <Grid container spacing={4} p={4}>
                 {order.products.map(product => (
-                  <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Grid key={product._id} item xs={12} sm={6} md={6} lg={4}>
                     <Card>
                       <CardMedia
-                        src={product.image}
+                        src={product.vendorProduct.productId.image}
+                        style={{ backgroundColor: product.productMapping.color.label }}
                         height="100%"
                         component="img"
                       />
+                      {product?.vendorProduct?.designId && (
+                        <img
+                          src={product.vendorProduct.designId.url}
+                          className={[
+                            classes.design,
+                            product.vendorProduct.productId.name === 'Poster'
+                              ? classes.poster
+                              : product.vendorProduct.productId.name === 'Phone Case'
+                              ? classes.phoneCase
+                              : product.vendorProduct.productId.name === 'Mug'
+                              ? classes.mug
+                              : '',
+                          ].join(' ')}
+                        />
+                      )}
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
@@ -74,7 +139,7 @@ function VendorOrderDetails() {
                           component="h5"
                           align="center"
                         >
-                          {product.name}
+                          {product.vendorProduct.productId.name}
                         </Typography>
                       </CardContent>
                     </Card>

@@ -4,22 +4,45 @@ import {
   ADD_QUANTITY,
   SUB_QUANTITY,
   EMPTY_CART,
+  GET_CART
 } from '../types';
 
-const addToCart = (doesItemExist, state, action) => {
-  doesItemExist = false;
-  const newState = state.map(item => {
-    if (item.id == action.payload.id) {
-      item.quantity += 1;
-      doesItemExist = true;
-    }
-    return item;
-  });
-  if (doesItemExist) {
-    return newState;
+const initialState = {
+  stringifyCart: '',
+  cart: {
+    store: '',
+    products: [] // order => [{variant_id, productMapping, quantity}]
   }
-  return [...state, { ...action.payload, quantity: 1 }];
+}
+const addToCart = (state, payload) => {
+  const stringifyCart = JSON.stringify({ ...payload })
+  localStorage.setItem('MERCHPALS_CART', stringifyCart);
+  return { ...state, stringifyCart }
 };
+
+const getCart = (state, store) => {
+  let cart = {};
+  if (state.stringifyCart) {
+    cart = JSON.parse(state.stringifyCart)
+  } else {
+    cart = JSON.parse(localStorage.getItem('MERCHPALS_CART'));  
+  }
+
+  if (!cart?.store) {
+    return { state, cart: { store: '', products: []}}
+  }
+
+  if (cart.store !== store) {
+    return { state, cart: { store, products: []}}
+  }
+
+  return { ...state, cart }
+}
+
+const emptyCart = (state) => {
+  localStorage.removeItem('MERCHPALS_CART');
+  return initialState
+}
 
 const removeFromCart = (state, action) => {
   return state.filter(item => item.id !== action.payload);
@@ -43,12 +66,15 @@ const subQuantity = (state, action) => {
   });
 };
 
-const cartReducer = (state = [], action) => {
+const cartReducer = (state = initialState, action) => {
   let doesItemExist;
   switch (action.type) {
     case ADD_TO_CART: {
-      return addToCart(doesItemExist, state, action);
+      return addToCart(state, action.payload);
     }
+
+    case GET_CART: 
+      return getCart(state, action.payload);
 
     case REMOVE_FROM_CART: {
       return removeFromCart(state, action);
@@ -61,7 +87,7 @@ const cartReducer = (state = [], action) => {
       return subQuantity(state, action);
 
     case EMPTY_CART:
-      return [];
+      return emptyCart();
 
     default:
       return state;

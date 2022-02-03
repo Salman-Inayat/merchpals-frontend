@@ -23,7 +23,7 @@ import FormLabel from '@mui/material/FormLabel';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addToCart } from '../../store/redux/actions/cart';
+import { addToCart, getCart } from '../../store/redux/actions/cart';
 import Slide from '@mui/material/Slide';
 import MuiAlert from '@mui/material/Alert';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -125,7 +125,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const Product = ({ addToCart, cart }) => {
+const Product = ({ addToCart, getCart, reduxCartProducts }) => {
   const classes = useStyle();
   const { productId, storeUrl } = useParams();
   const navigate = useNavigate();
@@ -155,18 +155,14 @@ const Product = ({ addToCart, cart }) => {
 
   useEffect(() => {
     fetchProduct(productId);
-    setCartProducts(cart);
-    const storedCart = localStorage.getItem('MERCHPALS_CART');
-    if (storedCart) {
-      const parsedCart = JSON.parse(storedCart);
-      console.log({ parsedCart });
-      setCartsVariants(parsedCart);
-    }
+    getCart(storeUrl)
   }, []);
 
   useEffect(() => {
-    setCartProducts(cart);
-  }, [cart]);
+    if (reduxCartProducts) {
+      setCartsVariants(reduxCartProducts);
+    }
+  }, [reduxCartProducts]);
 
   const fetchProduct = async productId => {
     axios
@@ -177,7 +173,8 @@ const Product = ({ addToCart, cart }) => {
         const variantArr = product.productMappings.map(c => c.variant);
         console.log({ productInResponse: product });
         const formattedProduct = {
-          id: product._id,
+          vendorProduct: product.vendorProductId,
+          productId: product._id,
           name: product.name,
           description: product.description,
           image: product.image,
@@ -223,7 +220,7 @@ const Product = ({ addToCart, cart }) => {
     const selectedVariant = product.productMappings.find(
       p => p.keyId === keyId,
     );
-    console.log({ keyId });
+    
     if (!selectedVariant) {
       setSnackBarToggle({
         visible: true,
@@ -233,11 +230,10 @@ const Product = ({ addToCart, cart }) => {
       return;
     }
 
-    // console.log(keyId, product.productMappings.find(p => p.keyId === keyId));
-    const productMappingId = selectedVariant._id;
+    const productMapping = selectedVariant._id;
     let updatedCart = {};
     // console.log({selectedVariant});
-    const prevProduct = cartsVariants.find(v => v.productId === product.id);
+    const prevProduct = cartsVariants.find(v => v.vendorProduct === product.vendorProduct);
     // console.log({prevProduct});
 
     if (prevProduct) {
@@ -254,7 +250,7 @@ const Product = ({ addToCart, cart }) => {
         productMappings: [
           ...mappings,
           {
-            id: productMappingId,
+            id: productMapping,
             quantity: isSameVariantAlreadySelected
               ? isSameVariantAlreadySelected.quantity + 1
               : 1,
@@ -267,10 +263,10 @@ const Product = ({ addToCart, cart }) => {
       };
     } else {
       updatedCart = {
-        productId: product.id,
+        vendorProduct: product.vendorProduct,
         productMappings: [
           {
-            id: productMappingId,
+            id: productMapping,
             quantity: 1,
             color: selectedVariant.color.label,
             variant: selectedVariant.variant.label,
@@ -284,21 +280,20 @@ const Product = ({ addToCart, cart }) => {
         image: product.image,
       };
     }
-
-    // console.log({ updatedCart });
+    
     const otherProductVariants = cartsVariants.filter(
-      cv => cv.productId !== product.id,
+      cv => cv.vendorProduct !== product.vendorProduct,
     );
+    
     const updatedCartList = [updatedCart, ...otherProductVariants];
-    // console.log({ updatedCartList });
     setCartsVariants(updatedCartList);
-    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList));
-    addToCart(`${product.productNumberedId}-${size.id}-${color.id}`);
+    addToCart(storeUrl, updatedCartList);
     setSnackBarToggle({
       visible: true,
       type: 'success',
       message: 'Added to cart',
     });
+
     navigate(`/checkout/${storeUrl}`);
     const totalItems = updatedCartList.reduce(
       (total, cur) => total + cur.productMappings.length,
@@ -577,16 +572,14 @@ const Product = ({ addToCart, cart }) => {
 };
 
 const mapDispatch = dispatch => ({
-  addToCart: product => {
-    dispatch(addToCart(product));
+  addToCart: (store, product) => {
+    dispatch(addToCart(store, product));
   },
+  getCart: (store) => dispatch(getCart(store))
 });
 
-const mapState = state => {
-  const cart = state.cart;
-  return { cart };
-};
+const mapState = state => ({
+  reduxCartProducts: state.cart.cart.products
+})
 
 export default connect(mapState, mapDispatch)(Product);
-
-// export { Product as default };

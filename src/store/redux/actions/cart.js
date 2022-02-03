@@ -4,10 +4,15 @@ import {
   ADD_QUANTITY,
   SUB_QUANTITY,
   EMPTY_CART,
+  GET_CART
 } from '../types';
 
-export const addToCart = product => async dispatch => {
-  dispatch({ type: ADD_TO_CART, payload: product });
+export const addToCart = (store, products) => async dispatch => {
+  dispatch({ type: ADD_TO_CART, payload: {store, products} });
+};
+
+export const getCart = (store) => async dispatch => {
+  dispatch({ type: GET_CART, payload: store });
 };
 
 export const removeFromCart = productId => async dispatch => {

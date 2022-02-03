@@ -81,7 +81,7 @@ const Dashboard = () => {
         console.log({ store: response.data.store });
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
-        setStore(store);
+        // setStore(store);
       })
       .catch(err => {
         console.log({ err });
