@@ -17,6 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import ImageCrop from '../../../components/imageCrop';
+import SelectTheme from '../../../components/themeCustomize/selectTheme';
 
 const useStyle = makeStyles(() => ({
   heading: {
@@ -55,7 +56,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [themeColor, setThemeColor] = useState();
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
@@ -93,6 +94,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
 
   const onSubmit = data => {
     setLoading(true);
+    if (themeColor) {
+      data.themeColor = themeColor;
+    }
     createStore({ ...data, ...images });
     // console.log(images);
   };
@@ -145,7 +149,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const handleStoreLogoChange = value => {
     setImages({ ...images, logo: value });
   };
-
+  console.log('theme', themeColor);
   return (
     <Grid container>
       <Grid
@@ -303,6 +307,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                     </Box>
                   </Modal>
                 </Grid>
+              </Grid>
+              <Grid container>
+                <SelectTheme setThemeColor={setThemeColor} />
               </Grid>
 
               <LoadingButton

@@ -188,10 +188,10 @@ const BillingAddress = ({
       <Grid className={classes.accordian}>
         <Typography className={classes.heading}>1. Shipping</Typography>
       </Grid>
-      <Grid direction="row" className={classes.box} container>
+      <Grid direction="row" className={`${classes.box} `} container>
         <Grid justifyContent="space-between" mt={3} container spacing={2}>
           <Grid item md={6} xs={12}>
-            <InputLabel className={classes.label}>
+            <InputLabel className={`${classes.label} `}>
               First Name <span className={classes.required}>*</span>
             </InputLabel>
             <Input

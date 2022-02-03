@@ -154,6 +154,7 @@ const Home = ({ designJSON }) => {
         coverAvatar: storeData.coverAvatar,
         design: JSON.stringify(designData),
         products: JSON.stringify([...selectedVariants]),
+        themeColor: storeData.themeColor,
       },
     };
 

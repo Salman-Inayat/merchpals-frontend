@@ -33,3 +33,4 @@ export const SUB_QUANTITY = 'SUB_QUANTITY';
 export const EMPTY_CART = 'EMPTY_CART';
 
 export const SAVE_DESIGN_JSON = 'SAVE_DESIGN_JSON';
+export const SAVE_THEME_COLOR = 'SAVE_THEME_COLOR';

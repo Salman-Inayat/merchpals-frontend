@@ -16,6 +16,8 @@ import { baseURL } from '../../../configs/const';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
 import BackButton from '../../../components/backButton';
 import { useMediaQuery } from 'react-responsive';
+import SelectTheme from '../../../components/themeCustomize/selectTheme';
+import { DateRangePickerDay } from '@mui/lab';
 
 const style = {
   position: 'absolute',
@@ -39,7 +41,7 @@ function StoreSettings() {
   const [storeLogo, setStoreLogo] = useState();
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
   const [openLogoModal, setOpenLogoModal] = useState(false);
-
+  const [themeColor, setThemeColor] = useState();
   const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
@@ -128,7 +130,7 @@ function StoreSettings() {
         storeId: storeId,
       },
     };
-
+    data.store.storeData.themeColor = themeColor;
     console.log('Data: ', data);
 
     axios
@@ -168,26 +170,31 @@ function StoreSettings() {
                 Store Settings
               </Typography>
             </Grid>
-            <Grid item md={12} xs={12} mb={1}>
-              <Typography variant="h6">Store URL</Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Box>
-                  <Typography variant="p">Merchpals.com/</Typography>
-                  <TextField
-                    id="input-with-sx"
-                    variant="standard"
-                    onChange={handleStoreNameChange}
-                    size="small"
-                    value={storeName}
-                  />
+            <Grid container item md={12} xs={12} mb={1}>
+              <Grid item md={6}>
+                <Typography variant="h6">Store URL</Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Box>
+                    <Typography variant="p">Merchpals.com/</Typography>
+                    <TextField
+                      id="input-with-sx"
+                      variant="standard"
+                      onChange={handleStoreNameChange}
+                      size="small"
+                      value={storeName}
+                    />
+                  </Box>
                 </Box>
-              </Box>
+              </Grid>
+              <Grid container item md={6} spacing={2}>
+                <SelectTheme setThemeColor={setThemeColor} />
+              </Grid>
             </Grid>
             <Grid
               item
