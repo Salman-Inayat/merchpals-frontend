@@ -86,7 +86,7 @@ export default function RegisterForm({
         return this.parent.password === value;
       },
     ),
-    terms: Yup.boolean(),
+    hasAcceptedTerms: Yup.boolean(),
   });
 
   const {
@@ -217,10 +217,9 @@ export default function RegisterForm({
           width="100%"
         >
           <Checkbox
-            checked={watch('terms')}
-            onChange={() => setError('terms', { type: 'manual', message: '' })}
-            color="primary"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
+            checked={watch('hasAcceptedTerms')}
+            {...register('hasAcceptedTerms')}
+            defaultChecked={true}
           />
           <Typography variant="body2" color="textSecondary">
             I agree to{' '}

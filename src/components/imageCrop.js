@@ -9,7 +9,7 @@ export default function ImageCrop(props) {
   const previewCanvasRef = useRef(null);
   const [crop, setCrop] = useState(
     props.variant === 'storeLogo'
-      ? { unit: '%', width: 100, aspect: 1 / 1, x: 0, y: 0 }
+      ? { unit: '%', width: 40, aspect: 1 / 1, x: 0, y: 0 }
       : {
           unit: '%',
           width: 100,
@@ -146,7 +146,7 @@ export default function ImageCrop(props) {
             onChange={c => setCrop(c)}
             onComplete={c => setCompletedCrop(c)}
             circularCrop={props.variant === 'storeLogo' ? true : false}
-            locked
+            locked={props.variant === 'storeLogo' ? false : true}
           />
         </Grid>
 
