@@ -6,7 +6,16 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import { Button, Card, Grid, Stack, Typography, Input } from '@mui/material';
+import {
+  Button,
+  Card,
+  Grid,
+  Stack,
+  Typography,
+  Input,
+  Avatar,
+} from '@mui/material';
+import { fabric } from 'fabric';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
 import { bgcolor, Box } from '@mui/system';
@@ -16,6 +25,7 @@ import FontControls from './FontControls';
 import CanvasEditor from '../../components/editor/canvasEditor';
 import Smileys from './Smileys';
 import ShirtSVG from '../../assets/images/gray-tshirt.svg';
+import SmileySVG from '../../assets/images/smiley.svg';
 
 const useStyles = makeStyles(theme => ({
   editor: {
@@ -27,6 +37,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   controlsContainer: {
+    // padding: '0rem 6rem',
     // order: 2,
     display: 'flex',
     justifyContent: 'center',
@@ -37,8 +48,7 @@ const useStyles = makeStyles(theme => ({
       // bottom: theme.spacing(2),
     },
     [theme.breakpoints.down('sm')]: {
-      // position: 'fixed',
-      // bottom: theme.spacing(2),
+      // padding: '0rem 1rem',
     },
   },
   canvasContainer: {
@@ -64,9 +74,12 @@ const useStyles = makeStyles(theme => ({
     },
   },
   button: {
+    minWidth: '80px',
+    backgroundColor: '#e7e9eb',
+    color: '#000',
+    boxShadow: '0px 5px 5px rgba(0,0,0,0.2)',
     [theme.breakpoints.down('sm')]: {
-      minWidth: '50px',
-      padding: '6px',
+      // padding: '6px',
     },
   },
   miniatureContaienr: {
@@ -88,11 +101,11 @@ const useStyles = makeStyles(theme => ({
   },
   miniature: {
     position: 'absolute',
-    top: '50%',
+    top: '40%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '50px',
-    height: '50px',
+    width: '40px',
+    height: '40px',
     border: 'none',
   },
 }));
@@ -139,7 +152,39 @@ const Editor = forwardRef((props, ref) => {
     style13.style.fontFamily = 'RussoOne';
     style14.style.fontFamily = 'Tourney';
     style15.style.fontFamily = 'BungeeS';
+
+    // if (isCanvasBlank(canvas)) {
+    //   span.hidden = false;
+    // } else {
+    //   span.hidden = true;
+    // }
   }, []);
+
+  const MINUTE_MS = 500;
+
+  useEffect(() => {
+    var canvas = document.getElementById('canvas');
+    var span = document.getElementById('alt-text');
+    const interval = setInterval(() => {
+      if (isCanvasBlank(canvas)) {
+        span.hidden = false;
+      } else {
+        span.hidden = true;
+      }
+    }, MINUTE_MS);
+
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, []);
+
+  function isCanvasBlank(canvas) {
+    const context = canvas.getContext('2d');
+
+    const pixelBuffer = new Uint32Array(
+      context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+    );
+
+    return !pixelBuffer.some(color => color !== 0);
+  }
 
   const firstUpdate = useRef(true);
 
@@ -226,6 +271,10 @@ const Editor = forwardRef((props, ref) => {
     const editorState = editorJs.exportCanvas();
   };
 
+  const handleTextEditingFinished = () => {
+    editorJs.finishTextEditing();
+  };
+
   const handleControlsToggle = () => {
     const smileyControls = document.getElementById('smileyContainer');
     const fontControls = document.getElementById('textControls');
@@ -245,7 +294,7 @@ const Editor = forwardRef((props, ref) => {
     >
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
-          Create Your Design Here
+          Create Your Design
         </Typography>
       </Grid>
       <Grid
@@ -262,6 +311,7 @@ const Editor = forwardRef((props, ref) => {
             <FontControls
               setFontColor={setFontColor}
               setFontFamily={setFontFamily}
+              handleTextEditingFinished={handleTextEditingFinished}
             />
             <div id="crop-image-button" hidden>
               <Button
@@ -306,23 +356,78 @@ const Editor = forwardRef((props, ref) => {
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
         <Grid container spacing={2} className={classes.controlsContainer}>
-          <Grid
-            md={12}
-            sm={12}
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <div className={classes.miniatureContaienr}>
-              <img src={ShirtSVG} className={classes.shirtImage} />
-              <canvas
-                id="static"
-                width="50"
-                height="50"
-                className={classes.miniature}
-              ></canvas>
-            </div>
+          <Grid md={12} sm={12} xs={12}>
+            <Grid
+              container
+              spacing={3}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Grid item md={2} xs={12}></Grid>
+              <Grid
+                item
+                md={2}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={undo}
+                  className={`${classes.undo} ${classes.button}`}
+                >
+                  Undo
+                </Button>
+              </Grid>
+              <Grid
+                item
+                md={4}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <div className={classes.miniatureContaienr}>
+                  <img src={ShirtSVG} className={classes.shirtImage} />
+                  <span
+                    id="alt-text"
+                    style={{
+                      height: '50px',
+                      width: '50px',
+                      position: 'absolute',
+                      top: '40%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      border: '2px solid white',
+                    }}
+                  ></span>
+                  <canvas
+                    id="static"
+                    width="50"
+                    height="50"
+                    className={classes.miniature}
+                  ></canvas>
+                </div>
+              </Grid>
+              <Grid
+                item
+                md={2}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={redo}
+                  className={`${classes.redo} ${classes.button}`}
+                >
+                  Redo
+                </Button>
+              </Grid>
+              <Grid item md={2} xs={12}></Grid>
+            </Grid>
           </Grid>
           <Grid item md={2} xs={12}></Grid>
           <Grid item md={8} sm={12} xs={12}>
@@ -335,21 +440,6 @@ const Editor = forwardRef((props, ref) => {
             >
               <Button
                 variant="contained"
-                onClick={undo}
-                className={`${classes.undo} ${classes.button}`}
-              >
-                <Undo />
-              </Button>
-              <Button
-                variant="contained"
-                onClick={redo}
-                className={`${classes.redo} ${classes.button}`}
-              >
-                <Redo />
-              </Button>
-
-              <Button
-                variant="contained"
                 onClick={addText}
                 className={`${classes.addText} ${classes.button}`}
               >
@@ -360,7 +450,10 @@ const Editor = forwardRef((props, ref) => {
                 onClick={handleControlsToggle}
                 className={`${classes.smileys} ${classes.button}`}
               >
-                Smileys
+                <Avatar
+                  src={SmileySVG}
+                  style={{ height: '25px', width: '25px' }}
+                />
               </Button>
               <Button
                 variant="contained"
@@ -378,7 +471,6 @@ const Editor = forwardRef((props, ref) => {
               <Button
                 onClick={deleteSelected}
                 variant="contained"
-                color="error"
                 className={`${classes.delete} ${classes.button}`}
               >
                 <Delete />

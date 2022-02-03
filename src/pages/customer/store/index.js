@@ -6,7 +6,9 @@ import { makeStyles } from '@mui/styles';
 import { baseURL } from '../../../configs/const';
 import StoreProductCard from '../../../components/storeProductCard';
 import { useMediaQuery } from 'react-responsive';
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom';
+import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
+import { useSelector } from 'react-redux';
 
 const useStyle = makeStyles(theme => ({
   coverContainer: {
@@ -60,6 +62,7 @@ const useStyle = makeStyles(theme => ({
 }));
 
 const Store = () => {
+  let themeColor, theme;
   const classes = useStyle();
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -87,9 +90,16 @@ const Store = () => {
         console.log({ err });
       });
   };
-
+  theme = useSelector(state => state.design);
+  if (theme.themeColor) {
+    themeColor = theme.themeColor;
+  } else {
+    themeColor = store.themeColor;
+  }
+  const themeClass = ThemeCustomise(themeColor);
+  console.log(themeClass);
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} className={themeClass}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
         <img
           src={store.coverAvatar}
@@ -106,12 +116,12 @@ const Store = () => {
         <Grid
           container
           spacing={isMobile ? 1 : 10}
-          className={classes.productsContainer}
+          className={`${themeClass} ${classes.productsContainer}`}
         >
           {store.vendorProductIds?.map(product => {
             return (
               <Grid item md={4} xs={6}>
-                <StoreProductCard product={product} storeUrl={storeUrl}/>
+                <StoreProductCard product={product} storeUrl={storeUrl} />
               </Grid>
             );
           })}

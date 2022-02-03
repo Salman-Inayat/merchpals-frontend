@@ -312,12 +312,12 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
     });
   };
   console.log({ product });
+
   return (
     <Grid container spacing={1}>
       <Grid item md={6} xs={12}>
         <Button
           variant="contained"
-          color="primary"
           onClick={handleBackButton}
           className={classes.backButton}
         >

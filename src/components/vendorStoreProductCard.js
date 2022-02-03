@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
   },
   productName: {
-    color: '#0097a7',
+    // color: '#0097a7',
     width: '90%',
     margin: 'auto',
     fontWeight: '500',

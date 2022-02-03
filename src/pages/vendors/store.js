@@ -18,6 +18,12 @@ import VendorStoreProductCard from '../../components/vendorStoreProductCard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useMediaQuery } from 'react-responsive';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
+import {
+  ThemeCustomise,
+  ThemeColorCustomise,
+} from '../../components/themeCustomize/themeStyle';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveThemeColor } from '../../store/redux/actions/design';
 
 const useStyle = makeStyles(theme => ({
   coverContainer: {
@@ -82,14 +88,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const VendorStore = () => {
   const classes = useStyle();
-
+  const dispatch = useDispatch();
   const [store, setStore] = useState({
     name: '',
     coverAvatar: '',
     logo: '',
     products: [],
   });
-
+  let theme, themeColor, themeClass, themeColorClass;
   const [storeURL, setStoreURL] = useState();
 
   const isDesktop = useMediaQuery({ minWidth: 992 });
@@ -118,6 +124,7 @@ const VendorStore = () => {
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
         setStore(store);
+        dispatch(saveThemeColor({ themeColor: store.themeColor }));
       })
       .catch(err => {
         console.log({ err });
@@ -143,10 +150,23 @@ const VendorStore = () => {
       ...snackBarToggle,
       visible: false,
     });
+  theme = useSelector(state => state.design);
 
+  if (theme.themeColor) {
+    themeColor = theme.themeColor;
+  } else {
+    themeColor = store.themeColor;
+  }
+  themeClass = ThemeCustomise(themeColor);
+  themeColorClass = ThemeColorCustomise(themeColor);
   return (
     <LoggedInVendor>
-      <Grid container spacing={3} style={{ margin: '0px' }}>
+      <Grid
+        container
+        spacing={3}
+        style={{ margin: '0px' }}
+        className={themeClass}
+      >
         <Grid item md={12} xs={12} className={classes.coverContainer}>
           <img
             src={store.coverAvatar}
@@ -196,9 +216,10 @@ const VendorStore = () => {
               readOnly: true,
               endAdornment: (
                 <Button onClick={() => copyToClipboard(storeURL)}>
-                  <ContentCopyIcon color="secondary" />
+                  <ContentCopyIcon className={themeColorClass} />
                 </Button>
               ),
+              className: themeColorClass,
             }}
             className={classes.copyLinkText}
           />
