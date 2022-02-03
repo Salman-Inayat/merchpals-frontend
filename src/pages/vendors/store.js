@@ -219,8 +219,9 @@ const VendorStore = () => {
                   <ContentCopyIcon className={themeColorClass} />
                 </Button>
               ),
+              className: themeColorClass,
             }}
-            className={`${classes.copyLinkText} ${themeColorClass}`}
+            className={classes.copyLinkText}
           />
         </Grid>
         <Snackbar
