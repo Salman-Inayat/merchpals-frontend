@@ -225,7 +225,8 @@ const LoggedInVendor = ({
           </AppBar>
         </Box>
       </Grid>
-      <Grid xs={12} container p={isMobile ? 1 : 4} item>
+      {/* TODO: padding issue  p={isMobile ? 1 : 4}*/}
+      <Grid xs={12} container item>
         {children}
       </Grid>
       <Modal
