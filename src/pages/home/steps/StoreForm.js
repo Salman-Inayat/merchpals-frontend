@@ -467,147 +467,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                 size="small"
               />
               <Typography variant="h5">&#39;s MERCH STORE</Typography>
-              <TextField
-                fullWidth
-                label="Store url"
-                {...register('slug')}
-                error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
-                helperText={errors.slug?.message || slugMessage}
-                onBlur={isSlugValid}
-              />
-
-              <TextField
-                fullWidth
-                label="twitch"
-                {...register('twitch')}
-                error={Boolean(errors.twitch?.message)}
-                helperText={errors.twitch?.message}
-              />
-
-              <TextField
-                fullWidth
-                label="youtube"
-                {...register('youtube')}
-                error={Boolean(errors.youtube?.message)}
-                helperText={errors.youtube?.message}
-              />
-
-              <TextField
-                fullWidth
-                label="Instagram"
-                {...register('instagram')}
-                error={Boolean(errors.instagram?.message)}
-                helperText={errors.instagram?.message}
-              />
-
-              <TextField
-                fullWidth
-                label="Tiktok"
-                {...register('Tiktok')}
-                error={Boolean(errors.Tiktok?.message)}
-                helperText={errors.Tiktok?.message}
-              />
-
-              <Grid container>
-                <Grid xs={3} item>
-                  {' '}
-                  Cover Photo{' '}
-                </Grid>
-                <Grid xs={5} item>
-                  {/* <label htmlFor="logo-button-file">
-                    <Input
-                      name="logo"
-                      accept="image/*"
-                      id="logo-button-file"
-                      type="file"
-                      onChange={e => setImage('logo', e.target.files[0])}
-                    />
-                    <Button
-                      variant="contained"
-                      component="span"
-                      onClick={handleChangeStoreAvatarButton}
-                    >
-                      Upload
-                    </Button>
-                  </label> */}
-                  <Button
-                    variant="contained"
-                    component="span"
-                    onClick={handleChangeStoreAvatarButton}
-                  >
-                    Upload
-                  </Button>
-                  <Modal
-                    open={openAvatarModal}
-                    onClose={handleCloseAvatarModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={style}>
-                      <ImageCrop
-                        handleClose={handleCloseAvatarModal}
-                        handleStoreAvatarChange={handleStoreAvatarChange}
-                        variant="storeAvatar"
-                      />
-                    </Box>
-                  </Modal>
-                </Grid>
-              </Grid>
-
-              <Grid container>
-                <Grid xs={3} item>
-                  {' '}
-                  Logo{' '}
-                </Grid>
-                <Grid xs={5} item>
-                  {/* <label htmlFor="coverAvatar-button-file">
-                    <Input
-                      name="coverAvatar"
-                      accept="image/*"
-                      id="coverAvatar-button-file"
-                      type="file"
-                      onChange={e => setImage('coverAvatar', e.target.files[0])}
-                    />
-                    <Button variant="contained" component="span">
-                      Upload
-                    </Button>
-                  </label> */}
-                  <Button
-                    variant="contained"
-                    component="span"
-                    onClick={handleChangeStoreLogoButton}
-                  >
-                    Upload
-                  </Button>
-                  <Modal
-                    open={openLogoModal}
-                    onClose={handleCloseLogoModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={style}>
-                      <ImageCrop
-                        handleClose={handleCloseLogoModal}
-                        handleStoreLogoChange={handleStoreLogoChange}
-                        variant="storeLogo"
-                      />
-                    </Box>
-                  </Modal>
-                </Grid>
-              </Grid>
-              <Grid container>
-                <SelectTheme setThemeColor={setThemeColor} />
-              </Grid>
-
-              <LoadingButton
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                loading={loading}
-              >
-                Create Store
-              </LoadingButton>
             </Stack>
 
             <TextField
@@ -619,6 +478,10 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
               onBlur={isSlugValid}
               className={classes.textfield}
             />
+
+            <Grid container>
+              <SelectTheme setThemeColor={setThemeColor} />
+            </Grid>
 
             <LoadingButton
               fullWidth
