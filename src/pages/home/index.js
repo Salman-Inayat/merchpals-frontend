@@ -75,6 +75,7 @@ const Home = ({ designJSON }) => {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
   const [phoneNo, setPhoneNo] = useState('');
+  const [storeURL, setStoreURL] = useState('');
   const classes = useStyle();
   const navigate = useNavigate();
 
@@ -160,6 +161,8 @@ const Home = ({ designJSON }) => {
       },
     };
 
+    setStoreURL(data.storeInfo.slug);
+
     axios
       .post(`${baseURL}/store`, data, {
         headers: {
@@ -173,10 +176,10 @@ const Home = ({ designJSON }) => {
         localStorage.removeItem('selectedVariants');
 
         setShowWelcomeMessage(true);
-        setTimeout(() => {
-          setShowWelcomeMessage(false);
-          navigate('/vendor/store', { replace: true });
-        }, 3500);
+        // setTimeout(() => {
+        //   setShowWelcomeMessage(false);
+        //   navigate('/vendor/store', { replace: true });
+        // }, 3500);
       })
       .catch(err => {
         console.log('err', err);
@@ -210,7 +213,7 @@ const Home = ({ designJSON }) => {
         );
       case 3:
         if (showWelcomeMessage) {
-          return <WelcomeMessage />;
+          return <WelcomeMessage storeURL={storeURL} />;
         }
         return (
           <StoreForm

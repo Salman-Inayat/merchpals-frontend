@@ -58,6 +58,10 @@ const useStyle = makeStyles({
     backgroundColor: '#007991',
     boxShadow: '3px 3px 3px #000',
   },
+
+  colorsContainer: {
+    width: '80%',
+  },
 });
 
 export default function SelectTheme({ setThemeColor }) {
@@ -78,38 +82,44 @@ export default function SelectTheme({ setThemeColor }) {
     dispatch(saveThemeColor({ themeColor }));
   };
   return (
-    <Grid item md={12} spacing={2}>
-      <Grid item md>
+    <Grid container spacing={2} justifyContent="center" alignItems="center">
+      <Grid item md={12}>
         <Typography variant="h6">Choose your theme</Typography>
       </Grid>
-      <Grid item container md={12} spacing={2}>
-        <Grid item md={2}>
-          <Paper
-            elevation={4}
-            className={style.WHITE ? classes.WHITE_click : classes.WHITE}
-            onClick={() => handleThemeChange('WHITE')}
-          ></Paper>
-        </Grid>
-        <Grid item md={2}>
-          <Paper
-            elevation={4}
-            className={style.TONIGHT ? classes.TONIGHT_click : classes.TONIGHT}
-            onClick={() => handleThemeChange('TONIGHT')}
-          ></Paper>
-        </Grid>
-        <Grid item md={2}>
-          <Paper
-            elevation={4}
-            className={style.BOURBON ? classes.BOURBON_click : classes.BOURBON}
-            onClick={() => handleThemeChange('BOURBON')}
-          ></Paper>
-        </Grid>
-        <Grid item md={2}>
-          <Paper
-            elevation={4}
-            className={style.BANG ? classes.BANG_click : classes.BANG}
-            onClick={() => handleThemeChange('BANG')}
-          ></Paper>
+      <Grid item md={12}>
+        <Grid container spacing={2} className={classes.colorsContainer}>
+          <Grid item md={2}>
+            <Paper
+              elevation={4}
+              className={style.WHITE ? classes.WHITE_click : classes.WHITE}
+              onClick={() => handleThemeChange('WHITE')}
+            ></Paper>
+          </Grid>
+          <Grid item md={2}>
+            <Paper
+              elevation={4}
+              className={
+                style.TONIGHT ? classes.TONIGHT_click : classes.TONIGHT
+              }
+              onClick={() => handleThemeChange('TONIGHT')}
+            ></Paper>
+          </Grid>
+          <Grid item md={2}>
+            <Paper
+              elevation={4}
+              className={
+                style.BOURBON ? classes.BOURBON_click : classes.BOURBON
+              }
+              onClick={() => handleThemeChange('BOURBON')}
+            ></Paper>
+          </Grid>
+          <Grid item md={2}>
+            <Paper
+              elevation={4}
+              className={style.BANG ? classes.BANG_click : classes.BANG}
+              onClick={() => handleThemeChange('BANG')}
+            ></Paper>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
