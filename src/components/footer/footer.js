@@ -36,40 +36,14 @@ function Footer() {
         justifyContent="center"
         alignItems="center"
       >
-        <img
-          alt="register"
-          src="/assets/img/bank1.png"
-          width={50}
-          height={50}
-        />
-
-        <img
-          alt="register"
-          src="/assets/img/visa_bank.jpg"
-          width={50}
-          height={40}
-        />
-
-        <img
-          alt="register"
-          src="/assets/img/mastercard.png"
-          width={50}
-          height={40}
-        />
-
-        <img
-          alt="register"
-          src="/assets/img/bank1.png"
-          width={50}
-          height={50}
-        />
+        <img alt="bank_acoounts" src="/assets/img/visa.png" width="20%" />
       </Stack>
       <Stack
         direction={{ xs: 'column', md: 'row', sm: 'row' }}
         spacing={{ xs: 1, sm: 2, md: 4 }}
         justifyContent="center"
         alignItems="center"
-        mt={4}
+        mt={3}
       >
         <Button
           className={classes.link_buttons}
