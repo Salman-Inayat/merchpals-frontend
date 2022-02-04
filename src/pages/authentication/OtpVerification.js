@@ -18,6 +18,9 @@ import {
 import { OtpVerifyInput } from '../../components/authentication/otp-verify-input';
 import { LockOutlined } from '@mui/icons-material';
 import { verifyOTP, sendOTP, clearError } from '../../store/redux/actions/auth';
+import WrongPhoneNumber from './wrongPhoneNumber';
+import axios from 'axios';
+import { baseURL } from '../../configs/const';
 
 const useStyles = makeStyles(theme => ({
   grid: {
@@ -64,9 +67,13 @@ const OtpVerification = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const oldPhoneNo = phoneNo;
   const [otp, setOtp] = useState();
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [toggleWrongPhoneNo, setToggleWrongPhoneNo] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState(phoneNo);
+  const [phoneError, setPhoneError] = useState();
 
   const navigate = useNavigate();
 
@@ -106,6 +113,45 @@ const OtpVerification = ({
     const phoneNo = localStorage.getItem('phoneNoForOTP');
     sendOTP(phoneNo);
   };
+
+  const handleWrongPhoneNo = () => {
+    setError();
+    setToggleWrongPhoneNo(true);
+  };
+
+  const handleClose = phoneNo => {
+    setPhoneNumber(`+${phoneNo}`);
+
+    const data = {
+      oldPhoneNo,
+      newPhoneNo: `+${phoneNo}`,
+    };
+
+    // check if newPhoneNo is empty
+    if (phoneNo === '') {
+      setPhoneError('Phone number cannot be empty');
+      return;
+    }
+
+    if (phoneNo.length < 6) {
+      setPhoneError('Phone number must be at least 6 digits');
+      return;
+    }
+
+    if (phoneNo.length >= 6 && phoneNo !== '') {
+      axios
+        .post(`${baseURL}/auth/send-otp-with-new-phone-no`, data)
+        .then(res => {
+          console.log(res);
+          setToggleWrongPhoneNo(false);
+          setPhoneError('');
+        })
+        .catch(err => {
+          setPhoneError(err.response.data.message);
+        });
+    }
+  };
+
   return (
     <Page title="Verify Otp">
       <Container component="main" maxWidth="sm">
@@ -136,10 +182,27 @@ const OtpVerification = ({
             <Grid item xs={12} textAlign="center">
               <Paper elevation={0}>
                 <Typography variant="body">
-                  {/* Please enter the verification code sent to your mobile */}
-                  Enter the code we sent to ({phoneNo})
+                  Enter the code we sent to ({phoneNumber})
                 </Typography>
               </Paper>
+              <Stack
+                spacing={1}
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Typography variant="body">
+                  {' '}
+                  Didn&#39;t receive the code?{' '}
+                </Typography>
+                <Link
+                  className={classes.resendOtp}
+                  color="secondary"
+                  onClick={resentOTP}
+                >
+                  Resend
+                </Link>
+              </Stack>
             </Grid>
             <Grid
               item
@@ -177,24 +240,14 @@ const OtpVerification = ({
                   </Button>
                 </Grid>
                 <Grid xs={12} item>
-                  <Stack
-                    spacing={1}
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Typography variant="body">
-                      {' '}
-                      Didn&#39;t receive the code?{' '}
-                    </Typography>
-                    <Link
-                      className={classes.resendOtp}
-                      color="secondary"
-                      onClick={resentOTP}
-                    >
-                      Resend
-                    </Link>
-                  </Stack>
+                  <Button onClick={handleWrongPhoneNo} color="secondary">
+                    Wrong number ?
+                  </Button>
+                  <WrongPhoneNumber
+                    open={toggleWrongPhoneNo}
+                    handleClose={handleClose}
+                    error={phoneError}
+                  />
                 </Grid>
               </Grid>
             </Grid>
