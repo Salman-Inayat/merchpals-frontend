@@ -12,7 +12,7 @@ import ResetPassword from './pages/authentication/ResetPassword';
 import Editor from './pages/editor/Editor';
 import Home from './pages/home';
 import VendorDashboard from './pages/vendors';
-import Store from './pages/customer/store';
+import Store from './pages/customers/store';
 import Product from './pages/products';
 // import Vendor from './pages/vendors';
 import VendorStore from './pages/vendors/store';

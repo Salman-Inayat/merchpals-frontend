@@ -32,7 +32,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
-
+import { fetchProduct } from '../../store/redux/actions/product';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -125,7 +125,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const Product = ({ addToCart, getCart, reduxCartProducts }) => {
+const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartProducts }) => {
   const classes = useStyle();
   const { productId, storeUrl } = useParams();
   const navigate = useNavigate();
@@ -154,8 +154,8 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
   const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
 
   useEffect(() => {
-    fetchProduct(productId);
-    getCart(storeUrl)
+    fetchProduct(storeUrl, productId);
+    getCart(storeUrl);
   }, []);
 
   useEffect(() => {
@@ -164,43 +164,33 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
     }
   }, [reduxCartProducts]);
 
-  const fetchProduct = async productId => {
-    axios
-      .get(`${baseURL}/products/${storeUrl}/product/${productId}`)
-      .then(response => {
-        const product = response.data.product;
-        const colorsArr = product.productMappings.map(c => c.color);
-        const variantArr = product.productMappings.map(c => c.variant);
-        console.log({ productInResponse: product });
-        const formattedProduct = {
-          vendorProduct: product.vendorProductId,
-          productId: product._id,
-          name: product.name,
-          description: product.description,
-          image: product.image,
-          cost: product.price,
-          basePrice: product.basePrice,
-          slug: product.slug,
-          productMappings: product.productMappings,
-          colors: [
-            ...new Map(colorsArr.map(item => [item['id'], item])).values(),
-          ],
-          sizes: [
-            ...new Map(variantArr.map(item => [item['id'], item])).values(),
-          ],
-          productNumberedId: product.productMappings[0].productNumberedId,
-          design: product.designId?.url,
-        };
+  useEffect(() => {
+    if (fetchedProduct) {
+      const colorsArr = fetchedProduct.productMappings.map(c => c.color);
+      const variantArr = fetchedProduct.productMappings.map(c => c.variant);
+      console.log({ productInResponse: fetchedProduct });
+      const formattedProduct = {
+        vendorProduct: fetchedProduct.vendorProductId,
+        productId: fetchedProduct._id,
+        name: fetchedProduct.name,
+        description: fetchedProduct.description,
+        image: fetchedProduct.image,
+        cost: fetchedProduct.price,
+        basePrice: fetchedProduct.basePrice,
+        slug: fetchedProduct.slug,
+        productMappings: fetchedProduct.productMappings,
+        colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
+        sizes: [...new Map(variantArr.map(item => [item['id'], item])).values()],
+        productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
+        design: fetchedProduct.designId?.url,
+      };
 
-        setProduct(formattedProduct);
-        setSize(formattedProduct.sizes[0]);
-        setColor(formattedProduct.colors[0]);
-      })
-      .catch(err => {
-        console.log({ err });
-      });
-  };
-  // console.log({formattedProduct: product});
+      setProduct(formattedProduct);
+      setSize(formattedProduct.sizes[0]);
+      setColor(formattedProduct.colors[0]);
+    }
+  }, [fetchedProduct]);
+
   const handleColorChange = event => {
     const selectedColor = product.colors.find(c => c.id === event.target.value);
     setColor(selectedColor);
@@ -217,10 +207,8 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
 
   const handleAddToCart = () => {
     const keyId = `${product.productNumberedId}-${size.id}-${color.id}`;
-    const selectedVariant = product.productMappings.find(
-      p => p.keyId === keyId,
-    );
-    
+    const selectedVariant = product.productMappings.find(p => p.keyId === keyId);
+
     if (!selectedVariant) {
       setSnackBarToggle({
         visible: true,
@@ -251,9 +239,7 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
           ...mappings,
           {
             id: productMapping,
-            quantity: isSameVariantAlreadySelected
-              ? isSameVariantAlreadySelected.quantity + 1
-              : 1,
+            quantity: isSameVariantAlreadySelected ? isSameVariantAlreadySelected.quantity + 1 : 1,
             color: selectedVariant.color.label,
             variant: selectedVariant.variant.label,
             variantId: selectedVariant.variantId,
@@ -280,11 +266,11 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
         image: product.image,
       };
     }
-    
+
     const otherProductVariants = cartsVariants.filter(
       cv => cv.vendorProduct !== product.vendorProduct,
     );
-    
+
     const updatedCartList = [updatedCart, ...otherProductVariants];
     setCartsVariants(updatedCartList);
     addToCart(storeUrl, updatedCartList);
@@ -311,7 +297,7 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
       visible: false,
     });
   };
-  console.log({ product });
+
   return (
     <Grid container spacing={1}>
       <Grid item md={6} xs={12}>
@@ -336,237 +322,209 @@ const Product = ({ addToCart, getCart, reduxCartProducts }) => {
           </StyledBadge>
         </IconButton>
       </Grid>
-      <Grid item md={12} xs={12}>
-        <Grid container>
-          <Grid
-            item
-            md={7}
-            p={5}
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+      {fetchedProduct ? (
+        <Grid item md={12} xs={12}>
+          <Grid container>
+            <Grid
+              item
+              md={7}
+              p={5}
+              xs={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
             >
               <div
-                className={classes.imageContainer}
-                style={{ backgroundColor: color.label }}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
               >
-                <img
-                  src={`${product.image}`}
-                  alt=""
-                  className={classes.image}
-                />
-                <img
-                  src={product.design}
-                  alt="design"
-                  className={classes.design}
-                />
+                <div className={classes.imageContainer} style={{ backgroundColor: color.label }}>
+                  <img src={`${product.image}`} alt="" className={classes.image} />
+                  <img src={product.design} alt="design" className={classes.design} />
+                </div>
               </div>
-            </div>
-          </Grid>
-          <Grid
-            item
-            md={5}
-            // p={5}
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            className={classes.gridContainer}
-          >
-            <Stack direction="column" spacing={2} className={classes.stack}>
-              <Typography
-                gutterBottom
-                variant="h3"
-                component="div"
-                align="center"
-              >
-                {product.name}
-              </Typography>
+            </Grid>
+            <Grid
+              item
+              md={5}
+              // p={5}
+              xs={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              className={classes.gridContainer}
+            >
+              <Stack direction="column" spacing={2} className={classes.stack}>
+                <Typography gutterBottom variant="h3" component="div" align="center">
+                  {product.name}
+                </Typography>
 
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="div"
-                className={classes.price}
-                align="center"
-              >
-                $ {product?.cost ? product.cost.toFixed(2) : 0}
-              </Typography>
-
-              <FormControl component="fieldset">
-                {/* <FormLabel component="legend">Color</FormLabel> */}
-                <RadioGroup
-                  row
-                  aria-label="color"
-                  name="controlled-radio-buttons-group"
-                  value={color.id}
-                  onChange={handleColorChange}
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  className={classes.price}
+                  align="center"
                 >
-                  {product.colors.map(({ id, label }) => {
-                    return (
-                      <FormControlLabel
-                        style={{ marginLeft: '0px' }}
-                        key={`colors-${id}`}
-                        value={id}
-                        control={
-                          <Radio
-                            className={classes.radio}
-                            sx={{
-                              '&.Mui-checked': {
-                                '& + .MuiFormControlLabel-label > div': {
-                                  border: '1px solid gray',
+                  $ {product?.cost ? product.cost.toFixed(2) : 0}
+                </Typography>
+
+                <FormControl component="fieldset">
+                  {/* <FormLabel component="legend">Color</FormLabel> */}
+                  <RadioGroup
+                    row
+                    aria-label="color"
+                    name="controlled-radio-buttons-group"
+                    value={color.id}
+                    onChange={handleColorChange}
+                  >
+                    {product.colors.map(({ id, label }) => {
+                      return (
+                        <FormControlLabel
+                          style={{ marginLeft: '0px' }}
+                          key={`colors-${id}`}
+                          value={id}
+                          control={
+                            <Radio
+                              className={classes.radio}
+                              sx={{
+                                '&.Mui-checked': {
+                                  '& + .MuiFormControlLabel-label > div': {
+                                    border: '1px solid gray',
+                                  },
                                 },
-                              },
-                            }}
-                          />
-                        }
-                        label={
-                          <div
-                            style={{
-                              backgroundColor: label,
-                              width: '100%',
-                              height: '100%',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                          >
-                            {' '}
-                            <img
-                              src={`${product.image}`}
-                              height="50"
-                              width="50"
+                              }}
                             />
-                          </div>
-                        }
-                      />
-                    );
-                  })}
-                </RadioGroup>
-              </FormControl>
+                          }
+                          label={
+                            <div
+                              style={{
+                                backgroundColor: label,
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              {' '}
+                              <img src={`${product.image}`} height="50" width="50" />
+                            </div>
+                          }
+                        />
+                      );
+                    })}
+                  </RadioGroup>
+                </FormControl>
 
-              <FormControl component="fieldset">
-                <FormLabel component="legend">Select Size</FormLabel>
-                <RadioGroup
-                  row
-                  aria-label="color"
-                  name="controlled-radio-buttons-group"
-                  value={size.id}
-                  onChange={handleSizeChange}
-                >
-                  {product.sizes.map(({ id, label }) => {
-                    return (
-                      <FormControlLabel
-                        style={{ marginLeft: '0px' }}
-                        key={`sizes-${id}`}
-                        value={id}
-                        control={
-                          <Radio
-                            className={classes.radio}
-                            sx={{
-                              '&.Mui-checked': {
-                                '& + .MuiFormControlLabel-label > div': {
-                                  backgroundColor: '#c1bdbd;',
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Select Size</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-label="color"
+                    name="controlled-radio-buttons-group"
+                    value={size.id}
+                    onChange={handleSizeChange}
+                  >
+                    {product.sizes.map(({ id, label }) => {
+                      return (
+                        <FormControlLabel
+                          style={{ marginLeft: '0px' }}
+                          key={`sizes-${id}`}
+                          value={id}
+                          control={
+                            <Radio
+                              className={classes.radio}
+                              sx={{
+                                '&.Mui-checked': {
+                                  '& + .MuiFormControlLabel-label > div': {
+                                    backgroundColor: '#c1bdbd;',
+                                  },
                                 },
-                              },
-                            }}
-                          />
-                        }
-                        label={
-                          <div
-                            style={{
-                              width: '50px',
-                              height: '50px',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              borderRadius: '5px',
-                              marginLeft: '0px',
-                            }}
-                          >
-                            <Typography component="h4">
-                              {label.toUpperCase()}
-                            </Typography>
-                          </div>
-                        }
-                      />
-                    );
-                  })}
-                </RadioGroup>
-              </FormControl>
+                              }}
+                            />
+                          }
+                          label={
+                            <div
+                              style={{
+                                width: '50px',
+                                height: '50px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: '5px',
+                                marginLeft: '0px',
+                              }}
+                            >
+                              <Typography component="h4">{label.toUpperCase()}</Typography>
+                            </div>
+                          }
+                        />
+                      );
+                    })}
+                  </RadioGroup>
+                </FormControl>
 
-              <Button
-                fullWidth
-                color="secondary"
-                variant="outlined"
-                size="large"
-                onClick={handleAddToCart}
-                className={classes.addToCartButton}
-              >
-                Add to Cart
-              </Button>
-
-              <Accordion className={classes.accordian}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
+                <Button
+                  fullWidth
+                  color="secondary"
+                  variant="outlined"
+                  size="large"
+                  onClick={handleAddToCart}
+                  className={classes.addToCartButton}
                 >
-                  <Typography component="h5">DETAILS</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+                  Add to Cart
+                </Button>
 
-              <Accordion className={classes.accordian}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography component="h5">SHIPPING DETAILS</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+                <Accordion className={classes.accordian}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography component="h5">DETAILS</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
+                      lacus ex, sit amet blandit leo lobortis eget.
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
 
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Snackbar
-                  open={snackBarToggle.visible}
-                  autoHideDuration={3000}
-                  onClose={handleSnackBarClose}
-                >
-                  <Alert severity={snackBarToggle.type}>
-                    {snackBarToggle.message}
-                  </Alert>
-                </Snackbar>
+                <Accordion className={classes.accordian}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography component="h5">SHIPPING DETAILS</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
+                      lacus ex, sit amet blandit leo lobortis eget.
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Snackbar
+                    open={snackBarToggle.visible}
+                    autoHideDuration={3000}
+                    onClose={handleSnackBarClose}
+                  >
+                    <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+                  </Snackbar>
+                </Stack>
               </Stack>
-            </Stack>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      ) : null}
     </Grid>
   );
 };
@@ -575,11 +533,13 @@ const mapDispatch = dispatch => ({
   addToCart: (store, product) => {
     dispatch(addToCart(store, product));
   },
-  getCart: (store) => dispatch(getCart(store))
+  getCart: store => dispatch(getCart(store)),
+  fetchProduct: (storeUrl, productId) => dispatch(fetchProduct(storeUrl, productId)),
 });
 
 const mapState = state => ({
-  reduxCartProducts: state.cart.cart.products
-})
+  reduxCartProducts: state.cart.cart.products,
+  fetchedProduct: state.product.product,
+});
 
 export default connect(mapState, mapDispatch)(Product);

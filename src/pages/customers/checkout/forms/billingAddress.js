@@ -125,31 +125,31 @@ const BillingAddress = ({
     resolver: yupResolver(CustomerSchema),
   });
 
-  const [firstName, lastName, aptNo, zip, street, city, state, country] = watch(
-    [
-      'firstName',
-      'lastName',
-      'aptNo',
-      'zip',
-      'street',
-      'city',
-      'state',
-      'country',
-    ],
-  );
+  const [firstName, lastName, aptNo, zip, street, city, state, country] = watch([
+    'firstName',
+    'lastName',
+    'aptNo',
+    'zip',
+    'street',
+    'city',
+    'state',
+    'country',
+  ]);
 
   useEffect(() => {
     if (country) {
-      getStatesOfCountry(country)
-      getRegionOfCountry(country)        
+      getStatesOfCountry(country);
+      getRegionOfCountry(country);
     }
   }, [country]);
 
-  if (!country) {
-    setValue('country', 'US')
-  }
+  useEffect(() => {
+    setValue('country', 'US');
+    setValue('state', 'NY');
+    setValue('zip', '10001');
+  }, []);
 
-// console.log({ country });
+  // console.log({ country });
   useEffect(() => {
     setBillingAddress({
       firstName,
@@ -160,12 +160,15 @@ const BillingAddress = ({
       city,
       state,
       country,
+      tax_number: cpf,
     });
     setCustomer({
       firstName,
       lastName,
     });
-  }, [firstName, lastName, aptNo, zip, street, city, state, country]);
+
+    updateTaxAndShipping();
+  }, [firstName, lastName, aptNo, zip, street, city, state, country, cpf]);
 
   const validateAndContinue = async () => {
     if (!phoneNo) {
@@ -179,20 +182,18 @@ const BillingAddress = ({
     }
 
     if (!cpf) {
-      setCpfErr('CPF number is required!')
+      setCpfErr('CPF number is required!');
     } else if (!CpfRegulator.isValid(cpf)) {
-      setCpfErr('Please provide a valid CPF number!')
+      setCpfErr('Please provide a valid CPF number!');
     }
     const isValid = await trigger();
     if (isValid) {
       markAddressComplete(true);
-      updateTaxAndShipping();
     } else {
       markAddressComplete(false);
     }
   };
 
-  
   return (
     <Grid item>
       <Grid className={classes.accordian}>
@@ -215,9 +216,7 @@ const BillingAddress = ({
               className={classes.textField}
               placeholder="First name"
             />
-            <span className={classes.fieldError}>
-              {errors?.firstName?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.firstName?.message}</span>
           </Grid>
           <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
@@ -234,9 +233,7 @@ const BillingAddress = ({
               className={classes.textField}
               placeholder="Last name"
             />
-            <span className={classes.fieldError}>
-              {errors?.lastName?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.lastName?.message}</span>
           </Grid>
         </Grid>
 
@@ -256,9 +253,7 @@ const BillingAddress = ({
               className={classes.textField}
               placeholder="Street Address"
             />
-            <span className={classes.fieldError}>
-              {errors?.street?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.street?.message}</span>
           </Grid>
           <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>APT. / Suite</InputLabel>
@@ -336,9 +331,7 @@ const BillingAddress = ({
                 </MenuItem>
               ))}
             </Select>
-            <span className={classes.fieldError}>
-              {errors?.country?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.country?.message}</span>
           </Grid>
           <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
@@ -401,36 +394,30 @@ const BillingAddress = ({
                   className={classes.textField}
                   placeholder="Email"
                 />
-                <span className={classes.fieldError}>
-                  {formErrors.email || emailErr}
-                </span>
+                <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
               </Grid>
-              {country === 'BR' && <Grid item md={6} xs={12}>
-                <InputLabel className={classes.label}>CPF</InputLabel>
-                <Input
-                  value={cpf}
-                  onChange={e => {
-                    setCpfErr('');
-                    setCPF(e.target.value);
-                  }}
-                  onKeyUp={() => setFormErrors({ cpf: '' })}
-                  className={classes.textField}
-                  placeholder="CPF"
-                />
-                <span className={classes.fieldError}>
-                  {cpfErr}
-                </span>
-              </Grid> }             
-            </Grid>          
+              {country === 'BR' && (
+                <Grid item md={6} xs={12}>
+                  <InputLabel className={classes.label}>CPF</InputLabel>
+                  <Input
+                    value={cpf}
+                    onChange={e => {
+                      setCpfErr('');
+                      setCPF(e.target.value);
+                    }}
+                    onKeyUp={() => setFormErrors({ cpf: '' })}
+                    className={classes.textField}
+                    placeholder="CPF"
+                  />
+                  <span className={classes.fieldError}>{cpfErr}</span>
+                </Grid>
+              )}
+            </Grid>
           ))
         }
         <Grid justifyContent="center" mt={3} container>
-          {taxError && (
-            <Typography className={classes.error}>{taxError}</Typography>
-          )}
-          {shippingError && (
-            <Typography className={classes.error}>{shippingError}</Typography>
-          )}
+          {taxError && <Typography className={classes.error}>{taxError}</Typography>}
+          {shippingError && <Typography className={classes.error}>{shippingError}</Typography>}
         </Grid>
         <Grid justifyContent="center" mt={3} container>
           <Button onClick={validateAndContinue} className={classes.continueBtn}>

@@ -1,0 +1,104 @@
+import React, { useEffect, useState } from 'react';
+import { Container, Grid, Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { fetchStore } from '../../../store/redux/actions/store';
+import { connect } from 'react-redux';
+import StoreProductCard from '../../../components/storeProductCard';
+import { useMediaQuery } from 'react-responsive';
+import { useParams } from 'react-router-dom';
+
+const useStyle = makeStyles(theme => ({
+  coverContainer: {
+    position: 'relative',
+    height: '50vh',
+    [theme.breakpoints.down('sm')]: {
+      height: '30vh',
+    },
+  },
+  coverImage: {
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  logo: {
+    position: 'absolute',
+    top: '250px',
+    left: '10%',
+    width: '120px',
+    height: '120px',
+    borderRadius: '100px',
+    [theme.breakpoints.down('sm')]: {
+      top: '85%',
+      left: '10%',
+      width: '90px',
+      height: '90px',
+    },
+  },
+  storeName: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    fontSize: '3rem',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2rem',
+    },
+  },
+  productsContainer: {
+    padding: '2rem 8rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1rem',
+      spacing: '5',
+    },
+  },
+}));
+
+const Store = ({ fetchStore, store }) => {
+  const classes = useStyle();
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const { storeUrl } = useParams();
+
+  useEffect(() => {
+    fetchStore(storeUrl);
+  }, []);
+  console.log({ store });
+  return (
+    store && (
+      <Grid container spacing={3}>
+        <Grid item md={12} xs={12} className={classes.coverContainer}>
+          <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
+          <Typography variant="h1" className={classes.storeName} align="center">
+            {store.name}
+          </Typography>
+
+          <img src={store.logo} className={classes.logo} />
+        </Grid>
+        <Grid item md={12} sm={12} xs={12}>
+          <Grid container spacing={isMobile ? 1 : 10} className={classes.productsContainer}>
+            {store.vendorProductIds?.map(product => {
+              return (
+                <Grid item md={4} xs={6} key={product.vendorProductId}>
+                  <StoreProductCard product={product} storeUrl={storeUrl} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Grid>
+      </Grid>
+    )
+  );
+};
+
+const mapDispatch = dispatch => ({
+  fetchStore: store => dispatch(fetchStore(store)),
+});
+
+const mapState = state => ({
+  store: state.store.store,
+});
+export default connect(mapState, mapDispatch)(Store);

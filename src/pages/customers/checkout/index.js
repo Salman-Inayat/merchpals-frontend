@@ -10,11 +10,12 @@ import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import Lock from '../../../assets/images/icons/lock1.png';
+import { getPriceCalculation } from '../../../store/redux/actions/printful';
+import { createOrder, resetOrder } from '../../../store/redux/actions/order';
 
 const useStyles = makeStyles(theme => ({
   card: {
-    boxShadow:
-      '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
   },
   heading: {
     fontWeight: 'bolder',
@@ -26,12 +27,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
+const Checkout = ({
+  getCart = () => {},
+  getPriceCalculation = () => {},
+  priceCalculation = {},
+  // shippingCost,
+  // tax,
+  // shippingError,
+  // taxErrorStr,
+  emptyCart = () => {},
+  reduxCartProducts = [],
+  createOrder = () => {},
+  resetOrder = () => {},
+  orderCreated,
+}) => {
   const [completedCustomerInfo, setCompletedCustomerInfo] = useState(false);
   const [completedAddress, setCompletedAddress] = useState(false);
   const [completedPayment, setCompletedPayment] = useState(false);
   const [customer, setCustomer] = useState({});
-  const [billingAddress, setBillingAddress] = useState({});
+  const [billingAddress, setBillingAddress] = useState({
+    country: 'US',
+    state: 'NY',
+    zip: '10001',
+  });
   const [payment, setPayment] = useState({});
   const [cart, setCart] = useState({
     amount: 0,
@@ -45,14 +63,10 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
     phoneNo: '',
     message: '',
   });
-  const [countries, setCountries] = useState([])
+  const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
-  const [region, setRegion] = useState('America')
-  const [shippingError, setShippingError] = useState('');
-  const [taxErrorStr, setTaxErrorStr] = useState('');
+  const [region, setRegion] = useState('America');
   const [loading, setLoading] = useState(false);
-  const [tax, setTax] = useState(0);
-  const [shippingCost, setShippingCost] = useState(0);
   const [printfulData, setPrintfulData] = useState(null);
   const classes = useStyles();
   const { storeUrl } = useParams();
@@ -60,170 +74,124 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
 
   const total = products => {
     let totalCartPrice = 0;
-    let totalProfit = 0;
 
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
-      const quantities = product.productMappings.reduce(
-        (sum, cur) => sum + cur.quantity,
-        0,
-      );
+      const quantities = product.productMappings.reduce((sum, cur) => sum + cur.quantity, 0);
       const productPrice = product.price * quantities;
-      const productProfit = (product.price - product.basePrice) * quantities;
 
       totalCartPrice = totalCartPrice + productPrice;
-      totalProfit = productProfit;
     }
 
-    return [Number(totalCartPrice.toFixed(2)), Number(totalProfit.toFixed(2))];
+    return Number(totalCartPrice.toFixed(2));
   };
 
   useEffect(() => {
-    getCart(storeUrl)
-    getCountries()
+    getCart(storeUrl);
+    getCountries();
   }, []);
 
   useEffect(() => {
-      updateCart(reduxCartProducts);
-  }, [reduxCartProducts])
+    updateCart(reduxCartProducts);
+  }, [reduxCartProducts]);
 
+  useEffect(() => {
+    if (orderCreated) {
+      emptyCart();
+      resetOrder();
+      navigate(`/store/${storeUrl}`);
+    }
+  }, [orderCreated]);
   const getCountries = () => {
-    axios.get('https://api.countrystatecity.in/v1/countries', {
-      headers: {
-        'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY
-      }
-    })
+    axios
+      .get('https://api.countrystatecity.in/v1/countries', {
+        headers: {
+          'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY,
+        },
+      })
       .then(response => setCountries(response.data))
-      .catch(err => console.log({ err }))
-  }
+      .catch(err => console.log({ err }));
+  };
 
-  const getStatesOfCountry = (country) => {
-    axios.get(`https://api.countrystatecity.in/v1/countries/${country}/states`, {
-      headers: {
-        'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY
-      }
-    })
+  const getStatesOfCountry = country => {
+    axios
+      .get(`https://api.countrystatecity.in/v1/countries/${country}/states`, {
+        headers: {
+          'X-CSCAPI-KEY': process.env.REACT_APP_CSC_APIKEY,
+        },
+      })
       .then(response => {
         const sortedStates = response.data.sort((a, b) => {
-          if(a.name < b.name) { return -1; }
-          if(a.name > b.name) { return 1; }
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
           return 0;
-      })
-        console.log(sortedStates);
-        setStates(sortedStates)
-      })
-      .catch(err => console.log({ err }))    
-  }
+        });
 
-  const getRegionOfCountry =  (country) => {
-    axios.get(`https://restcountries.com/v3.1/alpha/${country}`)
+        setStates(sortedStates);
+      })
+      .catch(err => console.log({ err }));
+  };
+
+  const getRegionOfCountry = country => {
+    axios
+      .get(`https://restcountries.com/v3.1/alpha/${country}`)
       .then(response => setRegion(response.data[0].region))
-      .catch(err => console.log({ err }))    
-  }
+      .catch(err => console.log({ err }));
+  };
 
   const updateCart = products => {
-    const [amount, profit] = total(products);
-    // let formattedProducts = [];
-    
-    // for (let i = 0; i < products.length; i++) {
-    //   const product = products[i];
-    //   const variantIds = product.productMappings.map(pm => pm.id);
-    //   formattedProducts.push({
-    //     productId: product.productId,
-    //     productMappings: variantIds,
-    //   });
-    // }
-
     setCart({
-      amount,
-      profit,
-      // products: formattedProducts,
       savedProducts: products,
     });
-
-    return true;
-  };
-  const updateTaxAndShipping = () => {
-    if (billingAddress.country === 'US') {
-      setShippingCost('Free');
-    } else {
-      setShippingCost(0);
-    }
-    if (billingAddress.country && billingAddress.state) {
-      const { aptNo, street, zip, city, state, country } = billingAddress;
-      let items = [];
-      for (let i = 0; i < cart.savedProducts.length; i++) {
-        let curProduct = cart.savedProducts[i];
-        for (let j = 0; j < curProduct.productMappings.length; j++) {
-          const curVariant = curProduct.productMappings[j];
-          items.push({
-            quantity: curVariant.quantity,
-            variant_id: curVariant.variantId,
-          });
-        }
-      }
-
-      const data = {
-        recipient: {
-          address1: `${aptNo} ${street}`,
-          city,
-          country_code: country,
-          state_code: state,
-          zip,
-        },
-        items,
-      };
-      console.log({ items });
-      setPrintfulData(data);
-      getTax(data);
-      if (billingAddress.country !== 'US') {
-        getShippingCost(data);
-      }
-    }
   };
 
   useEffect(() => {
     updateTaxAndShipping();
-  }, [
-    completedAddress,
-    billingAddress.country,
-    billingAddress.state,
-    billingAddress.zip,
-  ]);
+  }, [cart]);
 
-  const getTax = async data => {
-    axios
-      .post(`${baseURL}/printful/calculate-tax`, { data })
-      .then(response => {
-        // console.log({tax: response.data.payload.rate});
-        setTax(response.data.payload.rate);
-        setTaxErrorStr('');
-      })
-      .catch(err => {
-        console.log({ errorTTax: err });
-        setTaxErrorStr(err.response.data.message);
-      });
+  const updateTaxAndShipping = () => {
+    const { aptNo, street, zip, city, state, country } = billingAddress;
+    let items = [];
+    for (let i = 0; i < cart.savedProducts.length; i++) {
+      let curProduct = cart.savedProducts[i];
+      for (let j = 0; j < curProduct.productMappings.length; j++) {
+        const curVariant = curProduct.productMappings[j];
+        items.push({
+          quantity: curVariant.quantity,
+          vendorProduct: curProduct.vendorProduct,
+          productMapping: curVariant.id,
+          variant_id: curVariant.variantId,
+        });
+      }
+    }
+
+    const data = {
+      recipient: {
+        street,
+        aptNo,
+        address1: `${aptNo} ${street}`,
+        city,
+        country_code: country,
+        state_code: state,
+        country,
+        state,
+        zip,
+      },
+      items,
+    };
+
+    setPrintfulData(data);
+    getPriceCalculation(data);
   };
-  // console.log({taxErrorStr});
-  const getShippingCost = async data => {
-    axios
-      .post(`${baseURL}/printful/calculate-shipping`, { data })
-      .then(response => {
-        // console.log('shippingCost',response.data.payload.cost);
-        setShippingError('');
-        setShippingCost(response.data.payload.rate);
-      })
-      .catch(error => {
-        console.log({ shippingError: error });
-        setShippingError(error.response.data.message);
-      });
-  };
-  const stripePromise = loadStripe(
-    process.env.REACT_APP_STRIPE_PUBLISHABLE_CUSTOMER_KEY,
-  );
+
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_CUSTOMER_KEY);
 
   const markAddressComplete = isCompleted => setCompletedAddress(isCompleted);
-  
+
   const placeOrder = token => {
     let error = false;
     let errors = {};
@@ -250,31 +218,12 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
       setFormErrors(errors);
       return;
     }
-    
-    let cartProducts = [];
-    for (let i = 0; i < reduxCartProducts.length; i++) {
-      let curProduct = reduxCartProducts[i];
-      for (let j = 0; j < curProduct.productMappings.length; j++) {
-        const curVariant = curProduct.productMappings[j];
-        cartProducts.push({
-          quantity: curVariant.quantity,
-          vendorProduct: curProduct.vendorProduct,
-          productMapping: curVariant.id
-        });
-      }
-    }
 
     setLoading(true);
-    
+
     const data = {
       printfulData,
-      profit: cart.profit,
-      order: {
-        storeUrl,
-        amount: cart.amount,
-        products: cartProducts,
-        billingAddress,
-      },
+      storeUrl,
       customer: {
         ...customer,
         phoneNo,
@@ -286,34 +235,17 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
       },
     };
     console.log({ data });
-    
-    axios
-      .post(`${baseURL}/order`, data)
-      .then(response => {
-        console.log({orderplacementResponse: response});
-        setLoading(false);
-        localStorage.removeItem('MERCHPALS_CART');
-        navigate(`/store/${storeUrl}`);
-      })
-      .catch(error => {
-        setLoading(false);
-        console.log({ error });
-      });
+
+    createOrder(data);
   };
+
   return (
     <Grid justifyContent="center" alignItems="center" mt={12} p={3} container>
       <Grid className={classes.card} xs={12} item>
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="flex-end"
-          xs={12}
-          item
-        >
+        <Grid container alignItems="center" justifyContent="flex-end" xs={12} item>
           <Grid xs={5} item style={{ padding: '10px' }}>
             <Button className={classes.back} onClick={() => navigate(-1)}>
-              {' '}
-              Back{' '}
+              Back
             </Button>
           </Grid>
           <Grid xs={6} item style={{ padding: '10px' }}>
@@ -330,14 +262,13 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
           setCustomer={setCustomer}
           products={cart.savedProducts}
           setProducts={updateCart}
-          tax={tax}
-          shippingCost={shippingCost}
+          priceCalculation={priceCalculation}
           storeUrl={storeUrl}
         />
 
         <BillingAddress
-          taxError={taxErrorStr}
-          shippingError={shippingError}
+          taxError={priceCalculation.taxError}
+          shippingError={priceCalculation.shippingError}
           markAddressComplete={markAddressComplete}
           setBillingAddress={setBillingAddress}
           updateTaxAndShipping={updateTaxAndShipping}
@@ -370,12 +301,17 @@ const Checkout = ({ getCart, emptyCart, reduxCartProducts = [] }) => {
 };
 
 const mapDispatch = dispatch => ({
-  getCart: (store) => dispatch(getCart(store)),
-  emptyCart: () => dispatch(emptyCart())
-})
+  getCart: store => dispatch(getCart(store)),
+  emptyCart: () => dispatch(emptyCart()),
+  getPriceCalculation: data => dispatch(getPriceCalculation(data)),
+  createOrder: data => dispatch(createOrder(data)),
+  resetOrder: () => dispatch(resetOrder()),
+});
 
 const mapState = state => ({
-  reduxCartProducts: state.cart.cart.products
-})
+  reduxCartProducts: state.cart.cart.products,
+  priceCalculation: state.printful.priceCalculation,
+  orderCreated: state.order.created,
+});
 
 export default connect(mapState, mapDispatch)(Checkout)

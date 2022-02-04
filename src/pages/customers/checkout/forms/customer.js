@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, storeUrl }) => {
+const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalculation }) => {
   const classes = useStyles();
   const updateQuantity = (vendorProduct, variantId, op) => {
     let updatedCart = [...products];
@@ -99,9 +99,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
     const prevProductIndex = products.findIndex(v => v.vendorProduct === vendorProduct);
     const prevProduct = products[prevProductIndex];
 
-    const variantIndex = prevProduct.productMappings.findIndex(
-      prv => prv.id === variantId,
-    );
+    const variantIndex = prevProduct.productMappings.findIndex(prv => prv.id === variantId);
     const variant = { ...prevProduct.productMappings[variantIndex] };
     let mappings = [...prevProduct.productMappings];
 
@@ -125,9 +123,9 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
       productMappings: mappings,
     };
     updatedCart.splice(prevProductIndex, 1, updatedProduct);
-    console.log('produucts', updatedCart);
+
     setProducts(updatedCart);
-     addToCart(storeUrl, updatedCart);
+    addToCart(storeUrl, updatedCart);
   };
 
   const removeFromCart = (vendorProduct, variantId) => {
@@ -142,43 +140,11 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
       productMappings: [...mappings],
     };
 
-    const otherProductVariants = products.filter(
-      cv => cv.vendorProduct !== vendorProduct,
-    );
+    const otherProductVariants = products.filter(cv => cv.vendorProduct !== vendorProduct);
     const updatedCartList = [updatedCart, ...otherProductVariants];
-    console.log({ updatedCartList });
+
     setProducts(updatedCartList);
-     addToCart(storeUrl, updatedCartList);
-  };
-
-  const subTotal = () => {
-    let totalCartPrice = 0;
-    for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      const quantities = product.productMappings.reduce(
-        (sum, cur) => sum + cur.quantity,
-        0,
-      );
-      const productPrice = product.price * quantities;
-      totalCartPrice = totalCartPrice + productPrice;
-    }
-
-    return Number(totalCartPrice.toFixed(2));
-  };
-  const taxAmount = () => {
-    const subTotalAmount = subTotal();
-    return Number((subTotalAmount * tax).toFixed(2));
-  };
-
-  const total = () => {
-    const subTotalAmount = subTotal();
-    const taxAmountNo = taxAmount();
-    const shippingCostCal = shippingCost === 'Free' ? 0 : Number(shippingCost);
-    return (
-      Number(subTotalAmount) +
-      shippingCostCal +
-      Number(taxAmountNo)
-    ).toFixed(2);
+    addToCart(storeUrl, updatedCartList);
   };
 
   return (
@@ -193,14 +159,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
         <AccordionDetails>
           {products.map(product =>
             product.productMappings.map((variant, i) => (
-              <Grid
-                direction="row"
-                xs={12}
-                item
-                container
-                mt={2}
-                key={`product-${i}`}
-              >
+              <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
                 <Grid xs={4} item className={classes.imageCard}>
                   <Avatar
                     className={classes.avatar}
@@ -208,11 +167,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
                     src={product.image}
                     variant="square"
                   />
-                  <Avatar
-                    className={classes.design}
-                    src={variant.design}
-                    variant="square"
-                  />
+                  <Avatar className={classes.design} src={variant.design} variant="square" />
                 </Grid>
                 <Grid spacing={1} direction="column" container xs={5} item>
                   <Grid className={classes.text} item>
@@ -225,18 +180,9 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
                   </Grid>
                   <Grid item>
                     <Box>
-                      <ButtonGroup
-                        size="small"
-                        aria-label="small outlined button group"
-                      >
+                      <ButtonGroup size="small" aria-label="small outlined button group">
                         <Button
-                          onClick={() =>
-                            updateQuantity(
-                              product.vendorProduct,
-                              variant.id,
-                              'minus',
-                            )
-                          }
+                          onClick={() => updateQuantity(product.vendorProduct, variant.id, 'minus')}
                           className={classes.operatorBtn}
                         >
                           {' '}
@@ -244,9 +190,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
                         </Button>
                         <Button disabled>{variant.quantity}</Button>
                         <Button
-                          onClick={() =>
-                            updateQuantity(product.vendorProduct, variant.id, 'add')
-                          }
+                          onClick={() => updateQuantity(product.vendorProduct, variant.id, 'add')}
                           className={classes.operatorBtn}
                         >
                           {' '}
@@ -259,9 +203,7 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
                 <Grid xs={3} item>
                   <Button
                     className={classes.removeBtn}
-                    onClick={() =>
-                      removeFromCart(product.vendorProduct, variant.id)
-                    }
+                    onClick={() => removeFromCart(product.vendorProduct, variant.id)}
                   >
                     Remove
                   </Button>
@@ -274,19 +216,13 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
             <Grid justifyContent="space-between" item container>
               <Typography className={classes.summaryText}>Sub Total</Typography>
               <Typography className={classes.summaryText} align="right">
-                ${subTotal()}
+                ${priceCalculation.orderActualAmount}
               </Typography>
             </Grid>
             <Grid justifyContent="space-between" item container>
               <Grid xs={6} alignItems="center" item container>
-                <Typography className={classes.summaryText}>
-                  Estimated Shipping
-                </Typography>
-                <Tooltip
-                  placement="top"
-                  describeChild
-                  title="Shipping description"
-                >
+                <Typography className={classes.summaryText}>Estimated Shipping</Typography>
+                <Tooltip placement="top" describeChild title="Shipping description">
                   <IconButton className={classes.infoBtn}>
                     <QuestionMark className={classes.infoIcon} />
                   </IconButton>
@@ -294,17 +230,15 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
               </Grid>
               <Grid xs={6} item>
                 <Typography className={classes.summaryText} align="right">
-                  {shippingCost === 'Free'
+                  {priceCalculation.shippingAmount === 'Free'
                     ? 'Free'
-                    : `$${Number(shippingCost).toFixed(2)}`}
+                    : `$${priceCalculation.shippingAmount}`}
                 </Typography>
               </Grid>
             </Grid>
             <Grid justifyContent="space-between" item container>
               <Grid xs={6} alignItems="center" item container>
-                <Typography className={classes.summaryText}>
-                  Estimated Tax
-                </Typography>
+                <Typography className={classes.summaryText}>Estimated Tax</Typography>
                 <Tooltip placement="top" describeChild title="Tax description">
                   <IconButton className={classes.infoBtn}>
                     <QuestionMark className={classes.infoIcon} />
@@ -313,14 +247,14 @@ const Customer = ({ products = [], setProducts, tax, shippingCost, addToCart, st
               </Grid>
               <Grid xs={2} item>
                 <Typography className={classes.summaryText} align="right">
-                  ${taxAmount()}
+                  ${priceCalculation.taxAmount}
                 </Typography>
               </Grid>
             </Grid>
             <Grid justifyContent="space-between" item container>
               <Typography className={classes.summaryText}>Total</Typography>
               <Typography className={classes.totalText} align="right">
-                ${total()}
+                ${priceCalculation.amountWithTaxAndShipping}
               </Typography>
             </Grid>
           </Grid>
