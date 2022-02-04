@@ -5,7 +5,13 @@ import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { Grid, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
+const useStyles = makeStyles(theme => ({
+  mainAccordian: {
+    fontWeight: '500 !important',
+  },
+}));
 const Accordion = styled(props => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -39,18 +45,22 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 function FAQ({ faq, index, toggleFAQ, className, state, setState }) {
+  const classes = useStyles();
   return (
     <Grid className={className}>
       <Accordion
+        className={classes.mainAccordian}
         expanded={faq.open ? true : false}
-        onClick={() => toggleFAQ(index, state, setState)}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>{faq.question}</Typography>
+        <AccordionSummary
+          aria-controls="panel1d-content"
+          id="panel1d-header"
+          onClick={() => toggleFAQ(index, state, setState)}
+        >
+          <Typography variant="h6">{faq.question}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Grid item md dangerouslySetInnerHTML={{ __html: faq.answer }}></Grid>
-          {/* <Typography>{faq.answer}</Typography> */}
         </AccordionDetails>
       </Accordion>
     </Grid>
