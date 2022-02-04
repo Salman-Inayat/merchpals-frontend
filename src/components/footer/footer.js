@@ -65,8 +65,8 @@ function Footer() {
         />
       </Stack>
       <Stack
-        direction="row"
-        spacing={2}
+        direction={{ xs: 'column', md: 'row', sm: 'row' }}
+        spacing={{ xs: 1, sm: 2, md: 4 }}
         justifyContent="center"
         alignItems="center"
         mt={4}
