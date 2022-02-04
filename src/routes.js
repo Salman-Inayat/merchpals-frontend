@@ -31,6 +31,7 @@ import StoreSettings from './pages/vendors/settings/storeSettings';
 // import ContactSupport from './pages/vendors/contactSupport';
 import PaymentOnboarding from './pages/vendors/payment';
 import StripeOnboardingReturn from './pages/vendors/payment/return';
+import FlowComplete from './pages/home/steps/FlowComplete';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -69,5 +70,10 @@ export default function Router() {
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
+
+    {
+      path: '/flow-complete',
+      element: <FlowComplete />,
+    },
   ]);
 }
