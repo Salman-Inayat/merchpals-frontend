@@ -80,36 +80,36 @@ export default function CustomizedAccordions() {
   const [orders, setOrders] = useState([
     {
       question: 'Can I cancel my order?',
-      answer: `<div style="margin-left:40px;">
-      <h3>You may be able to cancel an order for a full refund as long as your order has not processed. To reach out about canceling your order, please contact us at the bottom of this page.
-      <br><br>If your order has already processed, we are unable to cancel your order</h3></div>`,
+      answer: `<div style="margin-left:30px;">
+      <p style="font-size:16px;">You may be able to cancel an order for a full refund as long as your order has not processed. To reach out about canceling your order, please contact us at the bottom of this page.
+      <br><br>If your order has already processed, we are unable to cancel your order</p></div>`,
       open: false,
     },
     {
       question: 'What forms of payment do you accept?',
       answer: `
-      <div style="margin-left:40px;">
-      <h3>
+      <div style="margin-left:30px;">
+      <p style="font-size:16px;">
       We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, debit cards.
-      </h3>
+      </p>
       </div>`,
       open: false,
     },
     {
       question: 'Why was I charged more than once for an order?',
-      answer: ` <div style="margin-left:40px;">
-      <h4>
+      answer: ` <div style="margin-left:30px;">
+      <p style="font-size:16px;">
       If you use a credit card to place an order and it is declined for any reason (including but not limited to invalid CVV, expiration date, billing address, etc), you may see a pending charge on your account. If this happens, the pending charge will clear from your bank statement within 1-5 days. 
       <br><br>
-      Unfortunately if this happens, we are not able to do anything on our end. If you're concerned about the pending charges, your best option is to contact your bank. If these charges do not disappear from your account after 10 business days, please reach out to our team here to in-vestigate. </h4></div>`,
+      Unfortunately if this happens, we are not able to do anything on our end. If you're concerned about the pending charges, your best option is to contact your bank. If these charges do not disappear from your account after 10 business days, please reach out to our team here to in-vestigate. </p></div>`,
       open: false,
     },
     {
       question: 'My credit or debit card is not working',
       answer: `
-     <div style="margin-left:40px;">
-        <h3>If your credit or debit card is not working, please verify that the following is correct:</h3>
-        <ul style="margin-left:40px;">
+     <div style="margin-left:30px;">
+        <p style="font-size:16px;">If your credit or debit card is not working, please verify that the following is correct:</p>
+        <ul style="margin-left:30px;">
             <li>Credit or debit card number</li>
             <li>Expiration date</li>
             <li>CVV/card security code</li>
@@ -117,7 +117,7 @@ export default function CustomizedAccordions() {
             <li>Billing address</li>
             <li>Sufficient funds or credit available</li>        
         </ul>
-        <h3>If you still are having issues, the best option is to reach out to your financial institution/bank directly.</h3>	
+        <p style="font-size:16px;">If you still are having issues, the best option is to reach out to your financial institution/bank directly.</p>	
      </div>
         `,
       open: false,
@@ -125,18 +125,18 @@ export default function CustomizedAccordions() {
     {
       question: 'Do the prices shown on product pages include tax?',
       answer: `
-        <div style="margin-left:40px;">
-      <h3>
+        <div style="margin-left:30px;">
+      <p style="font-size:16px;">
        Prices shown on product pages do not include tax. Tax is calculated at checkout based on your shipping address and relevant tax rules.
-  </h3></div>
+  </p></div>
          `,
       open: false,
     },
     {
       question: 'Can I change my order?',
-      answer: ` <div style="margin-left:40px;">
-      <h3>
-       Due to the nature of our products and the limited quantities available, we are unable to make any changes to any orders.</h3></div>
+      answer: ` <div style="margin-left:30px;">
+      <p style="font-size:16px;">
+       Due to the nature of our products and the limited quantities available, we are unable to make any changes to any orders.</p></div>
       `,
       open: false,
     },
@@ -144,42 +144,42 @@ export default function CustomizedAccordions() {
   const [returns, setReturns] = useState([
     {
       question: 'Do you accept returns or exchanges?',
-      answer: ` <div style="margin-left:40px;">
-      <h3>
-      We do not offer returns or exchanges under any circumstance due to the nature of our products and the limited quantities available.</h3></div> `,
+      answer: ` <div style="margin-left:30px;">
+      <p style="font-size:16px;">
+      We do not offer returns or exchanges under any circumstance due to the nature of our products and the limited quantities available.</p></div> `,
       open: false,
     },
     {
       question: 'My order/item was damaged in transit',
       answer: `
-      <div style="margin-left:40px;">
-      <h3>
+      <div style="margin-left:30px;">
+      <p style="font-size:16px;">
       If your order/item is damaged during shipping, please send a photo of the damage, your email address used to place the order and order number within 48 hours of receiving it to the contact us section at the bottom of this page.
       <br><br>
-      If 48 hours has passed since delivery, we are unable to replace or refund your order. </h3></div> `,
+      If 48 hours has passed since delivery, we are unable to replace or refund your order. </p></div> `,
       open: false,
     },
     {
       question: 'My order was returned to sender',
-      answer: `<div style="margin-left:40px;">
-      <h3>If your order was returned to sender for any reason, you will receive an email from our cus-tomer service team to fix the issue once it has been delivered back to our fulfillment center. If you do not respond within 7 days, your order will be cancelled and refunded minus any rele-vant order costs and shipping fees.
+      answer: `<div style="margin-left:30px;">
+      <p style="font-size:16px;">If your order was returned to sender for any reason, you will receive an email from our cus-tomer service team to fix the issue once it has been delivered back to our fulfillment center. If you do not respond within 7 days, your order will be cancelled and refunded minus any rele-vant order costs and shipping fees.
       <br><br>
-      Once an item has been marked as returned to sender by the post office, the only option is to wait for it to arrive back at our warehouse. </h3></div>`,
+      Once an item has been marked as returned to sender by the post office, the only option is to wait for it to arrive back at our warehouse. </p></div>`,
       open: false,
     },
   ]);
   const [additionals, setAdditionals] = useState([
     {
       question: 'How can I track my order?',
-      answer: `<div style="margin-left:40px;">
-      <h3>At the top of this page we offer the ability to enter your Order number and find the details of your order. Additionally we will send you the tracking information by email once it is available.</h3></div>`,
+      answer: `<div style="margin-left:30px;">
+      <p style="font-size:16px;">At the top of this page we offer the ability to enter your Order number and find the details of your order. Additionally we will send you the tracking information by email once it is available.</p></div>`,
       open: false,
     },
     {
       question: 'Where do you ship?',
-      answer: `<div style="margin-left:40px;">
-      <h3>
-      We ship to almost every country! There are a few exceptions and currently shipping is not supported to North Korea, Syria, Iran, Crimea, Cuba, and Ecuador. The list may change due to restrictions.</h3></div>`,
+      answer: `<div style="margin-left:30px;">
+      <p style="font-size:16px;">
+      We ship to almost every country! There are a few exceptions and currently shipping is not supported to North Korea, Syria, Iran, Crimea, Cuba, and Ecuador. The list may change due to restrictions.</p></div>`,
       open: false,
     },
   ]);
