@@ -42,14 +42,15 @@ function FAQ({ faq, index, toggleFAQ, className, state, setState }) {
   return (
     <Grid className={className}>
       <Accordion
-        expanded={faq.open ? open : false}
+        expanded={faq.open ? true : false}
         onClick={() => toggleFAQ(index, state, setState)}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>{faq.question}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>{faq.answer}</Typography>
+          <Grid item md dangerouslySetInnerHTML={{ __html: faq.answer }}></Grid>
+          {/* <Typography>{faq.answer}</Typography> */}
         </AccordionDetails>
       </Accordion>
     </Grid>

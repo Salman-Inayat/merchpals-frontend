@@ -14,7 +14,9 @@ import Home from './pages/home';
 import VendorDashboard from './pages/vendors';
 import Store from './pages/customer/store';
 import Product from './pages/products';
-import FAQ from './pages/faq';
+import FAQ from './pages/static/faq';
+import PrivaryPolicay from './pages/static/privacyPolicy';
+import TermsOfServices from './pages/static/TermsOfServices';
 // import Vendor from './pages/vendors';
 import VendorStore from './pages/vendors/store';
 import Cart from './pages/cart';
@@ -71,5 +73,7 @@ export default function Router() {
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
     { path: '/faq', element: <FAQ /> },
+    { path: '/privacy-policy', element: <PrivaryPolicay /> },
+    { path: '/terms-of-services', element: <TermsOfServices /> },
   ]);
 }
