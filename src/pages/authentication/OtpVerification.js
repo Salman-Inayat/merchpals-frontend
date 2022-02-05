@@ -67,15 +67,21 @@ const OtpVerification = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const oldPhoneNo = phoneNo;
+
   const [otp, setOtp] = useState();
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [toggleWrongPhoneNo, setToggleWrongPhoneNo] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState(phoneNo);
+  const [oldPhoneNo, setOldPhoneNo] = useState(`+${phoneNo}  `);
+  const [phoneNumber, setPhoneNumber] = useState();
   const [phoneError, setPhoneError] = useState();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('Setting Phone No: ', `${phoneNo}`);
+    setOldPhoneNo(`${phoneNo}`);
+  }, [phoneNo]);
 
   useEffect(() => {
     if (otpVerified) {
@@ -123,11 +129,10 @@ const OtpVerification = ({
     setPhoneNumber(`+${phoneNo}`);
 
     const data = {
-      oldPhoneNo,
+      oldPhoneNo: oldPhoneNo,
       newPhoneNo: `+${phoneNo}`,
     };
 
-    // check if newPhoneNo is empty
     if (phoneNo === '') {
       setPhoneError('Phone number cannot be empty');
       return;
@@ -145,6 +150,7 @@ const OtpVerification = ({
           console.log(res);
           setToggleWrongPhoneNo(false);
           setPhoneError('');
+          setOldPhoneNo(`+${phoneNo}`);
         })
         .catch(err => {
           setPhoneError(err.response.data.message);
@@ -166,14 +172,14 @@ const OtpVerification = ({
             spacing={3}
           >
             <Grid item container justify="center">
-              <Grid item container alignItems="center" direction="column">
+              <Grid container alignItems="center" direction="column">
                 <Grid item>
                   <Avatar className={classes.avatar}>
                     <LockOutlined />
                   </Avatar>
                 </Grid>
                 <Grid item>
-                  <Typography component="h1" variant="h5">
+                  <Typography component="h1" variant="h5" align="left">
                     Verification Code
                   </Typography>
                 </Grid>
@@ -182,7 +188,8 @@ const OtpVerification = ({
             <Grid item xs={12} textAlign="center">
               <Paper elevation={0}>
                 <Typography variant="body">
-                  Enter the code we sent to ({phoneNumber})
+                  Enter the code we sent to (
+                  {phoneNumber ? phoneNumber : phoneNo})
                 </Typography>
               </Paper>
               <Stack

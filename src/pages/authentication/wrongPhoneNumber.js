@@ -13,10 +13,11 @@ import PhoneNumberInput from '../../components/phone-number-input';
 const WrongPhoneNumber = ({ open, handleClose, error }) => {
   const [phoneNo, setPhoneNo] = React.useState();
 
-  const closeDialog = () => {
-    handleClose(phoneNo);
+  const closeDialog = async () => {
+    await handleClose(phoneNo);
     setPhoneNo('');
   };
+
   return (
     <React.Fragment>
       <Dialog maxWidth="sm" open={open} onClose={handleClose}>
