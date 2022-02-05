@@ -86,6 +86,7 @@ const CanvasEditor = _ref => {
     },
     React__default.createElement('canvas', {
       ref: canvasEl,
+      id: 'canvas',
     }),
   );
 };

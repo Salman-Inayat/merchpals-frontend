@@ -9,11 +9,18 @@ export default function ImageCrop(props) {
   const previewCanvasRef = useRef(null);
   const [crop, setCrop] = useState(
     props.variant === 'storeLogo'
-      ? { unit: '%', width: 30, aspect: 1 / 1 }
-      : { unit: '%', width: 30, aspect: 16 / 9 },
+      ? { unit: '%', width: 40, aspect: 1 / 1, x: 0, y: 0 }
+      : {
+          unit: '%',
+          width: 100,
+          aspect: 16 / 9,
+          x: 0,
+          y: 0,
+        },
   );
   const [completedCrop, setCompletedCrop] = useState(null);
   const [toggleControls, setToggleControls] = useState(false);
+  const [toggleUploadButton, setToggleUploadButton] = useState(true);
 
   const onSelectFile = e => {
     if (e.target.files && e.target.files.length > 0) {
@@ -22,6 +29,7 @@ export default function ImageCrop(props) {
       reader.readAsDataURL(e.target.files[0]);
     }
     setToggleControls(true);
+    setToggleUploadButton(false);
   };
 
   const onLoad = useCallback(img => {
@@ -83,26 +91,54 @@ export default function ImageCrop(props) {
 
   return (
     <Grid>
-      <Grid item md={12}>
-        <Button variant="contained" component="label">
-          Upload File
-          <input
-            type="file"
-            accept="image/png, image/jpeg"
-            onChange={onSelectFile}
-            hidden
-          />
-        </Button>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item md={2}></Grid>
+      {toggleUploadButton ? (
         <Grid
           item
-          md={8}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
+          md={12}
+          style={{
+            height: '20vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
+          <Button variant="contained" component="label">
+            Upload File
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              onChange={onSelectFile}
+              hidden
+            />
+          </Button>
+        </Grid>
+      ) : (
+        ''
+      )}
+
+      <Grid container spacing={2}>
+        <Grid item md={12} xs={12}>
+          {toggleControls && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                height: '3rem',
+              }}
+            >
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button
+                onClick={() =>
+                  cropImage(previewCanvasRef.current, completedCrop)
+                }
+              >
+                Done
+              </Button>
+            </Box>
+          )}
+        </Grid>
+        <Grid item md={12} style={{ paddingTop: '0px' }}>
           <ReactCrop
             src={upImg}
             onImageLoaded={onLoad}
@@ -110,41 +146,20 @@ export default function ImageCrop(props) {
             onChange={c => setCrop(c)}
             onComplete={c => setCompletedCrop(c)}
             circularCrop={props.variant === 'storeLogo' ? true : false}
+            locked={props.variant === 'storeLogo' ? false : true}
           />
         </Grid>
-        <Grid item md={2}></Grid>
-        <Grid item md={12}>
-          <div hidden>
-            <canvas
-              ref={previewCanvasRef}
-              // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-              style={{
-                width: Math.round(completedCrop?.width ?? 0),
-                height: Math.round(completedCrop?.height ?? 0),
-              }}
-            />
-          </div>
-        </Grid>
-      </Grid>
-      <Grid item md={3} xs={12}>
-        {toggleControls && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
+
+        <div hidden>
+          <canvas
+            ref={previewCanvasRef}
+            // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+            style={{
+              width: Math.round(completedCrop?.width ?? 0),
+              height: Math.round(completedCrop?.height ?? 0),
             }}
-          >
-            <Button
-              onClick={() => cropImage(previewCanvasRef.current, completedCrop)}
-              variant="contained"
-            >
-              Crop
-            </Button>
-            <Button onClick={handleClose} variant="contained">
-              Cancel
-            </Button>
-          </Box>
-        )}
+          />
+        </div>
       </Grid>
     </Grid>
   );

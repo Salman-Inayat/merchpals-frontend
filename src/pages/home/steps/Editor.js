@@ -43,8 +43,13 @@ const EditorStep = ({
           ref={childRef}
           canvasJSON={design.json === '' ? undefined : design.json}
         />
-        <Button variant="contained" onClick={exportAndMove}>
-          Proceed to Products
+        <Button
+          variant="contained"
+          onClick={exportAndMove}
+          size="large"
+          style={{ backgroungColor: '#116dff ', color: 'white' }}
+        >
+          Save &#38; Continue
         </Button>
       </Grid>
     </Grid>

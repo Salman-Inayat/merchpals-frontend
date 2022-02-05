@@ -16,7 +16,6 @@ import { makeStyles } from '@mui/styles';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import axios from 'axios';
 import { baseURL } from '../../configs/const';
-
 const useStyles = makeStyles(theme => ({
   modal: {
     position: 'absolute',

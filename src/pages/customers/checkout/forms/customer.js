@@ -151,7 +151,6 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
     <Grid item>
       <Accordion defaultExpanded>
         <AccordionSummary
-          className={classes.accordian}
           expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
         >
           <Typography className={classes.heading}>In your bag</Typography>

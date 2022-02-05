@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Grid, Box, Typography } from '@mui/material';
+import axios from 'axios';
+import Logo from '../../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
-import { fetchStore } from '../../../store/redux/actions/store';
-import { connect } from 'react-redux';
+import { baseURL } from '../../../configs/const';
 import StoreProductCard from '../../../components/storeProductCard';
 import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom';
+import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
+import { useSelector } from 'react-redux';
 
 const useStyle = makeStyles(theme => ({
   coverContainer: {
@@ -59,38 +62,50 @@ const useStyle = makeStyles(theme => ({
 }));
 
 const Store = ({ fetchStore, store }) => {
+  let themeColor, theme;
   const classes = useStyle();
+
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const { storeUrl } = useParams();
 
   useEffect(() => {
-    fetchStore(storeUrl);
+    fetchStore();
   }, []);
-  console.log({ store });
-  return (
-    store && (
-      <Grid container spacing={3}>
-        <Grid item md={12} xs={12} className={classes.coverContainer}>
-          <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
-          <Typography variant="h1" className={classes.storeName} align="center">
-            {store.name}
-          </Typography>
 
-          <img src={store.logo} className={classes.logo} />
-        </Grid>
-        <Grid item md={12} sm={12} xs={12}>
-          <Grid container spacing={isMobile ? 1 : 10} className={classes.productsContainer}>
-            {store.vendorProductIds?.map(product => {
-              return (
-                <Grid item md={4} xs={6} key={product.vendorProductId}>
-                  <StoreProductCard product={product} storeUrl={storeUrl} />
-                </Grid>
-              );
-            })}
-          </Grid>
+  theme = useSelector(state => state.design);
+  if (theme.themeColor) {
+    themeColor = theme.themeColor;
+  } else {
+    themeColor = store.themeColor;
+  }
+  const themeClass = ThemeCustomise(themeColor);
+  console.log(themeClass);
+  return (
+    <Grid container spacing={3} className={themeClass}>
+      <Grid item md={12} xs={12} className={classes.coverContainer}>
+        <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
+        <Typography variant="h1" className={classes.storeName} align="center">
+          {store.name}
+        </Typography>
+
+        <img src={store.logo} className={classes.logo} />
+      </Grid>
+      <Grid item md={12} sm={12} xs={12}>
+        <Grid
+          container
+          spacing={isMobile ? 1 : 10}
+          className={`${themeClass} ${classes.productsContainer}`}
+        >
+          {store.vendorProductIds?.map(product => {
+            return (
+              <Grid item md={4} xs={6}>
+                <StoreProductCard product={product} storeUrl={storeUrl} />
+              </Grid>
+            );
+          })}
         </Grid>
       </Grid>
-    )
+    </Grid>
   );
 };
 

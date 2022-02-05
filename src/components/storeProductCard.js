@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: '20px',
   },
   productName: {
-    color: '#0097a7',
+    // color: '#0097a7',
     width: '90%',
     margin: 'auto',
     fontWeight: '500',

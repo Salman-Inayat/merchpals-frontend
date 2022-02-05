@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Grid,
-  Button,
-  Stack,
-  Snackbar,
-  Typography,
-  Badge,
-  IconButton,
-} from '@mui/material';
+import { Grid, Button, Stack, Snackbar, Typography, Badge, IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
@@ -301,12 +293,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   return (
     <Grid container spacing={1}>
       <Grid item md={6} xs={12}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleBackButton}
-          className={classes.backButton}
-        >
+        <Button variant="contained" onClick={handleBackButton} className={classes.backButton}>
           Back
         </Button>
       </Grid>
