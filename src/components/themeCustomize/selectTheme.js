@@ -60,7 +60,7 @@ const useStyle = makeStyles(theme => ({
   },
 
   colorsContainer: {
-    width: '70%',
+    width: '80%',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
       margin: '10px 0px 30px 0px !important',
@@ -82,6 +82,7 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
     setStyle({
       [themeColor]: themeColor,
     });
+    setColor(null);
     setThemeColor(themeColor);
     dispatch(saveThemeColor({ themeColor }));
   };
