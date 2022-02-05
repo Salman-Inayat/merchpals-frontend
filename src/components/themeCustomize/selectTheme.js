@@ -68,7 +68,7 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-export default function SelectTheme({ setThemeColor }) {
+export default function SelectTheme({ setThemeColor, color, setColor }) {
   const classes = useStyle();
   const dispatch = useDispatch();
   const [style, setStyle] = useState({
@@ -96,28 +96,52 @@ export default function SelectTheme({ setThemeColor }) {
       <Grid item md={2}>
         <Paper
           elevation={4}
-          className={style.WHITE ? classes.WHITE_click : classes.WHITE}
+          className={
+            color === 'WHITE'
+              ? classes.WHITE_click
+              : style.WHITE
+              ? classes.WHITE_click
+              : classes.WHITE
+          }
           onClick={() => handleThemeChange('WHITE')}
         ></Paper>
       </Grid>
       <Grid item md={2}>
         <Paper
           elevation={4}
-          className={style.TONIGHT ? classes.TONIGHT_click : classes.TONIGHT}
+          className={
+            color === 'TONIGHT'
+              ? classes.TONIGHT_click
+              : style.TONIGHT
+              ? classes.TONIGHT_click
+              : classes.TONIGHT
+          }
           onClick={() => handleThemeChange('TONIGHT')}
         ></Paper>
       </Grid>
       <Grid item md={2}>
         <Paper
           elevation={4}
-          className={style.BOURBON ? classes.BOURBON_click : classes.BOURBON}
+          className={
+            color === 'BOURBON'
+              ? classes.BOURBON_click
+              : style.BOURBON
+              ? classes.BOURBON_click
+              : classes.BOURBON
+          }
           onClick={() => handleThemeChange('BOURBON')}
         ></Paper>
       </Grid>
       <Grid item md={2}>
         <Paper
           elevation={4}
-          className={style.BANG ? classes.BANG_click : classes.BANG}
+          className={
+            color === 'BANG'
+              ? classes.BANG_click
+              : style.BANG
+              ? classes.BANG_click
+              : classes.BANG
+          }
           onClick={() => handleThemeChange('BANG')}
         ></Paper>
       </Grid>

@@ -50,6 +50,7 @@ function StoreSettings() {
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [themeColor, setThemeColor] = useState();
+  const [color, setColor] = useState();
   const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
@@ -84,6 +85,8 @@ function StoreSettings() {
         setStoreName(vendorStore.name);
         setStoreAvatar(vendorStore.coverAvatar);
         setStoreLogo(vendorStore.logo);
+        setColor(vendorStore.themeColor);
+        setThemeColor(vendorStore.themeColor);
         setUpdatedData({
           name: vendorStore.name,
           coverAvatar: vendorStore.coverAvatar,
@@ -201,7 +204,11 @@ function StoreSettings() {
                 </Box>
               </Grid>
               <Grid container item md={6} spacing={2}>
-                <SelectTheme setThemeColor={setThemeColor} />
+                <SelectTheme
+                  setThemeColor={setThemeColor}
+                  color={color}
+                  setColor={setColor}
+                />
               </Grid>
             </Grid>
             <Grid

@@ -23,6 +23,8 @@ import ImageCrop from '../../../components/imageCrop';
 import PhoneFrame from '../../../assets/images/iphone_mockup_newone.png';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';
+import { useSelector } from 'react-redux';
+import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
 
 const useStyle = makeStyles(theme => ({
   container: {
@@ -172,6 +174,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     coverAvatar:
       'https://images.unsplash.com/photo-1643819999990-1697109b1559?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
   });
+  // let themeClass;
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -268,7 +271,15 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const handleStoreLogoChange = value => {
     setImages({ ...images, logo: value });
   };
-  console.log('theme', themeColor);
+  let themeClass;
+  const theme = useSelector(state => state.design);
+  if (theme.themeColor) {
+    themeClass = ThemeCustomise(theme.themeColor);
+  } else {
+    themeClass = ThemeCustomise('WHITE');
+  }
+  console.log('theme froms sate', theme.themeColor);
+  console.log('theme class name', themeClass);
   return (
     <Grid
       container
@@ -276,7 +287,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       alignItems="center"
       mt={5}
       pb={18}
-      className={classes.container}
+      className={`${themeClass}`}
     >
       <Grid item md={12} xs={12} className={classes.formContainer}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
