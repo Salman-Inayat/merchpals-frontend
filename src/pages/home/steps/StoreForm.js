@@ -369,10 +369,30 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                     </Box>
                   </Grid>
                   <Grid item md={12} xs={12}>
-                    <Grid container justifyContent="center" alignItems="center">
+                    <Stack
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Stack
+                        spacing={2}
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <Chip label="2" variant="contained" color="primary" />
+                        <Typography variant="h5" color="initial" align="center">
+                          Choose your theme
+                        </Typography>
+                      </Stack>
                       <SelectTheme setThemeColor={setThemeColor} />
-                    </Grid>
+                    </Stack>
                   </Grid>
+                  {/* <Grid item md={12} xs={12}>
+                    <Grid container justifyContent="center" alignItems="center">
+                    </Grid>
+                  </Grid> */}
                 </Grid>
               </Grid>
 

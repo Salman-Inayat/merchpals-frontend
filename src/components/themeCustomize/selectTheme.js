@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { saveThemeColor } from '../../store/redux/actions/design';
 // ----------------------------------------------------------------------
-const useStyle = makeStyles({
+const useStyle = makeStyles(theme => ({
   WHITE: {
     backgroundColor: '#ECE5E5',
     padding: '20px',
@@ -60,9 +60,13 @@ const useStyle = makeStyles({
   },
 
   colorsContainer: {
-    width: '80%',
+    width: '70%',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      margin: '10px 0px 30px 0px !important',
+    },
   },
-});
+}));
 
 export default function SelectTheme({ setThemeColor }) {
   const classes = useStyle();
@@ -82,45 +86,40 @@ export default function SelectTheme({ setThemeColor }) {
     dispatch(saveThemeColor({ themeColor }));
   };
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item md={12}>
-        <Typography variant="h6">Choose your theme</Typography>
+    <Grid
+      container
+      spacing={2}
+      display="flex"
+      justifyContent="center"
+      className={classes.colorsContainer}
+    >
+      <Grid item md={2}>
+        <Paper
+          elevation={4}
+          className={style.WHITE ? classes.WHITE_click : classes.WHITE}
+          onClick={() => handleThemeChange('WHITE')}
+        ></Paper>
       </Grid>
-      <Grid item md={12}>
-        <Grid container spacing={2} className={classes.colorsContainer}>
-          <Grid item md={2}>
-            <Paper
-              elevation={4}
-              className={style.WHITE ? classes.WHITE_click : classes.WHITE}
-              onClick={() => handleThemeChange('WHITE')}
-            ></Paper>
-          </Grid>
-          <Grid item md={2}>
-            <Paper
-              elevation={4}
-              className={
-                style.TONIGHT ? classes.TONIGHT_click : classes.TONIGHT
-              }
-              onClick={() => handleThemeChange('TONIGHT')}
-            ></Paper>
-          </Grid>
-          <Grid item md={2}>
-            <Paper
-              elevation={4}
-              className={
-                style.BOURBON ? classes.BOURBON_click : classes.BOURBON
-              }
-              onClick={() => handleThemeChange('BOURBON')}
-            ></Paper>
-          </Grid>
-          <Grid item md={2}>
-            <Paper
-              elevation={4}
-              className={style.BANG ? classes.BANG_click : classes.BANG}
-              onClick={() => handleThemeChange('BANG')}
-            ></Paper>
-          </Grid>
-        </Grid>
+      <Grid item md={2}>
+        <Paper
+          elevation={4}
+          className={style.TONIGHT ? classes.TONIGHT_click : classes.TONIGHT}
+          onClick={() => handleThemeChange('TONIGHT')}
+        ></Paper>
+      </Grid>
+      <Grid item md={2}>
+        <Paper
+          elevation={4}
+          className={style.BOURBON ? classes.BOURBON_click : classes.BOURBON}
+          onClick={() => handleThemeChange('BOURBON')}
+        ></Paper>
+      </Grid>
+      <Grid item md={2}>
+        <Paper
+          elevation={4}
+          className={style.BANG ? classes.BANG_click : classes.BANG}
+          onClick={() => handleThemeChange('BANG')}
+        ></Paper>
       </Grid>
     </Grid>
   );
