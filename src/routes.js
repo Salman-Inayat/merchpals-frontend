@@ -16,7 +16,7 @@ import Store from './pages/customers/store';
 import Product from './pages/products';
 // import Vendor from './pages/vendors';
 import VendorStore from './pages/vendors/store';
-import Cart from './pages/cart';
+import Cart from './pages/customers/cart';
 import Checkout from './pages/customers/checkout';
 import VendorDesigns from './pages/vendors/designs';
 import VendorCreateDesigns from './pages/vendors/designs/create';

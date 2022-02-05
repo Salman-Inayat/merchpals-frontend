@@ -6536,6 +6536,11 @@ ignore@^5.1.4, ignore@^5.1.8, ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
   integrity sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==
 
+imask@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/imask/-/imask-6.4.0.tgz#76e48e6bbf5306f7de058f8a1b90fd2282d446bc"
+  integrity sha512-iXXgSQA6TJX/RSKivKoTYYoCc4ZmVseMcoDIxMrlW1JPpc8LU9FtCp3f80vg1eUQvmVfEQbh+vybFVDRt2o9TQ==
+
 immer@8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
@@ -10284,6 +10289,14 @@ react-image-crop@^9.0.5:
   integrity sha512-J5lbsBMI36GsbkRHXNEo95OjwpxfkUBrEl9Oxb7z5mDC7iamySXYKhkv9QoidkfmI9e8Vj7q3SgNCVfuZHQMQw==
   dependencies:
     clsx "^1.1.1"
+
+react-imask@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/react-imask/-/react-imask-6.4.0.tgz#7284aec3ff8b0b27b88ccd7725f2f213ea2567f8"
+  integrity sha512-7rFR0gkT5cgtizLyegNcdA3b9VWt0G6gDslGZocjQBmBSNi3iv4rPBllAdOkmApz2Kv0TDACqEir14BRFJTjQw==
+  dependencies:
+    imask "^6.4.0"
+    prop-types "^15.7.2"
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

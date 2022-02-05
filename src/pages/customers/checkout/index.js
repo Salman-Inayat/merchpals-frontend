@@ -31,10 +31,6 @@ const Checkout = ({
   getCart = () => {},
   getPriceCalculation = () => {},
   priceCalculation = {},
-  // shippingCost,
-  // tax,
-  // shippingError,
-  // taxErrorStr,
   emptyCart = () => {},
   reduxCartProducts = [],
   createOrder = () => {},
@@ -46,7 +42,7 @@ const Checkout = ({
   const [completedPayment, setCompletedPayment] = useState(false);
   const [customer, setCustomer] = useState({});
   const [billingAddress, setBillingAddress] = useState({
-    country: 'US',
+    country: { id: 233, iso2: 'US', name: 'United States' },
     state: 'NY',
     zip: '10001',
   });
@@ -133,13 +129,6 @@ const Checkout = ({
 
         setStates(sortedStates);
       })
-      .catch(err => console.log({ err }));
-  };
-
-  const getRegionOfCountry = country => {
-    axios
-      .get(`https://restcountries.com/v3.1/alpha/${country}`)
-      .then(response => setRegion(response.data[0].region))
       .catch(err => console.log({ err }));
   };
 
@@ -282,19 +271,16 @@ const Checkout = ({
           countries={countries}
           states={states}
           getStatesOfCountry={getStatesOfCountry}
-          getRegionOfCountry={getRegionOfCountry}
         />
 
-        {completedAddress && (
-          <Elements stripe={stripePromise}>
-            <PaymentInfo
-              completedAddress={completedAddress}
-              placeOrder={placeOrder}
-              loading={loading}
-              setLoading={setLoading}
-            />
-          </Elements>
-        )}
+        <Elements stripe={stripePromise}>
+          <PaymentInfo
+            completedAddress={completedAddress}
+            placeOrder={placeOrder}
+            loading={loading}
+            setLoading={setLoading}
+          />
+        </Elements>
       </Grid>
     </Grid>
   );
@@ -314,4 +300,4 @@ const mapState = state => ({
   orderCreated: state.order.created,
 });
 
-export default connect(mapState, mapDispatch)(Checkout)
+export default connect(mapState, mapDispatch)(Checkout);

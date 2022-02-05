@@ -17,7 +17,9 @@ export const getPriceCalculation = data => async dispatch => {
     .catch(err => {
       dispatch({
         type: GET_PRICING_FAILED,
-        payload: err.response.data.message,
+        payload:
+          err.response?.data?.message ||
+          'Something went wrong. Please try again in a while. Thank You!',
       });
     });
 };

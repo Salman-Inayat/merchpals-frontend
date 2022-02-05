@@ -214,11 +214,26 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
           <hr className={classes.separator} />
           <Grid container rowSpacing={1}>
             <Grid justifyContent="space-between" item container>
-              <Typography className={classes.summaryText}>Sub Total</Typography>
-              <Typography className={classes.summaryText} align="right">
-                ${priceCalculation.orderActualAmount}
-              </Typography>
+              <Grid xs={6} alignItems="center" item container>
+                <Typography className={classes.summaryText}>Sub Total</Typography>
+                <Tooltip
+                  placement="top"
+                  describeChild
+                  title="The subtotal reflects the total price of your order before including any shipping, costs, or 
+taxes"
+                >
+                  <IconButton className={classes.infoBtn}>
+                    <QuestionMark className={classes.infoIcon} />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+              <Grid xs={6} item>
+                <Typography className={classes.summaryText} align="right">
+                  ${priceCalculation.orderActualAmount}
+                </Typography>
+              </Grid>
             </Grid>
+
             <Grid justifyContent="space-between" item container>
               <Grid xs={6} alignItems="center" item container>
                 <Typography className={classes.summaryText}>Estimated Shipping</Typography>
@@ -238,8 +253,13 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
             </Grid>
             <Grid justifyContent="space-between" item container>
               <Grid xs={6} alignItems="center" item container>
-                <Typography className={classes.summaryText}>Estimated Tax</Typography>
-                <Tooltip placement="top" describeChild title="Tax description">
+                <Typography className={classes.summaryText}>Estimated Cost</Typography>
+                <Tooltip
+                  placement="top"
+                  describeChild
+                  title="This covers the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your 
+applicable state or local government for more information"
+                >
                   <IconButton className={classes.infoBtn}>
                     <QuestionMark className={classes.infoIcon} />
                   </IconButton>
