@@ -106,9 +106,7 @@ function VendorOrders() {
                   </TableCell>
 
                   <TableCell component="th" scope="row" align="center">
-                    {order.customerId.firstName +
-                      ' ' +
-                      order.customerId.lastName}
+                    {order.customer.firstName + ' ' + order.customer.lastName}
                   </TableCell>
 
                   <TableCell component="th" scope="row" align="center">

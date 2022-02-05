@@ -61,35 +61,17 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-const Store = () => {
+const Store = ({ fetchStore, store }) => {
   let themeColor, theme;
   const classes = useStyle();
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const [store, setStore] = useState({
-    name: '',
-    coverAvatar: '',
-    logo: '',
-    products: [],
-  });
   const { storeUrl } = useParams();
 
   useEffect(() => {
     fetchStore();
   }, []);
 
-  const fetchStore = () => {
-    axios
-      .get(`${baseURL}/store/${storeUrl}`)
-      .then(response => {
-        console.log(response.data.store);
-        const store = response.data.store;
-        setStore(store);
-      })
-      .catch(err => {
-        console.log({ err });
-      });
-  };
   theme = useSelector(state => state.design);
   if (theme.themeColor) {
     themeColor = theme.themeColor;
@@ -101,11 +83,7 @@ const Store = () => {
   return (
     <Grid container spacing={3} className={themeClass}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
-        <img
-          src={store.coverAvatar}
-          alt="image"
-          className={classes.coverImage}
-        />
+        <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
         <Typography variant="h1" className={classes.storeName} align="center">
           {store.name}
         </Typography>
@@ -131,4 +109,11 @@ const Store = () => {
   );
 };
 
-export { Store as default };
+const mapDispatch = dispatch => ({
+  fetchStore: store => dispatch(fetchStore(store)),
+});
+
+const mapState = state => ({
+  store: state.store.store,
+});
+export default connect(mapState, mapDispatch)(Store);

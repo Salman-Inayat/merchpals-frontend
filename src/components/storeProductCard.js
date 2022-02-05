@@ -84,8 +84,6 @@ const StoreProductCard = ({ product, storeUrl }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  console.log({ productC: product });
-
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
