@@ -80,9 +80,9 @@ const EditDesign = () => {
     let updatedVariants = {};
 
     if (!selectedVariants[product]) {
-      productColors = [color];
+      productColors = [Number(color)];
     } else {
-      const colorIndex = selectedVariants[product].findIndex(c => c === color);
+      const colorIndex = selectedVariants[product].findIndex(c => c === Number(color));
 
       if (colorIndex > -1) {
         productColors = [...selectedVariants[product]];
@@ -99,7 +99,7 @@ const EditDesign = () => {
           productColors.splice(colorIndex, 1);
         }
       } else {
-        productColors = [...selectedVariants[product], color];
+        productColors = [...selectedVariants[product], Number(color)];
       }
     }
 
@@ -125,7 +125,7 @@ const EditDesign = () => {
       const relatedProduct = products.find(p => p._id === productId);
 
       const variantsOfProduct = relatedProduct.colors.reduce((color, curr) => {
-        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color);
+        const relatedMappings = curr.relatedProductVariantsId.map(p => p.color.value);
         return [...color, ...relatedMappings];
       }, []);
 
