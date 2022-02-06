@@ -150,9 +150,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
   return (
     <Grid item>
       <Accordion defaultExpanded>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
-        >
+        <AccordionSummary expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}>
           <Typography className={classes.heading}>In your bag</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -244,8 +242,8 @@ taxes"
               </Grid>
               <Grid xs={6} item>
                 <Typography className={classes.summaryText} align="right">
-                  {priceCalculation.shippingAmount === 'Free'
-                    ? 'Free'
+                  {priceCalculation.shippingAmount === 'FREE'
+                    ? 'FREE'
                     : `$${priceCalculation.shippingAmount}`}
                 </Typography>
               </Grid>

@@ -160,7 +160,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
     if (fetchedProduct) {
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
-      console.log({ productInResponse: fetchedProduct });
+
       const formattedProduct = {
         vendorProduct: fetchedProduct.vendorProductId,
         productId: fetchedProduct._id,
@@ -184,12 +184,12 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   }, [fetchedProduct]);
 
   const handleColorChange = event => {
-    const selectedColor = product.colors.find(c => c.id === event.target.value);
+    const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
     setColor(selectedColor);
   };
 
   const handleSizeChange = event => {
-    const selectedSize = product.sizes.find(c => c.id === event.target.value);
+    const selectedSize = product.sizes.find(c => c.id === Number(event.target.value));
     setSize(selectedSize);
   };
 

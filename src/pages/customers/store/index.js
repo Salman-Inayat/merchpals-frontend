@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { Container, Grid, Box, Typography } from '@mui/material';
 import axios from 'axios';
 import Logo from '../../../assets/images/logo.png';
@@ -9,7 +10,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom';
 import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
 import { useSelector } from 'react-redux';
-
+import { fetchStore } from '../../../store/redux/actions/store';
 const useStyle = makeStyles(theme => ({
   coverContainer: {
     position: 'relative',
@@ -67,20 +68,25 @@ const Store = ({ fetchStore, store }) => {
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const { storeUrl } = useParams();
-
+  const [themeClass, setThemeClass] = useState('');
+  theme = useSelector(state => state.design);
   useEffect(() => {
-    fetchStore();
+    fetchStore(storeUrl);
   }, []);
 
-  theme = useSelector(state => state.design);
-  if (theme.themeColor) {
-    themeColor = theme.themeColor;
-  } else {
-    themeColor = store.themeColor;
-  }
-  const themeClass = ThemeCustomise(themeColor);
-  console.log(themeClass);
-  return (
+  useEffect(() => {
+    // if (store) {
+    //   if (theme.themeColor) {
+    //     themeColor = theme.themeColor;
+    //   } else {
+    //     themeColor = store.themeColor;
+    //   }
+    //   const tmpthemeClass = ThemeCustomise(themeColor);
+    //   setThemeClass(tmpthemeClass);
+    // }
+  }, [store]);
+
+  return store ? (
     <Grid container spacing={3} className={themeClass}>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
         <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
@@ -106,7 +112,7 @@ const Store = ({ fetchStore, store }) => {
         </Grid>
       </Grid>
     </Grid>
-  );
+  ) : null;
 };
 
 const mapDispatch = dispatch => ({

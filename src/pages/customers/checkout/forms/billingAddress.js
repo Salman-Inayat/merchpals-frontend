@@ -125,8 +125,8 @@ const BillingAddress = ({
       .min('5', 'Postal code should be 5 digits'),
     street: Yup.string().required('Street Address is required'),
     city: Yup.string().required('City name is required'),
-    state: Yup.object().shape({ name: Yup.string().required('State name is required') }),
-    country: Yup.object().shape({ name: Yup.string().required('Country name is required') }),
+    state: Yup.string().required('State name is required'),
+    country: Yup.string().required('Country name is required'),
   });
 
   const {
@@ -165,7 +165,6 @@ const BillingAddress = ({
     setValue('zip', '10001');
   }, []);
 
-  console.log({ country });
   useEffect(() => {
     setBillingAddress({
       firstName,
