@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Footer() {
+const Footer = () => {
   const navigate = useNavigate();
   const classes = useStyles();
   const handleOrderClick = () => {
@@ -30,12 +30,7 @@ function Footer() {
   };
   return (
     <>
-      <Stack
-        direction="row"
-        spacing={3}
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
         <img alt="bank_acoounts" src="/assets/img/visa.png" width="20%" />
       </Stack>
       <Stack
@@ -45,25 +40,13 @@ function Footer() {
         alignItems="center"
         mt={3}
       >
-        <Button
-          className={classes.link_buttons}
-          onClick={handleOrderClick}
-          size="large"
-        >
+        <Button className={classes.link_buttons} onClick={handleOrderClick} size="large">
           Track Orders
         </Button>
-        <Button
-          className={classes.link_buttons}
-          onClick={handlePrivacyPolicyClick}
-          size="large"
-        >
+        <Button className={classes.link_buttons} onClick={handlePrivacyPolicyClick} size="large">
           Privacy Policy
         </Button>
-        <Button
-          className={classes.link_buttons}
-          onClick={handleTermsOfServicesClick}
-          size="large"
-        >
+        <Button className={classes.link_buttons} onClick={handleTermsOfServicesClick} size="large">
           Terms of Services
         </Button>
       </Stack>
@@ -73,6 +56,6 @@ function Footer() {
       </Typography>
     </>
   );
-}
+};
 
 export default Footer;

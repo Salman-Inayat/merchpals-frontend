@@ -15,7 +15,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import { Box } from '@mui/system';
 import { useState } from 'react';
-import Footer from '../../components/footer/footer';
+import Footer from '../../layouts/static/footer';
 import FAQ from '../../components/static/faqComponent';
 import ContactSupport from '../vendors/contactSupport';
 const useStyles = makeStyles(theme => ({
@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
-export default function CustomizedAccordions() {
+const CustomizedAccordions = () => {
   const classes = useStyles();
 
   const [orders, setOrders] = useState([
@@ -231,14 +231,7 @@ export default function CustomizedAccordions() {
         <Typography variant="h5" diplay="flex">
           TRACKER ORDER:
         </Typography>
-        <Grid
-          item
-          md
-          container
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
+        <Grid item md container display="flex" alignItems="center" justifyContent="center">
           <Typography variant="h5" mr={2}>
             ORDER#
           </Typography>
@@ -367,13 +360,10 @@ export default function CustomizedAccordions() {
           />
         </Card>
       </Modal>
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={2000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Box>
   );
-}
+};
+export default CustomizedAccordions;

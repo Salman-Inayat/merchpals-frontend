@@ -25,6 +25,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';
 import { useSelector } from 'react-redux';
 import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
+import { fontWeight } from '@mui/system';
 
 const useStyle = makeStyles(theme => ({
   container: {
@@ -86,7 +87,7 @@ const useStyle = makeStyles(theme => ({
     position: 'relative',
     height: '80vh',
     flexBasis: '55%',
-    width: '50vw',
+    width: '60vw',
     display: 'flex',
     justifyContent: 'center',
     padding: '1rem',
@@ -106,19 +107,22 @@ const useStyle = makeStyles(theme => ({
     backgroundRepeat: 'no-repeat',
     pointerEvents: 'none',
     zIndex: '10',
+
+    [theme.breakpoints.up('lg')]: {
+      width: '100%',
+    },
     [theme.breakpoints.down('sm')]: {
       width: '100%',
     },
   },
   uploadingPhotos: {
     position: 'relative',
-    top: '9%',
+    top: '8%',
     left: '0',
     width: '100%',
     height: '22vh',
     [theme.breakpoints.down('sm')]: {
       height: '18vh',
-      top: ' 15%',
     },
   },
   coverPhoto: {
@@ -156,6 +160,16 @@ const useStyle = makeStyles(theme => ({
     color: '#fff',
     cursor: 'pointer',
   },
+  store_name: {
+    fontSize: '14px',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    marginTop: '3.4rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '12px',
+      marginTop: '2rem',
+    },
+  },
 }));
 
 const Input = styled('input')({
@@ -183,17 +197,15 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
-
+  const [storeName, setStoreName] = useState(false);
+  console.log(storeName);
   useEffect(() => {
     if (createStoreError) {
       setLoading(false);
     }
   }, [createStoreError]);
   const storeSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Store name is required')
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!'),
+    name: Yup.string().required('Store name is required').min(2, 'Too Short!').max(50, 'Too Long!'),
     slug: Yup.string()
       .required('Store slug is required')
       .matches(
@@ -271,6 +283,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const handleStoreLogoChange = value => {
     setImages({ ...images, logo: value });
   };
+  const handleStoreName = e => {
+    setStoreName(e.target.value);
+  };
   let themeClass;
   const theme = useSelector(state => state.design);
   if (theme.themeColor) {
@@ -287,7 +302,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       alignItems="center"
       mt={5}
       pb={18}
-      className={`${themeClass}`}
+      className={classes.container}
     >
       <Grid item md={12} xs={12} className={classes.formContainer}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -298,19 +313,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
 
             <Grid container>
               <Grid item md={6} xs={12}>
-                <Grid
-                  container
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={3}
-                >
+                <Grid container justifyContent="center" alignItems="center" spacing={3}>
                   <Grid item md={12} xs={12}>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
+                    <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                       <Chip label="1" variant="contained" color="primary" />
                       <Typography variant="h5" color="initial" align="center">
                         Profile and cover pic
@@ -318,65 +323,69 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                     </Stack>
                   </Grid>
                   <Grid item md={12} xs={12} className={classes.picsContainer}>
-                    <Box className={classes.frameContainer}>
-                      <img
-                        src={PhoneFrame}
-                        className={classes.phoneFrame}
-                      ></img>
-                      <Box className={classes.uploadingPhotos}>
-                        <img
-                          src={images.coverAvatar}
-                          className={classes.coverPhoto}
-                          onClick={handleChangeStoreAvatarButton}
-                        ></img>
-                        <Modal
-                          open={openLogoModal}
-                          onClose={handleCloseLogoModal}
-                          aria-labelledby="modal-modal-title"
-                          aria-describedby="modal-modal-description"
-                        >
-                          <Box className={classes.modalBox}>
-                            <ImageCrop
-                              handleClose={handleCloseLogoModal}
-                              handleStoreLogoChange={handleStoreLogoChange}
-                              variant="storeLogo"
-                            />
-                          </Box>
-                        </Modal>
-                        <Box className={classes.logoContainer}>
-                          <img
-                            src={images.logo}
-                            className={classes.logoPhoto}
-                          ></img>
+                    <Box className={` ${classes.frameContainer} ${themeClass}`}>
+                      <img src={PhoneFrame} className={`${classes.phoneFrame} `}></img>
+                      <Grid container item md={12} xs={12}>
+                        <Grid item md={12} xs={12}>
+                          <Box className={classes.uploadingPhotos}>
+                            <img
+                              src={images.coverAvatar}
+                              className={classes.coverPhoto}
+                              onClick={handleChangeStoreAvatarButton}
+                            ></img>
 
-                          <IconButton
-                            aria-label="upload"
-                            className={classes.uploadIcon}
-                            onClick={handleChangeStoreLogoButton}
-                          >
-                            <CameraAltIcon
-                              sx={{
-                                color: '#fff',
-                                fontSize: '2rem',
-                              }}
-                            />
-                          </IconButton>
-                        </Box>
-                        <Modal
-                          open={openAvatarModal}
-                          onClose={handleCloseAvatarModal}
-                          aria-labelledby="modal-modal-title"
-                          aria-describedby="modal-modal-description"
-                        >
-                          <Box className={classes.modalBox}>
-                            <ImageCrop
-                              handleClose={handleCloseAvatarModal}
-                              handleStoreAvatarChange={handleStoreAvatarChange}
-                              variant="storeAvatar"
-                            />
+                            <Modal
+                              open={openLogoModal}
+                              onClose={handleCloseLogoModal}
+                              aria-labelledby="modal-modal-title"
+                              aria-describedby="modal-modal-description"
+                            >
+                              <Box className={classes.modalBox}>
+                                <ImageCrop
+                                  handleClose={handleCloseLogoModal}
+                                  handleStoreLogoChange={handleStoreLogoChange}
+                                  variant="storeLogo"
+                                />
+                              </Box>
+                            </Modal>
+                            <Box className={classes.logoContainer}>
+                              <img src={images.logo} className={classes.logoPhoto}></img>
+
+                              <IconButton
+                                aria-label="upload"
+                                className={classes.uploadIcon}
+                                onClick={handleChangeStoreLogoButton}
+                              >
+                                <CameraAltIcon
+                                  sx={{
+                                    color: '#fff',
+                                    fontSize: '2rem',
+                                  }}
+                                />
+                              </IconButton>
+                            </Box>
+                            <Modal
+                              open={openAvatarModal}
+                              onClose={handleCloseAvatarModal}
+                              aria-labelledby="modal-modal-title"
+                              aria-describedby="modal-modal-description"
+                            >
+                              <Box className={classes.modalBox}>
+                                <ImageCrop
+                                  handleClose={handleCloseAvatarModal}
+                                  handleStoreAvatarChange={handleStoreAvatarChange}
+                                  variant="storeAvatar"
+                                />
+                              </Box>
+                            </Modal>
                           </Box>
-                        </Modal>
-                      </Box>
+                          <Box textAlign="center">
+                            <Typography className={classes.store_name}>
+                              {storeName}&#39;S MERCH STORE
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
                     </Box>
                   </Grid>
                   <Grid item md={12} xs={12}>
@@ -408,12 +417,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <Grid
-                  container
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={4}
-                >
+                <Grid container justifyContent="center" alignItems="center" spacing={4}>
                   <Grid item md={12} xs={12}>
                     <Grid container spacing={2}>
                       <Grid item md={12} xs={12}>
@@ -424,11 +428,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           alignItems="center"
                         >
                           <Chip label="3" variant="contained" color="primary" />
-                          <Typography
-                            variant="h5"
-                            color="initial"
-                            align="center"
-                          >
+                          <Typography variant="h5" color="initial" align="center">
                             Add username
                           </Typography>
                         </Stack>
@@ -444,11 +444,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.instagram?.message)}
                             helperText={errors.instagram?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -462,11 +458,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.Tiktok?.message)}
                             helperText={errors.Tiktok?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -484,11 +476,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.youtube?.message)}
                             helperText={errors.youtube?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -502,11 +490,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.twitch?.message)}
                             helperText={errors.twitch?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -526,11 +510,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           alignItems="center"
                         >
                           <Chip label="4" variant="contained" color="primary" />
-                          <Typography
-                            variant="h5"
-                            color="initial"
-                            align="center"
-                          >
+                          <Typography variant="h5" color="initial" align="center">
                             Name your store
                           </Typography>
                         </Stack>
@@ -543,15 +523,11 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             {...register('name')}
                             error={Boolean(errors.name?.message)}
                             helperText={errors.name?.message}
-                            className={[
-                              classes.textfield,
-                              classes.storeNameField,
-                            ].join(' ')}
+                            className={[classes.textfield, classes.storeNameField].join(' ')}
                             size="small"
+                            onChange={handleStoreName}
                           />
-                          <Typography variant="h5">
-                            &#39;s MERCH STORE
-                          </Typography>
+                          <Typography variant="h5">&#39;s MERCH STORE</Typography>
                         </Stack>
                       </Grid>
 
@@ -560,10 +536,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           fullWidth
                           label="Store url"
                           {...register('slug')}
-                          error={
-                            Boolean(errors.slug?.message) ||
-                            Boolean(slugMessage)
-                          }
+                          error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
                           helperText={errors.slug?.message || slugMessage}
                           onBlur={isSlugValid}
                           className={classes.textfield}

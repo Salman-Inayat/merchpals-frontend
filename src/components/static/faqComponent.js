@@ -12,13 +12,13 @@ const useStyles = makeStyles(theme => ({
     fontWeight: '500 !important',
   },
 }));
-const Accordion = styled(props => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  '&:before': {
-    display: 'none',
-  },
-}));
+const Accordion = styled(props => <MuiAccordion disableGutters elevation={0} square {...props} />)(
+  ({ theme }) => ({
+    '&:before': {
+      display: 'none',
+    },
+  }),
+);
 
 const AccordionSummary = styled(props => (
   <MuiAccordionSummary
@@ -27,9 +27,7 @@ const AccordionSummary = styled(props => (
   />
 ))(({ theme }) => ({
   backgroundColor:
-    theme.palette.mode === 'light'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
+    theme.palette.mode === 'light' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
   flexDirection: 'row-reverse',
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(90deg)',
@@ -44,14 +42,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-function FAQ({ faq, index, toggleFAQ, className, state, setState }) {
+const FAQ = ({ faq, index, toggleFAQ, className, state, setState }) => {
   const classes = useStyles();
   return (
     <Grid className={className}>
-      <Accordion
-        className={classes.mainAccordian}
-        expanded={faq.open ? true : false}
-      >
+      <Accordion className={classes.mainAccordian} expanded={faq.open ? true : false}>
         <AccordionSummary
           aria-controls="panel1d-content"
           id="panel1d-header"
@@ -65,6 +60,6 @@ function FAQ({ faq, index, toggleFAQ, className, state, setState }) {
       </Accordion>
     </Grid>
   );
-}
+};
 
 export default FAQ;

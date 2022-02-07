@@ -82,7 +82,9 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
     setStyle({
       [themeColor]: themeColor,
     });
-    setColor(null);
+    if (color) {
+      setColor(null);
+    }
     setThemeColor(themeColor);
     dispatch(saveThemeColor({ themeColor }));
   };
@@ -137,11 +139,7 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
         <Paper
           elevation={4}
           className={
-            color === 'BANG'
-              ? classes.BANG_click
-              : style.BANG
-              ? classes.BANG_click
-              : classes.BANG
+            color === 'BANG' ? classes.BANG_click : style.BANG ? classes.BANG_click : classes.BANG
           }
           onClick={() => handleThemeChange('BANG')}
         ></Paper>
