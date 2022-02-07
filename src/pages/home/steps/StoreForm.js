@@ -168,9 +168,8 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     message: '',
   });
   const [images, setImages] = useState({
-    logo: 'https://images.unsplash.com/photo-1643874626318-964452868452?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxOHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    coverAvatar:
-      'https://images.unsplash.com/photo-1643819999990-1697109b1559?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
+    logo: '',
+    coverAvatar: '',
   });
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
@@ -187,10 +186,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     }
   }, [createStoreError]);
   const storeSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Store name is required')
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!'),
+    name: Yup.string().required('Store name is required').min(2, 'Too Short!').max(50, 'Too Long!'),
     slug: Yup.string()
       .required('Store slug is required')
       .matches(
@@ -268,6 +264,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const handleStoreLogoChange = value => {
     setImages({ ...images, logo: value });
   };
+
   console.log('theme', themeColor);
   return (
     <Grid
@@ -287,19 +284,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
 
             <Grid container>
               <Grid item md={6} xs={12}>
-                <Grid
-                  container
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={3}
-                >
+                <Grid container justifyContent="center" alignItems="center" spacing={3}>
                   <Grid item md={12} xs={12}>
-                    <Stack
-                      spacing={2}
-                      direction="row"
-                      justifyContent="center"
-                      alignItems="center"
-                    >
+                    <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
                       <Chip label="1" variant="contained" color="primary" />
                       <Typography variant="h5" color="initial" align="center">
                         Profile and cover pic
@@ -308,13 +295,14 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                   </Grid>
                   <Grid item md={12} xs={12} className={classes.picsContainer}>
                     <Box className={classes.frameContainer}>
-                      <img
-                        src={PhoneFrame}
-                        className={classes.phoneFrame}
-                      ></img>
+                      <img src={PhoneFrame} className={classes.phoneFrame}></img>
                       <Box className={classes.uploadingPhotos}>
                         <img
-                          src={images.coverAvatar}
+                          src={
+                            images.coverAvatar === ''
+                              ? 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
+                              : URL.createObjectURL(images.coverAvatar)
+                          }
                           className={classes.coverPhoto}
                           onClick={handleChangeStoreAvatarButton}
                         ></img>
@@ -329,12 +317,17 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                               handleClose={handleCloseLogoModal}
                               handleStoreLogoChange={handleStoreLogoChange}
                               variant="storeLogo"
+                              setImage={setImage}
                             />
                           </Box>
                         </Modal>
                         <Box className={classes.logoContainer}>
                           <img
-                            src={images.logo}
+                            src={
+                              images.logo === ''
+                                ? 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
+                                : URL.createObjectURL(images.logo)
+                            }
                             className={classes.logoPhoto}
                           ></img>
 
@@ -362,6 +355,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                               handleClose={handleCloseAvatarModal}
                               handleStoreAvatarChange={handleStoreAvatarChange}
                               variant="storeAvatar"
+                              setImage={setImage}
                             />
                           </Box>
                         </Modal>
@@ -377,12 +371,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
               </Grid>
 
               <Grid item md={6} xs={12}>
-                <Grid
-                  container
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={4}
-                >
+                <Grid container justifyContent="center" alignItems="center" spacing={4}>
                   <Grid item md={12} xs={12}>
                     <Grid container spacing={2}>
                       <Grid item md={12} xs={12}>
@@ -393,11 +382,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           alignItems="center"
                         >
                           <Chip label="3" variant="contained" color="primary" />
-                          <Typography
-                            variant="h5"
-                            color="initial"
-                            align="center"
-                          >
+                          <Typography variant="h5" color="initial" align="center">
                             Add username
                           </Typography>
                         </Stack>
@@ -413,11 +398,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.instagram?.message)}
                             helperText={errors.instagram?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -431,11 +412,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.Tiktok?.message)}
                             helperText={errors.Tiktok?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -453,11 +430,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.youtube?.message)}
                             helperText={errors.youtube?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -471,11 +444,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             error={Boolean(errors.twitch?.message)}
                             helperText={errors.twitch?.message}
                             InputProps={{
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  @
-                                </InputAdornment>
-                              ),
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
                             }}
                             className={classes.textfield}
                             size="small"
@@ -495,11 +464,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           alignItems="center"
                         >
                           <Chip label="4" variant="contained" color="primary" />
-                          <Typography
-                            variant="h5"
-                            color="initial"
-                            align="center"
-                          >
+                          <Typography variant="h5" color="initial" align="center">
                             Name your store
                           </Typography>
                         </Stack>
@@ -512,15 +477,10 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                             {...register('name')}
                             error={Boolean(errors.name?.message)}
                             helperText={errors.name?.message}
-                            className={[
-                              classes.textfield,
-                              classes.storeNameField,
-                            ].join(' ')}
+                            className={[classes.textfield, classes.storeNameField].join(' ')}
                             size="small"
                           />
-                          <Typography variant="h5">
-                            &#39;s MERCH STORE
-                          </Typography>
+                          <Typography variant="h5">&#39;s MERCH STORE</Typography>
                         </Stack>
                       </Grid>
 
@@ -529,10 +489,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           fullWidth
                           label="Store url"
                           {...register('slug')}
-                          error={
-                            Boolean(errors.slug?.message) ||
-                            Boolean(slugMessage)
-                          }
+                          error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
                           helperText={errors.slug?.message || slugMessage}
                           onBlur={isSlugValid}
                           className={classes.textfield}

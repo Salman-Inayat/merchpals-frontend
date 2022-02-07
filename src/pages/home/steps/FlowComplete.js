@@ -58,12 +58,7 @@ function FlowComplete({ storeURL }) {
     <div className={classes.container}>
       <Grid container>
         <Grid item md={12}>
-          <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-          >
+          <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
             <Box>
               <Typography variant="h5" color="initial" align="center">
                 It&#39;s Live!
@@ -77,7 +72,7 @@ function FlowComplete({ storeURL }) {
               <TextField
                 id="outlined-read-only-input"
                 label={!storeURL && 'Copy Store Link'}
-                value={storeURL}
+                value={`${process.env.REACT_APP_URL}/store/${storeURL}`}
                 InputProps={{
                   readOnly: true,
                   endAdornment: (

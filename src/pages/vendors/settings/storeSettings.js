@@ -53,9 +53,8 @@ function StoreSettings() {
   const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
-  const [vendorStoreData, setVendorStoreData] = useState({});
-  const [updatedData, setUpdatedData] = useState({
-    name: '',
+
+  const [images, setImages] = useState({
     coverAvatar: '',
     logo: '',
   });
@@ -80,15 +79,10 @@ function StoreSettings() {
       })
       .then(res => {
         const vendorStore = res.data.store;
-        setVendorStoreData(vendorStore);
         setStoreName(vendorStore.name);
         setStoreAvatar(vendorStore.coverAvatar);
         setStoreLogo(vendorStore.logo);
-        setUpdatedData({
-          name: vendorStore.name,
-          coverAvatar: vendorStore.coverAvatar,
-          logo: vendorStore.logo,
-        });
+        setThemeColor(vendorStore.themeColor);
         setStoreId(vendorStore._id);
       })
       .catch(err => {
@@ -104,10 +98,6 @@ function StoreSettings() {
 
   const handleStoreNameChange = e => {
     setStoreName(e.target.value.replace(/\s/g, '-'));
-    setUpdatedData({
-      ...updatedData,
-      name: e.target.value.replace(/\s/g, '-'),
-    });
   };
 
   const handleChangeStoreAvatarButton = () => {
@@ -120,31 +110,23 @@ function StoreSettings() {
     setToggleStoreLogoButton(!toggleStoreLogoButton);
   };
 
-  const handleStoreAvatarChange = value => {
-    setUpdatedData({ ...updatedData, coverAvatar: value });
-
-    setStoreAvatar(value);
-  };
-
-  const handleStoreLogoChange = value => {
-    setUpdatedData({ ...updatedData, logo: value });
-    setStoreLogo(value);
+  const setImage = async (name, file) => {
+    setImages({ ...images, [name]: file });
   };
 
   const handleUpdateStore = () => {
-    const data = {
-      store: {
-        storeData: updatedData,
-        storeId: storeId,
-      },
-    };
-    data.store.storeData.themeColor = themeColor;
-    console.log('Data: ', data);
+    const store = new FormData();
+    store.append('storeId', storeId);
+    store.append('name', storeName);
+    store.append('coverAvatar', images.coverAvatar);
+    store.append('logo', images.logo);
+    store.append('themeColor', themeColor);
 
     axios
-      .post(`${baseURL}/store/update-store-data`, data, {
+      .put(`${baseURL}/store/update-store-data`, store, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(res => {
@@ -221,7 +203,13 @@ function StoreSettings() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <img src={storeAvatar} />
+                  <img
+                    src={
+                      images.coverAvatar === ''
+                        ? storeAvatar
+                        : URL.createObjectURL(images.coverAvatar)
+                    }
+                  />
                 </Grid>
                 <Grid
                   item
@@ -231,10 +219,7 @@ function StoreSettings() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Button
-                    onClick={handleChangeStoreAvatarButton}
-                    variant="contained"
-                  >
+                  <Button onClick={handleChangeStoreAvatarButton} variant="contained">
                     Change Cover
                   </Button>
                 </Grid>
@@ -247,8 +232,8 @@ function StoreSettings() {
                   <Box className={classes.modalBox}>
                     <ImageCrop
                       handleClose={handleCloseAvatarModal}
-                      handleStoreAvatarChange={handleStoreAvatarChange}
                       variant="storeAvatar"
+                      setImage={setImage}
                     />
                   </Box>
                 </Modal>
@@ -273,7 +258,7 @@ function StoreSettings() {
                   alignItems="center"
                 >
                   <img
-                    src={storeLogo}
+                    src={images.logo === '' ? storeLogo : URL.createObjectURL(images.logo)}
                     style={{
                       width: '200px',
                       height: '200px',
@@ -289,10 +274,7 @@ function StoreSettings() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Button
-                    onClick={handleChangeStoreLogoButton}
-                    variant="contained"
-                  >
+                  <Button onClick={handleChangeStoreLogoButton} variant="contained">
                     Change Logo
                   </Button>
                 </Grid>
@@ -305,8 +287,8 @@ function StoreSettings() {
                   <Box className={classes.modalBox}>
                     <ImageCrop
                       handleClose={handleCloseLogoModal}
-                      handleStoreLogoChange={handleStoreLogoChange}
                       variant="storeLogo"
+                      setImage={setImage}
                     />
                   </Box>
                 </Modal>

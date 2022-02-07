@@ -187,8 +187,7 @@ const ProductCard = ({
 
     if (selectedVariants[product._id]) {
       const productSelectedVariants = selectedVariants[product._id];
-      const lastSelectedColor =
-        productSelectedVariants[productSelectedVariants?.length - 1];
+      const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
       // console.log({ bgColor });
     }
@@ -227,9 +226,7 @@ const ProductCard = ({
           alt=""
           className={classes.productImage}
           style={{
-            border: selectedVariants[product._id]
-              ? '3px solid #116dff'
-              : '3px solid #ccc',
+            border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
           }}
         />
         <Box>
@@ -238,9 +235,9 @@ const ProductCard = ({
               classes.design,
               product.name === 'Poster'
                 ? classes.poster
-                : product.name === 'Phone Case'
+                : product.name === 'Case'
                 ? classes.phoneCase
-                : product.name === 'Mug'
+                : product.name === 'white glossy mug'
                 ? classes.mug
                 : '',
             ].join(' ')}
@@ -249,12 +246,7 @@ const ProductCard = ({
         </Box>
       </Card>
 
-      <Grid
-        justifyContent="center"
-        spacing={3}
-        className={classes.colorGrid}
-        container
-      >
+      <Grid justifyContent="center" spacing={3} className={classes.colorGrid} container>
         {!unselectProducts ? (
           <Grid item md={12} xs={12}>
             <RadioGroup
@@ -305,18 +297,14 @@ const ProductCard = ({
             <Grid key={`colors-${i}`} item md={2} xs={2}>
               <Checkbox
                 style={{
-                  backgroundColor:
-                    `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                  backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
                 }}
                 onChange={() => onVariantClick(event.target.value)}
                 onClick={() => console.log('clicked the checkbox')}
-                checked={
-                  selectedVariants[product._id]?.includes(pm.id) ? true : false
-                }
+                checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
                 value={`${product._id},${pm.id}`}
                 sx={{
-                  color:
-                    `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                  color: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
                   border: '2px solid blue',
 
                   '&.Mui-checked': {

@@ -1,26 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  Grid,
-  Avatar,
-  Stepper,
-  Step,
-  StepLabel,
-  IconButton,
-} from '@mui/material';
+import { Container, Grid, Avatar, Stepper, Step, StepLabel, IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
-import {
-  Editor,
-  Products,
-  SignUp,
-  StoreForm,
-  Otp,
-  WelcomeMessage,
-} from './steps';
+import { Editor, Products, SignUp, StoreForm, Otp, WelcomeMessage } from './steps';
 import { baseURL } from '../../configs/const';
 import { connect } from 'react-redux';
 
@@ -140,34 +125,32 @@ const Home = ({ designJSON }) => {
       });
   };
 
-  const createStore = storeData => {
+  const createStore = data => {
     const designData = {
       base64Image: localStorage.getItem('design'),
       name: 'default',
       canvasJson: canvasJSON,
     };
-    const data = {
-      storeInfo: {
-        name: storeData.name,
-        slug: storeData.slug.split(' ').join('-'),
-        facebook: storeData.facebook,
-        instagram: storeData.instagram,
-        twitter: storeData.twitter,
-        logo: storeData.logo,
-        coverAvatar: storeData.coverAvatar,
-        design: JSON.stringify(designData),
-        products: JSON.stringify([...selectedVariants]),
-        themeColor: storeData.themeColor,
-      },
-    };
 
-    setStoreURL(data.storeInfo.slug);
+    let store = new FormData();
+    store.append('name', data.name);
+    store.append('slug', data.slug.split(' ').join('-'));
+    store.append('facebook', data.facebook);
+    store.append('instagram', data.instagram);
+    store.append('twitter', data.twitter);
+    store.append('logo', data.logo);
+    store.append('coverAvatar', data.coverAvatar);
+    store.append('design', JSON.stringify(designData));
+    store.append('products', JSON.stringify([...selectedVariants]));
+    store.append('themeColor', data.themeColor);
+
+    setStoreURL(data.slug.split(' ').join('-'));
 
     axios
-      .post(`${baseURL}/store`, data, {
+      .post(`${baseURL}/store`, store, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(response => {
@@ -176,10 +159,6 @@ const Home = ({ designJSON }) => {
         localStorage.removeItem('selectedVariants');
 
         setShowWelcomeMessage(true);
-        // setTimeout(() => {
-        //   setShowWelcomeMessage(false);
-        //   navigate('/vendor/store', { replace: true });
-        // }, 3500);
       })
       .catch(err => {
         console.log('err', err);
@@ -205,40 +184,21 @@ const Home = ({ designJSON }) => {
         if (showOtpBox) {
           return <Otp nextStep={nextStep} phoneNo={phoneNo} />;
         }
-        return (
-          <SignUp
-            registerVendor={registerVendor}
-            registrationErrors={registrationErrors}
-          />
-        );
+        return <SignUp registerVendor={registerVendor} registrationErrors={registrationErrors} />;
       case 3:
         if (showWelcomeMessage) {
           return <WelcomeMessage storeURL={storeURL} />;
         }
-        return (
-          <StoreForm
-            createStore={createStore}
-            createStoreError={createStoreError}
-          />
-        );
+        return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
         return <Editor nextStep={nextStep} />;
     }
   };
   return (
     <Container className={classes.fluid}>
-      <Grid
-        className={classes.header}
-        justifyContent="center"
-        alignItems="center"
-        container
-      >
+      <Grid className={classes.header} justifyContent="center" alignItems="center" container>
         {step > 0 && (
-          <IconButton
-            className={classes.backArrow}
-            aria-label="back"
-            onClick={prevStep}
-          >
+          <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
             <ArrowBackIosIcon className={classes.svg} />
           </IconButton>
         )}
