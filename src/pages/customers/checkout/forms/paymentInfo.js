@@ -112,32 +112,28 @@ const PaymentInfo = ({
       <Grid className={classes.accordian}>
         <Typography className={classes.heading}>2. Payment</Typography>
       </Grid>
-      <Grid
-        direction="row"
-        justifyContent="center"
-        className={classes.box}
-        container
-      >
-        <Grid item xs={12} mt={3}>
-          <Avatar src={CardsLogos} className={classes.banner} />
-        </Grid>
-        <Grid item container justifyContent="center" xs={10} mt={3}>
+      {completedAddress && (
+        <Grid direction="row" justifyContent="center" className={classes.box} container>
           <Grid item xs={12} mt={3}>
-            <CardElement options={cardOptions} />
+            <Avatar src={CardsLogos} className={classes.banner} />
+          </Grid>
+          <Grid item container justifyContent="center" xs={10} mt={3}>
+            <Grid item xs={12} mt={3}>
+              <CardElement options={cardOptions} />
+            </Grid>
+          </Grid>
+          <Grid justifyContent="center" mt={3} container>
+            <LoadingButton
+              disabled={!completedAddress}
+              loading={loading}
+              onClick={createToken}
+              className={classes.continueBtn}
+            >
+              Place your order
+            </LoadingButton>
           </Grid>
         </Grid>
-        <Grid justifyContent="center" mt={3} container>
-          <LoadingButton
-            disabled={!completedAddress}
-            loading={loading}
-            onClick={createToken}
-            className={classes.continueBtn}
-          >
-            {' '}
-            Place your order{' '}
-          </LoadingButton>
-        </Grid>
-      </Grid>
+      )}
     </Grid>
   );
 };

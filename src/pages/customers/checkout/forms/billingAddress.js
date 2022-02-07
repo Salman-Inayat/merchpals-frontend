@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,7 +15,8 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PhoneNumberInput from '../../../../components/phone-number-input';
-import { cpf as CpfRegulator } from 'cpf-cnpj-validator'; 
+import { cpf as CpfRegulator } from 'cpf-cnpj-validator';
+import { IMaskInput } from 'react-imask';
 
 const useStyles = makeStyles(theme => ({
   accordian: {
@@ -76,12 +77,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const TextMaskCustom = React.forwardRef(function TextMaskCustom(props, ref) {
+  const { onChange, ...other } = props;
+  return (
+    <IMaskInput
+      {...other}
+      mask="000-000-000.00"
+      definitions={{
+        '#': /[1-9]/,
+      }}
+      inputRef={ref}
+      onAccept={value => onChange({ target: { name: props.name, value } })}
+      overwrite
+    />
+  );
+});
+
 const BillingAddress = ({
   markAddressComplete = () => {},
   setBillingAddress = () => {},
   updateTaxAndShipping = () => {},
   getStatesOfCountry = () => {},
-  getRegionOfCountry = () => {},  
+  getRegionOfCountry = () => {},
   taxError = '',
   shippingError = '',
   setPhoneNo,
@@ -103,14 +120,13 @@ const BillingAddress = ({
   const CustomerSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
-    aptNo: Yup.string().required('Apartment Number is required'),
     zip: Yup.string()
       .required('Postal Code is required')
       .min('5', 'Postal code should be 5 digits'),
     street: Yup.string().required('Street Address is required'),
     city: Yup.string().required('City name is required'),
     state: Yup.string().required('State name is required'),
-    country: Yup.string().required('Country Name is required'),
+    country: Yup.string().required('Country name is required'),
   });
 
   const {
@@ -125,31 +141,30 @@ const BillingAddress = ({
     resolver: yupResolver(CustomerSchema),
   });
 
-  const [firstName, lastName, aptNo, zip, street, city, state, country] = watch(
-    [
-      'firstName',
-      'lastName',
-      'aptNo',
-      'zip',
-      'street',
-      'city',
-      'state',
-      'country',
-    ],
-  );
+  const [firstName, lastName, aptNo, zip, street, city, state, country] = watch([
+    'firstName',
+    'lastName',
+    'aptNo',
+    'zip',
+    'street',
+    'city',
+    'state',
+    'country',
+  ]);
 
   useEffect(() => {
     if (country) {
-      getStatesOfCountry(country)
-      getRegionOfCountry(country)        
+      getStatesOfCountry(country);
+      getRegionOfCountry(country);
     }
   }, [country]);
 
-  if (!country) {
-    setValue('country', 'US')
-  }
+  useEffect(() => {
+    setValue('country', 'US');
+    setValue('state', 'NY');
+    setValue('zip', '10001');
+  }, []);
 
-// console.log({ country });
   useEffect(() => {
     setBillingAddress({
       firstName,
@@ -160,12 +175,23 @@ const BillingAddress = ({
       city,
       state,
       country,
+      tax_number: cpf,
     });
     setCustomer({
       firstName,
       lastName,
     });
-  }, [firstName, lastName, aptNo, zip, street, city, state, country]);
+  }, [firstName, lastName, aptNo, zip, street, city, state, country, cpf]);
+
+  useEffect(() => {
+    if (zip?.length === 5 && country && state) {
+      updateTaxAndShipping();
+    }
+  }, [zip, country, state]);
+
+  useEffect(() => {
+    setValue('state', '');
+  }, [country]);
 
   const validateAndContinue = async () => {
     if (!phoneNo) {
@@ -179,20 +205,19 @@ const BillingAddress = ({
     }
 
     if (!cpf) {
-      setCpfErr('CPF number is required!')
+      setCpfErr('CPF number is required!');
     } else if (!CpfRegulator.isValid(cpf)) {
-      setCpfErr('Please provide a valid CPF number!')
+      setCpfErr('Please provide a valid CPF number!');
     }
     const isValid = await trigger();
+
     if (isValid) {
       markAddressComplete(true);
-      updateTaxAndShipping();
     } else {
       markAddressComplete(false);
     }
   };
 
-  
   return (
     <Grid item>
       <Grid className={classes.accordian}>
@@ -215,9 +240,7 @@ const BillingAddress = ({
               className={classes.textField}
               placeholder="First name"
             />
-            <span className={classes.fieldError}>
-              {errors?.firstName?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.firstName?.message}</span>
           </Grid>
           <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
@@ -234,9 +257,7 @@ const BillingAddress = ({
               className={classes.textField}
               placeholder="Last name"
             />
-            <span className={classes.fieldError}>
-              {errors?.lastName?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.lastName?.message}</span>
           </Grid>
         </Grid>
 
@@ -256,9 +277,7 @@ const BillingAddress = ({
               className={classes.textField}
               placeholder="Street Address"
             />
-            <span className={classes.fieldError}>
-              {errors?.street?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.street?.message}</span>
           </Grid>
           <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>APT. / Suite</InputLabel>
@@ -330,15 +349,13 @@ const BillingAddress = ({
                 },
               })}
             >
-              {countries.map((country, i) => (
-                <MenuItem value={country.iso2} key={`country-${i}`}>
-                  {country.name}
+              {countries.map((c, i) => (
+                <MenuItem value={c.iso2} key={`c-${i}`}>
+                  {c.name}
                 </MenuItem>
               ))}
             </Select>
-            <span className={classes.fieldError}>
-              {errors?.country?.message}
-            </span>
+            <span className={classes.fieldError}>{errors?.country?.message}</span>
           </Grid>
           <Grid item md={6} xs={12}>
             <InputLabel className={classes.label}>
@@ -355,9 +372,9 @@ const BillingAddress = ({
                 },
               })}
             >
-              {states.map((state, i) => (
-                <MenuItem value={state.iso2} key={`state-${i}`}>
-                  {state.name}
+              {states.map((s, i) => (
+                <MenuItem value={s.iso2} key={`s-${i}`}>
+                  {s.name}
                 </MenuItem>
               ))}
             </Select>
@@ -401,41 +418,35 @@ const BillingAddress = ({
                   className={classes.textField}
                   placeholder="Email"
                 />
-                <span className={classes.fieldError}>
-                  {formErrors.email || emailErr}
-                </span>
+                <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
               </Grid>
-              {country === 'BR' && <Grid item md={6} xs={12}>
-                <InputLabel className={classes.label}>CPF</InputLabel>
-                <Input
-                  value={cpf}
-                  onChange={e => {
-                    setCpfErr('');
-                    setCPF(e.target.value);
-                  }}
-                  onKeyUp={() => setFormErrors({ cpf: '' })}
-                  className={classes.textField}
-                  placeholder="CPF"
-                />
-                <span className={classes.fieldError}>
-                  {cpfErr}
-                </span>
-              </Grid> }             
-            </Grid>          
+              {country === 'BR' && (
+                <Grid item md={6} xs={12}>
+                  <InputLabel className={classes.label}>CPF</InputLabel>
+                  <Input
+                    value={cpf}
+                    onChange={e => {
+                      setCpfErr('');
+                      setCPF(e.target.value);
+                    }}
+                    onKeyUp={() => setFormErrors({ cpf: '' })}
+                    className={classes.textField}
+                    placeholder="CPF"
+                    inputComponent={TextMaskCustom}
+                  />
+                  <span className={classes.fieldError}>{cpfErr}</span>
+                </Grid>
+              )}
+            </Grid>
           ))
         }
         <Grid justifyContent="center" mt={3} container>
-          {taxError && (
-            <Typography className={classes.error}>{taxError}</Typography>
-          )}
-          {shippingError && (
-            <Typography className={classes.error}>{shippingError}</Typography>
-          )}
+          {taxError && <Typography className={classes.error}>{taxError}</Typography>}
+          {shippingError && <Typography className={classes.error}>{shippingError}</Typography>}
         </Grid>
         <Grid justifyContent="center" mt={3} container>
           <Button onClick={validateAndContinue} className={classes.continueBtn}>
-            {' '}
-            Continue{' '}
+            Continue
           </Button>
         </Grid>
       </Grid>

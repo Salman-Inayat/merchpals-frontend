@@ -169,8 +169,7 @@ function VendorOrderDetails() {
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Order added on:{' '}
-                        {new Date(order.createdAt).toDateString()}
+                        Order added on: {new Date(order.createdAt).toDateString()}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -180,10 +179,7 @@ function VendorOrderDetails() {
                   <Card>
                     <CardContent>
                       <Typography variant="p" component="p">
-                        Order placed by:{' '}
-                        {order.customerId.firstName +
-                          ' ' +
-                          order.customerId.lastName}
+                        Order placed by: {order.customer.firstName + ' ' + order.customer.lastName}
                       </Typography>
                       <Typography variant="p" component="p">
                         Billing Address:{' '}

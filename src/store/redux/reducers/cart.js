@@ -40,8 +40,15 @@ const getCart = (state, store) => {
 }
 
 const emptyCart = (state) => {
+  console.log('emptyCart');
   localStorage.removeItem('MERCHPALS_CART');
-  return initialState
+  return {
+    stringifyCart: '',
+    cart: {
+      store: '',
+      products: [],
+    },
+  };
 }
 
 const removeFromCart = (state, action) => {

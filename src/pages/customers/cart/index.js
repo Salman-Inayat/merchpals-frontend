@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { removeFromCart, emptyCart } from '../../store/redux/actions/cart';
+import { removeFromCart, emptyCart } from '../../../store/redux/actions/cart';
 import { Grid, Button, Typography } from '@mui/material';
-import CartProductCard from '../../components/cartProductCard';
+import CartProductCard from '../../../components/cartProductCard';
 import { makeStyles } from '@mui/styles';
 import { useNavigate, useParams } from 'react-router-dom';
 
