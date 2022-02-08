@@ -6,15 +6,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Button,
-  Card,
-  Grid,
-  Stack,
-  Typography,
-  Input,
-  Avatar,
-} from '@mui/material';
+import { Button, Card, Grid, Stack, Typography, Input, Avatar } from '@mui/material';
 import { fabric } from 'fabric';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
@@ -120,6 +112,7 @@ const Editor = forwardRef((props, ref) => {
   const [toggleFontControls, setToggleFontControls] = useState(false);
   const [miniature, setMiniature] = useState();
 
+  const [finalJson, setFinalJson] = useState([]);
   useEffect(() => {
     var style1 = document.getElementById('style1');
     var style2 = document.getElementById('style2');
@@ -285,26 +278,24 @@ const Editor = forwardRef((props, ref) => {
     imageControls.hidden = true;
   };
 
+  const handleSaveFinalJSON = () => {
+    const json = editorJs.saveFinalJson();
+    // setFinalJson(json.designImages);
+    // console.log(json.designImages);
+
+    setTimeout(() => {
+      console.log(json);
+    }, 1500);
+  };
+
   return (
-    <Grid
-      container
-      spacing={2}
-      alignItems="center"
-      style={{ marginLeft: '10px' }}
-    >
+    <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           Create Your Design
         </Typography>
       </Grid>
-      <Grid
-        item
-        md={12}
-        spacing={1}
-        sm={12}
-        xs={12}
-        className={classes.canvasContainer}
-      >
+      <Grid item md={12} spacing={1} sm={12} xs={12} className={classes.canvasContainer}>
         <Grid container spacing={1}>
           <Grid item md={2} sm={2} xs={2}>
             <Smileys addPng={addPng} />
@@ -333,14 +324,7 @@ const Editor = forwardRef((props, ref) => {
               </Button>
             </div>
           </Grid>
-          <Grid
-            item
-            md={8}
-            xs={8}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
+          <Grid item md={8} xs={8} display="flex" justifyContent="center" alignItems="center">
             <Card className={`${classes.editor} fabric-canvas-wrapper`}>
               <CanvasEditor
                 onReady={editorJs.onReady}
@@ -357,21 +341,9 @@ const Editor = forwardRef((props, ref) => {
       <Grid item md={12} sm={12} xs={12}>
         <Grid container spacing={2} className={classes.controlsContainer}>
           <Grid md={12} sm={12} xs={12}>
-            <Grid
-              container
-              spacing={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
+            <Grid container spacing={3} display="flex" justifyContent="center" alignItems="center">
               <Grid item md={2} xs={12}></Grid>
-              <Grid
-                item
-                md={2}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Grid item md={2} display="flex" justifyContent="center" alignItems="center">
                 <Button
                   size="small"
                   variant="contained"
@@ -381,13 +353,7 @@ const Editor = forwardRef((props, ref) => {
                   Undo
                 </Button>
               </Grid>
-              <Grid
-                item
-                md={4}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Grid item md={4} display="flex" justifyContent="center" alignItems="center">
                 <div className={classes.miniatureContaienr}>
                   <img src={ShirtSVG} className={classes.shirtImage} />
                   <span
@@ -402,21 +368,10 @@ const Editor = forwardRef((props, ref) => {
                       border: '2px solid white',
                     }}
                   ></span>
-                  <canvas
-                    id="static"
-                    width="50"
-                    height="50"
-                    className={classes.miniature}
-                  ></canvas>
+                  <canvas id="static" width="50" height="50" className={classes.miniature}></canvas>
                 </div>
               </Grid>
-              <Grid
-                item
-                md={2}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Grid item md={2} display="flex" justifyContent="center" alignItems="center">
                 <Button
                   size="small"
                   variant="contained"
@@ -450,10 +405,7 @@ const Editor = forwardRef((props, ref) => {
                 onClick={handleControlsToggle}
                 className={`${classes.smileys} ${classes.button}`}
               >
-                <Avatar
-                  src={SmileySVG}
-                  style={{ height: '25px', width: '25px' }}
-                />
+                <Avatar src={SmileySVG} style={{ height: '25px', width: '25px' }} />
               </Button>
               <Button
                 variant="contained"
@@ -479,6 +431,7 @@ const Editor = forwardRef((props, ref) => {
           </Grid>
           <Grid item md={2} xs={12}></Grid>
         </Grid>
+        <Button onClick={handleSaveFinalJSON}>Save final JSON</Button>
       </Grid>
       <Grid item md={1}>
         <div style={{ height: '1px', width: '1px' }}>
