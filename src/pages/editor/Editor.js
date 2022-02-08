@@ -191,10 +191,6 @@ const Editor = forwardRef((props, ref) => {
     saveDesign() {
       exportCanvas();
     },
-
-    saveDesignInJSON() {
-      return exportCanvasToJSON();
-    },
   }));
 
   const addText = () => {
@@ -222,11 +218,7 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const exportCanvas = () => {
-    const exportedImage = editorJs.exportCanvas();
-    localStorage.setItem('design', exportedImage);
-
-    const exportedCanvasJson = editorJs.saveCanvasToJSON();
-    localStorage.setItem('designJSON', exportedCanvasJson);
+    editorJs.exportCanvas();
   };
 
   const exportCanvasToJSON = () => {
@@ -276,16 +268,6 @@ const Editor = forwardRef((props, ref) => {
     smileyControls.hidden = smileyControls.hidden == true ? false : true;
     fontControls.hidden = true;
     imageControls.hidden = true;
-  };
-
-  const handleSaveFinalJSON = () => {
-    const json = editorJs.saveFinalJson();
-    // setFinalJson(json.designImages);
-    // console.log(json.designImages);
-
-    setTimeout(() => {
-      console.log(json);
-    }, 1500);
   };
 
   return (
@@ -431,7 +413,6 @@ const Editor = forwardRef((props, ref) => {
           </Grid>
           <Grid item md={2} xs={12}></Grid>
         </Grid>
-        <Button onClick={handleSaveFinalJSON}>Save final JSON</Button>
       </Grid>
       <Grid item md={1}>
         <div style={{ height: '1px', width: '1px' }}>

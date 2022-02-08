@@ -8,6 +8,7 @@ import { makeStyles } from '@mui/styles';
 import { Editor, Products, SignUp, StoreForm, Otp, WelcomeMessage } from './steps';
 import { baseURL } from '../../configs/const';
 import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyle = makeStyles(() => ({
   fluid: {
@@ -45,7 +46,8 @@ const useStyle = makeStyles(() => ({
     height: '0.5em',
   },
 }));
-const Home = ({ designJSON }) => {
+const Home = () => {
+  const designData = useSelector(state => state.design.design);
   const [step, setStep] = useState(0);
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [registrationErrors, setRegistrationErrors] = useState({
@@ -54,8 +56,6 @@ const Home = ({ designJSON }) => {
     phoneNo: '',
   });
   const [products, setProducts] = useState([]);
-  const [design, setDesign] = useState('');
-  const [canvasJSON, setCanvasJSON] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
@@ -71,10 +71,6 @@ const Home = ({ designJSON }) => {
       fetchProducts();
     }
   }, []);
-
-  useEffect(() => {
-    setCanvasJSON(designJSON.json);
-  }, [designJSON]);
 
   const fetchProducts = async () => {
     axios
@@ -126,12 +122,6 @@ const Home = ({ designJSON }) => {
   };
 
   const createStore = data => {
-    const designData = {
-      base64Image: localStorage.getItem('design'),
-      name: 'default',
-      canvasJson: canvasJSON,
-    };
-
     let store = new FormData();
     store.append('name', data.name);
     store.append('slug', data.slug.split(' ').join('-'));
@@ -191,7 +181,7 @@ const Home = ({ designJSON }) => {
         }
         return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
-        return <Editor nextStep={nextStep} />;
+        return <Editor nextStep={nextStep} design={designData} />;
     }
   };
   return (
@@ -222,9 +212,4 @@ const Home = ({ designJSON }) => {
   );
 };
 
-const mapState = state => {
-  const designJSON = state.design;
-  return { designJSON };
-};
-
-export default connect(mapState)(Home);
+export default connect()(Home);

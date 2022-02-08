@@ -6,11 +6,14 @@ import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import 'fabric-history';
 import { useMediaQuery } from 'react-responsive';
+import { useSelector, useDispatch } from 'react-redux';
+import { SAVE_DESIGN } from '../../store/redux/types';
 
 const useEditor = canvasId => {
   let [canvas, setCanvas] = useState();
   let [canvasJSON, setCanvasJSON] = useState();
   let [miniature, setMiniature] = useState();
+  const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
   let isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -1143,92 +1146,7 @@ const useEditor = canvasId => {
     return '+1' + number;
   };
 
-  // const saveFinalJson = (userDetails, products) => {
-  //   let json = JSON.stringify(canvas);
-  //   json = JSON.parse(json);
-  //   const formatOne = new Image();
-  //   const formatTwo = new Image();
-  //   const formatThree = new Image();
-  //   const formatFour = new Image();
-  //   if (isMobile) {
-  //     var mult1 = 2700 / 225;
-  //     var mult2 = 3000 / 225;
-  //     var mult3 = 1050 / 225;
-  //     var mult4 = 831 / 225;
-  //   }
-  //   if (!isMobile) {
-  //     var mult1 = 2700 / 450;
-  //     var mult2 = 3000 / 450;
-  //     var mult3 = 1050 / 450;
-  //     var mult4 = 831 / 450;
-  //   }
-  //   formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
-  //   formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
-  //   formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
-  //   formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
-  //   let dp = userDetails.profilePic;
-  //   let cover = userDetails.coverPic;
-  //   userDetails.profilePic = '';
-  //   userDetails.coverPic = '';
-  //   formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
-  //   formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
-  //   formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
-  //   formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
-  //   console.log(formatOne.src);
-  //   console.log(formatTwo.src);
-  //   console.log(formatThree.src);
-  //   console.log(formatFour.src);
-  //   userDetails['JSON'] = JSON.stringify(json);
-  //   var finaljson = {
-  //     vendorId: phoneFormat(userDetails.phone),
-  //     vendorStoreName: userDetails.storeName.toLowerCase(),
-  //     displayName: userDetails.storeName.toLowerCase(),
-  //     userDetails: userDetails,
-  //     imgData: [
-  //       {
-  //         name: 'ProfilePic',
-  //         data: chopBegining(dp),
-  //       },
-  //       {
-  //         name: 'CoverPic',
-  //         data: chopBegining(cover),
-  //       },
-  //     ],
-  //     products: [
-  //       {
-  //         designName: 'default',
-  //         designProduct: products,
-  //         designJson: json,
-  //         designImage: [
-  //           {
-  //             name: '2700x2700',
-  //             data: chopBegining(formatOne.src),
-  //           },
-  //           {
-  //             name: '3000x3000',
-  //             data: chopBegining(formatTwo.src),
-  //           },
-  //           {
-  //             name: '1050x1050',
-  //             data: chopBegining(formatThree.src),
-  //           },
-  //           {
-  //             name: '831x831',
-  //             data: chopBegining(formatFour.src),
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   };
-
-  //   // service.submitUser(finaljson);
-  //   console.log(finaljson);
-  //   // service.getsubmitUser().subscribe((resp1) => {
-  //   //   createStoreResponse.emit(resp1);
-  //   // });
-  // };
-
-  const saveFinalJson = () => {
+  const exportCanvas = () => {
     let design;
     let json = JSON.stringify(canvas);
     const formatOne = new Image();
@@ -1308,13 +1226,10 @@ const useEditor = canvasId => {
           },
         ],
       };
+      dispatch({ type: SAVE_DESIGN, payload: design });
     };
-
-    setTimeout(() => {
-      console.log(design);
-      return design;
-    }, 1000);
   };
+
   const canvasReady = (canvasReady, canvasJSON) => {
     setCanvas(canvasReady);
     setCanvasJSON(canvasJSON);
@@ -1322,10 +1237,6 @@ const useEditor = canvasId => {
 
   const getMiniature = () => {
     return miniature;
-  };
-
-  const exportCanvas = () => {
-    return canvas.toDataURL();
   };
 
   return {
@@ -1350,7 +1261,6 @@ const useEditor = canvasId => {
     exportCanvas,
     saveCanvasToJSON,
     finishTextEditing,
-    saveFinalJson,
   };
 };
 

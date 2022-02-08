@@ -2,27 +2,19 @@ import { useState, useRef, useEffect } from 'react';
 import { Button, Grid } from '@mui/material';
 import Editor from '../../editor/Editor';
 import { connect } from 'react-redux';
-import { saveDesignJSON } from '../../../store/redux/actions/design';
 
-const EditorStep = ({
-  nextStep = () => {},
-  exportBase64 = () => {},
-  saveDesignJSON,
-  design,
-}) => {
+const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) => {
   const [triggerExport, setTriggerExport] = useState(0);
   const childRef = useRef();
-  const [canvasJSON, setCanvasJSON] = useState();
 
   const exportAndMove = () => {
     setTriggerExport(triggerExport + 1);
-    saveDesignInJSON();
+    saveDesignToStore();
     nextStep();
   };
 
-  const saveDesignInJSON = () => {
-    const json = childRef.current.saveDesignInJSON();
-    saveDesignJSON(json);
+  const saveDesignToStore = () => {
+    childRef.current.saveDesign();
   };
 
   return (
@@ -41,7 +33,7 @@ const EditorStep = ({
           exportBase64={exportBase64}
           triggerExport={triggerExport}
           ref={childRef}
-          canvasJSON={design.json === '' ? undefined : design.json}
+          canvasJSON={design.design.designJson === '' ? undefined : design.design.designJson}
         />
         <Button
           variant="contained"
@@ -56,17 +48,9 @@ const EditorStep = ({
   );
 };
 
-const mapDispatch = dispatch => ({
-  saveDesignJSON: json => {
-    dispatch(saveDesignJSON(json));
-  },
-});
-
 const mapState = state => {
   const design = state.design;
   return { design };
 };
 
-export default connect(mapState, mapDispatch)(EditorStep);
-
-// export { EditorStep as default };
+export default connect(mapState)(EditorStep);

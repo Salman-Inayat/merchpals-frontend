@@ -29,7 +29,7 @@ export const ADD_QUANTITY = 'ADD_QUANTITY';
 export const SUB_QUANTITY = 'SUB_QUANTITY';
 export const EMPTY_CART = 'EMPTY_CART';
 export const GET_CART = 'GET_CART';
-export const SAVE_DESIGN_JSON = 'SAVE_DESIGN_JSON';
+export const SAVE_DESIGN = 'SAVE_DESIGN';
 
 export const FETCH_STORE_SUCCESS = 'FETCH_STORE_SUCCESS';
 export const FETCH_STORE_FAILED = 'FETCH_STORE_FAILED';
