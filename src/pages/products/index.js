@@ -23,8 +23,12 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Box from '@mui/material/Box';
 import { fetchProduct } from '../../store/redux/actions/product';
+import Footer from '../../layouts/static/footer';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -83,6 +87,7 @@ const useStyle = makeStyles(theme => ({
   radio: {
     margin: '10px',
     display: 'none',
+
     '&$checked + label': {
       backgroundColor: '#f5f5f5',
       borderColor: '#f5f5f5',
@@ -90,11 +95,14 @@ const useStyle = makeStyles(theme => ({
   },
   addToCartButton: {
     margin: '10px',
+    width: '80%',
     backgroundColor: '#f0d708',
     borderRadius: '100px',
+    border: 'none',
     color: '#000',
     '&:hover': {
       backgroundColor: '#cab50c',
+      border: 'none',
     },
   },
   accordian: {
@@ -105,6 +113,37 @@ const useStyle = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       marginLeft: '20px',
     },
+  },
+  parentSelectSize: {
+    marginLeft: '0px',
+    backgroundColor: '#F4F4F4',
+    margin: '10px',
+    [theme.breakpoints.down('sm')]: {
+      margin: '10px',
+    },
+  },
+  selectSize: {
+    width: '50px',
+    height: '50px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '5px',
+    marginLeft: '0px',
+  },
+  caseSize: {
+    width: '50px',
+    height: '50px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    borderRadius: '5px',
+    marginLeft: '0px',
+    padding: '5px',
+  },
+  caseSizeHeading: {
+    fontSize: '12px !important',
   },
 }));
 
@@ -144,7 +183,15 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   const [cartProducts, setCartProducts] = useState([]);
   const [cartsVariants, setCartsVariants] = useState([]);
   const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
+  const [shipping, setShipping] = useState(false);
+  const [details, setDetails] = useState(false);
 
+  const handleDetailsChange = data => {
+    setDetails(!data);
+  };
+  const handleShippingChange = data => {
+    setShipping(!data);
+  };
   useEffect(() => {
     fetchProduct(storeUrl, productId);
     getCart(storeUrl);
@@ -289,15 +336,16 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
       visible: false,
     });
   };
-
+  console.log('slug', product.slug);
   return (
-    <Grid container spacing={1}>
-      <Grid item md={6} xs={12}>
-        <Button variant="contained" onClick={handleBackButton} className={classes.backButton}>
-          Back
-        </Button>
+    <Grid container spacing={1} justifyContent="center" alignItems="center">
+      <Grid item md={1} xs={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
+        <ArrowBackIcon onClick={handleBackButton} />
       </Grid>
-      <Grid item md={6} xs={12}>
+      <Grid item md={10} xs={10} display="flex" justifyContent="center">
+        <Typography variant="h4">Official Store</Typography>
+      </Grid>
+      <Grid item md={1} xs={1} display="flex" justifyContent="center" pr={{ xs: 3 }}>
         <IconButton
           aria-label="cart"
           onClick={handleCartButton}
@@ -305,7 +353,12 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
           style={{ height: '50px', width: '50px' }}
         >
           <StyledBadge badgeContent={totalNumberOfVariants} color="secondary">
-            <ShoppingCartIcon />
+            <img
+              src="/assets/img/shoppingCart.png"
+              sx={{ cursor: 'pointer' }}
+              width={30}
+              height={30}
+            />
           </StyledBadge>
         </IconButton>
       </Grid>
@@ -390,15 +443,27 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                             <div
                               style={{
                                 backgroundColor: label,
-                                width: '100%',
-                                height: '100%',
+                                backgroundImage: `url(${product.image})`,
+                                backgroundSize: '100% 100%',
+                                backgroundRepeat: 'no-repeat',
+                                width: '50px',
+                                height: '50px',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
                             >
                               {' '}
-                              <img src={`${product.image}`} height="50" width="50" />
+                              {/* <Typography>Rehman</Typography> */}
+                              {/* <img src={`${product.image}`} height="50" width="50" /> */}
+                              <img
+                                src={product.design}
+                                width="15px"
+                                height="15px"
+                                style={{
+                                  position: 'absolute',
+                                }}
+                              />
                             </div>
                           }
                         />
@@ -419,7 +484,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                     {product.sizes.map(({ id, label }) => {
                       return (
                         <FormControlLabel
-                          style={{ marginLeft: '0px' }}
+                          className={classes.parentSelectSize}
                           key={`sizes-${id}`}
                           value={id}
                           control={
@@ -436,17 +501,16 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                           }
                           label={
                             <div
-                              style={{
-                                width: '50px',
-                                height: '50px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '5px',
-                                marginLeft: '0px',
-                              }}
+                              className={
+                                product.slug === 'case' ? classes.caseSize : classes.selectSize
+                              }
                             >
-                              <Typography component="h4">{label.toUpperCase()}</Typography>
+                              <Typography
+                                component="h4"
+                                className={product.slug === 'case' && classes.caseSizeHeading}
+                              >
+                                {label.toUpperCase()}
+                              </Typography>
                             </div>
                           }
                         />
@@ -454,28 +518,37 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                     })}
                   </RadioGroup>
                 </FormControl>
-
-                <Button
-                  fullWidth
-                  color="secondary"
-                  variant="outlined"
-                  size="large"
-                  onClick={handleAddToCart}
-                  className={classes.addToCartButton}
-                >
-                  Add to Cart
-                </Button>
+                <Grid item md={12} display="flex" justifyContent="center">
+                  <Button
+                    color="secondary"
+                    variant="outlined"
+                    size="large"
+                    onClick={handleAddToCart}
+                    className={classes.addToCartButton}
+                  >
+                    Add to Cart
+                  </Button>
+                </Grid>
 
                 <Accordion className={classes.accordian}>
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                    onClick={() => handleDetailsChange(details)}
+                    expandIcon={
+                      details ? (
+                        <AddIcon sx={{ color: '#EDEDED' }} />
+                      ) : (
+                        <RemoveIcon sx={{ color: '#EDEDED' }} />
+                      )
+                    }
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography component="h5">DETAILS</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
+                      DETAILS
+                    </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography>
+                    <Typography variant="body1" sx={{ fontWeight: '400 !important' }}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
                       lacus ex, sit amet blandit leo lobortis eget.
                     </Typography>
@@ -484,14 +557,23 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
 
                 <Accordion className={classes.accordian}>
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                    onClick={() => handleShippingChange(shipping)}
+                    expandIcon={
+                      shipping ? (
+                        <AddIcon sx={{ color: '#EDEDED' }} />
+                      ) : (
+                        <RemoveIcon sx={{ color: '#EDEDED' }} />
+                      )
+                    }
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography component="h5">SHIPPING DETAILS</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
+                      SHIPPING DETAILS
+                    </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography>
+                    <Typography variant="body1" sx={{ fontWeight: '400 !important' }}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
                       lacus ex, sit amet blandit leo lobortis eget.
                     </Typography>
@@ -512,6 +594,9 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
           </Grid>
         </Grid>
       ) : null}
+      <Grid item md={12}>
+        <Footer />
+      </Grid>
     </Grid>
   );
 };

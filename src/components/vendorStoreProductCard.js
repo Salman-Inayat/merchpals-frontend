@@ -19,13 +19,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: '0px',
+    backgroundColor: '#F6F0ED',
+    boxShadow: '0 0 18px #BDBCBC',
   },
   productName: {
     // color: '#0097a7',
-    width: '90%',
-    margin: 'auto',
-    fontWeight: '500',
+    margin: '7px auto 0 auto',
   },
+
   design: {
     position: 'absolute',
     top: '50%',
@@ -75,18 +77,9 @@ const VendorStoreProductCard = ({ product, design }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   console.log({ design });
-
+  console.log(design, product);
   return (
     <>
-      <Typography
-        gutterBottom
-        align="center"
-        variant="h4"
-        component="div"
-        className={classes.productName}
-      >
-        {product.name}
-      </Typography>
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
@@ -110,6 +103,29 @@ const VendorStoreProductCard = ({ product, design }) => {
           />
         )}
       </Card>
+      <Grid className={classes.productName}>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`${product.name} // Vendor Store`}
+        </Typography>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`2 Colors`}
+        </Typography>
+        <Typography gutterBottom align="center" variant="h5" component="div">
+          {`$46.7`}
+        </Typography>
+      </Grid>
     </>
   );
 };

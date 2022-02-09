@@ -6,15 +6,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Button,
-  Card,
-  Grid,
-  Stack,
-  Typography,
-  Input,
-  Avatar,
-} from '@mui/material';
+import { Button, Card, Grid, Stack, Typography, Input, Avatar } from '@mui/material';
 import { fabric } from 'fabric';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
@@ -287,27 +279,15 @@ const Editor = forwardRef((props, ref) => {
   };
 
   return (
-    <Grid
-      container
-      spacing={2}
-      alignItems="center"
-      style={{ marginLeft: '10px' }}
-    >
+    <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           Create Your Design
         </Typography>
       </Grid>
-      <Grid
-        item
-        md={12}
-        spacing={1}
-        sm={12}
-        xs={12}
-        className={classes.canvasContainer}
-      >
-        <Grid container spacing={1}>
-          <Grid item md={2} sm={2} xs={2}>
+      <Grid item md={12} spacing={1} sm={12} xs={12} className={classes.canvasContainer}>
+        <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
+          <Grid item md={2} sm={3} xs={3}>
             <Smileys addPng={addPng} />
             <FontControls
               setFontColor={setFontColor}
@@ -337,7 +317,8 @@ const Editor = forwardRef((props, ref) => {
           <Grid
             item
             md={8}
-            xs={8}
+            xs={6}
+            sm={6}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -350,20 +331,13 @@ const Editor = forwardRef((props, ref) => {
               />
             </Card>
           </Grid>
-          <Grid item md={2} sm={1} xs={2}>
+          <Grid item md={2} sm={3} xs={3}>
             <ColorPallete setCanvasBackground={setCanvasBackground} />
           </Grid>
         </Grid>
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
-        <Grid
-          container
-          md={12}
-          sm={12}
-          xs={12}
-          spacing={1}
-          className={classes.controlsContainer}
-        >
+        <Grid container md={12} sm={12} xs={12} spacing={1} className={classes.controlsContainer}>
           <Stack
             direction="column"
             spacing={3}
@@ -385,10 +359,7 @@ const Editor = forwardRef((props, ref) => {
               onClick={handleControlsToggle}
               className={`${classes.smileys} ${classes.button}`}
             >
-              <Avatar
-                src={SmileySVG}
-                style={{ height: '25px', width: '25px' }}
-              />
+              <Avatar src={SmileySVG} style={{ height: '25px', width: '25px' }} />
             </Button>
             <Button
               variant="contained"
@@ -412,12 +383,7 @@ const Editor = forwardRef((props, ref) => {
             // alignContent="center"
             className={classes.buttonContainer}
           >
-            <Grid
-              item
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
+            <Grid item display="flex" justifyContent="center" alignItems="center">
               <div className={classes.miniatureContaienr}>
                 <img src={ShirtSVG} className={classes.shirtImage} />
                 <span
@@ -432,12 +398,7 @@ const Editor = forwardRef((props, ref) => {
                     border: '2px solid white',
                   }}
                 ></span>
-                <canvas
-                  id="static"
-                  width="50"
-                  height="50"
-                  className={classes.miniature}
-                ></canvas>
+                <canvas id="static" width="50" height="50" className={classes.miniature}></canvas>
               </div>
             </Grid>
           </Stack>

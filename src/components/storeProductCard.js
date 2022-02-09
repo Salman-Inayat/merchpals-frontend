@@ -28,16 +28,20 @@ const useStyles = makeStyles(theme => ({
       padding: '10px',
     },
   },
+  card: {
+    borderRadius: '0px',
+    backgroundColor: '#F6F0ED',
+    boxShadow: '0 0 18px #BDBCBC',
+  },
   button: {
     backgroundColor: '#116DFF',
     marginTop: '20px',
   },
   productName: {
     // color: '#0097a7',
-    width: '90%',
-    margin: 'auto',
-    fontWeight: '500',
+    margin: '7px auto 0 auto',
   },
+
   design: {
     position: 'absolute',
     top: '50%',
@@ -80,7 +84,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const StoreProductCard = ({ product, storeUrl }) => {
+const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -89,18 +93,10 @@ const StoreProductCard = ({ product, storeUrl }) => {
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
     });
   };
+  console.log('data ', product);
 
   return (
     <Box className={classes.container} onClick={exploreProduct}>
-      <Typography
-        gutterBottom
-        variant="h4"
-        component="div"
-        align="center"
-        className={classes.productName}
-      >
-        {product.name}
-      </Typography>
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
@@ -124,6 +120,29 @@ const StoreProductCard = ({ product, storeUrl }) => {
           />
         )}
       </Card>
+      <Grid className={classes.productName}>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`${product.name} // ${storeName}`}
+        </Typography>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`2 Colors`}
+        </Typography>
+        <Typography gutterBottom align="center" variant="h5" component="div">
+          {`$46.7`}
+        </Typography>
+      </Grid>
       {/* <Button
         size="medium"
         variant="contained"

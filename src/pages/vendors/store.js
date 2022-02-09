@@ -18,10 +18,7 @@ import VendorStoreProductCard from '../../components/vendorStoreProductCard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useMediaQuery } from 'react-responsive';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
-import {
-  ThemeCustomise,
-  ThemeColorCustomise,
-} from '../../components/themeCustomize/themeStyle';
+import { ThemeCustomise, ThemeColorCustomise } from '../../components/themeCustomize/themeStyle';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveThemeColor } from '../../store/redux/actions/design';
 
@@ -46,26 +43,22 @@ const useStyle = makeStyles(theme => ({
   },
   logo: {
     position: 'absolute',
-    top: '80%',
-    left: '10%',
-    width: '120px',
-    height: '120px',
-    borderRadius: '100px',
-    [theme.breakpoints.down('sm')]: {
-      top: '80%',
-      left: '10%',
-      width: '100px',
-      height: '100px',
-    },
-  },
-  storeName: {
-    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    fontSize: '3rem',
+    width: '120px',
+    height: '120px',
+    borderRadius: '100px',
+  },
+  storeName: {
+    fontSize: '2rem',
     fontWeight: '500',
     textTransform: 'uppercase',
+    textDecoration: 'underline',
+    textAlign: 'center',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   productsContainer: {
     padding: '1rem 8rem',
@@ -161,38 +154,22 @@ const VendorStore = () => {
   themeColorClass = ThemeColorCustomise(themeColor);
   return (
     <LoggedInVendor>
-      <Grid
-        container
-        spacing={3}
-        style={{ margin: '0px' }}
-        className={themeClass}
-      >
+      <Grid container spacing={3} style={{ margin: '0px' }} className={themeClass}>
         <Grid item md={12} xs={12} className={classes.coverContainer}>
-          <img
-            src={store.coverAvatar}
-            alt="image"
-            className={classes.coverImage}
-          />
-          <Typography variant="h1" className={classes.storeName}>
-            {store.name}
-          </Typography>
-
+          <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
           <img src={store.logo} className={classes.logo} />
         </Grid>
         <Grid item md={12} sm={12} xs={12}>
-          <Grid
-            container
-            spacing={isMobile ? 2 : 10}
-            mt={1}
-            className={classes.productsContainer}
-          >
+          <Grid item md={12} display="flex" justifyContent="center">
+            <Typography variant="h1" className={classes.storeName}>
+              {store.name}&#39;S MERCH STORE
+            </Typography>
+          </Grid>
+          <Grid container spacing={isMobile ? 2 : 10} mt={1} className={classes.productsContainer}>
             {store.vendorProductIds?.map((product, i) => {
               return (
                 <Grid item md={4} xs={6} key={`VendorStoreProductCard-${i}`}>
-                  <VendorStoreProductCard
-                    product={product}
-                    design={store.design}
-                  />
+                  <VendorStoreProductCard product={product} design={store.design} />
                 </Grid>
               );
             })}
