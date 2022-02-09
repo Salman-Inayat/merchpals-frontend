@@ -174,9 +174,10 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
         colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
         sizes: [...new Map(variantArr.map(item => [item['id'], item])).values()],
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
-        design: fetchedProduct.designId?.url,
+        design: fetchedProduct.designId?.designImages[4].imageUrl,
       };
 
+      console.log(formattedProduct);
       setProduct(formattedProduct);
       setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);

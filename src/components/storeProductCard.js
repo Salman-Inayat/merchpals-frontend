@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
 const StoreProductCard = ({ product, storeUrl }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  console.log(product);
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
@@ -110,7 +110,7 @@ const StoreProductCard = ({ product, storeUrl }) => {
         />
         {product?.designId && (
           <img
-            src={product.designId.url}
+            src={product.designId.designImages[4].imageUrl}
             className={[
               classes.design,
               product.name === 'Poster'

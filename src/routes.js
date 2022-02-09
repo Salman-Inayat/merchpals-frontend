@@ -18,6 +18,7 @@ import Product from './pages/products';
 import VendorStore from './pages/vendors/store';
 import Cart from './pages/customers/cart';
 import Checkout from './pages/customers/checkout';
+import CheckoutComplete from './pages/customers/checkout/checkoutComplete';
 import VendorDesigns from './pages/vendors/designs';
 import VendorCreateDesigns from './pages/vendors/designs/create';
 import VendorEditDesigns from './pages/vendors/designs/edit';
@@ -70,6 +71,7 @@ export default function Router() {
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/store/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
+    { path: '/checkout/complete', element: <CheckoutComplete /> },
 
     {
       path: '/flow-complete',

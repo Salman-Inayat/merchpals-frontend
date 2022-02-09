@@ -74,7 +74,6 @@ const useStyles = makeStyles(theme => ({
 const VendorStoreProductCard = ({ product, design }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  console.log({ design });
 
   return (
     <>
@@ -96,7 +95,7 @@ const VendorStoreProductCard = ({ product, design }) => {
         />
         {product?.designId && (
           <img
-            src={product.designId.url}
+            src={product.designId.designImages[4].imageUrl}
             className={[
               classes.design,
               product.name === 'Poster'
