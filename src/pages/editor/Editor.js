@@ -103,7 +103,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Editor = forwardRef((props, ref) => {
-  const { triggerExport = 0, canvasJSON, saveEditDesign } = props;
+  const { triggerExport = 0, canvasJSON, saveEditDesign, designName } = props;
 
   const classes = useStyles();
 
@@ -189,7 +189,10 @@ const Editor = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     saveDesign() {
-      exportCanvas();
+      new Promise(resolve => {
+        exportCanvas();
+        resolve();
+      });
     },
   }));
 
@@ -218,7 +221,10 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const exportCanvas = () => {
-    editorJs.exportCanvas();
+    new Promise(resolve => {
+      editorJs.exportCanvas();
+      resolve();
+    });
   };
 
   const exportCanvasToJSON = () => {
@@ -312,6 +318,7 @@ const Editor = forwardRef((props, ref) => {
                 onReady={editorJs.onReady}
                 class="fabric-canvas-wrapper"
                 canvasJSON={canvasJSON}
+                designName={designName}
               />
             </Card>
           </Grid>

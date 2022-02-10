@@ -184,8 +184,7 @@ const ProductCard = ({
 
     if (selectedVariants[product._id]) {
       const productSelectedVariants = selectedVariants[product._id];
-      const lastSelectedColor =
-        productSelectedVariants[productSelectedVariants?.length - 1];
+      const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
       // console.log({ bgColor });
     }
@@ -209,9 +208,7 @@ const ProductCard = ({
 
   const saveAndCloseModal = () => {
     if (Number(price) < product.minPrice) {
-      setPriceError(
-        `Price can not be less than min price i.e. ${product.minPrice}`,
-      );
+      setPriceError(`Price can not be less than min price i.e. ${product.minPrice}`);
       return;
     }
     updatePrice(product._id, design._id, price);
@@ -260,7 +257,7 @@ const ProductCard = ({
                     ? classes.mug
                     : '',
                 ].join(' ')}
-                src={design.url}
+                src={design.designImages[4].imageUrl}
               />
             </Box>
           )}
@@ -290,33 +287,19 @@ const ProductCard = ({
                     style={{
                       width: `${isMobile ? '25px' : '30px'}`,
                       height: `${isMobile ? '25px' : '30px'}`,
-                      backgroundColor:
-                        `${pm.label}` === 'transparent'
-                          ? 'white'
-                          : `${pm.label}`,
+                      backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
                     }}
                     onChange={() => onVariantClick(event.target.value)}
-                    checked={
-                      selectedVariants[product._id]?.includes(pm.id)
-                        ? true
-                        : false
-                    }
+                    checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
                     value={`${product._id},${pm.id}`}
                     sx={{
                       border: '1px solid #000',
-                      color:
-                        `${pm.label}` === 'transparent'
-                          ? 'white'
-                          : `${pm.label}`,
+                      color: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
                       '&.Mui-checked': {
                         color: `${pm.label}` == 'white' ? 'black' : 'white',
                       },
                     }}
-                    checkedIcon={
-                      <DoneIcon
-                        style={{ fontSize: `${isMobile ? '20px' : '25px'}` }}
-                      />
-                    }
+                    checkedIcon={<DoneIcon style={{ fontSize: `${isMobile ? '20px' : '25px'}` }} />}
                     className={classes.colorsCheckbox}
                   />
                 </Grid>
@@ -365,11 +348,7 @@ const ProductCard = ({
                   setPrice(e.target.value);
                   setPriceError('');
                   setTempProfit(
-                    calculateProfit(
-                      e.target.value,
-                      shippingCost,
-                      costPrice,
-                    ).toFixed(2),
+                    calculateProfit(e.target.value, shippingCost, costPrice).toFixed(2),
                   );
                 }}
                 autoComplete="off"

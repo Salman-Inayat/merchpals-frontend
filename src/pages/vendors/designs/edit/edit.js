@@ -6,6 +6,7 @@ import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
+import { useSelector } from 'react-redux';
 
 const EditDesign = () => {
   const navigate = useNavigate();
@@ -14,10 +15,18 @@ const EditDesign = () => {
   const [saveEditDesign, setSaveEditDesign] = useState();
   const childRef = useRef();
 
+  const stateDesign = useSelector(state => state.design.design);
+  let updatedDesign = stateDesign;
+
   const [designData, setDesignData] = useState();
   useEffect(() => {
     getDesign();
   }, [designId]);
+
+  useEffect(() => {
+    updatedDesign = stateDesign;
+    console.log('Design changed in redux', updatedDesign);
+  }, [stateDesign]);
 
   const getDesign = async () => {
     axios
@@ -27,41 +36,43 @@ const EditDesign = () => {
         },
       })
       .then(response => {
+        console.log('Design printing: ', response.data.design);
         setDesignData(response.data.design);
-        setCanvasJSON(response.data.design.canvasJson);
+        setCanvasJSON(response.data.design.designJson);
       })
       .catch(error => console.log({ error }));
   };
 
-  const finishDesignEdit = () => {
+  const finishDesignEdit = async () => {
+    await childRef.current.saveDesign();
+
     localStorage.removeItem('design');
-    childRef.current.saveDesign();
 
-    const data = {
-      design: JSON.stringify({
-        base64Image: localStorage.getItem('design'),
-        canvasJson: localStorage.getItem('designJSON'),
-        name: designData.name,
-        designId,
-      }),
-    };
+    setTimeout(() => {
+      let form = new FormData();
+      form.append('design', JSON.stringify(updatedDesign));
+      form.append('name', 'Hello');
 
-    axios
-      .put(`${baseURL}/store/design/${designId}`, data, {
-        headers: {
-          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-        },
-      })
-      .then(response => {
-        console.log(response);
+      console.log('Updated design: ', updatedDesign);
 
-        localStorage.removeItem('designJSON');
-        localStorage.removeItem('design');
-        setTimeout(() => {
-          navigate('/vendor/designs');
-        }, 1000);
-      })
-      .catch(error => console.log({ error }));
+      axios
+        .put(`${baseURL}/store/design/${designId}`, form, {
+          headers: {
+            Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log(response);
+
+          localStorage.removeItem('designJSON');
+          localStorage.removeItem('design');
+          // setTimeout(() => {
+          //   navigate('/vendor/designs');
+          // }, 1000);
+        })
+        .catch(error => console.log({ error }));
+    }, 4000);
   };
 
   return (
@@ -76,6 +87,7 @@ const EditDesign = () => {
                 canvasJSON={canvasJSON}
                 saveEditDesign={saveEditDesign}
                 ref={childRef}
+                designName={designData.name}
               />
             )}
           </Grid>
