@@ -18,7 +18,11 @@ import VendorStoreProductCard from '../../components/vendorStoreProductCard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useMediaQuery } from 'react-responsive';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
-import { ThemeCustomise, ThemeColorCustomise } from '../../components/themeCustomize/themeStyle';
+import {
+  ThemeCustomise,
+  ThemeColorCustomise,
+  themeStyles,
+} from '../../components/themeCustomize/themeStyle';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveThemeColor } from '../../store/redux/actions/design';
 
@@ -88,12 +92,14 @@ const VendorStore = () => {
     logo: '',
     products: [],
   });
-  let theme, themeColor, themeClass, themeColorClass;
-  const [storeURL, setStoreURL] = useState();
 
+  const [storeURL, setStoreURL] = useState();
+  const [themeClass, setThemeClass] = useState('');
+  const [themeColorClass, setThemeColorClass] = useState('');
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const themeClasses = themeStyles();
 
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
@@ -113,7 +119,7 @@ const VendorStore = () => {
         },
       })
       .then(response => {
-        console.log({ store: response.data.store });
+        // console.log('sotre ', { store: response.data.store });
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
         setStore(store);
@@ -143,16 +149,16 @@ const VendorStore = () => {
       ...snackBarToggle,
       visible: false,
     });
-  theme = useSelector(state => state.design);
 
-  if (theme.themeColor) {
-    themeColor = theme.themeColor;
-  } else {
-    themeColor = store.themeColor;
-  }
-  themeClass = ThemeCustomise(themeColor);
-  themeColorClass = ThemeColorCustomise(themeColor);
-  return (
+  useEffect(() => {
+    if (store) {
+      const tmpthemeClass = ThemeCustomise(themeClasses, store.themeColor);
+      const tmpthemeColorClass = ThemeColorCustomise(themeClasses, store.themeColor);
+      setThemeClass(tmpthemeClass);
+      setThemeColorClass(tmpthemeColorClass);
+    }
+  }, [store]);
+  return store ? (
     <LoggedInVendor>
       <Grid container spacing={3} style={{ margin: '0px' }} className={themeClass}>
         <Grid item md={12} xs={12} className={classes.coverContainer}>
@@ -210,7 +216,7 @@ const VendorStore = () => {
         </Snackbar>
       </Grid>
     </LoggedInVendor>
-  );
+  ) : null;
 };
 
 export { VendorStore as default };

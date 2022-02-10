@@ -1,5 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Button, Stack, Snackbar, Typography, Badge, IconButton } from '@mui/material';
+import {
+  Grid,
+  Button,
+  Stack,
+  Snackbar,
+  Typography,
+  Badge,
+  IconButton,
+  List,
+  ListItemText,
+  ListItem,
+  ListItemIcon,
+} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
@@ -29,6 +41,7 @@ import Box from '@mui/material/Box';
 import { fetchProduct } from '../../store/redux/actions/product';
 import Footer from '../../layouts/static/footer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CircleIcon from '@mui/icons-material/Circle';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -217,6 +230,8 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
         cost: fetchedProduct.price,
         basePrice: fetchedProduct.basePrice,
         slug: fetchedProduct.slug,
+        shippingText: fetchedProduct.shippingText,
+        details: fetchedProduct.details,
         productMappings: fetchedProduct.productMappings,
         colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
         sizes: [...new Map(variantArr.map(item => [item['id'], item])).values()],
@@ -271,7 +286,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
       if (isSameVariantAlreadySelected) {
         mappings = mappings.filter(m => m.id !== selectedVariant._id);
       }
-      console.log({ selectedVariant });
+      // console.log({ selectedVariant });
       updatedCart = {
         ...prevProduct,
         productMappings: [
@@ -336,7 +351,8 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
       visible: false,
     });
   };
-  console.log('slug', product.slug);
+  let opacity;
+  // console.log(product);
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="center">
       <Grid item md={1} xs={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
@@ -345,7 +361,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
       <Grid item md={10} xs={10} display="flex" justifyContent="center">
         <Typography variant="h4">Official Store</Typography>
       </Grid>
-      <Grid item md={1} xs={1} display="flex" justifyContent="center" pr={{ xs: 3 }}>
+      <Grid item md={1} xs={1} display="flex" justifyContent="center" pr={{ xs: 5 }}>
         <IconButton
           aria-label="cart"
           onClick={handleCartButton}
@@ -429,6 +445,9 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                           value={id}
                           control={
                             <Radio
+                              onClick={() => {
+                                console.log('radio call', id, label);
+                              }}
                               className={classes.radio}
                               sx={{
                                 '&.Mui-checked': {
@@ -441,6 +460,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                           }
                           label={
                             <div
+                              className={classes.color}
                               style={{
                                 backgroundColor: label,
                                 backgroundImage: `url(${product.image})`,
@@ -535,9 +555,9 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                     onClick={() => handleDetailsChange(details)}
                     expandIcon={
                       details ? (
-                        <AddIcon sx={{ color: '#EDEDED' }} />
+                        <RemoveIcon sx={{ color: '#EAEAEA' }} />
                       ) : (
-                        <RemoveIcon sx={{ color: '#EDEDED' }} />
+                        <AddIcon sx={{ color: '#EAEAEA' }} />
                       )
                     }
                     aria-controls="panel1a-content"
@@ -548,10 +568,17 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography variant="body1" sx={{ fontWeight: '400 !important' }}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-                      lacus ex, sit amet blandit leo lobortis eget.
-                    </Typography>
+                    <List>
+                      {product.details?.map(detail => (
+                        <ListItem disablePadding>
+                          <ListItemIcon
+                            disablePadding
+                            sx={{ fontSize: '10px' }}
+                          >{`\u2B24`}</ListItemIcon>
+                          {detail}
+                        </ListItem>
+                      ))}
+                    </List>
                   </AccordionDetails>
                 </Accordion>
 
@@ -560,9 +587,9 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                     onClick={() => handleShippingChange(shipping)}
                     expandIcon={
                       shipping ? (
-                        <AddIcon sx={{ color: '#EDEDED' }} />
+                        <RemoveIcon sx={{ color: '#EAEAEA' }} />
                       ) : (
-                        <RemoveIcon sx={{ color: '#EDEDED' }} />
+                        <AddIcon sx={{ color: '#EAEAEA' }} />
                       )
                     }
                     aria-controls="panel1a-content"
@@ -573,10 +600,11 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography variant="body1" sx={{ fontWeight: '400 !important' }}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-                      lacus ex, sit amet blandit leo lobortis eget.
-                    </Typography>
+                    {product.shippingText?.map(shippingText => (
+                      <Typography variant="body1" sx={{ fontWeight: '400 !important' }} mb={4}>
+                        {shippingText}
+                      </Typography>
+                    ))}
                   </AccordionDetails>
                 </Accordion>
 

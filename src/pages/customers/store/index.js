@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Container, Grid, Box, Typography, Stack, Button, Badge, IconButton } from '@mui/material';
 import axios from 'axios';
@@ -8,12 +8,12 @@ import { baseURL } from '../../../configs/const';
 import StoreProductCard from '../../../components/storeProductCard';
 import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom';
-import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
+import { ThemeCustomise, themeStyles } from '../../../components/themeCustomize/themeStyle';
 import { useSelector } from 'react-redux';
 import { fetchStore } from '../../../store/redux/actions/store';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { styled } from '@mui/material/styles';
-
+import { useNavigate } from 'react-router-dom';
 const useStyle = makeStyles(theme => ({
   coverContainer: {
     position: 'relative',
@@ -57,7 +57,7 @@ const useStyle = makeStyles(theme => ({
     },
   },
   topBar: {
-    padding: '5px 5%',
+    padding: '0px 5%',
   },
   shoppingCart: {
     cursor: 'pointer',
@@ -67,23 +67,30 @@ const useStyle = makeStyles(theme => ({
 const Store = ({ fetchStore, store }) => {
   let themeColor, theme;
   const classes = useStyle();
+  const navigate = useNavigate();
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const { storeUrl } = useParams();
   const [themeClass, setThemeClass] = useState('');
+  const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
+
+  const themeClasses = themeStyles();
+
   theme = useSelector(state => state.design);
+
   useEffect(() => {
     fetchStore(storeUrl);
   }, []);
 
-  // useEffect(() => {
-  //   if (store) {
-  //     console.log('them from store', store.themeColor);
-  //     themeColor = store.themeColor;
-  //     const tmpthemeClass = ThemeCustomise(themeColor);
-  //     setThemeClass(tmpthemeClass);
-  //   }
-  // }, [store]);
+  useEffect(() => {
+    if (store) {
+      console.log('from use effect');
+      console.log('from setting theme');
+      themeColor = store.themeColor;
+      const tmpthemeClass = ThemeCustomise(themeClasses, themeColor);
+      setThemeClass(tmpthemeClass);
+    }
+  }, [store]);
   const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -6,
@@ -92,7 +99,9 @@ const Store = ({ fetchStore, store }) => {
       padding: '0 4px',
     },
   }));
-  console.log('store', store);
+  const handleCartButton = () => {
+    navigate(`/cart/${storeUrl}`);
+  };
   return store ? (
     <Grid container spacing={3} className={themeClass}>
       <Grid item container md={12} xs={12} alignItems="center" className={classes.topBar}>
@@ -100,21 +109,28 @@ const Store = ({ fetchStore, store }) => {
           <Typography variant="h4">Official Store</Typography>
         </Grid>
         <Grid item md={5} sm={5} xs={4} display="flex" justifyContent="flex-end">
-          <StyledBadge badgeContent="3" color="secondary">
-            <img
-              src="/assets/img/shoppingCart.png"
-              className={classes.shoppingCart}
-              width={30}
-              height={30}
-            />
+          <IconButton
+            aria-label="cart"
+            onClick={handleCartButton}
+            size="large"
+            style={{ height: '50px', width: '50px' }}
+          >
+            <StyledBadge badgeContent={totalNumberOfVariants} color="secondary">
+              <img
+                src="/assets/img/shoppingCart.png"
+                className={classes.shoppingCart}
+                width={30}
+                height={30}
+              />
 
-            {/* <ShoppingCartOutlinedIcon
+              {/* <ShoppingCartOutlinedIcon
               
               onClick={() => {
                 console.log('cart click');
               }}
             /> */}
-          </StyledBadge>
+            </StyledBadge>
+          </IconButton>
         </Grid>
       </Grid>
       <Grid item md={12} xs={12} className={classes.coverContainer}>

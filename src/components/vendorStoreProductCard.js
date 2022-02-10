@@ -76,8 +76,19 @@ const useStyles = makeStyles(theme => ({
 const VendorStoreProductCard = ({ product, design }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  console.log({ design });
-  console.log(design, product);
+  const [color, setColor] = useState();
+  useEffect(() => {
+    if (product) {
+      const colorsArr = product.productMappings.map(c => c.color);
+
+      const formattedProduct = {
+        colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
+      };
+      setColor(formattedProduct.colors.length);
+    }
+  }, [product]);
+  // console.log({ design });
+  // console.log(design, product);
   return (
     <>
       <Card variant="outlined" className={classes.card}>
@@ -120,10 +131,10 @@ const VendorStoreProductCard = ({ product, design }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`2 Colors`}
+          {`${color} Colors`}
         </Typography>
         <Typography gutterBottom align="center" variant="h5" component="div">
-          {`$46.7`}
+          {`$${product.price}`}
         </Typography>
       </Grid>
     </>

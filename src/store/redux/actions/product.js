@@ -10,5 +10,5 @@ export const fetchProduct = (storeUrl, productId) => async dispatch => {
         payload: response.data.product,
       });
     })
-    .catch(err => dispatch({ type: FETCH_PRODUCT_FAILLED }));
+    .catch(err => dispatch({ type: FETCH_PRODUCT_FAILED }));
 };

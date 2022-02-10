@@ -87,14 +87,24 @@ const useStyles = makeStyles(theme => ({
 const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  const [color, setColor] = useState();
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
     });
   };
   console.log('data ', product);
+  useEffect(() => {
+    if (product) {
+      const colorsArr = product.productMappings.map(c => c.color);
 
+      const formattedProduct = {
+        colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
+      };
+      setColor(formattedProduct.colors.length);
+    }
+  }, [product]);
+  console.log('color', color);
   return (
     <Box className={classes.container} onClick={exploreProduct}>
       <Card variant="outlined" className={classes.card}>
@@ -137,10 +147,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`2 Colors`}
+          {`${color} Colors`}
         </Typography>
         <Typography gutterBottom align="center" variant="h5" component="div">
-          {`$46.7`}
+          {`$${product.price}`}
         </Typography>
       </Grid>
       {/* <Button

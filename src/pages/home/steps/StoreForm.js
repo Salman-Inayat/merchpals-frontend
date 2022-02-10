@@ -24,7 +24,7 @@ import PhoneFrame from '../../../assets/images/iphone_mockup_newone.png';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';
 import { useSelector } from 'react-redux';
-import { ThemeCustomise } from '../../../components/themeCustomize/themeStyle';
+import { ThemeCustomise, themeStyles } from '../../../components/themeCustomize/themeStyle';
 import { fontWeight } from '@mui/system';
 
 const useStyle = makeStyles(theme => ({
@@ -192,8 +192,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [themeColor, setThemeColor] = useState();
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
+  const [themeColor, setThemeColor] = useState();
+  const [themeClass, setThemeClass] = useState();
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
@@ -286,15 +287,18 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const handleStoreName = e => {
     setStoreName(e.target.value);
   };
-  let themeClass;
+
+  const themeClasses = themeStyles();
   const theme = useSelector(state => state.design);
-  if (theme.themeColor) {
-    themeClass = ThemeCustomise(theme.themeColor);
-  } else {
-    themeClass = ThemeCustomise('WHITE');
-  }
-  console.log('theme froms sate', theme.themeColor);
-  console.log('theme class name', themeClass);
+  useEffect(() => {
+    if (theme.themeColor) {
+      const tmpthemeClass = ThemeCustomise(themeClasses, theme.themeColor);
+      setThemeClass(tmpthemeClass);
+    } else {
+      const tmpthemeClass = ThemeCustomise(themeClasses, 'WHITE');
+      setThemeClass(tmpthemeClass);
+    }
+  }, [theme.themeColor]);
   return (
     <Grid
       container
