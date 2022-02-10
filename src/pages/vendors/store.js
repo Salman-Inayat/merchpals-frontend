@@ -158,6 +158,7 @@ const VendorStore = () => {
       setThemeColorClass(tmpthemeColorClass);
     }
   }, [store]);
+
   return store ? (
     <LoggedInVendor>
       <Grid container spacing={3} style={{ margin: '0px' }} className={themeClass}>
@@ -175,7 +176,11 @@ const VendorStore = () => {
             {store.vendorProductIds?.map((product, i) => {
               return (
                 <Grid item md={4} xs={6} key={`VendorStoreProductCard-${i}`}>
-                  <VendorStoreProductCard product={product} design={store.design} />
+                  <VendorStoreProductCard
+                    product={product}
+                    design={store.design}
+                    vendorName={store.name}
+                  />
                 </Grid>
               );
             })}

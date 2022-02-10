@@ -91,6 +91,7 @@ const Store = ({ fetchStore, store }) => {
       setThemeClass(tmpthemeClass);
     }
   }, [store]);
+
   const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -6,
