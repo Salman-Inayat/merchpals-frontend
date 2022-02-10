@@ -42,7 +42,7 @@ const Checkout = ({
   const [completedPayment, setCompletedPayment] = useState(false);
   const [customer, setCustomer] = useState({});
   const [billingAddress, setBillingAddress] = useState({
-    country: { id: 233, iso2: 'US', name: 'United States' },
+    country: 'US',
     state: 'NY',
     zip: '10001',
   });
@@ -86,10 +86,6 @@ const Checkout = ({
     getCart(storeUrl);
     getCountries();
   }, []);
-
-  useEffect(() => {
-    updateCart(reduxCartProducts);
-  }, [reduxCartProducts]);
 
   useEffect(() => {
     if (orderCreated) {
@@ -139,8 +135,16 @@ const Checkout = ({
   };
 
   useEffect(() => {
-    updateTaxAndShipping();
-  }, [cart]);
+    console.log('billing', billingAddress);
+    const { zip, state, country } = billingAddress;
+    if (zip?.length === 5 && country && state) {
+      updateTaxAndShipping();
+    }
+  }, [cart, billingAddress]);
+
+  useEffect(() => {
+    updateCart(reduxCartProducts);
+  }, [reduxCartProducts]);
 
   const updateTaxAndShipping = () => {
     const { aptNo, street, zip, city, state, country } = billingAddress;
@@ -172,9 +176,11 @@ const Checkout = ({
       },
       items,
     };
-
-    setPrintfulData(data);
-    getPriceCalculation(data);
+    console.log({ data });
+    if (items.length > 0) {
+      setPrintfulData(data);
+      getPriceCalculation(data);
+    }
   };
 
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_CUSTOMER_KEY);
