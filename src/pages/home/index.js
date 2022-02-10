@@ -136,6 +136,8 @@ const Home = () => {
 
     setStoreURL(data.slug.split(' ').join('-'));
 
+    setStoreURL(data.slug);
+
     axios
       .post(`${baseURL}/store`, store, {
         headers: {

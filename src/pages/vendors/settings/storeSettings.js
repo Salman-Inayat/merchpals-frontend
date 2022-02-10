@@ -36,6 +36,17 @@ const useStyle = makeStyles(theme => ({
       width: '90%',
     },
   },
+  store_url: {
+    alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
+      marginBottom: '3rem',
+    },
+  },
 }));
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -50,6 +61,7 @@ function StoreSettings() {
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [themeColor, setThemeColor] = useState();
+  const [color, setColor] = useState();
   const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
@@ -82,7 +94,13 @@ function StoreSettings() {
         setStoreName(vendorStore.name);
         setStoreAvatar(vendorStore.coverAvatar);
         setStoreLogo(vendorStore.logo);
+        setColor(vendorStore.themeColor);
         setThemeColor(vendorStore.themeColor);
+        setUpdatedData({
+          name: vendorStore.name,
+          coverAvatar: vendorStore.coverAvatar,
+          logo: vendorStore.logo,
+        });
         setStoreId(vendorStore._id);
       })
       .catch(err => {
@@ -161,10 +179,11 @@ function StoreSettings() {
               </Typography>
             </Grid>
             <Grid container item md={12} xs={12} mb={1}>
-              <Grid item md={6}>
-                <Typography variant="h6">Store URL</Typography>
+              <Grid item containermd={6} xs={12} md={6} sm={6} className={classes.store_url}>
+                <Typography variant="h6">Store URL:</Typography>
                 <Box
                   sx={{
+                    marginLeft: '10px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -182,8 +201,9 @@ function StoreSettings() {
                   </Box>
                 </Box>
               </Grid>
-              <Grid container item md={6} spacing={2}>
-                <SelectTheme setThemeColor={setThemeColor} />
+              <Grid container item xs={12} md={6} sm={6} spacing={2} justifyContent="center">
+                <Typography variant="h5">Choose your theme</Typography>
+                <SelectTheme setThemeColor={setThemeColor} color={color} setColor={setColor} />
               </Grid>
             </Grid>
             <Grid

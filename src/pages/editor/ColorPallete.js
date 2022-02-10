@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Grid,
-  Stack,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-} from '@mui/material';
+import { Grid, Stack, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { color } from '@mui/system';
 
@@ -26,6 +19,14 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       width: '40px',
       height: '15px',
+    },
+  },
+  bgColors: {
+    height: '20px',
+    width: '80px',
+    border: '1px solid #000',
+    [theme.breakpoints.down('sm')]: {
+      width: '65px',
     },
   },
 }));
@@ -128,10 +129,8 @@ const ColorPallete = ({ setCanvasBackground, customClass }) => {
                 <div
                   style={{
                     backgroundColor: bgColor,
-                    height: '20px',
-                    width: '80px',
-                    border: '1px solid #000',
                   }}
+                  className={classes.bgColors}
                 />
               </Grid>
             </Grid>
