@@ -133,6 +133,8 @@ const OtpVerification = ({
       newPhoneNo: `+${phoneNo}`,
     };
 
+    localStorage.setItem('phoneNoForOTP', `+${phoneNo}`);
+
     if (phoneNo === '') {
       setPhoneError('Phone number cannot be empty');
       return;
@@ -188,37 +190,17 @@ const OtpVerification = ({
             <Grid item xs={12} textAlign="center">
               <Paper elevation={0}>
                 <Typography variant="body">
-                  Enter the code we sent to (
-                  {phoneNumber ? phoneNumber : phoneNo})
+                  Enter the code we sent to ({phoneNumber ? phoneNumber : phoneNo})
                 </Typography>
               </Paper>
-              <Stack
-                spacing={1}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Typography variant="body">
-                  {' '}
-                  Didn&#39;t receive the code?{' '}
-                </Typography>
-                <Link
-                  className={classes.resendOtp}
-                  color="secondary"
-                  onClick={resentOTP}
-                >
+              <Stack spacing={1} direction="row" justifyContent="center" alignItems="center">
+                <Typography variant="body"> Didn&#39;t receive the code? </Typography>
+                <Link className={classes.resendOtp} color="secondary" onClick={resentOTP}>
                   Resend
                 </Link>
               </Stack>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              container
-              justify="center"
-              alignItems="center"
-              direction="column"
-            >
+            <Grid item xs={12} container justify="center" alignItems="center" direction="column">
               <Grid item spacing={3} justify="center">
                 <OtpVerifyInput otp={otp} setOtp={setOtp} />
               </Grid>
