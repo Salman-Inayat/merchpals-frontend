@@ -6,7 +6,7 @@ import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
-import { useSelector } from 'react-redux';
+import store from '../../../../store';
 
 const EditDesign = () => {
   const navigate = useNavigate();
@@ -15,18 +15,10 @@ const EditDesign = () => {
   const [saveEditDesign, setSaveEditDesign] = useState();
   const childRef = useRef();
 
-  const stateDesign = useSelector(state => state.design.design);
-  let updatedDesign = stateDesign;
-
   const [designData, setDesignData] = useState();
   useEffect(() => {
     getDesign();
   }, [designId]);
-
-  useEffect(() => {
-    updatedDesign = stateDesign;
-    console.log('Design changed in redux', updatedDesign);
-  }, [stateDesign]);
 
   const getDesign = async () => {
     axios
@@ -43,18 +35,16 @@ const EditDesign = () => {
       .catch(error => console.log({ error }));
   };
 
-  const finishDesignEdit = async () => {
-    await childRef.current.saveDesign();
-
-    localStorage.removeItem('design');
+  const finishDesignEdit = () => {
+    childRef.current.saveDesign();
 
     setTimeout(() => {
+      const newDesign = store.getState().design.design;
+
       let form = new FormData();
-      form.append('design', JSON.stringify(updatedDesign));
-      form.append('name', 'Hello');
+      form.append('design', JSON.stringify(newDesign));
 
-      console.log('Updated design: ', updatedDesign);
-
+      console.log('newDesign: ', newDesign);
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
           headers: {
@@ -64,15 +54,10 @@ const EditDesign = () => {
         })
         .then(response => {
           console.log(response);
-
-          localStorage.removeItem('designJSON');
-          localStorage.removeItem('design');
-          // setTimeout(() => {
-          //   navigate('/vendor/designs');
-          // }, 1000);
+          navigate('/vendor/designs');
         })
         .catch(error => console.log({ error }));
-    }, 4000);
+    }, 2000);
   };
 
   return (

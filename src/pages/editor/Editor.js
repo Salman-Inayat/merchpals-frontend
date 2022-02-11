@@ -189,10 +189,7 @@ const Editor = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     saveDesign() {
-      new Promise(resolve => {
-        exportCanvas();
-        resolve();
-      });
+      exportCanvas();
     },
   }));
 
@@ -221,10 +218,7 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const exportCanvas = () => {
-    new Promise(resolve => {
-      editorJs.exportCanvas();
-      resolve();
-    });
+    editorJs.exportCanvas();
   };
 
   const exportCanvasToJSON = () => {

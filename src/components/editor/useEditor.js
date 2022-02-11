@@ -1227,10 +1227,7 @@ const useEditor = canvasId => {
           },
         ],
       };
-      new Promise((resolve, reject) => {
-        dispatch({ type: SAVE_DESIGN, payload: design });
-        resolve();
-      });
+      dispatch({ type: SAVE_DESIGN, payload: design });
     };
   };
 
