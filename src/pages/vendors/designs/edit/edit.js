@@ -6,6 +6,7 @@ import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
+import store from '../../../../store';
 
 const EditDesign = () => {
   const navigate = useNavigate();
@@ -27,41 +28,36 @@ const EditDesign = () => {
         },
       })
       .then(response => {
+        console.log('Design printing: ', response.data.design);
         setDesignData(response.data.design);
-        setCanvasJSON(response.data.design.canvasJson);
+        setCanvasJSON(response.data.design.designJson);
       })
       .catch(error => console.log({ error }));
   };
 
   const finishDesignEdit = () => {
-    localStorage.removeItem('design');
     childRef.current.saveDesign();
 
-    const data = {
-      design: JSON.stringify({
-        base64Image: localStorage.getItem('design'),
-        canvasJson: localStorage.getItem('designJSON'),
-        name: designData.name,
-        designId,
-      }),
-    };
+    setTimeout(() => {
+      const newDesign = store.getState().design.design;
 
-    axios
-      .put(`${baseURL}/store/design/${designId}`, data, {
-        headers: {
-          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-        },
-      })
-      .then(response => {
-        console.log(response);
+      let form = new FormData();
+      form.append('design', JSON.stringify(newDesign));
 
-        localStorage.removeItem('designJSON');
-        localStorage.removeItem('design');
-        setTimeout(() => {
+      console.log('newDesign: ', newDesign);
+      axios
+        .put(`${baseURL}/store/design/${designId}`, form, {
+          headers: {
+            Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(response => {
+          console.log(response);
           navigate('/vendor/designs');
-        }, 1000);
-      })
-      .catch(error => console.log({ error }));
+        })
+        .catch(error => console.log({ error }));
+    }, 2000);
   };
 
   return (
@@ -76,6 +72,7 @@ const EditDesign = () => {
                 canvasJSON={canvasJSON}
                 saveEditDesign={saveEditDesign}
                 ref={childRef}
+                designName={designData.name}
               />
             )}
           </Grid>

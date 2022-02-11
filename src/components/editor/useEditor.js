@@ -12,6 +12,7 @@ import { SAVE_DESIGN } from '../../store/redux/types';
 const useEditor = canvasId => {
   let [canvas, setCanvas] = useState();
   let [canvasJSON, setCanvasJSON] = useState();
+  let [canvasName, setCanvasName] = useState();
   let [miniature, setMiniature] = useState();
   const dispatch = useDispatch();
 
@@ -1199,7 +1200,7 @@ const useEditor = canvasId => {
       formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 
       design = {
-        designName: 'default',
+        designName: canvasName === '' ? 'default' : canvasName,
         designJson: json,
         designImages: [
           {
@@ -1229,8 +1230,10 @@ const useEditor = canvasId => {
     };
   };
 
-  const canvasReady = (canvasReady, canvasJSON) => {
+  const canvasReady = (canvasReady, canvasJSON, designName) => {
+    console.log('Design Name: ', designName);
     setCanvas(canvasReady);
+    setCanvasName(designName);
     setCanvasJSON(canvasJSON);
   };
 

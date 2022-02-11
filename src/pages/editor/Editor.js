@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Editor = forwardRef((props, ref) => {
-  const { triggerExport = 0, canvasJSON, saveEditDesign } = props;
+  const { triggerExport = 0, canvasJSON, saveEditDesign, designName } = props;
 
   const classes = useStyles();
 
@@ -321,6 +321,7 @@ const Editor = forwardRef((props, ref) => {
                 onReady={editorJs.onReady}
                 class="fabric-canvas-wrapper"
                 canvasJSON={canvasJSON}
+                designName={designName}
               />
             </Card>
           </Grid>
