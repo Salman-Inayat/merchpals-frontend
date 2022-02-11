@@ -16,6 +16,7 @@ import { makeStyles } from '@mui/styles';
 // import Checkbox from '../components/Checkbox';
 import SHIRT from '../../assets/images/OGG1.png';
 import Checkbox from '@mui/material/Checkbox';
+import store from '../../store';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -84,7 +85,6 @@ const useStyles = makeStyles(theme => ({
     right: '15px',
   },
   productName: {
-    color: '#116dff',
     width: '70%',
     margin: 'auto',
     fontWeight: '500',
@@ -175,11 +175,13 @@ const ProductCard = ({
 }) => {
   const classes = useStyles();
   const [design, setDesign] = useState('');
+
   const [radioCardColor, setRadioCardColor] = useState('');
 
   useEffect(() => {
-    setDesign(localStorage.getItem('design'));
-    // console.log(product.colors);
+    setTimeout(() => {
+      setDesign(store.getState().design.design.designImages[4].data);
+    }, 1000);
   }, []);
 
   const renderBgColor = () => {
@@ -200,7 +202,14 @@ const ProductCard = ({
 
   return (
     <>
-      <Typography align="center" variant="h5" className={classes.productName}>
+      <Typography
+        align="center"
+        variant="h5"
+        className={classes.productName}
+        style={{
+          color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
+        }}
+      >
         {designName ? designName : ''} {product.name}
       </Typography>
       <Card
@@ -265,7 +274,7 @@ const ProductCard = ({
                       <Box
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
-                            ? '1px solid red'
+                            ? '2px solid #116dff'
                             : '',
                         }}
                         className={classes.radioBox}

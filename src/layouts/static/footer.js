@@ -10,6 +10,12 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold',
     margin: '2rem 0 3rem',
   },
+  footerImage: {
+    width: '20%',
+    [theme.breakpoints.down('sm')]: {
+      width: '80%',
+    },
+  },
 }));
 
 const Footer = () => {
@@ -31,7 +37,7 @@ const Footer = () => {
   return (
     <>
       <Stack direction="row" spacing={3} justifyContent="center" alignItems="center">
-        <img alt="bank_acoounts" src="/assets/img/visa.png" width="20%" />
+        <img alt="bank_acoounts" src="/assets/img/visa.png" className={classes.footerImage} />
       </Stack>
       <Stack
         direction={{ xs: 'column', md: 'row', sm: 'row' }}

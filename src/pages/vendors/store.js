@@ -40,7 +40,7 @@ const useStyle = makeStyles(theme => ({
     left: '0',
     width: '100%',
     height: '100%',
-    objectFit: 'fill',
+    objectFit: 'cover',
     [theme.breakpoints.down('sm')]: {
       height: '30vh',
     },

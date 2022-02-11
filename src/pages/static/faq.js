@@ -18,6 +18,8 @@ import { useState } from 'react';
 import Footer from '../../layouts/static/footer';
 import FAQ from '../../components/static/faqComponent';
 import ContactSupport from '../vendors/contactSupport';
+import { useNavigate } from 'react-router-dom';
+
 const useStyles = makeStyles(theme => ({
   mainBox: {
     padding: '10px 4rem',
@@ -76,6 +78,7 @@ const useStyles = makeStyles(theme => ({
 }));
 const CustomizedAccordions = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const [orders, setOrders] = useState([
     {
@@ -184,6 +187,7 @@ const CustomizedAccordions = () => {
     },
   ]);
   const [modalOpen, setModalOpen] = useState(false);
+
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -218,6 +222,11 @@ const CustomizedAccordions = () => {
       ...snackBarToggle,
       visible: false,
     });
+
+  const handleTrackOrder = () => {
+    navigate('/track-order');
+  };
+
   return (
     <Box className={classes.mainBox}>
       <Stack
@@ -247,7 +256,7 @@ const CustomizedAccordions = () => {
             />
           </Grid>
         </Grid>
-        <Button className={classes.button} diplay="flex">
+        <Button className={classes.button} diplay="flex" onClick={handleTrackOrder}>
           TRACK ORDER
         </Button>
       </Stack>

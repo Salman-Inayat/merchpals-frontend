@@ -96,11 +96,6 @@ function StoreSettings() {
         setStoreLogo(vendorStore.logo);
         setColor(vendorStore.themeColor);
         setThemeColor(vendorStore.themeColor);
-        setUpdatedData({
-          name: vendorStore.name,
-          coverAvatar: vendorStore.coverAvatar,
-          logo: vendorStore.logo,
-        });
         setStoreId(vendorStore._id);
       })
       .catch(err => {
@@ -133,6 +128,7 @@ function StoreSettings() {
   };
 
   const handleUpdateStore = () => {
+    console.log('Store Id: ', storeId);
     const store = new FormData();
     store.append('storeId', storeId);
     store.append('name', storeName);

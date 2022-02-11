@@ -135,7 +135,7 @@ const Store = ({ fetchStore, store }) => {
         </Grid>
       </Grid>
       <Grid item md={12} xs={12} className={classes.coverContainer}>
-        <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
+        <img src={store.coverAvatar} alt="image" className={classes.fcoverImage} />
         <img src={store.logo} className={classes.logo} />
       </Grid>
       <Grid item md={12} sm={12} xs={12}>

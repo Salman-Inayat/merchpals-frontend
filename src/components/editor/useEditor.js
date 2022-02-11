@@ -94,17 +94,19 @@ const useEditor = canvasId => {
 
     if (selectedObject.type === 'rect') {
       selectedObject.cornerStyle = 'rect';
-      selectedObject.setControlsVisibility({
-        mt: true,
-        mb: true,
-        ml: true,
-        mr: true,
-        bl: false,
-        br: false,
-        tl: false,
-        tr: false,
-        mtr: false,
-      });
+      selectedObject.cornerSize = 15;
+      (selectedObject.cornerColor = 'blue'),
+        selectedObject.setControlsVisibility({
+          mt: true,
+          mb: true,
+          ml: true,
+          mr: true,
+          bl: false,
+          br: false,
+          tl: false,
+          tr: false,
+          mtr: false,
+        });
     }
   };
 
@@ -566,7 +568,7 @@ const useEditor = canvasId => {
     var maxScaleY = 1;
 
     var mask = new fabric.Rect({
-      fill: 'rgba(0,0,0,0.3)',
+      fill: 'rgba(0,0,0,0.2)',
       originX: 'left',
       originY: 'top',
       stroke: 'black',
@@ -577,12 +579,9 @@ const useEditor = canvasId => {
       height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
       hasRotatingPoint: false,
       transparentCorners: false,
-      cornerColor: 'white',
-      cornerStrokeColor: 'black',
       borderColor: 'black',
-      cornerSize: 12,
       padding: 0,
-      cornerStyle: 'rect',
+      cornerStyle: 'circle',
       borderDashArray: [5, 5],
       borderScaleFactor: 1.3,
       maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
