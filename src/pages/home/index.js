@@ -224,35 +224,33 @@ const Home = ({ designJSON }) => {
   };
   return (
     <Container className={classes.fluid}>
-      <Grid
-        className={classes.header}
-        justifyContent="center"
-        alignItems="center"
-        container
-      >
-        {step > 0 && (
-          <IconButton
-            className={classes.backArrow}
-            aria-label="back"
-            onClick={prevStep}
-          >
-            <ArrowBackIosIcon className={classes.svg} />
-          </IconButton>
-        )}
-        <Avatar src={Logo} className={classes.avatar} />
-      </Grid>
-      <Grid container className={classes.content}>
-        <Grid container justifyContent="center" alignItems="center">
-          <Grid item md={6} xs={12}>
-            <Stepper activeStep={step}>
-              {[1, 2, 3, 4].map(label => (
-                <Step key={label}>
-                  <StepLabel />
-                </Step>
-              ))}
-            </Stepper>
+      <Grid className={classes.header} justifyContent="space-between" alignItems="center" container>
+        <Grid xs={4} item>
+          <Grid alignItems="center" container>
+            {step > 0 && (
+              <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
+                <ArrowBackIosIcon className={classes.svg} />
+              </IconButton>
+            )}
           </Grid>
         </Grid>
+        <Grid xs={4} item>
+          <Grid justifyContent="center" alignItems="center" container>
+            <Avatar src={Logo} className={classes.avatar} />
+          </Grid>
+        </Grid>
+
+        <Grid item xs={4}>
+          <Stepper activeStep={step}>
+            {[1, 2, 3, 4].map(label => (
+              <Step key={label}>
+                <StepLabel />
+              </Step>
+            ))}
+          </Stepper>
+        </Grid>
+      </Grid>
+      <Grid container className={classes.content}>
         {yieldStep()}
       </Grid>
     </Container>
