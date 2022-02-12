@@ -72,7 +72,7 @@ function FlowComplete({ storeURL }) {
               <TextField
                 id="outlined-read-only-input"
                 label={!storeURL && 'Copy Store Link'}
-                value={`${process.env.REACT_APP_URL}/store/${storeURL}`}
+                value={`${process.env.REACT_APP_URL}/${storeURL}`}
                 InputProps={{
                   readOnly: true,
                   endAdornment: (

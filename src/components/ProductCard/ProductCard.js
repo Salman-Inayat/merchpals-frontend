@@ -19,6 +19,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { useMediaQuery } from 'react-responsive';
 
 const useStyles = makeStyles(theme => ({
   product: {
@@ -154,6 +155,17 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: '2px',
   },
+
+  largeRadioBox: {
+    borderRadius: '50%',
+    width: '42px',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '4px 0px',
+  },
+
   radioButton: {
     height: '30px',
     width: '30px',
@@ -176,6 +188,8 @@ const ProductCard = ({
   const classes = useStyles();
   const [design, setDesign] = useState('');
   const [radioCardColor, setRadioCardColor] = useState('');
+
+  const islargeDesktop = useMediaQuery({ minWidth: 1400 });
 
   useEffect(() => {
     setDesign(localStorage.getItem('design'));
@@ -265,10 +279,10 @@ const ProductCard = ({
                       <Box
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
-                            ? '1px solid red'
+                            ? '1px solid blue'
                             : '',
                         }}
-                        className={classes.radioBox}
+                        className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
                       >
                         <Radio
                           style={{

@@ -8,7 +8,11 @@ import { baseURL } from '../../../configs/const';
 import StoreProductCard from '../../../components/storeProductCard';
 import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom';
-import { ThemeCustomise, themeStyles } from '../../../components/themeCustomize/themeStyle';
+import {
+  ThemeColorCustomise,
+  ThemeCustomise,
+  themeStyles,
+} from '../../../components/themeCustomize/themeStyle';
 import { useSelector } from 'react-redux';
 import { fetchStore } from '../../../store/redux/actions/store';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -72,6 +76,7 @@ const Store = ({ fetchStore, store }) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const { storeUrl } = useParams();
   const [themeClass, setThemeClass] = useState('');
+  const [themeColorClass, setThemeColorClass] = useState('');
   const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
 
   const themeClasses = themeStyles();
@@ -88,7 +93,9 @@ const Store = ({ fetchStore, store }) => {
       console.log('from setting theme');
       themeColor = store.themeColor;
       const tmpthemeClass = ThemeCustomise(themeClasses, themeColor);
+      const tmpthemeColorClass = ThemeColorCustomise(themeClasses, themeColor);
       setThemeClass(tmpthemeClass);
+      setThemeColorClass(tmpthemeColorClass);
     }
   }, [store]);
 
@@ -117,19 +124,7 @@ const Store = ({ fetchStore, store }) => {
             style={{ height: '50px', width: '50px' }}
           >
             <StyledBadge badgeContent={totalNumberOfVariants} color="secondary">
-              <img
-                src="/assets/img/shoppingCart.png"
-                className={classes.shoppingCart}
-                width={30}
-                height={30}
-              />
-
-              {/* <ShoppingCartOutlinedIcon
-              
-              onClick={() => {
-                console.log('cart click');
-              }}
-            /> */}
+              <ShoppingCartOutlinedIcon className={themeColorClass} sx={{ fontSize: '2rem' }} />
             </StyledBadge>
           </IconButton>
         </Grid>

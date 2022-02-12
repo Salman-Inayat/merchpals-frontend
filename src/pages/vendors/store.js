@@ -121,7 +121,7 @@ const VendorStore = () => {
       .then(response => {
         // console.log('sotre ', { store: response.data.store });
         const store = response.data.store;
-        setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
+        setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         setStore(store);
         dispatch(saveThemeColor({ themeColor: store.themeColor }));
       })
@@ -158,7 +158,6 @@ const VendorStore = () => {
       setThemeColorClass(tmpthemeColorClass);
     }
   }, [store]);
-
   return store ? (
     <LoggedInVendor>
       <Grid container spacing={3} style={{ margin: '0px' }} className={themeClass}>

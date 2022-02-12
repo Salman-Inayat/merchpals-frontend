@@ -124,7 +124,6 @@ const Home = () => {
   const createStore = data => {
     let store = new FormData();
     store.append('name', data.name);
-    store.append('slug', data.slug.split(' ').join('-'));
     store.append('facebook', data.facebook);
     store.append('instagram', data.instagram);
     store.append('twitter', data.twitter);
@@ -133,10 +132,6 @@ const Home = () => {
     store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
     store.append('themeColor', data.themeColor);
-
-    setStoreURL(data.slug.split(' ').join('-'));
-
-    setStoreURL(data.slug);
 
     axios
       .post(`${baseURL}/store`, store, {
@@ -150,6 +145,7 @@ const Home = () => {
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
+        setStoreURL(response.data.store.slug);
         setShowWelcomeMessage(true);
       })
       .catch(err => {

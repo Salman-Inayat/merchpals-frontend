@@ -79,7 +79,7 @@ const Dashboard = () => {
       .then(response => {
         console.log({ store: response.data.store });
         const store = response.data.store;
-        setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
+        setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         // setStore(store);
       })
       .catch(err => {
@@ -132,13 +132,9 @@ const Dashboard = () => {
         alignItems="center"
       >
         <Button onClick={() => navigate('/vendor/store')}>My Store</Button>
-        <Button onClick={() => navigate('/vendor/designs')}>
-          Store Designs
-        </Button>
+        <Button onClick={() => navigate('/vendor/designs')}>Store Designs</Button>
         <Button onClick={() => navigate('/vendor/orders')}>Store Orders</Button>
-        <Button onClick={() => navigate('/vendor/payment/onboarding')}>
-          Transaction History
-        </Button>
+        <Button onClick={() => navigate('/vendor/payment/onboarding')}>Transaction History</Button>
         <Button onClick={toggleContactModal}>Contact Support</Button>
       </Grid>
 
@@ -175,11 +171,7 @@ const Dashboard = () => {
           />
         </Card>
       </Modal>
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={2000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Grid>

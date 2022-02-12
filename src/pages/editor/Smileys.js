@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Grid, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -138,11 +137,12 @@ const Smileys = ({ addPng, className }) => {
     '100.svg',
   ];
 
-  const [smiley, setSmiley] = useState(images[0]);
+  const [smiley, setSmiley] = useState('');
 
   const handleSmileyChange = event => {
     setSmiley(event.target.value);
     addPng(`/svg-icons/${event.target.value}`);
+    setSmiley('');
   };
 
   return (
@@ -159,11 +159,7 @@ const Smileys = ({ addPng, className }) => {
         >
           {images.map((image, index) => (
             <MenuItem value={image} key={index}>
-              <img
-                key={index}
-                src={`/svg-icons/${image}`}
-                className={classes.smileys}
-              />
+              <img key={index} src={`/svg-icons/${image}`} className={classes.smileys} />
             </MenuItem>
           ))}
         </Select>

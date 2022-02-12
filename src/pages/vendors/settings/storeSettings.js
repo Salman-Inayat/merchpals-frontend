@@ -96,11 +96,11 @@ function StoreSettings() {
         setStoreLogo(vendorStore.logo);
         setColor(vendorStore.themeColor);
         setThemeColor(vendorStore.themeColor);
-        setUpdatedData({
-          name: vendorStore.name,
-          coverAvatar: vendorStore.coverAvatar,
-          logo: vendorStore.logo,
-        });
+        // setUpdatedData({
+        //   name: vendorStore.name,
+        //   coverAvatar: vendorStore.coverAvatar,
+        //   logo: vendorStore.logo,
+        // });
         setStoreId(vendorStore._id);
       })
       .catch(err => {
