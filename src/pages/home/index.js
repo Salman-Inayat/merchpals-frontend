@@ -22,7 +22,9 @@ import {
   WelcomeMessage,
 } from './steps';
 import { baseURL } from '../../configs/const';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../store/redux/actions/product';
+import { registerVendor } from '../../store/redux/actions/auth';
 
 const useStyle = makeStyles(() => ({
   fluid: {
@@ -60,29 +62,27 @@ const useStyle = makeStyles(() => ({
     height: '0.5em',
   },
 }));
-const Home = ({ designJSON }) => {
+const Home = () => {
   const [step, setStep] = useState(0);
   const [showOtpBox, setShowOtpBox] = useState(false);
-  const [registrationErrors, setRegistrationErrors] = useState({
-    email: '',
-    password: '',
-    phoneNo: '',
-  });
-  const [products, setProducts] = useState([]);
-  const [design, setDesign] = useState('');
   const [canvasJSON, setCanvasJSON] = useState('');
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
-  const [phoneNo, setPhoneNo] = useState('');
+
   const classes = useStyle();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const designJSON = useSelector(state => state.design);
+  const { products } = useSelector(state => state.product);
+  const { phoneNo, vendorCreated, registrationErrors } = useSelector(state => state.auth);
 
   useEffect(() => {
     if (localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
       navigate('/vendor/store', { replace: true });
     } else {
-      fetchProducts();
+      dispatch(fetchProducts());
     }
   }, []);
 
@@ -90,17 +90,12 @@ const Home = ({ designJSON }) => {
     setCanvasJSON(designJSON.json);
   }, [designJSON]);
 
-  const fetchProducts = async () => {
-    axios
-      .get(`${baseURL}/products`)
-      .then(response => {
-        console.log({ response }, 'Calling products');
-        setProducts(response.data.products);
-      })
-      .catch(err => {
-        console.log({ err });
-      });
-  };
+  useEffect(() => {
+    if (vendorCreated) {
+      setShowOtpBox(true);
+    }
+  }, [vendorCreated]);
+
   const nextStep = () => {
     if (showOtpBox) {
       setShowOtpBox(false);
@@ -109,35 +104,6 @@ const Home = ({ designJSON }) => {
     setStep(step + 1);
   };
   const prevStep = () => setStep(step - 1);
-
-  const registerVendor = data => {
-    axios
-      .post(`${process.env.REACT_APP_SERVER_URL}/api/v1/auth/sign-up`, { data })
-      .then(response => {
-        console.log({ response });
-        localStorage.setItem('MERCHPAL_AUTH_TOKEN', response.data.token);
-        localStorage.setItem('phoneNoForOTP', data.phoneNo);
-        // nextStep();
-        setShowOtpBox(true);
-        setPhoneNo(data.phoneNo);
-      })
-      .catch(error => {
-        console.log({ error });
-        let err = error.response.data.message;
-        if (error.response.data.name === 'object') {
-          err = JSON.parse(error.response.data.message);
-        }
-        if (typeof err === 'string') {
-          setRegistrationErrors({ phoneNo: '', email: '', message: err });
-        } else {
-          setRegistrationErrors({
-            phoneNo: err.phoneNo,
-            email: err.email,
-            message: '',
-          });
-        }
-      });
-  };
 
   const createStore = storeData => {
     const designData = {
@@ -188,6 +154,7 @@ const Home = ({ designJSON }) => {
     setSelectedVariants(data);
     nextStep();
   };
+
   const yieldStep = () => {
     switch (step) {
       case 1:
@@ -204,7 +171,7 @@ const Home = ({ designJSON }) => {
         }
         return (
           <SignUp
-            registerVendor={registerVendor}
+            registerVendor={data => dispatch(registerVendor(data))}
             registrationErrors={registrationErrors}
           />
         );
@@ -212,12 +179,7 @@ const Home = ({ designJSON }) => {
         if (showWelcomeMessage) {
           return <WelcomeMessage />;
         }
-        return (
-          <StoreForm
-            createStore={createStore}
-            createStoreError={createStoreError}
-          />
-        );
+        return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
         return <Editor nextStep={nextStep} />;
     }
@@ -257,9 +219,4 @@ const Home = ({ designJSON }) => {
   );
 };
 
-const mapState = state => {
-  const designJSON = state.design;
-  return { designJSON };
-};
-
-export default connect(mapState)(Home);
+export default Home;
