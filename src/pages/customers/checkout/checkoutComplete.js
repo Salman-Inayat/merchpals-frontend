@@ -125,7 +125,7 @@ function CheckoutComplete() {
               variant="contained"
               size="large"
               className={classes.button}
-              onClick={() => navigate(`/store/${state.storeUrl}`)}
+              onClick={() => navigate(`/${state.storeUrl}`)}
             >
               Back to store
             </Button>
