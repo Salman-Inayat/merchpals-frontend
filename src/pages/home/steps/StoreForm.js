@@ -20,12 +20,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import ImageCrop from '../../../components/imageCrop';
-import PhoneFrame from '../../../assets/images/iphone_mockup_newone.png';
+import PhoneFrame from '../../../assets/images/iphone_white_mookup.png';
+
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';
 import { useSelector } from 'react-redux';
 import { fontWeight } from '@mui/system';
 import { ThemeCustomise, themeStyles } from '../../../components/themeCustomize/themeStyle';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 const useStyle = makeStyles(theme => ({
   container: {
@@ -91,9 +93,16 @@ const useStyle = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     padding: '1rem',
+    [theme.breakpoints.down('md')]: {
+      height: '70vh',
+    },
     [theme.breakpoints.down('sm')]: {
       flexBasis: '75%',
-      height: '60vh',
+      height: '65vh',
+    },
+    [theme.breakpoints.down('xs')]: {
+      flexBasis: '75%',
+      height: '70vh',
     },
   },
   phoneFrame: {
@@ -111,16 +120,17 @@ const useStyle = makeStyles(theme => ({
     [theme.breakpoints.up('lg')]: {
       width: '100%',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: '100%',
     },
   },
   uploadingPhotos: {
     position: 'relative',
-    top: '8%',
+    top: '1%',
     left: '0',
     width: '100%',
     height: '22vh',
+
     [theme.breakpoints.down('sm')]: {
       height: '18vh',
     },
@@ -160,14 +170,45 @@ const useStyle = makeStyles(theme => ({
     color: '#fff',
     cursor: 'pointer',
   },
+  uploadCoverIcon: {
+    position: 'absolute',
+    // top: '50%',
+    // left: '80%',
+    right: '0',
+    bottom: '0',
+    // transform: 'translate(-50%, -50%)',
+    color: '#fff',
+    cursor: 'pointer',
+  },
   store_name: {
     fontSize: '14px',
     fontWeight: 'bold',
     textTransform: 'uppercase',
-    marginTop: '3.4rem',
-    [theme.breakpoints.down('sm')]: {
+    marginTop: '1rem',
+    [theme.breakpoints.down('md')]: {
       fontSize: '12px',
       marginTop: '2rem',
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '12px',
+      marginTop: '1rem',
+    },
+  },
+  topBar: {
+    padding: '0px 5%',
+    marginTop: '10%',
+  },
+  coverCamer: {
+    borderRadius: '50%',
+    backgroundColor: '#2C9BF4',
+    color: '#fff',
+    padding: '5px',
+    fontSize: '1.8rem',
+    [theme.breakpoints.down('md')]: {
+      marginRight: '12px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginRight: '2px',
     },
   },
 }));
@@ -198,8 +239,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
   const [storeName, setStoreName] = useState(false);
   const [themeClass, setThemeClass] = useState();
-
-  console.log(storeName);
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     if (createStoreError) {
@@ -208,15 +248,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   }, [createStoreError]);
 
   const storeSchema = Yup.object().shape({
-    name: Yup.string().required('Store name is required').min(2, 'Too Short!').max(50, 'Too Long!'),
-    slug: Yup.string()
-      .required('Store slug is required')
-      .matches(
-        /^[a-z0-9]+[a-z0-9-]+[a-z0-9]$/,
-        'Only alpha numeric characters with hyphen (-) are allowed',
-      )
-      .min(2, 'Too Short!')
-      .max(15, 'Too Long!'),
+    name: Yup.string().required('Store name is required').min(2, 'Too Short!').max(15, 'Too Long!'),
   });
 
   const {
@@ -247,10 +279,8 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   };
 
   const isSlugValid = () => {
-    const slug = watch('slug');
-    setLoading(true);
     axios
-      .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
+      .post(`${baseURL}/store/validate-slug`, { storeName })
       .then(response => {
         console.log({ response });
         setSlugMessage('');
@@ -261,6 +291,18 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
         console.log({ errp: err.response.data });
         setSlugMessage(err.response.data.message);
       });
+    // axios
+    //   .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
+    //   .then(response => {
+    //     console.log({ response });
+    //     setSlugMessage('');
+    //     setLoading(false);
+    //   })
+    //   .catch(err => {
+    //     setLoading(false);
+    //     console.log({ errp: err.response.data });
+    //     setSlugMessage(err.response.data.message);
+    //   });
   };
 
   const handleOpenAvatarModal = () => setOpenAvatarModal(true);
@@ -288,6 +330,25 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   };
   const handleStoreName = e => {
     setStoreName(e.target.value);
+    const name = e.target.value.trim();
+    clearTimeout(timer);
+
+    const newTimer = setTimeout(() => {
+      axios
+        .post(`${baseURL}/store/validate-slug`, { storeName: name })
+        .then(response => {
+          console.log({ response });
+          setSlugMessage('');
+          setLoading(false);
+        })
+        .catch(err => {
+          setLoading(false);
+          console.log({ errp: err.response.data });
+          setSlugMessage(err.response.data.message);
+        });
+    }, 500);
+
+    setTimer(newTimer);
   };
 
   const themeClasses = themeStyles();
@@ -334,17 +395,56 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                       <img src={PhoneFrame} className={`${classes.phoneFrame} `}></img>
                       <Grid container item md={12} xs={12}>
                         <Grid item md={12} xs={12}>
+                          <Grid
+                            item
+                            container
+                            md={12}
+                            xs={12}
+                            alignItems="center"
+                            className={classes.topBar}
+                          >
+                            <Grid
+                              item
+                              md={9}
+                              sm={9}
+                              xs={9}
+                              display="flex"
+                              justifyContent="flex-end"
+                            >
+                              <Typography variant="h6">Official Store</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              md={3}
+                              sm={3}
+                              xs={3}
+                              display="flex"
+                              justifyContent="flex-end"
+                            >
+                              <ShoppingCartOutlinedIcon
+                                // className={themeColorClass}
+                                sx={{ fontSize: '1.5rem' }}
+                              />
+                            </Grid>
+                          </Grid>
                           <Box className={classes.uploadingPhotos}>
                             <img
                               src={
                                 images.coverAvatar === ''
-                                  ? 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
+                                  ? '/assets/img/sand_cover_pic.jpg'
                                   : URL.createObjectURL(images.coverAvatar)
                               }
                               className={classes.coverPhoto}
                               onClick={handleChangeStoreAvatarButton}
                             ></img>
-
+                            <IconButton
+                              aria-label="upload"
+                              className={classes.uploadCoverIcon}
+                              onClick={handleChangeStoreAvatarButton}
+                            >
+                              {/* <img src="assets/img/camera.png" width="auto" /> */}
+                              <CameraAltIcon className={classes.coverCamer} />
+                            </IconButton>
                             <Modal
                               open={openLogoModal}
                               onClose={handleCloseLogoModal}
@@ -375,9 +475,13 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                                 className={classes.uploadIcon}
                                 onClick={handleChangeStoreLogoButton}
                               >
+                                {/* <img src="assets/img/camera.png" width="auto" /> */}
                                 <CameraAltIcon
                                   sx={{
+                                    borderRadius: '50%',
+                                    backgroundColor: '#2C9BF4',
                                     color: '#fff',
+                                    padding: '5px',
                                     fontSize: '2rem',
                                   }}
                                 />
@@ -541,26 +645,17 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           <TextField
                             label="Store Name"
                             {...register('name')}
-                            error={Boolean(errors.name?.message)}
-                            helperText={errors.name?.message}
+                            error={Boolean(errors.name?.message) || Boolean(slugMessage)}
+                            helperText={errors.name?.message || slugMessage}
                             className={[classes.textfield, classes.storeNameField].join(' ')}
                             size="small"
+                            inputProps={{ maxLength: 15 }}
                             onChange={handleStoreName}
+
+                            // onBlur={isSlugValid}
                           />
                           <Typography variant="h5">&#39;s MERCH STORE</Typography>
                         </Stack>
-                      </Grid>
-
-                      <Grid item md={12} xs={12}>
-                        <TextField
-                          fullWidth
-                          label="Store url"
-                          {...register('slug')}
-                          error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
-                          helperText={errors.slug?.message || slugMessage}
-                          onBlur={isSlugValid}
-                          className={classes.textfield}
-                        />
                       </Grid>
                     </Grid>
                   </Grid>

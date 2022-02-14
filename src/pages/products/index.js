@@ -34,14 +34,13 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Box from '@mui/material/Box';
 import { fetchProduct } from '../../store/redux/actions/product';
 import Footer from '../../layouts/static/footer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CircleIcon from '@mui/icons-material/Circle';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -220,7 +219,8 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
     if (fetchedProduct) {
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
-
+      console.log(' fetched product', fetchedProduct);
+      console.log('colr array', colorsArr);
       const formattedProduct = {
         vendorProduct: fetchedProduct.vendorProductId,
         productId: fetchedProduct._id,
@@ -239,7 +239,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
         design: fetchedProduct.designId?.designImages[4].imageUrl,
       };
 
-      console.log(formattedProduct);
+      console.log(formattedProduct.colors);
       setProduct(formattedProduct);
       setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);
@@ -357,7 +357,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="center">
       <Grid item md={1} xs={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
-        <ArrowBackIcon onClick={handleBackButton} />
+        <ArrowBackIcon onClick={handleBackButton} sx={{ cursor: 'pointer' }} />
       </Grid>
       <Grid item md={10} xs={10} display="flex" justifyContent="center">
         <Typography variant="h4">Official Store</Typography>
@@ -369,14 +369,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
           size="large"
           style={{ height: '50px', width: '50px' }}
         >
-          <StyledBadge badgeContent={totalNumberOfVariants} color="secondary">
-            <img
-              src="/assets/img/shoppingCart.png"
-              sx={{ cursor: 'pointer' }}
-              width={30}
-              height={30}
-            />
-          </StyledBadge>
+          <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem' }} />
         </IconButton>
       </Grid>
       {fetchedProduct ? (

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Grid, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -156,6 +155,9 @@ const Smileys = ({ addPng, className }) => {
           value={smiley}
           label="Color"
           onChange={handleSmileyChange}
+          onClick={() => {
+            setSmiley('');
+          }}
           autoWidth
         >
           {images.map((image, index) => (

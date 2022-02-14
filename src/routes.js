@@ -37,6 +37,7 @@ import PaymentOnboarding from './pages/vendors/payment';
 import StripeOnboardingReturn from './pages/vendors/payment/return';
 import FlowComplete from './pages/home/steps/FlowComplete';
 import TrackOrder from './pages/static/trackOrder';
+import { StoreForm, WelcomeMessage } from './pages/home/steps';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -73,11 +74,12 @@ export default function Router() {
     { path: '/vendor/store-settings', element: <StoreSettings /> },
     // { path: '/contact-support', element: <ContactSupport /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
-    { path: '/store/:storeUrl', element: <Store /> },
+    { path: '/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
     { path: '/checkout/complete', element: <CheckoutComplete /> },
     { path: '/faq', element: <FAQ /> },
     { path: '/privacy-policy', element: <PrivaryPolicay /> },
+
     { path: '/terms-of-services', element: <TermsOfServices /> },
     { path: 'track-order', element: <TrackOrder /> },
 

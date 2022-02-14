@@ -20,6 +20,7 @@ import store from '../../store';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { useMediaQuery } from 'react-responsive';
 
 const useStyles = makeStyles(theme => ({
   product: {
@@ -154,6 +155,17 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: '2px',
   },
+
+  largeRadioBox: {
+    borderRadius: '50%',
+    width: '42px',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '4px 0px',
+  },
+
   radioButton: {
     height: '30px',
     width: '30px',
@@ -177,6 +189,8 @@ const ProductCard = ({
   const [design, setDesign] = useState('');
 
   const [radioCardColor, setRadioCardColor] = useState('');
+
+  const islargeDesktop = useMediaQuery({ minWidth: 1400 });
 
   useEffect(() => {
     setTimeout(() => {
@@ -277,7 +291,7 @@ const ProductCard = ({
                             ? '2px solid #116dff'
                             : '',
                         }}
-                        className={classes.radioBox}
+                        className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
                       >
                         <Radio
                           style={{

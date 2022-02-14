@@ -77,18 +77,17 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [color, setColor] = useState();
+
   useEffect(() => {
     if (product) {
       const colorsArr = product.productMappings.map(c => c.color);
-
       const formattedProduct = {
-        colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
+        colors: [...new Map(colorsArr.map(item => [item['value'], item])).values()],
       };
       setColor(formattedProduct.colors.length);
     }
   }, [product]);
-  // console.log({ design });
-  // console.log(design, product);
+
   return (
     <>
       <Card variant="outlined" className={classes.card}>

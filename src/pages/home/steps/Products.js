@@ -44,6 +44,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const [unselectProducts, setUnselectProducts] = useState(false);
+  const [unselectProductId, setUnselectProductId] = useState();
 
   useEffect(() => {
     const existingVariants = localStorage.getItem('selectedVariants');
@@ -123,7 +124,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
 
   const onProductClick = productId => {
     let prevSelectedProducts = { ...selectedVariants };
-
+    setUnselectProductId(productId);
     if (prevSelectedProducts[productId]) {
       delete prevSelectedProducts[productId];
       setSelectedVariants({
@@ -197,6 +198,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}
                   unselectProducts={unselectProducts}
+                  unselectProductId={unselectProductId}
                 />
               </Grid>
             ))}

@@ -94,18 +94,17 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
     });
   };
-  console.log('data ', product);
+
   useEffect(() => {
     if (product) {
       const colorsArr = product.productMappings.map(c => c.color);
 
       const formattedProduct = {
-        colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
+        colors: [...new Map(colorsArr.map(item => [item['value'], item])).values()],
       };
       setColor(formattedProduct.colors.length);
     }
   }, [product]);
-  console.log('color', color);
   return (
     <Box className={classes.container} onClick={exploreProduct}>
       <Card variant="outlined" className={classes.card}>
