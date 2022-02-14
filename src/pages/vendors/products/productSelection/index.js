@@ -4,6 +4,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
 import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
 import { Products } from '../../../home/steps';
+import store from '../../../../store';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -40,19 +41,18 @@ const ProductSelection = ({ designName }) => {
   };
 
   const productSelectionCompleted = selectedProducts => {
-    const data = {
-      products: selectedProducts,
-      design: JSON.stringify({
-        base64Image: localStorage.getItem('design'),
-        name: location.state.name,
-        canvasJson: localStorage.getItem('designJSON'),
-      }),
-    };
+    let design = store.getState().design.design;
+    design.designName = location.state.name;
+
+    const form = new FormData();
+    form.append('design', JSON.stringify(design));
+    form.append('products', JSON.stringify([...selectedProducts]));
 
     axios
-      .post(`${baseURL}/store/add-design`, data, {
+      .post(`${baseURL}/store/add-design`, form, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(response => {
@@ -94,11 +94,7 @@ const ProductSelection = ({ designName }) => {
         designName={location.state.name}
         productSelectionCompleted={productSelectionCompleted}
       />
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={3000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Grid>
