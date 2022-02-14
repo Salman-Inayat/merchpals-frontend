@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Button, Stack, Snackbar, Typography, Badge, IconButton } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
-import Logo from '../../assets/images/logo.png';
+// import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+// import axios from 'axios';
+// import { Link as RouterLink } from 'react-router-dom';
+// import Logo from '../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
-import { baseURL } from '../../configs/const';
+// import { baseURL } from '../../configs/const';
 import { styled } from '@mui/material/styles';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -16,7 +16,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addToCart, getCart } from '../../store/redux/actions/cart';
-import Slide from '@mui/material/Slide';
+// import Slide from '@mui/material/Slide';
 import MuiAlert from '@mui/material/Alert';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Accordion from '@mui/material/Accordion';
@@ -281,7 +281,15 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   };
 
   const handleCartButton = () => {
-    navigate(`/cart/${storeUrl}`);
+    if (reduxCartProducts.length === 0) {
+      setSnackBarToggle({
+        visible: true,
+        type: 'info',
+        message: 'Your cart is empty. Please select a product and try again. Thank You!',
+      });
+      return
+    }
+    navigate(`/checkout/${storeUrl}`);
   };
 
   const handleSnackBarClose = () => {
