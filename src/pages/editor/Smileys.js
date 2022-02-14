@@ -135,6 +135,7 @@ const Smileys = ({ addPng, className }) => {
     '98.svg',
     '99.svg',
     '100.svg',
+    '101.svg',
   ];
 
   const [smiley, setSmiley] = useState('');
