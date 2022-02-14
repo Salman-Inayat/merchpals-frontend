@@ -8,14 +8,14 @@ import {
   Badge,
   IconButton,
   List,
-  ListItemText,
+  // ListItemText,
   ListItem,
   ListItemIcon,
 } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
-import Logo from '../../assets/images/logo.png';
+// import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+// import axios from 'axios';
+// import { Link as RouterLink } from 'react-router-dom';
+// import Logo from '../../assets/images/logo.png';
 import { makeStyles } from '@mui/styles';
 // import { baseURL } from '../../configs/const';
 import { styled } from '@mui/material/styles';
@@ -26,7 +26,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { addToCart, getCart } from '../../store/redux/actions/cart';
 // import Slide from '@mui/material/Slide';
 import MuiAlert from '@mui/material/Alert';
@@ -41,6 +41,8 @@ import { fetchProduct } from '../../store/redux/actions/product';
 import Footer from '../../layouts/static/footer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { useDispatch, useSelector } from 'react-redux';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -168,8 +170,10 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartProducts }) => {
+const Product = () => {
   const classes = useStyle();
+  const dispatch = useDispatch();
+
   const { productId, storeUrl } = useParams();
   const navigate = useNavigate();
 
@@ -198,6 +202,9 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
 
+  const reduxCartProducts = state.cart.cart.products;
+  const fetchedProduct = state.product.product;
+
   const handleDetailsChange = data => {
     setDetails(!data);
   };
@@ -205,8 +212,8 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
     setShipping(!data);
   };
   useEffect(() => {
-    fetchProduct(storeUrl, productId);
-    getCart(storeUrl);
+    dispatch(fetchProduct(storeUrl, productId));
+    dispatch(getCart(storeUrl));
   }, []);
 
   useEffect(() => {
@@ -328,7 +335,7 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
 
     const updatedCartList = [updatedCart, ...otherProductVariants];
     setCartsVariants(updatedCartList);
-    addToCart(storeUrl, updatedCartList);
+    dispatch(addToCart(storeUrl, updatedCartList));
     setSnackBarToggle({
       visible: true,
       type: 'success',
@@ -631,17 +638,4 @@ const Product = ({ fetchProduct, fetchedProduct, addToCart, getCart, reduxCartPr
   );
 };
 
-const mapDispatch = dispatch => ({
-  addToCart: (store, product) => {
-    dispatch(addToCart(store, product));
-  },
-  getCart: store => dispatch(getCart(store)),
-  fetchProduct: (storeUrl, productId) => dispatch(fetchProduct(storeUrl, productId)),
-});
-
-const mapState = state => ({
-  reduxCartProducts: state.cart.cart.products,
-  fetchedProduct: state.product.product,
-});
-
-export default connect(mapState, mapDispatch)(Product);
+export default Product;

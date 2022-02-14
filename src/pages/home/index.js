@@ -7,14 +7,9 @@ import Logo from '../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
 import { Editor, Products, SignUp, StoreForm, Otp, WelcomeMessage } from './steps';
 import { baseURL } from '../../configs/const';
-<<<<<<< HEAD
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
-=======
-import { connect } from 'react-redux';
-import { useSelector } from 'react-redux';
->>>>>>> 83f90c6c7be6e0189da5fb30cbb5b37810e37a05
 
 const useStyle = makeStyles(() => ({
   fluid: {
@@ -53,30 +48,16 @@ const useStyle = makeStyles(() => ({
   },
 }));
 const Home = () => {
-<<<<<<< HEAD
-  const [step, setStep] = useState(0);
-  const [showOtpBox, setShowOtpBox] = useState(false);
-  const [canvasJSON, setCanvasJSON] = useState('');
-  const [selectedVariants, setSelectedVariants] = useState([]);
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
-  const [createStoreError, setCreateStoreError] = useState(false);
-
-=======
   const designData = useSelector(state => state.design.design);
   const [step, setStep] = useState(0);
   const [showOtpBox, setShowOtpBox] = useState(false);
-  const [registrationErrors, setRegistrationErrors] = useState({
-    email: '',
-    password: '',
-    phoneNo: '',
-  });
-  const [products, setProducts] = useState([]);
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
-  const [phoneNo, setPhoneNo] = useState('');
+  // const [phoneNo, setPhoneNo] = useState('');
   const [storeURL, setStoreURL] = useState('');
->>>>>>> 83f90c6c7be6e0189da5fb30cbb5b37810e37a05
+  // const [canvasJSON, setCanvasJSON] = useState('');
+
   const classes = useStyle();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -93,9 +74,9 @@ const Home = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setCanvasJSON(designJSON.json);
-  }, [designJSON]);
+  // useEffect(() => {
+  //   setCanvasJSON(designJSON.json);
+  // }, [designJSON]);
 
   useEffect(() => {
     if (vendorCreated) {
