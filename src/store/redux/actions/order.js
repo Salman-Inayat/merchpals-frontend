@@ -4,7 +4,10 @@ import { CREATE_ORDER_SUCCESS, CREATE_ORDER_FAILED, GENERAL_RESET } from '../typ
 export const createOrder = data => async dispatch => {
   axios
     .post('/order', data)
-    .then(() => dispatch({ type: CREATE_ORDER_SUCCESS }))
+    .then(res => {
+      console.log(' Response data: ', res.data);
+      dispatch({ type: CREATE_ORDER_SUCCESS, payload: res.data.order.printfulOrderMetadata.id });
+    })
     .catch(() => dispatch({ type: CREATE_ORDER_FAILED }));
 };
 

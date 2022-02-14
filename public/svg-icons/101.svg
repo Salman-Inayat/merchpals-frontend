@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:ns1="http://sozi.baierouge.fr"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    id="svg2"
+    viewBox="0 0 360 360"
+    version="1.0"
+  >
+  <g
+      id="layer1"
+    >
+    <path
+        id="path2984"
+        style="color:#000000;fill:#000000"
+        d="m326.17 227.37a94.737 94.737 0 1 1 -189.47 0 94.737 94.737 0 1 1 189.47 0z"
+        transform="matrix(1.5833 0 0 1.5833 -186.43 -180)"
+    />
+    <path
+        id="path3007"
+        style="color:#000000;fill:#ffffff"
+        d="m150 120a30 30 0 1 1 -60 0 30 30 0 1 1 60 0z"
+    />
+    <path
+        id="path3009"
+        style="color:#000000;fill:#ffffff"
+        d="m150 120a30 30 0 1 1 -60 0 30 30 0 1 1 60 0z"
+        transform="translate(120)"
+    />
+    <path
+        id="path3027"
+        style="color:#000000;fill:#ffffff"
+        d="m-186 177.5c-33.137 0-60 26.863-60 60h120c0-33.137-26.863-60-60-60z"
+        transform="matrix(1,0,0,-1,366,437.5)"
+    />
+    <path
+        id="path3032"
+        style="color:#000000;fill:#000000"
+        d="m150 120a30 30 0 1 1 -60 0 30 30 0 1 1 60 0z"
+        transform="matrix(.5 0 0 .5 60 60)"
+    />
+    <path
+        id="path3034"
+        style="color:#000000;fill:#000000"
+        d="m150 120a30 30 0 1 1 -60 0 30 30 0 1 1 60 0z"
+        transform="matrix(.5 0 0 .5 180 60)"
+    />
+  </g
+  >
+  <metadata
+    >
+    <rdf:RDF
+      >
+      <cc:Work
+        >
+        <dc:format
+          >image/svg+xml</dc:format
+        >
+        <dc:type
+            rdf:resource="http://purl.org/dc/dcmitype/StillImage"
+        />
+        <cc:license
+            rdf:resource="http://creativecommons.org/licenses/publicdomain/"
+        />
+        <dc:publisher
+          >
+          <cc:Agent
+              rdf:about="http://openclipart.org/"
+            >
+            <dc:title
+              >Openclipart</dc:title
+            >
+          </cc:Agent
+          >
+        </dc:publisher
+        >
+        <dc:title
+          >happy black moon</dc:title
+        >
+        <dc:date
+          >2011-02-11T02:16:21</dc:date
+        >
+        <dc:description
+          >A nice smile.</dc:description
+        >
+        <dc:source
+          >https://openclipart.org/detail/117727/happy-black-moon-by-10binary</dc:source
+        >
+        <dc:creator
+          >
+          <cc:Agent
+            >
+            <dc:title
+              >10binary</dc:title
+            >
+          </cc:Agent
+          >
+        </dc:creator
+        >
+        <dc:subject
+          >
+          <rdf:Bag
+            >
+            <rdf:li
+              >black</rdf:li
+            >
+            <rdf:li
+              >circle</rdf:li
+            >
+            <rdf:li
+              >face</rdf:li
+            >
+            <rdf:li
+              >happy</rdf:li
+            >
+            <rdf:li
+              >moon</rdf:li
+            >
+            <rdf:li
+              >smile</rdf:li
+            >
+            <rdf:li
+              >white</rdf:li
+            >
+          </rdf:Bag
+          >
+        </dc:subject
+        >
+      </cc:Work
+      >
+      <cc:License
+          rdf:about="http://creativecommons.org/licenses/publicdomain/"
+        >
+        <cc:permits
+            rdf:resource="http://creativecommons.org/ns#Reproduction"
+        />
+        <cc:permits
+            rdf:resource="http://creativecommons.org/ns#Distribution"
+        />
+        <cc:permits
+            rdf:resource="http://creativecommons.org/ns#DerivativeWorks"
+        />
+      </cc:License
+      >
+    </rdf:RDF
+    >
+  </metadata
+  >
+</svg
+>

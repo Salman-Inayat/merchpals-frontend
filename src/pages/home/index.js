@@ -1,30 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  Grid,
-  Avatar,
-  Stepper,
-  Step,
-  StepLabel,
-  IconButton,
-} from '@mui/material';
+import { Container, Grid, Avatar, Stepper, Step, StepLabel, IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
-import {
-  Editor,
-  Products,
-  SignUp,
-  StoreForm,
-  Otp,
-  WelcomeMessage,
-} from './steps';
+import { Editor, Products, SignUp, StoreForm, Otp, WelcomeMessage } from './steps';
 import { baseURL } from '../../configs/const';
+<<<<<<< HEAD
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
+=======
+import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+>>>>>>> 83f90c6c7be6e0189da5fb30cbb5b37810e37a05
 
 const useStyle = makeStyles(() => ({
   fluid: {
@@ -63,6 +53,7 @@ const useStyle = makeStyles(() => ({
   },
 }));
 const Home = () => {
+<<<<<<< HEAD
   const [step, setStep] = useState(0);
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [canvasJSON, setCanvasJSON] = useState('');
@@ -70,6 +61,22 @@ const Home = () => {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [createStoreError, setCreateStoreError] = useState(false);
 
+=======
+  const designData = useSelector(state => state.design.design);
+  const [step, setStep] = useState(0);
+  const [showOtpBox, setShowOtpBox] = useState(false);
+  const [registrationErrors, setRegistrationErrors] = useState({
+    email: '',
+    password: '',
+    phoneNo: '',
+  });
+  const [products, setProducts] = useState([]);
+  const [selectedVariants, setSelectedVariants] = useState([]);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
+  const [createStoreError, setCreateStoreError] = useState(false);
+  const [phoneNo, setPhoneNo] = useState('');
+  const [storeURL, setStoreURL] = useState('');
+>>>>>>> 83f90c6c7be6e0189da5fb30cbb5b37810e37a05
   const classes = useStyle();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -105,32 +112,23 @@ const Home = () => {
   };
   const prevStep = () => setStep(step - 1);
 
-  const createStore = storeData => {
-    const designData = {
-      base64Image: localStorage.getItem('design'),
-      name: 'default',
-      canvasJson: canvasJSON,
-    };
-    const data = {
-      storeInfo: {
-        name: storeData.name,
-        slug: storeData.slug.split(' ').join('-'),
-        facebook: storeData.facebook,
-        instagram: storeData.instagram,
-        twitter: storeData.twitter,
-        logo: storeData.logo,
-        coverAvatar: storeData.coverAvatar,
-        design: JSON.stringify(designData),
-        products: JSON.stringify([...selectedVariants]),
-        themeColor: storeData.themeColor,
-      },
-    };
+  const createStore = data => {
+    let store = new FormData();
+    store.append('name', data.name);
+    store.append('facebook', data.facebook);
+    store.append('instagram', data.instagram);
+    store.append('twitter', data.twitter);
+    store.append('logo', data.logo);
+    store.append('coverAvatar', data.coverAvatar);
+    store.append('design', JSON.stringify(designData));
+    store.append('products', JSON.stringify([...selectedVariants]));
+    store.append('themeColor', data.themeColor);
 
     axios
-      .post(`${baseURL}/store`, data, {
+      .post(`${baseURL}/store`, store, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(response => {
@@ -138,11 +136,8 @@ const Home = () => {
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
+        setStoreURL(response.data.store.slug);
         setShowWelcomeMessage(true);
-        setTimeout(() => {
-          setShowWelcomeMessage(false);
-          navigate('/vendor/store', { replace: true });
-        }, 3500);
       })
       .catch(err => {
         console.log('err', err);
@@ -177,11 +172,11 @@ const Home = () => {
         );
       case 3:
         if (showWelcomeMessage) {
-          return <WelcomeMessage />;
+          return <WelcomeMessage storeURL={storeURL} />;
         }
         return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
-        return <Editor nextStep={nextStep} />;
+        return <Editor nextStep={nextStep} design={designData} />;
     }
   };
   return (

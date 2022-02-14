@@ -20,9 +20,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import ImageCrop from '../../../components/imageCrop';
-import PhoneFrame from '../../../assets/images/iphone_mockup_ready.png';
+import PhoneFrame from '../../../assets/images/iphone_white_mookup.png';
+
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';
+import { useSelector } from 'react-redux';
+import { fontWeight } from '@mui/system';
+import { ThemeCustomise, themeStyles } from '../../../components/themeCustomize/themeStyle';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 const useStyle = makeStyles(theme => ({
   container: {
@@ -33,15 +38,16 @@ const useStyle = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '2rem',
+    padding: '2rem 6rem ',
     [theme.breakpoints.down('sm')]: {
       padding: '1rem',
     },
   },
   form: {
-    width: '500px',
+    width: '90%',
+    margin: 'auto',
     [theme.breakpoints.down('sm')]: {
-      width: '100%',
+      width: '90%',
     },
   },
   textfield: {
@@ -83,39 +89,50 @@ const useStyle = makeStyles(theme => ({
     position: 'relative',
     height: '80vh',
     flexBasis: '55%',
-    width: '50vw',
+    width: '60vw',
     display: 'flex',
     justifyContent: 'center',
     padding: '1rem',
+    [theme.breakpoints.down('md')]: {
+      height: '70vh',
+    },
     [theme.breakpoints.down('sm')]: {
       flexBasis: '75%',
-      height: '60vh',
+      height: '65vh',
+    },
+    [theme.breakpoints.down('xs')]: {
+      flexBasis: '75%',
+      height: '70vh',
     },
   },
   phoneFrame: {
     position: 'absolute',
     top: '0',
     left: '0',
-    width: '20rem',
+    width: '17rem',
     height: '100%',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     pointerEvents: 'none',
     zIndex: '10',
-    [theme.breakpoints.down('sm')]: {
+
+    [theme.breakpoints.up('lg')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.down('md')]: {
       width: '100%',
     },
   },
   uploadingPhotos: {
     position: 'relative',
-    top: '15%',
+    top: '1%',
     left: '0',
     width: '100%',
     height: '22vh',
+
     [theme.breakpoints.down('sm')]: {
       height: '18vh',
-      top: ' 15%',
     },
   },
   coverPhoto: {
@@ -153,6 +170,47 @@ const useStyle = makeStyles(theme => ({
     color: '#fff',
     cursor: 'pointer',
   },
+  uploadCoverIcon: {
+    position: 'absolute',
+    // top: '50%',
+    // left: '80%',
+    right: '0',
+    bottom: '0',
+    // transform: 'translate(-50%, -50%)',
+    color: '#fff',
+    cursor: 'pointer',
+  },
+  store_name: {
+    fontSize: '14px',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    marginTop: '1rem',
+    [theme.breakpoints.down('md')]: {
+      fontSize: '12px',
+      marginTop: '2rem',
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '12px',
+      marginTop: '1rem',
+    },
+  },
+  topBar: {
+    padding: '0px 5%',
+    marginTop: '10%',
+  },
+  coverCamer: {
+    borderRadius: '50%',
+    backgroundColor: '#2C9BF4',
+    color: '#fff',
+    padding: '5px',
+    fontSize: '1.8rem',
+    [theme.breakpoints.down('md')]: {
+      marginRight: '12px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginRight: '2px',
+    },
+  },
 }));
 
 const Input = styled('input')({
@@ -167,10 +225,10 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     message: '',
   });
   const [images, setImages] = useState({
-    logo: 'https://images.unsplash.com/photo-1643874626318-964452868452?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxOHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    coverAvatar:
-      'https://images.unsplash.com/photo-1643819999990-1697109b1559?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
+    logo: '',
+    coverAvatar: '',
   });
+  // let themeClass;
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -179,25 +237,18 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
+  const [storeName, setStoreName] = useState(false);
+  const [themeClass, setThemeClass] = useState();
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     if (createStoreError) {
       setLoading(false);
     }
   }, [createStoreError]);
+
   const storeSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Store name is required')
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!'),
-    slug: Yup.string()
-      .required('Store slug is required')
-      .matches(
-        /^[a-z0-9]+[a-z0-9-]+[a-z0-9]$/,
-        'Only alpha numeric characters with hyphen (-) are allowed',
-      )
-      .min(2, 'Too Short!')
-      .max(15, 'Too Long!'),
+    name: Yup.string().required('Store name is required').min(2, 'Too Short!').max(15, 'Too Long!'),
   });
 
   const {
@@ -228,10 +279,8 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   };
 
   const isSlugValid = () => {
-    const slug = watch('slug');
-    setLoading(true);
     axios
-      .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
+      .post(`${baseURL}/store/validate-slug`, { storeName })
       .then(response => {
         console.log({ response });
         setSlugMessage('');
@@ -242,6 +291,18 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
         console.log({ errp: err.response.data });
         setSlugMessage(err.response.data.message);
       });
+    // axios
+    //   .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
+    //   .then(response => {
+    //     console.log({ response });
+    //     setSlugMessage('');
+    //     setLoading(false);
+    //   })
+    //   .catch(err => {
+    //     setLoading(false);
+    //     console.log({ errp: err.response.data });
+    //     setSlugMessage(err.response.data.message);
+    //   });
   };
 
   const handleOpenAvatarModal = () => setOpenAvatarModal(true);
@@ -267,7 +328,41 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   const handleStoreLogoChange = value => {
     setImages({ ...images, logo: value });
   };
-  console.log('theme', themeColor);
+  const handleStoreName = e => {
+    setStoreName(e.target.value);
+    const name = e.target.value.trim();
+    clearTimeout(timer);
+
+    const newTimer = setTimeout(() => {
+      axios
+        .post(`${baseURL}/store/validate-slug`, { storeName: name })
+        .then(response => {
+          console.log({ response });
+          setSlugMessage('');
+          setLoading(false);
+        })
+        .catch(err => {
+          setLoading(false);
+          console.log({ errp: err.response.data });
+          setSlugMessage(err.response.data.message);
+        });
+    }, 500);
+
+    setTimer(newTimer);
+  };
+
+  const themeClasses = themeStyles();
+  const theme = useSelector(state => state.design);
+  useEffect(() => {
+    if (theme.themeColor) {
+      const tmpthemeClass = ThemeCustomise(themeClasses, theme.themeColor);
+      setThemeClass(tmpthemeClass);
+    } else {
+      const tmpthemeClass = ThemeCustomise(themeClasses, 'WHITE');
+      setThemeClass(tmpthemeClass);
+    }
+  }, [theme.themeColor]);
+
   return (
     <Grid
       container
@@ -285,213 +380,300 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
             </Typography>
 
             <Grid container>
-              <Grid item md={12} xs={12}>
-                <Stack
-                  spacing={2}
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Chip label="1" variant="contained" color="primary" />
-                  <Typography variant="h5" color="initial" align="center">
-                    Profile and cover pic
-                  </Typography>
-                </Stack>
-              </Grid>
-              <Grid item md={12} xs={12} className={classes.picsContainer}>
-                <Box className={classes.frameContainer}>
-                  <img src={PhoneFrame} className={classes.phoneFrame}></img>
-                  <Box className={classes.uploadingPhotos}>
-                    <img
-                      src={images.coverAvatar}
-                      className={classes.coverPhoto}
-                      onClick={handleChangeStoreAvatarButton}
-                    ></img>
-                    <Modal
-                      open={openLogoModal}
-                      onClose={handleCloseLogoModal}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box className={classes.modalBox}>
-                        <ImageCrop
-                          handleClose={handleCloseLogoModal}
-                          handleStoreLogoChange={handleStoreLogoChange}
-                          variant="storeLogo"
-                        />
-                      </Box>
-                    </Modal>
-                    <Box className={classes.logoContainer}>
-                      <img
-                        src={images.logo}
-                        className={classes.logoPhoto}
-                      ></img>
+              <Grid item md={6} xs={12}>
+                <Grid container justifyContent="center" alignItems="center" spacing={3}>
+                  <Grid item md={12} xs={12}>
+                    <Stack spacing={2} direction="row" justifyContent="center" alignItems="center">
+                      <Chip label="1" variant="contained" color="primary" />
+                      <Typography variant="h5" color="initial" align="center">
+                        Profile and cover pic
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                  <Grid item md={12} xs={12} className={classes.picsContainer}>
+                    <Box className={` ${classes.frameContainer} ${themeClass}`}>
+                      <img src={PhoneFrame} className={`${classes.phoneFrame} `}></img>
+                      <Grid container item md={12} xs={12}>
+                        <Grid item md={12} xs={12}>
+                          <Grid
+                            item
+                            container
+                            md={12}
+                            xs={12}
+                            alignItems="center"
+                            className={classes.topBar}
+                          >
+                            <Grid
+                              item
+                              md={9}
+                              sm={9}
+                              xs={9}
+                              display="flex"
+                              justifyContent="flex-end"
+                            >
+                              <Typography variant="h6">Official Store</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              md={3}
+                              sm={3}
+                              xs={3}
+                              display="flex"
+                              justifyContent="flex-end"
+                            >
+                              <ShoppingCartOutlinedIcon
+                                // className={themeColorClass}
+                                sx={{ fontSize: '1.5rem' }}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Box className={classes.uploadingPhotos}>
+                            <img
+                              src={
+                                images.coverAvatar === ''
+                                  ? '/assets/img/sand_cover_pic.jpg'
+                                  : URL.createObjectURL(images.coverAvatar)
+                              }
+                              className={classes.coverPhoto}
+                              onClick={handleChangeStoreAvatarButton}
+                            ></img>
+                            <IconButton
+                              aria-label="upload"
+                              className={classes.uploadCoverIcon}
+                              onClick={handleChangeStoreAvatarButton}
+                            >
+                              {/* <img src="assets/img/camera.png" width="auto" /> */}
+                              <CameraAltIcon className={classes.coverCamer} />
+                            </IconButton>
+                            <Modal
+                              open={openLogoModal}
+                              onClose={handleCloseLogoModal}
+                              aria-labelledby="modal-modal-title"
+                              aria-describedby="modal-modal-description"
+                            >
+                              <Box className={classes.modalBox}>
+                                <ImageCrop
+                                  handleClose={handleCloseLogoModal}
+                                  handleStoreLogoChange={handleStoreLogoChange}
+                                  variant="storeLogo"
+                                  setImage={setImage}
+                                />
+                              </Box>
+                            </Modal>
+                            <Box className={classes.logoContainer}>
+                              <img
+                                src={
+                                  images.logo === ''
+                                    ? 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
+                                    : URL.createObjectURL(images.logo)
+                                }
+                                className={classes.logoPhoto}
+                              ></img>
 
-                      <IconButton
-                        aria-label="upload"
-                        className={classes.uploadIcon}
-                        onClick={handleChangeStoreLogoButton}
-                      >
-                        <CameraAltIcon
-                          sx={{
-                            color: '#fff',
-                            fontSize: '2rem',
-                          }}
-                        />
-                      </IconButton>
+                              <IconButton
+                                aria-label="upload"
+                                className={classes.uploadIcon}
+                                onClick={handleChangeStoreLogoButton}
+                              >
+                                {/* <img src="assets/img/camera.png" width="auto" /> */}
+                                <CameraAltIcon
+                                  sx={{
+                                    borderRadius: '50%',
+                                    backgroundColor: '#2C9BF4',
+                                    color: '#fff',
+                                    padding: '5px',
+                                    fontSize: '2rem',
+                                  }}
+                                />
+                              </IconButton>
+                            </Box>
+                            <Modal
+                              open={openAvatarModal}
+                              onClose={handleCloseAvatarModal}
+                              aria-labelledby="modal-modal-title"
+                              aria-describedby="modal-modal-description"
+                            >
+                              <Box className={classes.modalBox}>
+                                <ImageCrop
+                                  handleClose={handleCloseAvatarModal}
+                                  handleStoreAvatarChange={handleStoreAvatarChange}
+                                  variant="storeAvatar"
+                                  setImage={setImage}
+                                />
+                              </Box>
+                            </Modal>
+                          </Box>
+                          <Box textAlign="center">
+                            <Typography className={classes.store_name}>
+                              {storeName}&#39;S MERCH STORE
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
                     </Box>
-                    <Modal
-                      open={openAvatarModal}
-                      onClose={handleCloseAvatarModal}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <Stack
+                      direction="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
                     >
-                      <Box className={classes.modalBox}>
-                        <ImageCrop
-                          handleClose={handleCloseAvatarModal}
-                          handleStoreAvatarChange={handleStoreAvatarChange}
-                          variant="storeAvatar"
-                        />
-                      </Box>
-                    </Modal>
-                  </Box>
-                </Box>
+                      <Stack
+                        spacing={2}
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                      >
+                        <Chip label="2" variant="contained" color="primary" />
+                        <Typography variant="h5" color="initial" align="center">
+                          Choose your theme
+                        </Typography>
+                      </Stack>
+                      <SelectTheme setThemeColor={setThemeColor} />
+                    </Stack>
+                  </Grid>
+                  {/* <Grid item md={12} xs={12}>
+                    <Grid container justifyContent="center" alignItems="center">
+                    </Grid>
+                  </Grid> */}
+                </Grid>
+              </Grid>
+
+              <Grid item md={6} xs={12}>
+                <Grid container justifyContent="center" alignItems="center" spacing={4}>
+                  <Grid item md={12} xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item md={12} xs={12}>
+                        <Stack
+                          spacing={2}
+                          direction="row"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Chip label="3" variant="contained" color="primary" />
+                          <Typography variant="h5" color="initial" align="center">
+                            Add username
+                          </Typography>
+                        </Stack>
+                      </Grid>
+
+                      <Grid item md={12} xs={12}>
+                        <Stack spacing={3} direction="row">
+                          <TextField
+                            fullWidth
+                            placeholder="Instagram"
+                            // label="Instagram"
+                            {...register('instagram')}
+                            error={Boolean(errors.instagram?.message)}
+                            helperText={errors.instagram?.message}
+                            InputProps={{
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
+                            }}
+                            className={classes.textfield}
+                            size="small"
+                          />
+
+                          <TextField
+                            fullWidth
+                            placeholder="Tiktok"
+                            // label="Tiktok"
+                            {...register('Tiktok')}
+                            error={Boolean(errors.Tiktok?.message)}
+                            helperText={errors.Tiktok?.message}
+                            InputProps={{
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
+                            }}
+                            className={classes.textfield}
+                            size="small"
+                          />
+                        </Stack>
+                      </Grid>
+
+                      <Grid item md={12} xs={12}>
+                        <Stack spacing={3} direction="row">
+                          <TextField
+                            fullWidth
+                            placeholder="Youtube"
+                            // label="youtube"
+                            {...register('youtube')}
+                            error={Boolean(errors.youtube?.message)}
+                            helperText={errors.youtube?.message}
+                            InputProps={{
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
+                            }}
+                            className={classes.textfield}
+                            size="small"
+                          />
+
+                          <TextField
+                            fullWidth
+                            placeholder="Twitch"
+                            // label="twitch"
+                            {...register('twitch')}
+                            error={Boolean(errors.twitch?.message)}
+                            helperText={errors.twitch?.message}
+                            InputProps={{
+                              startAdornment: <InputAdornment position="start">@</InputAdornment>,
+                            }}
+                            className={classes.textfield}
+                            size="small"
+                          />
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item md={12} xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item md={12} xs={12}>
+                        <Stack
+                          spacing={2}
+                          direction="row"
+                          justifyContent="center"
+                          alignItems="center"
+                        >
+                          <Chip label="4" variant="contained" color="primary" />
+                          <Typography variant="h5" color="initial" align="center">
+                            Name your store
+                          </Typography>
+                        </Stack>
+                      </Grid>
+
+                      <Grid item md={12} x={12}>
+                        <Stack spacing={1} direction="row" alignItems="center">
+                          <TextField
+                            label="Store Name"
+                            {...register('name')}
+                            error={Boolean(errors.name?.message) || Boolean(slugMessage)}
+                            helperText={errors.name?.message || slugMessage}
+                            className={[classes.textfield, classes.storeNameField].join(' ')}
+                            size="small"
+                            inputProps={{ maxLength: 15 }}
+                            onChange={handleStoreName}
+
+                            // onBlur={isSlugValid}
+                          />
+                          <Typography variant="h5">&#39;s MERCH STORE</Typography>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item md={12} xs={12}>
+                    <LoadingButton
+                      fullWidth
+                      size="large"
+                      type="submit"
+                      variant="contained"
+                      loading={loading}
+                    >
+                      Get Store
+                    </LoadingButton>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-
-            <Grid item md={12} xs={12}>
-              <Stack
-                spacing={2}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Chip label="3" variant="contained" color="primary" />
-                <Typography variant="h5" color="initial" align="center">
-                  Add username
-                </Typography>
-              </Stack>
-            </Grid>
-
-            <Stack spacing={3} direction="row">
-              <TextField
-                fullWidth
-                placeholder="Instagram"
-                // label="Instagram"
-                {...register('instagram')}
-                error={Boolean(errors.instagram?.message)}
-                helperText={errors.instagram?.message}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">@</InputAdornment>
-                  ),
-                }}
-                className={classes.textfield}
-                size="small"
-              />
-
-              <TextField
-                fullWidth
-                placeholder="Tiktok"
-                // label="Tiktok"
-                {...register('Tiktok')}
-                error={Boolean(errors.Tiktok?.message)}
-                helperText={errors.Tiktok?.message}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">@</InputAdornment>
-                  ),
-                }}
-                className={classes.textfield}
-                size="small"
-              />
-            </Stack>
-
-            <Stack spacing={3} direction="row">
-              <TextField
-                fullWidth
-                placeholder="Youtube"
-                // label="youtube"
-                {...register('youtube')}
-                error={Boolean(errors.youtube?.message)}
-                helperText={errors.youtube?.message}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">@</InputAdornment>
-                  ),
-                }}
-                className={classes.textfield}
-                size="small"
-              />
-
-              <TextField
-                fullWidth
-                placeholder="Twitch"
-                // label="twitch"
-                {...register('twitch')}
-                error={Boolean(errors.twitch?.message)}
-                helperText={errors.twitch?.message}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">@</InputAdornment>
-                  ),
-                }}
-                className={classes.textfield}
-                size="small"
-              />
-            </Stack>
-
-            <Grid item md={12} xs={12}>
-              <Stack
-                spacing={2}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Chip label="4" variant="contained" color="primary" />
-                <Typography variant="h5" color="initial" align="center">
-                  Name your store
-                </Typography>
-              </Stack>
-            </Grid>
-
-            <Stack spacing={1} direction="row" alignItems="center">
-              <TextField
-                label="Store Name"
-                {...register('name')}
-                error={Boolean(errors.name?.message)}
-                helperText={errors.name?.message}
-                className={[classes.textfield, classes.storeNameField].join(
-                  ' ',
-                )}
-                size="small"
-              />
-              <Typography variant="h5">&#39;s MERCH STORE</Typography>
-            </Stack>
-
-            <TextField
-              fullWidth
-              label="Store url"
-              {...register('slug')}
-              error={Boolean(errors.slug?.message) || Boolean(slugMessage)}
-              helperText={errors.slug?.message || slugMessage}
-              onBlur={isSlugValid}
-              className={classes.textfield}
-            />
-
-            <Grid container>
-              <SelectTheme setThemeColor={setThemeColor} />
-            </Grid>
-
-            <LoadingButton
-              fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-              loading={loading}
-            >
-              Get Store
-            </LoadingButton>
           </Stack>
         </form>
       </Grid>

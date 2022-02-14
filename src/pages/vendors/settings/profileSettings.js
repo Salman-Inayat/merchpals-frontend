@@ -35,11 +35,10 @@ function ProfileSettings() {
   });
   const [vendorData, setVendorData] = useState({});
 
-  const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] =
-    usePasswordValidation({
-      firstPassword: newPassword,
-      secondPassword: confirmPassword,
-    });
+  const [validLength, hasNumber, upperCase, lowerCase, match, specialChar] = usePasswordValidation({
+    firstPassword: newPassword,
+    secondPassword: confirmPassword,
+  });
 
   useEffect(() => {
     fetchVendorData();
@@ -251,11 +250,7 @@ function ProfileSettings() {
                           onChange={e => {
                             setNewPassword(e.target.value);
                           }}
-                          helperText={
-                            !validLength
-                              ? 'Password should be minimum 8 characters'
-                              : ''
-                          }
+                          helperText={!validLength ? 'Password should be minimum 6 characters' : ''}
                         />
                       </Grid>
                     </Grid>

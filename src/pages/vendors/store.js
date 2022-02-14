@@ -21,6 +21,7 @@ import LoggedInVendor from '../../layouts/LoggedInVendor';
 import {
   ThemeCustomise,
   ThemeColorCustomise,
+  themeStyles,
 } from '../../components/themeCustomize/themeStyle';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveThemeColor } from '../../store/redux/actions/design';
@@ -39,33 +40,29 @@ const useStyle = makeStyles(theme => ({
     left: '0',
     width: '100%',
     height: '100%',
-    objectFit: 'fill',
+    objectFit: 'cover',
     [theme.breakpoints.down('sm')]: {
       height: '30vh',
     },
   },
   logo: {
     position: 'absolute',
-    top: '80%',
-    left: '10%',
-    width: '120px',
-    height: '120px',
-    borderRadius: '100px',
-    [theme.breakpoints.down('sm')]: {
-      top: '80%',
-      left: '10%',
-      width: '100px',
-      height: '100px',
-    },
-  },
-  storeName: {
-    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    fontSize: '3rem',
+    width: '120px',
+    height: '120px',
+    borderRadius: '100px',
+  },
+  storeName: {
+    fontSize: '2rem',
     fontWeight: '500',
     textTransform: 'uppercase',
+    textDecoration: 'underline',
+    textAlign: 'center',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   productsContainer: {
     padding: '1rem 8rem',
@@ -95,12 +92,14 @@ const VendorStore = () => {
     logo: '',
     products: [],
   });
-  let theme, themeColor, themeClass, themeColorClass;
-  const [storeURL, setStoreURL] = useState();
 
+  const [storeURL, setStoreURL] = useState();
+  const [themeClass, setThemeClass] = useState('');
+  const [themeColorClass, setThemeColorClass] = useState('');
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const themeClasses = themeStyles();
 
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
@@ -120,9 +119,9 @@ const VendorStore = () => {
         },
       })
       .then(response => {
-        console.log({ store: response.data.store });
+        // console.log('sotre ', { store: response.data.store });
         const store = response.data.store;
-        setStoreURL(`${process.env.REACT_APP_URL}/store/${store.slug}`);
+        setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         setStore(store);
         dispatch(saveThemeColor({ themeColor: store.themeColor }));
       })
@@ -150,48 +149,36 @@ const VendorStore = () => {
       ...snackBarToggle,
       visible: false,
     });
-  theme = useSelector(state => state.design);
 
-  if (theme.themeColor) {
-    themeColor = theme.themeColor;
-  } else {
-    themeColor = store.themeColor;
-  }
-  themeClass = ThemeCustomise(themeColor);
-  themeColorClass = ThemeColorCustomise(themeColor);
-  return (
+  useEffect(() => {
+    if (store) {
+      const tmpthemeClass = ThemeCustomise(themeClasses, store.themeColor);
+      const tmpthemeColorClass = ThemeColorCustomise(themeClasses, store.themeColor);
+      setThemeClass(tmpthemeClass);
+      setThemeColorClass(tmpthemeColorClass);
+    }
+  }, [store]);
+  return store ? (
     <LoggedInVendor>
-      <Grid
-        container
-        spacing={3}
-        style={{ margin: '0px' }}
-        className={themeClass}
-      >
+      <Grid container spacing={3} style={{ margin: '0px' }} className={themeClass}>
         <Grid item md={12} xs={12} className={classes.coverContainer}>
-          <img
-            src={store.coverAvatar}
-            alt="image"
-            className={classes.coverImage}
-          />
-          <Typography variant="h1" className={classes.storeName}>
-            {store.name}
-          </Typography>
-
+          <img src={store.coverAvatar} alt="image" className={classes.coverImage} />
           <img src={store.logo} className={classes.logo} />
         </Grid>
         <Grid item md={12} sm={12} xs={12}>
-          <Grid
-            container
-            spacing={isMobile ? 2 : 10}
-            mt={1}
-            className={classes.productsContainer}
-          >
+          <Grid item md={12} display="flex" justifyContent="center">
+            <Typography variant="h1" className={classes.storeName}>
+              {store.name}&#39;S MERCH STORE
+            </Typography>
+          </Grid>
+          <Grid container spacing={isMobile ? 2 : 10} mt={1} className={classes.productsContainer}>
             {store.vendorProductIds?.map((product, i) => {
               return (
                 <Grid item md={4} xs={6} key={`VendorStoreProductCard-${i}`}>
                   <VendorStoreProductCard
                     product={product}
                     design={store.design}
+                    vendorName={store.name}
                   />
                 </Grid>
               );
@@ -233,7 +220,7 @@ const VendorStore = () => {
         </Snackbar>
       </Grid>
     </LoggedInVendor>
-  );
+  ) : null;
 };
 
 export { VendorStore as default };

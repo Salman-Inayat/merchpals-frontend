@@ -6,11 +6,15 @@ import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import 'fabric-history';
 import { useMediaQuery } from 'react-responsive';
+import { useSelector, useDispatch } from 'react-redux';
+import { SAVE_DESIGN } from '../../store/redux/types';
 
 const useEditor = canvasId => {
   let [canvas, setCanvas] = useState();
   let [canvasJSON, setCanvasJSON] = useState();
+  let [canvasName, setCanvasName] = useState();
   let [miniature, setMiniature] = useState();
+  const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
   let isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -91,17 +95,19 @@ const useEditor = canvasId => {
 
     if (selectedObject.type === 'rect') {
       selectedObject.cornerStyle = 'rect';
-      selectedObject.setControlsVisibility({
-        mt: true,
-        mb: true,
-        ml: true,
-        mr: true,
-        bl: false,
-        br: false,
-        tl: false,
-        tr: false,
-        mtr: false,
-      });
+      selectedObject.cornerSize = 15;
+      (selectedObject.cornerColor = 'blue'),
+        selectedObject.setControlsVisibility({
+          mt: true,
+          mb: true,
+          ml: true,
+          mr: true,
+          bl: false,
+          br: false,
+          tl: false,
+          tr: false,
+          mtr: false,
+        });
     }
   };
 
@@ -117,27 +123,23 @@ const useEditor = canvasId => {
     }
 
     if (canvasJSON) {
-      canvas.loadFromJSON(
-        canvasJSON,
-        canvas.renderAll.bind(canvas),
-        function (o, object) {
-          afterRender();
-          canvas.on({
-            'selection:created': function () {
-              let selectedObject = canvas.getActiveObject();
-              if (selectedObject) {
-                applyProperties(selectedObject);
-              }
-            },
-            'object:added': e => {
-              const selectedObject = e.target;
+      canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
+        afterRender();
+        canvas.on({
+          'selection:created': function () {
+            let selectedObject = canvas.getActiveObject();
+            if (selectedObject) {
               applyProperties(selectedObject);
-              localStorage.setItem('design', canvas.toDataURL());
-              resetPanels();
-            },
-          });
-        },
-      );
+            }
+          },
+          'object:added': e => {
+            const selectedObject = e.target;
+            applyProperties(selectedObject);
+            localStorage.setItem('design', canvas.toDataURL());
+            resetPanels();
+          },
+        });
+      });
     }
 
     initAligningGuidelines(canvas);
@@ -187,10 +189,7 @@ const useEditor = canvasId => {
         if (selectedObject.type == 'i-text') {
           // textSelection.emit("addText");
           // document.getElementById('textControls').hidden = false;
-        } else if (
-          selectedObject.type == 'path' ||
-          selectedObject.type == 'group'
-        ) {
+        } else if (selectedObject.type == 'path' || selectedObject.type == 'group') {
           // textSelection.emit("addsmiley");
         } else if (selectedObject.type == 'image') {
           // // textSelection.emit("image")
@@ -291,11 +290,11 @@ const useEditor = canvasId => {
       'text:editing:entered': e => {
         console.log('Editing text');
         if (e.target.type === 'textbox') {
-          if (e.target.text === 'Sample Text') {
-            e.target.text = '';
-            e.target.hiddenTextarea.value = ''; // NEW
-            canvas.renderAll();
-          }
+          // if (e.target.text === 'Sample Text') {
+          //   e.target.text = '';
+          //   e.target.hiddenTextarea.value = ''; // NEW
+          //   canvas.renderAll();
+          // }
         }
       },
       'text:editing:exited': e => {
@@ -321,10 +320,7 @@ const useEditor = canvasId => {
   });
 
   function copy(copiedCanvas, canvas) {
-    if (
-      canvas.backgroundColor === '#ffffff00' ||
-      canvas.backgroundColor === ''
-    ) {
+    if (canvas.backgroundColor === '#ffffff00' || canvas.backgroundColor === '') {
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
     }
     ctx2.drawImage(copiedCanvas, 0, 0);
@@ -396,11 +392,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            if (e.target.text === 'Sample Text') {
-              e.target.text = '';
-              e.target.hiddenTextarea.value = ''; // NEW
-              canvas.renderAll();
-            }
+            // if (e.target.text === 'Sample Text') {
+            //   e.target.text = '';
+            //   e.target.hiddenTextarea.value = ''; // NEW
+            //   canvas.renderAll();
+            // }
           }
         },
       });
@@ -438,11 +434,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            if (e.target.text === 'Sample Text') {
-              e.target.text = '';
-              e.target.hiddenTextarea.value = '';
-              canvas.renderAll();
-            }
+            // if (e.target.text === 'Sample Text') {
+            //   e.target.text = 'Sample Text';
+            //   e.target.hiddenTextarea.value = 'Sample Text';
+            //   canvas.renderAll();
+            // }
           }
         },
       });
@@ -573,7 +569,7 @@ const useEditor = canvasId => {
     var maxScaleY = 1;
 
     var mask = new fabric.Rect({
-      fill: 'rgba(0,0,0,0.3)',
+      fill: 'rgba(0,0,0,0.2)',
       originX: 'left',
       originY: 'top',
       stroke: 'black',
@@ -584,12 +580,9 @@ const useEditor = canvasId => {
       height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
       hasRotatingPoint: false,
       transparentCorners: false,
-      cornerColor: 'white',
-      cornerStrokeColor: 'black',
       borderColor: 'black',
-      cornerSize: 12,
       padding: 0,
-      cornerStyle: 'rect',
+      cornerStyle: 'circle',
       borderDashArray: [5, 5],
       borderScaleFactor: 1.3,
       maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
@@ -931,11 +924,7 @@ const useEditor = canvasId => {
   };
 
   const setOpacity = () => {
-    setActiveStyle(
-      'opacity',
-      parseInt(canvasProperties.opacity, 10) / 100,
-      null,
-    );
+    setActiveStyle('opacity', parseInt(canvasProperties.opacity, 10) / 100, null);
   };
 
   const getFill = () => {
@@ -978,11 +967,7 @@ const useEditor = canvasId => {
 
   const setBold = () => {
     canvasProperties.fontWeight = !canvasProperties.fontWeight;
-    setActiveStyle(
-      'fontWeight',
-      canvasProperties.fontWeight ? 'bold' : '',
-      null,
-    );
+    setActiveStyle('fontWeight', canvasProperties.fontWeight ? 'bold' : '', null);
   };
 
   const setFontStyle = () => {
@@ -1043,6 +1028,8 @@ const useEditor = canvasId => {
 
     if (activeObject) {
       canvas.remove(activeObject);
+      canvas.renderAll();
+      afterRender();
       // textString = '';
     } else if (activeGroup) {
       canvas.discardActiveObject();
@@ -1052,7 +1039,6 @@ const useEditor = canvasId => {
       });
     }
 
-    //setMiniature(canvas.toDataURL());
     afterRender();
   };
 
@@ -1104,10 +1090,7 @@ const useEditor = canvasId => {
     let downloadLink = document.createElement('a');
     downloadLink.setAttribute('download', 'CanvasAsImage.png');
     let canvas = document.getElementById('myCanvas');
-    let url = image.src.replace(
-      /^data:image\/png/,
-      'data:application/octet-stream',
-    );
+    let url = image.src.replace(/^data:image\/png/, 'data:application/octet-stream');
     downloadLink.setAttribute('href', url);
     downloadLink.click();
   };
@@ -1152,6 +1135,7 @@ const useEditor = canvasId => {
   };
   const chopBegining = data => {
     let modifiedData = data.replace('data:image/png;base64,', '');
+    modifiedData = modifiedData.replace(/"/g, '');
     return modifiedData;
   };
   const phoneFormat = phone => {
@@ -1163,102 +1147,100 @@ const useEditor = canvasId => {
     return '+1' + number;
   };
 
-  const saveFinalJson = (userDetails, products) => {
+  const exportCanvas = () => {
+    let design;
     let json = JSON.stringify(canvas);
-    json = JSON.parse(json);
     const formatOne = new Image();
     const formatTwo = new Image();
     const formatThree = new Image();
     const formatFour = new Image();
+    const formatFive = new Image();
     if (isMobile) {
-      var mult1 = 2700 / 225;
-      var mult2 = 3000 / 225;
+      var mult1 = 3600 / 225;
+      var mult2 = 2700 / 225;
       var mult3 = 1050 / 225;
       var mult4 = 831 / 225;
     }
     if (!isMobile) {
-      var mult1 = 2700 / 450;
-      var mult2 = 3000 / 450;
+      var mult1 = 3600 / 450;
+      var mult2 = 2700 / 450;
       var mult3 = 1050 / 450;
-      var mult4 = 831 / 450;
+      var mult4 = 600 / 450;
     }
     formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
     formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
     formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
     formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
-    let dp = userDetails.profilePic;
-    let cover = userDetails.coverPic;
-    userDetails.profilePic = '';
-    userDetails.coverPic = '';
+    formatFive.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
     formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
     formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
     formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
     formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
-    console.log(formatOne.src);
-    console.log(formatTwo.src);
-    console.log(formatThree.src);
-    console.log(formatFour.src);
-    userDetails['JSON'] = JSON.stringify(json);
-    var finaljson = {
-      vendorId: phoneFormat(userDetails.phone),
-      vendorStoreName: userDetails.storeName.toLowerCase(),
-      displayName: userDetails.storeName.toLowerCase(),
-      userDetails: userDetails,
-      imgData: [
-        {
-          name: 'ProfilePic',
-          data: chopBegining(dp),
-        },
-        {
-          name: 'CoverPic',
-          data: chopBegining(cover),
-        },
-      ],
-      products: [
-        {
-          designName: 'default',
-          designProduct: products,
-          designJson: json,
-          designImage: [
-            {
-              name: '2700x2700',
-              data: chopBegining(formatOne.src),
-            },
-            {
-              name: '3000x3000',
-              data: chopBegining(formatTwo.src),
-            },
-            {
-              name: '1050x1050',
-              data: chopBegining(formatThree.src),
-            },
-            {
-              name: '831x831',
-              data: chopBegining(formatFour.src),
-            },
-          ],
-        },
-      ],
-    };
+    formatFive.src = changedpi.changeDpiDataUrl(formatFive.src, 300);
 
-    // service.submitUser(finaljson);
-    console.log(finaljson);
-    // service.getsubmitUser().subscribe((resp1) => {
-    //   createStoreResponse.emit(resp1);
-    // });
+    const canvas2 = document.createElement('canvas');
+    const ctx2 = canvas2.getContext('2d');
+    canvas2.width = 600;
+    canvas2.height = 1830;
+
+    const backgroundColor = canvasProperties.canvasFill;
+
+    ctx2.fillStyle = backgroundColor;
+    ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+
+    var myImage = new Image();
+    myImage.src = formatFour.src;
+
+    myImage.onload = function () {
+      ctx2.drawImage(
+        myImage,
+        canvas2.width / 2 - myImage.width / 2,
+        canvas2.height / 2 - myImage.height / 2,
+      );
+      formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
+      formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
+
+      console.log('Canvas name: ', canvasName);
+      design = {
+        designName: canvasName === undefined ? 'default' : canvasName,
+        designJson: json,
+        designImages: [
+          {
+            name: '3600x3600',
+            data: formatOne.src,
+          },
+          {
+            name: '2700x2700',
+            data: formatTwo.src,
+          },
+
+          {
+            name: '1050x1050',
+            data: formatThree.src,
+          },
+          {
+            name: '600x1830',
+            data: formatFour.src,
+          },
+          {
+            name: 'thumbnail',
+            data: formatFive.src,
+          },
+        ],
+      };
+      dispatch({ type: SAVE_DESIGN, payload: design });
+    };
   };
 
-  const canvasReady = (canvasReady, canvasJSON) => {
+  const canvasReady = (canvasReady, canvasJSON, designName) => {
+    console.log('Design Name: ', designName);
     setCanvas(canvasReady);
+    setCanvasName(designName);
     setCanvasJSON(canvasJSON);
   };
 
   const getMiniature = () => {
     return miniature;
-  };
-
-  const exportCanvas = () => {
-    return canvas.toDataURL();
   };
 
   return {

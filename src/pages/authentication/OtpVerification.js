@@ -18,6 +18,9 @@ import {
 import { OtpVerifyInput } from '../../components/authentication/otp-verify-input';
 import { LockOutlined } from '@mui/icons-material';
 import { verifyOTP, sendOTP, clearError } from '../../store/redux/actions/auth';
+import WrongPhoneNumber from './wrongPhoneNumber';
+import axios from 'axios';
+import { baseURL } from '../../configs/const';
 
 const useStyles = makeStyles(theme => ({
   grid: {
@@ -64,11 +67,21 @@ const OtpVerification = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
+
   const [otp, setOtp] = useState();
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [toggleWrongPhoneNo, setToggleWrongPhoneNo] = useState(false);
+  const [oldPhoneNo, setOldPhoneNo] = useState(`+${phoneNo}  `);
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [phoneError, setPhoneError] = useState();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('Setting Phone No: ', `${phoneNo}`);
+    setOldPhoneNo(`${phoneNo}`);
+  }, [phoneNo]);
 
   useEffect(() => {
     if (otpVerified) {
@@ -106,6 +119,51 @@ const OtpVerification = ({
     const phoneNo = localStorage.getItem('phoneNoForOTP');
     sendOTP(phoneNo);
   };
+
+  const handleWrongPhoneNo = () => {
+    setError();
+    setToggleWrongPhoneNo(true);
+  };
+
+  const handleCloseWithoutPhoneNo = () => {
+    setToggleWrongPhoneNo(false);
+  };
+
+  const handleClose = phoneNo => {
+    setPhoneNumber(`+${phoneNo}`);
+
+    const data = {
+      oldPhoneNo: oldPhoneNo,
+      newPhoneNo: `+${phoneNo}`,
+    };
+
+    localStorage.setItem('phoneNoForOTP', `+${phoneNo}`);
+
+    if (phoneNo === '') {
+      setPhoneError('Phone number cannot be empty');
+      return;
+    }
+
+    if (phoneNo.length < 6) {
+      setPhoneError('Phone number must be at least 6 digits');
+      return;
+    }
+
+    if (phoneNo.length >= 6 && phoneNo !== '') {
+      axios
+        .post(`${baseURL}/auth/send-otp-with-new-phone-no`, data)
+        .then(res => {
+          console.log(res);
+          setToggleWrongPhoneNo(false);
+          setPhoneError('');
+          setOldPhoneNo(`+${phoneNo}`);
+        })
+        .catch(err => {
+          setPhoneError(err.response.data.message);
+        });
+    }
+  };
+
   return (
     <Page title="Verify Otp">
       <Container component="main" maxWidth="sm">
@@ -120,14 +178,14 @@ const OtpVerification = ({
             spacing={3}
           >
             <Grid item container justify="center">
-              <Grid item container alignItems="center" direction="column">
+              <Grid container alignItems="center" direction="column">
                 <Grid item>
                   <Avatar className={classes.avatar}>
                     <LockOutlined />
                   </Avatar>
                 </Grid>
                 <Grid item>
-                  <Typography component="h1" variant="h5">
+                  <Typography component="h1" variant="h5" align="left">
                     Verification Code
                   </Typography>
                 </Grid>
@@ -136,19 +194,17 @@ const OtpVerification = ({
             <Grid item xs={12} textAlign="center">
               <Paper elevation={0}>
                 <Typography variant="body">
-                  {/* Please enter the verification code sent to your mobile */}
-                  Enter the code we sent to ({phoneNo})
+                  Enter the code we sent to ({phoneNumber ? phoneNumber : phoneNo})
                 </Typography>
               </Paper>
+              <Stack spacing={1} direction="row" justifyContent="center" alignItems="center">
+                <Typography variant="body"> Didn&#39;t receive the code? </Typography>
+                <Link className={classes.resendOtp} color="secondary" onClick={resentOTP}>
+                  Resend
+                </Link>
+              </Stack>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              container
-              justify="center"
-              alignItems="center"
-              direction="column"
-            >
+            <Grid item xs={12} container justify="center" alignItems="center" direction="column">
               <Grid item spacing={3} justify="center">
                 <OtpVerifyInput otp={otp} setOtp={setOtp} />
               </Grid>
@@ -177,24 +233,15 @@ const OtpVerification = ({
                   </Button>
                 </Grid>
                 <Grid xs={12} item>
-                  <Stack
-                    spacing={1}
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Typography variant="body">
-                      {' '}
-                      Didn&#39;t receive the code?{' '}
-                    </Typography>
-                    <Link
-                      className={classes.resendOtp}
-                      color="secondary"
-                      onClick={resentOTP}
-                    >
-                      Resend
-                    </Link>
-                  </Stack>
+                  <Button onClick={handleWrongPhoneNo} color="secondary">
+                    Wrong number ?
+                  </Button>
+                  <WrongPhoneNumber
+                    open={toggleWrongPhoneNo}
+                    handleClose={handleClose}
+                    error={phoneError}
+                    handleCloseWithoutPhoneNo={handleCloseWithoutPhoneNo}
+                  />
                 </Grid>
               </Grid>
             </Grid>

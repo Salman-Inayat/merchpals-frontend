@@ -91,7 +91,7 @@ const Checkout = ({
     if (orderCreated) {
       emptyCart();
       resetOrder();
-      navigate(`/store/${storeUrl}`);
+      navigate('/checkout/complete', { state: { customer: customer, storeUrl: storeUrl } });
     }
   }, [orderCreated]);
   const getCountries = () => {
@@ -229,6 +229,8 @@ const Checkout = ({
         last4: token.card.last4,
       },
     };
+
+    setCustomer(data.customer);
     console.log({ data });
 
     createOrder(data);

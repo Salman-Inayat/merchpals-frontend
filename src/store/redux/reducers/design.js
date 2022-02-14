@@ -1,9 +1,9 @@
-import { SAVE_DESIGN_JSON, SAVE_THEME_COLOR } from '../types';
+import { SAVE_DESIGN, SAVE_THEME_COLOR } from '../types';
 
-const saveDesignJSON = (state, action) => {
+const saveDesign = (state, action) => {
   switch (action.type) {
-    case SAVE_DESIGN_JSON:
-      return { ...state, json: action.payload };
+    case SAVE_DESIGN:
+      return { ...state, design: action.payload };
     default:
       return state;
   }
@@ -18,13 +18,13 @@ const saveThemeColor = (state, action) => {
 };
 
 const initialState = {
-  json: '',
+  design: {},
 };
 
 const designReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SAVE_DESIGN_JSON: {
-      return saveDesignJSON(state, action);
+    case SAVE_DESIGN: {
+      return saveDesign(state, action);
     }
     case SAVE_THEME_COLOR: {
       return saveThemeColor(state, action);

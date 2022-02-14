@@ -19,13 +19,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: '0px',
+    backgroundColor: '#F6F0ED',
+    boxShadow: '0 0 18px #BDBCBC',
   },
   productName: {
     // color: '#0097a7',
-    width: '90%',
-    margin: 'auto',
-    fontWeight: '500',
+    margin: '7px auto 0 auto',
   },
+
   design: {
     position: 'absolute',
     top: '50%',
@@ -71,22 +73,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const VendorStoreProductCard = ({ product, design }) => {
+const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  console.log({ design });
+  const [color, setColor] = useState();
+
+  useEffect(() => {
+    if (product) {
+      const colorsArr = product.productMappings.map(c => c.color);
+      const formattedProduct = {
+        colors: [...new Map(colorsArr.map(item => [item['value'], item])).values()],
+      };
+      setColor(formattedProduct.colors.length);
+    }
+  }, [product]);
 
   return (
     <>
-      <Typography
-        gutterBottom
-        align="center"
-        variant="h4"
-        component="div"
-        className={classes.productName}
-      >
-        {product.name}
-      </Typography>
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
@@ -96,7 +99,7 @@ const VendorStoreProductCard = ({ product, design }) => {
         />
         {product?.designId && (
           <img
-            src={product.designId.url}
+            src={product.designId.designImages[4].imageUrl}
             className={[
               classes.design,
               product.name === 'Poster'
@@ -110,6 +113,29 @@ const VendorStoreProductCard = ({ product, design }) => {
           />
         )}
       </Card>
+      <Grid className={classes.productName}>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`${product.name} // ${vendorName}`}
+        </Typography>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`${color} Colors`}
+        </Typography>
+        <Typography gutterBottom align="center" variant="h5" component="div">
+          {`$${product.price}`}
+        </Typography>
+      </Grid>
     </>
   );
 };

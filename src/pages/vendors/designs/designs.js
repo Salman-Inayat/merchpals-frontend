@@ -71,9 +71,10 @@ const VendorDesigns = () => {
       })
       .then(response => {
         response.data.designs.map(design => {
+          console.log('Design: ', design);
           setDesignImage(prevState => [
             ...prevState,
-            { id: design._id, url: design.url },
+            { id: design._id, url: design.designImages[4].imageUrl },
           ]);
         });
         setFetched(true);
@@ -114,11 +115,7 @@ const VendorDesigns = () => {
         >
           <BackButton />
           {fetched && (
-            <Button
-              onClick={navigateToCreate}
-              variant="contained"
-              size="medium"
-            >
+            <Button onClick={navigateToCreate} variant="contained" size="medium">
               Add new Design
             </Button>
           )}
@@ -131,9 +128,7 @@ const VendorDesigns = () => {
                   {designImage.length > 0 && (
                     <CardMedia
                       component="img"
-                      src={
-                        designImage.find(image => image.id === design._id).url
-                      }
+                      src={designImage.find(image => image.id === design._id).url}
                       height="80%"
                       key={design._id}
                       variant="square"
@@ -144,9 +139,7 @@ const VendorDesigns = () => {
                     <Button
                       variant="outlined"
                       className={classes.btn}
-                      onClick={() =>
-                        navigate(`/vendor/edit-design/${design._id}`)
-                      }
+                      onClick={() => navigate(`/vendor/edit-design/${design._id}`)}
                       size="small"
                     >
                       Edit Design
@@ -154,9 +147,7 @@ const VendorDesigns = () => {
                     <Button
                       variant="outlined"
                       className={classes.btn}
-                      onClick={() =>
-                        navigate(`/vendor/edit-design/products/${design._id}`)
-                      }
+                      onClick={() => navigate(`/vendor/edit-design/products/${design._id}`)}
                       size="small"
                     >
                       Edit Products
@@ -169,11 +160,7 @@ const VendorDesigns = () => {
         </Grid>
       </Grid>
 
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={3000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </LoggedInVendor>

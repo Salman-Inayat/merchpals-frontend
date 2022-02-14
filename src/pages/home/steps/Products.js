@@ -48,6 +48,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
   const dispatch = useDispatch();
   const [unselectProducts, setUnselectProducts] = useState(false);
   const { selectedVariants } = useSelector(state => state.product);
+  const [unselectProductId, setUnselectProductId] = useState();
 
   useEffect(() => {
     dispatch(getSelectedVariants());
@@ -95,7 +96,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
 
   const onProductClick = productId => {
     let prevSelectedProducts = { ...selectedVariants };
-
+    setUnselectProductId(productId);
     if (prevSelectedProducts[productId]) {
       delete prevSelectedProducts[productId];
       dispatch(
@@ -170,6 +171,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
                   onProductClick={onProductClick}
                   selectedVariants={selectedVariants}
                   unselectProducts={unselectProducts}
+                  unselectProductId={unselectProductId}
                 />
               </Grid>
             ))}

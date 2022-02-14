@@ -14,7 +14,8 @@ import { useMediaQuery } from 'react-responsive';
 const CanvasEditor = _ref => {
   var className = _ref.class,
     onReady = _ref.onReady,
-    canvasJSON = _ref.canvasJSON;
+    canvasJSON = _ref.canvasJSON,
+    designName = _ref.designName;
   var canvasElParent = useRef(null);
   var canvasEl = useRef(null);
 
@@ -43,8 +44,7 @@ const CanvasEditor = _ref => {
 
     var setCurrentDimensions = function setCurrentDimensions() {
       var _canvasElParent$curre, _canvasElParent$curre2;
-      const outerCanvasContainer =
-        document.getElementsByClassName(className)[0];
+      const outerCanvasContainer = document.getElementsByClassName(className)[0];
 
       const ratio = canvas.getWidth() / canvas.getHeight();
       const containerWidth = outerCanvasContainer.clientWidth;
@@ -70,7 +70,7 @@ const CanvasEditor = _ref => {
     window.addEventListener('resize', resizeCanvas, false);
 
     if (onReady) {
-      onReady(canvas, canvasJSON);
+      onReady(canvas, canvasJSON, designName);
     }
 
     return function () {
