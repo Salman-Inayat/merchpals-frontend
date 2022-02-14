@@ -364,6 +364,9 @@ const Editor = forwardRef((props, ref) => {
                 type="file"
                 hidden
                 onChange={e => addImage(e)}
+                onClick={event => {
+                  event.target.value = null;
+                }}
                 accept="image/png, image/jpeg"
               />
             </Button>

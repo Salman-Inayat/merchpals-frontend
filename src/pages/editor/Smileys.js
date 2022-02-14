@@ -142,7 +142,6 @@ const Smileys = ({ addPng, className }) => {
   const handleSmileyChange = event => {
     setSmiley(event.target.value);
     addPng(`/svg-icons/${event.target.value}`);
-    setSmiley('');
   };
 
   return (
@@ -155,6 +154,9 @@ const Smileys = ({ addPng, className }) => {
           value={smiley}
           label="Color"
           onChange={handleSmileyChange}
+          onClick={() => {
+            setSmiley('');
+          }}
           autoWidth
         >
           {images.map((image, index) => (
