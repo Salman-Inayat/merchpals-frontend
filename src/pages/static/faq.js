@@ -19,6 +19,8 @@ import Footer from '../../layouts/static/footer';
 import FAQ from '../../components/static/faqComponent';
 import ContactSupport from '../vendors/contactSupport';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { baseURL } from '../../configs/const';
 
 const useStyles = makeStyles(theme => ({
   mainBox: {
@@ -187,6 +189,8 @@ const CustomizedAccordions = () => {
     },
   ]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
+  const [helperText, setHelperText] = useState('');
 
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
@@ -224,7 +228,18 @@ const CustomizedAccordions = () => {
     });
 
   const handleTrackOrder = () => {
-    navigate('/track-order');
+    const data = {
+      orderNo: orderNumber,
+    };
+
+    axios
+      .post(`${baseURL}/order/track-order`, data)
+      .then(res => {
+        navigate('/track-order', { state: { orderData: res.data } });
+      })
+      .catch(err => {
+        setHelperText(err.response.data.message);
+      });
   };
 
   return (
@@ -249,14 +264,23 @@ const CustomizedAccordions = () => {
               fullWidth
               placeholder="ORDER NUMBER (DO NOT INCLUDE '#'"
               className={classes.order_number}
-              type="number"
               // {...register('firstName')}
               // error={Boolean(errors.firstName?.message)}
               // helperText={errors.firstName?.message}
+              onChange={e => {
+                setOrderNumber(e.target.value);
+                setHelperText('');
+              }}
+              helperText={helperText}
             />
           </Grid>
         </Grid>
-        <Button className={classes.button} diplay="flex" onClick={handleTrackOrder}>
+        <Button
+          className={classes.button}
+          diplay="flex"
+          onClick={handleTrackOrder}
+          disabled={orderNumber === '' ? true : false}
+        >
           TRACK ORDER
         </Button>
       </Stack>

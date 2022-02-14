@@ -3,6 +3,7 @@ import * as React from 'react';
 import { makeStyles } from '@mui/styles';
 import { Box, Typography, Button, Grid, Stack, Modal } from '@mui/material';
 import Footer from '../../layouts/static/footer';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,6 +43,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function TrackOrderModal() {
   const classes = useStyles();
+  const { state } = useLocation();
+  const order = state.orderData.order;
+
   return (
     <Grid container rowSpacing={6} className={classes.container}>
       <Grid item md={12} xs={12}>
@@ -59,7 +63,9 @@ export default function TrackOrderModal() {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
-                <Typography className={classes.resultText}>21312312312</Typography>
+                <Typography className={classes.resultText}>
+                  {order.printfulOrderMetadata.id}
+                </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
                 <Typography align="right" className={classes.labelText}>
@@ -67,7 +73,7 @@ export default function TrackOrderModal() {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
-                <Typography className={classes.resultText}>Processed</Typography>
+                <Typography className={classes.resultText}>{order.status}</Typography>
               </Grid>
             </Grid>
           </Grid>
