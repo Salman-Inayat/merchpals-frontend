@@ -68,10 +68,7 @@ function VendorOrders() {
 
   const Profit = order => {
     const orderPrice = order.price;
-    const productsTotal = order.products.reduce(
-      (sum, curr) => sum + curr.basePrice,
-      0,
-    );
+    const productsTotal = order.products.reduce((sum, curr) => sum + curr.basePrice, 0);
 
     const profit = orderPrice - (orderPrice * 0.023 + 30) - productsTotal;
 
@@ -102,7 +99,7 @@ function VendorOrders() {
                   sx={{ cursor: 'pointer' }}
                 >
                   <TableCell component="th" scope="row" align="center">
-                    {index + 1}
+                    {order.printfulOrderMetadata.id}
                   </TableCell>
 
                   <TableCell component="th" scope="row" align="center">

@@ -72,7 +72,7 @@ function FlowComplete({ storeURL }) {
               <TextField
                 id="outlined-read-only-input"
                 label={!storeURL && 'Copy Store Link'}
-                value={`${process.env.REACT_APP_URL}/store/${storeURL}`}
+                value={`${process.env.REACT_APP_URL}/${storeURL}`}
                 InputProps={{
                   readOnly: true,
                   endAdornment: (
@@ -80,7 +80,11 @@ function FlowComplete({ storeURL }) {
                       {copied ? (
                         <DoneIcon color="secondary" />
                       ) : (
-                        <Button onClick={() => copyToClipboard(storeURL)}>
+                        <Button
+                          onClick={() =>
+                            copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)
+                          }
+                        >
                           Copy
                           <ContentCopyIcon color="secondary" />
                         </Button>

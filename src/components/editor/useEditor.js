@@ -290,11 +290,11 @@ const useEditor = canvasId => {
       'text:editing:entered': e => {
         console.log('Editing text');
         if (e.target.type === 'textbox') {
-          if (e.target.text === 'Sample Text') {
-            e.target.text = '';
-            e.target.hiddenTextarea.value = ''; // NEW
-            canvas.renderAll();
-          }
+          // if (e.target.text === 'Sample Text') {
+          //   e.target.text = '';
+          //   e.target.hiddenTextarea.value = ''; // NEW
+          //   canvas.renderAll();
+          // }
         }
       },
       'text:editing:exited': e => {
@@ -392,11 +392,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            if (e.target.text === 'Sample Text') {
-              e.target.text = '';
-              e.target.hiddenTextarea.value = ''; // NEW
-              canvas.renderAll();
-            }
+            // if (e.target.text === 'Sample Text') {
+            //   e.target.text = '';
+            //   e.target.hiddenTextarea.value = ''; // NEW
+            //   canvas.renderAll();
+            // }
           }
         },
       });
@@ -434,11 +434,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            if (e.target.text === 'Sample Text') {
-              e.target.text = '';
-              e.target.hiddenTextarea.value = '';
-              canvas.renderAll();
-            }
+            // if (e.target.text === 'Sample Text') {
+            //   e.target.text = 'Sample Text';
+            //   e.target.hiddenTextarea.value = 'Sample Text';
+            //   canvas.renderAll();
+            // }
           }
         },
       });
@@ -1028,6 +1028,8 @@ const useEditor = canvasId => {
 
     if (activeObject) {
       canvas.remove(activeObject);
+      canvas.renderAll();
+      afterRender();
       // textString = '';
     } else if (activeGroup) {
       canvas.discardActiveObject();
@@ -1037,7 +1039,6 @@ const useEditor = canvasId => {
       });
     }
 
-    //setMiniature(canvas.toDataURL());
     afterRender();
   };
 
@@ -1199,8 +1200,9 @@ const useEditor = canvasId => {
       formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
       formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 
+      console.log('Canvas name: ', canvasName);
       design = {
-        designName: canvasName === '' ? 'default' : canvasName,
+        designName: canvasName === undefined ? 'default' : canvasName,
         designJson: json,
         designImages: [
           {

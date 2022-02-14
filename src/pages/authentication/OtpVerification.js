@@ -125,6 +125,10 @@ const OtpVerification = ({
     setToggleWrongPhoneNo(true);
   };
 
+  const handleCloseWithoutPhoneNo = () => {
+    setToggleWrongPhoneNo(false);
+  };
+
   const handleClose = phoneNo => {
     setPhoneNumber(`+${phoneNo}`);
 
@@ -236,6 +240,7 @@ const OtpVerification = ({
                     open={toggleWrongPhoneNo}
                     handleClose={handleClose}
                     error={phoneError}
+                    handleCloseWithoutPhoneNo={handleCloseWithoutPhoneNo}
                   />
                 </Grid>
               </Grid>
