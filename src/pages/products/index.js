@@ -202,8 +202,8 @@ const Product = () => {
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
 
-  const reduxCartProducts = state.cart.cart.products;
-  const fetchedProduct = state.product.product;
+  const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
+  const fetchedProduct = useSelector(state => state.product?.product);
 
   const handleDetailsChange = data => {
     setDetails(!data);
@@ -224,6 +224,10 @@ const Product = () => {
 
   useEffect(() => {
     if (fetchedProduct) {
+      const designUrl =
+        fetchedProduct?.designId?.designImages?.length > 3
+          ? fetchedProduct.designId?.designImages[4].imageUrl
+          : '';
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
       console.log(' fetched product', fetchedProduct);
@@ -243,7 +247,7 @@ const Product = () => {
         colors: [...new Map(colorsArr.map(item => [item['id'], item])).values()],
         sizes: [...new Map(variantArr.map(item => [item['id'], item])).values()],
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
-        design: fetchedProduct.designId?.designImages[4].imageUrl,
+        design: designUrl,
       };
 
       console.log(formattedProduct.colors);
@@ -349,7 +353,7 @@ const Product = () => {
     );
     setTotalNumberOfVariants(totalItems);
   };
-
+  
   const handleCartButton = () => {
     if (reduxCartProducts.length === 0) {
       setSnackBarToggle({

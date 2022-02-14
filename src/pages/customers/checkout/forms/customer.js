@@ -130,18 +130,24 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
 
   const removeFromCart = (vendorProduct, variantId) => {
     let updatedCart = {};
+    let updatedCartList = [];
 
     const prevProduct = products.find(v => v.vendorProduct === vendorProduct);
+    const otherProductVariants = products.filter(cv => cv.vendorProduct !== vendorProduct);
+
     let mappings = [...prevProduct.productMappings];
     mappings = mappings.filter(m => m.id !== variantId);
 
-    updatedCart = {
-      ...prevProduct,
-      productMappings: [...mappings],
-    };
+    if (mappings.length > 0) {
+      updatedCart = {
+        ...prevProduct,
+        productMappings: [...mappings],
+      };
 
-    const otherProductVariants = products.filter(cv => cv.vendorProduct !== vendorProduct);
-    const updatedCartList = [updatedCart, ...otherProductVariants];
+      updatedCartList = [updatedCart, ...otherProductVariants];
+    } else {
+      updatedCartList = [...otherProductVariants];
+    }
 
     setProducts(updatedCartList);
     addToCart(storeUrl, updatedCartList);
