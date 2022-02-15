@@ -61,10 +61,14 @@ function StoreSettings() {
   const [openAvatarModal, setOpenAvatarModal] = useState(false);
   const [openLogoModal, setOpenLogoModal] = useState(false);
   const [themeColor, setThemeColor] = useState();
+  const [originalThemeColor, setOriginalThemeColor] = useState();
   const [color, setColor] = useState();
   const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
+  const [orignalStoreName, setOrignalStoreName] = useState();
+  const [timer, setTimer] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [images, setImages] = useState({
     coverAvatar: '',
@@ -92,10 +96,12 @@ function StoreSettings() {
       .then(res => {
         const vendorStore = res.data.store;
         setStoreName(vendorStore.name);
+        setOrignalStoreName(vendorStore.name);
         setStoreAvatar(vendorStore.coverAvatar);
         setStoreLogo(vendorStore.logo);
         setColor(vendorStore.themeColor);
         setThemeColor(vendorStore.themeColor);
+        setOriginalThemeColor(vendorStore.themeColor);
         setStoreId(vendorStore._id);
       })
       .catch(err => {
@@ -110,7 +116,28 @@ function StoreSettings() {
   const handleCloseLogoModal = () => setOpenLogoModal(false);
 
   const handleStoreNameChange = e => {
+    setErrorMessage('');
     setStoreName(e.target.value);
+    clearTimeout(timer);
+
+    if (orignalStoreName !== e.target.value) {
+      console.log('true');
+      const newTimer = setTimeout(() => {
+        axios
+          .post(`${baseURL}/store/validate-slug`, { storeName: e.target.value.trim() })
+          .then(response => {
+            console.log({ response });
+            setErrorMessage('');
+          })
+          .catch(err => {
+            console.log({ errp: err.response.data });
+            setErrorMessage(err.response.data.message);
+          });
+      }, 500);
+      setTimer(newTimer);
+    } else {
+      setErrorMessage('Name same as previous');
+    }
   };
 
   const handleChangeStoreAvatarButton = () => {
@@ -127,33 +154,48 @@ function StoreSettings() {
     setImages({ ...images, [name]: file });
   };
 
-  const handleUpdateStore = () => {
-    console.log('Store Id: ', storeId);
-    const store = new FormData();
-    store.append('storeId', storeId);
-    store.append('name', storeName);
-    store.append('coverAvatar', images.coverAvatar);
-    store.append('logo', images.logo);
-    store.append('themeColor', themeColor);
+  const checkFieldsEmpty = () => {
+    console.log('Checning');
+    if (storeName !== '' || images.coverAvatar !== '' || images.logo !== '' || themeColor !== '') {
+      console.log('Can submit');
+      return false;
+    } else {
+      return true;
+    }
+  };
 
-    axios
-      .put(`${baseURL}/store/update-store-data`, store, {
-        headers: {
-          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(res => {
-        console.log(res.data);
-        setSnackBarToggle({
-          visible: true,
-          type: 'success',
-          message: 'Store updated successfully',
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  const handleUpdateStore = () => {
+    console.log('Store name: ', storeName);
+    console.log('Store avatar: ', images.coverAvatar);
+    console.log('Store logo: ', images.logo);
+    console.log('Store theme color: ', themeColor);
+
+    // console.log('Store Id: ', storeId);
+    // const store = new FormData();
+    // store.append('storeId', storeId);
+    // store.append('name', storeName);
+    // store.append('coverAvatar', images.coverAvatar);
+    // store.append('logo', images.logo);
+    // store.append('themeColor', themeColor);
+
+    // axios
+    //   .put(`${baseURL}/store/update-store-data`, store, {
+    //     headers: {
+    //       Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+    //       'Content-Type': 'multipart/form-data',
+    //     },
+    //   })
+    //   .then(res => {
+    //     console.log(res.data);
+    //     setSnackBarToggle({
+    //       visible: true,
+    //       type: 'success',
+    //       message: 'Store updated successfully',
+    //     });
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
   };
 
   const handleSnackBarClose = () =>
@@ -193,6 +235,7 @@ function StoreSettings() {
                       onChange={handleStoreNameChange}
                       size="small"
                       value={storeName}
+                      helperText={errorMessage}
                     />
                   </Box>
                 </Box>
@@ -319,7 +362,18 @@ function StoreSettings() {
               justifyContent="center"
               alignItems="center"
             >
-              <Button onClick={handleUpdateStore} variant="contained">
+              <Button
+                onClick={handleUpdateStore}
+                variant="contained"
+                disabled={
+                  storeName === orignalStoreName &&
+                  images.coverAvatar === '' &&
+                  images.logo === '' &&
+                  themeColor === originalThemeColor
+                    ? true
+                    : false
+                }
+              >
                 Update Store
               </Button>
             </Grid>

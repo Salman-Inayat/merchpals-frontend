@@ -32,10 +32,7 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
   },
 }));
-export default function RegisterForm({
-  registerVendor = () => {},
-  registrationErrors = {},
-}) {
+export default function RegisterForm({ registerVendor = () => {}, registrationErrors = {} }) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNo, setPhoneNo] = useState('');
@@ -73,19 +70,13 @@ export default function RegisterForm({
       .required('Last name is required')
       .min(2, 'Too Short!')
       .max(50, 'Too Long!'),
-    email: Yup.string()
-      .required('Email is required')
-      .email('Email must be a valid email address'),
+    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password is too short - should be 6 chars minimum.'),
-    confirmPassword: Yup.string().test(
-      'passwords-match',
-      'Passwords must match',
-      function (value) {
-        return this.parent.password === value;
-      },
-    ),
+    confirmPassword: Yup.string().test('passwords-match', 'Passwords must match', function (value) {
+      return this.parent.password === value;
+    }),
     hasAcceptedTerms: Yup.boolean(),
   });
 
@@ -171,10 +162,7 @@ export default function RegisterForm({
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  edge="end"
-                  onClick={() => setShowPassword(prev => !prev)}
-                >
+                <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)}>
                   <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                 </IconButton>
               </InputAdornment>
@@ -194,10 +182,7 @@ export default function RegisterForm({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    edge="end"
-                    onClick={() => setShowPassword(prev => !prev)}
-                  >
+                  <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)}>
                     <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                   </IconButton>
                 </InputAdornment>
@@ -223,17 +208,11 @@ export default function RegisterForm({
           />
           <Typography variant="body2" color="textSecondary">
             I agree to{' '}
-            <span
-              className={classes.termsSpan}
-              onClick={() => navigate('/vendor/store')}
-            >
+            <span className={classes.termsSpan} onClick={() => navigate('/vendor/store')}>
               Terms
             </span>
             ,{' '}
-            <span
-              className={classes.termsSpan}
-              onClick={() => navigate('/vendor/store')}
-            >
+            <span className={classes.termsSpan} onClick={() => navigate('/vendor/store')}>
               Privacy
             </span>
             , receiving SMS and email marketing communications{' '}
@@ -246,13 +225,7 @@ export default function RegisterForm({
           </Grid>
         )}
 
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={false}
-        >
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={false}>
           Continue
         </LoadingButton>
       </Stack>
