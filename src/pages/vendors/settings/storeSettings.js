@@ -65,7 +65,8 @@ function StoreSettings() {
   const [storeName, setStoreName] = useState();
   const [toggleStoreAvatarButton, setToggleStoreAvatarButton] = useState(false);
   const [toggleStoreLogoButton, setToggleStoreLogoButton] = useState(false);
-
+  const [errorMessage, setErrorMessage] = useState('');
+  const [timer, setTimer] = useState(null);
   const [images, setImages] = useState({
     coverAvatar: '',
     logo: '',
@@ -111,6 +112,23 @@ function StoreSettings() {
 
   const handleStoreNameChange = e => {
     setStoreName(e.target.value.replace(/\s/g, '-'));
+    const name = e.target.value.trim();
+    clearTimeout(timer);
+
+    const newTimer = setTimeout(() => {
+      axios
+        .post(`${baseURL}/store/validate-slug`, { storeName: name })
+        .then(response => {
+          console.log({ response });
+          setErrorMessage('');
+        })
+        .catch(err => {
+          console.log({ errp: err.response.data });
+          setErrorMessage(err.response.data.message);
+        });
+    }, 500);
+
+    setTimer(newTimer);
   };
 
   const handleChangeStoreAvatarButton = () => {
@@ -188,13 +206,16 @@ function StoreSettings() {
                   <Box>
                     <Typography variant="p">Merchpals.com/</Typography>
                     <TextField
-                      id="input-with-sx"
+                      inputProps={{ maxLength: 15 }}
                       variant="standard"
                       onChange={handleStoreNameChange}
                       size="small"
                       value={storeName}
                     />
                   </Box>
+                  <Typography variant="body1" color="red">
+                    {errorMessage && errorMessage}
+                  </Typography>
                 </Box>
               </Grid>
               <Grid container item xs={12} md={6} sm={6} spacing={2} justifyContent="center">

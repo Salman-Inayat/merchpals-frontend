@@ -278,32 +278,32 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     setImages({ ...images, [name]: file });
   };
 
-  const isSlugValid = () => {
-    axios
-      .post(`${baseURL}/store/validate-slug`, { storeName })
-      .then(response => {
-        console.log({ response });
-        setSlugMessage('');
-        setLoading(false);
-      })
-      .catch(err => {
-        setLoading(false);
-        console.log({ errp: err.response.data });
-        setSlugMessage(err.response.data.message);
-      });
-    // axios
-    //   .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
-    //   .then(response => {
-    //     console.log({ response });
-    //     setSlugMessage('');
-    //     setLoading(false);
-    //   })
-    //   .catch(err => {
-    //     setLoading(false);
-    //     console.log({ errp: err.response.data });
-    //     setSlugMessage(err.response.data.message);
-    //   });
-  };
+  // const isSlugValid = () => {
+  //   axios
+  //     .post(`${baseURL}/store/validate-slug`, { storeName })
+  //     .then(response => {
+  //       console.log({ response });
+  //       setSlugMessage('');
+  //       setLoading(false);
+  //     })
+  //     .catch(err => {
+  //       setLoading(false);
+  //       console.log({ errp: err.response.data });
+  //       setSlugMessage(err.response.data.message);
+  //     });
+  //   // axios
+  //   //   .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
+  //   //   .then(response => {
+  //   //     console.log({ response });
+  //   //     setSlugMessage('');
+  //   //     setLoading(false);
+  //   //   })
+  //   //   .catch(err => {
+  //   //     setLoading(false);
+  //   //     console.log({ errp: err.response.data });
+  //   //     setSlugMessage(err.response.data.message);
+  //   //   });
+  // };
 
   const handleOpenAvatarModal = () => setOpenAvatarModal(true);
   const handleCloseAvatarModal = () => setOpenAvatarModal(false);
