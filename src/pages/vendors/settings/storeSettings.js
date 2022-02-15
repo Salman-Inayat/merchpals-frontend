@@ -110,7 +110,7 @@ function StoreSettings() {
   const handleCloseLogoModal = () => setOpenLogoModal(false);
 
   const handleStoreNameChange = e => {
-    setStoreName(e.target.value.replace(/\s/g, '-'));
+    setStoreName(e.target.value);
   };
 
   const handleChangeStoreAvatarButton = () => {
