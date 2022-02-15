@@ -202,8 +202,8 @@ const Product = () => {
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
 
-  const reduxCartProducts = state.cart.cart.products;
-  const fetchedProduct = state.product.product;
+  const reduxCartProducts = useSelector(state => state.cart.cart.products);
+  const fetchedProduct = useSelector(state => state.product.product);
 
   const handleDetailsChange = data => {
     setDetails(!data);
