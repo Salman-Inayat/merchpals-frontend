@@ -217,7 +217,6 @@ const ProductCard = ({
   };
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
-  console.log({ design, product });
 
   const updateProfit = price => {
     setProfit(calculateProfit(price, shippingCost, costPrice));
@@ -340,7 +339,7 @@ const ProductCard = ({
                 id="outlined-basic"
                 placeholder={`$${productDefaultPrice}`}
                 variant="outlined"
-                helperText={priceError ? priceError : tempProfit}
+                helperText={priceError ? priceError : `Profit: ${tempProfit}`}
                 type="number"
                 style={{ marginTop: '15px' }}
                 error={Boolean(priceError)}
