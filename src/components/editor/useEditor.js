@@ -448,12 +448,14 @@ const useEditor = canvasId => {
       canvas.setActiveObject(text);
       canvas.centerObject(text);
       canvas.renderAll();
+      afterRender();
     }
   };
 
   const finishTextEditing = () => {
     const activeObject = canvas.getActiveObject();
     canvas.fire('text:editing:exited');
+    afterRender();
   };
 
   const getImgPolaroid = img => {
@@ -555,6 +557,7 @@ const useEditor = canvasId => {
     var minX, minY, maxX, maxY;
 
     image = canvas.getActiveObject();
+    console.log('Image angle', image.angle);
 
     minX = image.oCoords.tl.x;
     maxX = image.oCoords.br.x;
@@ -578,6 +581,7 @@ const useEditor = canvasId => {
       top: image.aCoords.tl.y,
       width: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
       height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+      angle: image.angle,
       hasRotatingPoint: false,
       transparentCorners: false,
       borderColor: 'black',
@@ -656,6 +660,7 @@ const useEditor = canvasId => {
       let cropped_image = new fabric.Image(cropped);
       cropped_image.left = rect.left;
       cropped_image.top = rect.top;
+      cropped_image.angle = image.angle;
       cropped_image.setCoords();
       canvas.add(cropped_image);
       canvas.remove(image);
@@ -1200,7 +1205,6 @@ const useEditor = canvasId => {
       formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
       formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 
-      console.log('Canvas name: ', canvasName);
       design = {
         designName: canvasName === undefined ? 'default' : canvasName,
         designJson: json,

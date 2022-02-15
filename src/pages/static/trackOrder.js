@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1),
     color: 'red',
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   noteNext: {
     fontSize: '0.8rem',
@@ -44,7 +45,9 @@ const useStyles = makeStyles(theme => ({
 export default function TrackOrderModal() {
   const classes = useStyles();
   const { state } = useLocation();
-  const order = state.orderData.order;
+  const order = state.data.data;
+
+  console.log(order);
 
   return (
     <Grid container rowSpacing={6} className={classes.container}>
@@ -63,9 +66,7 @@ export default function TrackOrderModal() {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
-                <Typography className={classes.resultText}>
-                  {order.printfulOrderMetadata.id}
-                </Typography>
+                <Typography className={classes.resultText}>{order.orderNo}</Typography>
               </Grid>
               <Grid item md={6} xs={6}>
                 <Typography align="right" className={classes.labelText}>
@@ -85,7 +86,9 @@ export default function TrackOrderModal() {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
-                <Typography className={classes.resultText}>21312312312</Typography>
+                <Typography className={classes.resultText}>
+                  {order.trackingNo ? order.trackingNo : 'In progress'}
+                </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
                 <Typography align="right" className={classes.labelText}>
@@ -93,7 +96,9 @@ export default function TrackOrderModal() {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
-                <Typography className={classes.resultText}>Processed</Typography>
+                <Typography className={classes.resultText}>
+                  {order.trackingUrl ? order.trackingUrl : 'In progress'}
+                </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
                 <Typography align="right" className={classes.labelText}>
@@ -101,7 +106,9 @@ export default function TrackOrderModal() {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={6}>
-                <Typography className={classes.resultText}>Processed</Typography>
+                <Typography className={classes.resultText}>
+                  {order.carrier ? order.carrier : 'In progress'}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

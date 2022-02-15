@@ -235,7 +235,7 @@ const CustomizedAccordions = () => {
     axios
       .post(`${baseURL}/order/track-order`, data)
       .then(res => {
-        navigate('/track-order', { state: { orderData: res.data } });
+        navigate('/track-order', { state: { data: res.data } });
       })
       .catch(err => {
         setHelperText(err.response.data.message);
