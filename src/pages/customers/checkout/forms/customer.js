@@ -181,7 +181,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                   />
                   <Avatar className={classes.design} src={variant.design} variant="square" />
                 </Stack>
-                <Stack direction="column" ml={{ md: 2, xs: 0 }}>
+                <Stack direction="column" ml={{ md: 2, xs: 1 }}>
                   <Typography className={classes.text}> Style: {product.name}</Typography>
                   <Typography className={classes.text}>
                     {' '}
