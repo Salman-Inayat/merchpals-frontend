@@ -237,8 +237,8 @@ const Checkout = ({
   };
 
   return (
-    <Grid justifyContent="center" alignItems="center" mt={12} p={3} container>
-      <Grid className={classes.card} xs={12} item>
+    <Grid justifyContent="center" alignItems="center" container className={classes.card}>
+      <Grid xs={12} item pt={2}>
         <Grid container alignItems="center" justifyContent="flex-end" xs={12} item>
           <Grid xs={5} item style={{ padding: '10px' }}>
             <Button className={classes.back} onClick={() => navigate(-1)}>

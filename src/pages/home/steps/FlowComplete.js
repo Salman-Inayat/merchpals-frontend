@@ -47,7 +47,7 @@ function FlowComplete({ storeURL }) {
   useEffect(() => {
     setTimeout(() => {
       setConfettiRun(false);
-    }, 5000);
+    }, 3000);
   }, []);
   console.log('conetti', confettiRun);
   const copyToClipboard = text => {

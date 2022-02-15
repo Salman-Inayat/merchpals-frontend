@@ -371,13 +371,13 @@ const Product = () => {
   // console.log(product);
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="center">
-      <Grid item md={1} xs={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
+      <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
         <ArrowBackIcon onClick={handleBackButton} sx={{ cursor: 'pointer' }} />
       </Grid>
-      <Grid item md={10} xs={10} display="flex" justifyContent="center">
+      <Grid item md={10} xs={8} sm={10} display="flex" justifyContent="center">
         <Typography variant="h4">Official Store</Typography>
       </Grid>
-      <Grid item md={1} xs={1} display="flex" justifyContent="center" pr={{ xs: 5 }}>
+      <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pr={{ xs: 5, sm: 0 }}>
         <IconButton
           aria-label="cart"
           onClick={handleCartButton}
