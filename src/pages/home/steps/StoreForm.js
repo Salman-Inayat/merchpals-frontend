@@ -161,6 +161,7 @@ const useStyle = makeStyles(theme => ({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
+    cursor: 'pointer',
   },
   uploadIcon: {
     position: 'absolute',
@@ -368,7 +369,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       container
       justifyContent="center"
       alignItems="center"
-      mt={5}
+      // mt={5}
       pb={18}
       className={classes.container}
     >
@@ -437,9 +438,12 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                               className={classes.coverPhoto}
                               onClick={handleChangeStoreAvatarButton}
                             ></img>
+
                             <IconButton
                               aria-label="upload"
                               className={classes.uploadCoverIcon}
+                              sx={{ display: images.coverAvatar ? 'none' : 'block' }}
+                              // display={images.coverAvatar ? 'none' : 'block'}
                               onClick={handleChangeStoreAvatarButton}
                             >
                               {/* <img src="assets/img/camera.png" width="auto" /> */}
@@ -468,11 +472,13 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                                     : URL.createObjectURL(images.logo)
                                 }
                                 className={classes.logoPhoto}
+                                onClick={handleChangeStoreLogoButton}
                               ></img>
 
                               <IconButton
                                 aria-label="upload"
                                 className={classes.uploadIcon}
+                                sx={{ display: images.logo ? 'none' : 'block' }}
                                 onClick={handleChangeStoreLogoButton}
                               >
                                 {/* <img src="assets/img/camera.png" width="auto" /> */}
