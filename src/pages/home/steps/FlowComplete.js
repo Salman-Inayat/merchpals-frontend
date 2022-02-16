@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Stack, Box, Typography, Button, TextField } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PhoneFrame from '../../../assets/images/StoreGeneratedPAGE1.png';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import { useNavigate } from 'react-router-dom';
-
+import Confetti from 'react-confetti';
 const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
@@ -40,10 +40,16 @@ const useStyles = makeStyles(theme => ({
 function FlowComplete({ storeURL }) {
   const classes = useStyles();
   const [copied, setCopied] = useState(false);
+  const [confettiRun, setConfettiRun] = useState(true);
   const navigate = useNavigate();
 
   console.log('storeURL', storeURL);
-
+  useEffect(() => {
+    setTimeout(() => {
+      setConfettiRun(false);
+    }, 3000);
+  }, []);
+  console.log('conetti', confettiRun);
   const copyToClipboard = text => {
     const el = document.createElement('textarea');
     el.value = text;
@@ -106,6 +112,7 @@ function FlowComplete({ storeURL }) {
           </Stack>
         </Grid>
       </Grid>
+      <Confetti numberOfPieces={confettiRun ? 500 : 0} />
     </div>
   );
 }

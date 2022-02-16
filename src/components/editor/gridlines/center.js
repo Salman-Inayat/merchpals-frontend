@@ -9,8 +9,8 @@ export const initCenteringGuidelines = (canvas, mobile) => {
   if (mobile) {
     var canvasWidth = 225,
       canvasHeight = 225,
-      canvasWidthCenter = 112.5;
-    canvasHeightCenter = 112.5;
+      canvasWidthCenter = canvasWidth / 2;
+    canvasHeightCenter = canvasHeight / 2;
   } else {
     var canvasWidth = 450,
       canvasHeight = 450,

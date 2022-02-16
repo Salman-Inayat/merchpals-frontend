@@ -11,12 +11,12 @@ import {
   Box,
   Tooltip,
   IconButton,
+  Stack,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
 import { addToCart, getCart } from '../../../../store/redux/actions/cart';
-
 
 const useStyles = makeStyles(theme => ({
   accordian: {
@@ -37,8 +37,23 @@ const useStyles = makeStyles(theme => ({
       height: '100px',
     },
   },
+
   removeBtn: {
     color: '#908687',
+    textTransform: 'none',
+    borderBottom: '2px solid transparent',
+    borderRadius: '0px',
+    padding: '8px 0px',
+    height: '20px',
+    marginBottom: '6px',
+    transition: theme.transitions.create(['border-bottom'], {
+      duration: 500,
+    }),
+    '&:hover': {
+      textDecoration: 'none',
+      backgroundColor: 'transparent',
+      borderBottom: '2px solid black',
+    },
   },
   text: {
     color: '#7B7C78',
@@ -154,16 +169,16 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
   };
 
   return (
-    <Grid item>
-      <Accordion defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}>
-          <Typography className={classes.heading}>In your bag</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {products.map(product =>
-            product.productMappings.map((variant, i) => (
-              <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
-                <Grid xs={4} item className={classes.imageCard}>
+    <Accordion defaultExpanded>
+      <AccordionSummary expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}>
+        <Typography className={classes.heading}>In your bag</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        {products.map(product =>
+          product.productMappings.map((variant, i) => (
+            <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
+              <Grid item xs={9} container>
+                <Stack className={classes.imageCard}>
                   <Avatar
                     className={classes.avatar}
                     style={{ backgroundColor: variant.color === 'n/a' ? '#fff' : variant.color }}
@@ -171,16 +186,14 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     variant="square"
                   />
                   <Avatar className={classes.design} src={variant.design} variant="square" />
-                </Grid>
-                <Grid spacing={1} direction="column" container xs={5} item>
-                  <Grid className={classes.text} item>
-                    {' '}
-                    Style: {product.name}{' '}
-                  </Grid>
-                  <Grid className={classes.text} item>
+                </Stack>
+                <Stack direction="column" ml={{ md: 2, xs: 1 }}>
+                  <Typography className={classes.text}> Style: {product.name}</Typography>
+                  <Typography className={classes.text}>
                     {' '}
                     Size: {variant.variant.toUpperCase()}{' '}
-                  </Grid>
+                  </Typography>
+
                   <Grid item>
                     <Box>
                       <ButtonGroup size="small" aria-label="small outlined button group">
@@ -202,98 +215,99 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                       </ButtonGroup>
                     </Box>
                   </Grid>
-                </Grid>
-                <Grid xs={3} item>
-                  <Button
-                    className={classes.removeBtn}
-                    onClick={() => removeFromCart(product.vendorProduct, variant.id)}
-                  >
-                    Remove
-                  </Button>
-                </Grid>
+                </Stack>
               </Grid>
-            )),
-          )}
-          <hr className={classes.separator} />
-          <Grid container rowSpacing={1}>
-            <Grid justifyContent="space-between" item container>
-              <Grid xs={6} alignItems="center" item container>
-                <Typography className={classes.summaryText}>Sub Total</Typography>
-                <Tooltip
-                  placement="top"
-                  describeChild
-                  title="The subtotal reflects the total price of your order before including any shipping, costs, or 
+              <Grid xs={3} item display="flex" justifyContent="flex-end">
+                <Button
+                  classes={{
+                    root: classes.removeBtn,
+                  }}
+                  onClick={() => removeFromCart(product.vendorProduct, variant.id)}
+                >
+                  Remove
+                </Button>
+              </Grid>
+            </Grid>
+          )),
+        )}
+        <hr className={classes.separator} />
+        <Grid container rowSpacing={1}>
+          <Grid justifyContent="space-between" item container>
+            <Grid xs={6} alignItems="center" item container>
+              <Typography className={classes.summaryText}>Sub Total</Typography>
+              <Tooltip
+                placement="top"
+                describeChild
+                title="The subtotal reflects the total price of your order before including any shipping, costs, or 
 taxes"
-                >
-                  <IconButton className={classes.infoBtn}>
-                    <QuestionMark className={classes.infoIcon} />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid xs={6} item>
-                <Typography className={classes.summaryText} align="right">
-                  ${priceCalculation.orderActualAmount}
-                </Typography>
-              </Grid>
+              >
+                <IconButton className={classes.infoBtn}>
+                  <QuestionMark className={classes.infoIcon} />
+                </IconButton>
+              </Tooltip>
             </Grid>
-
-            <Grid justifyContent="space-between" item container>
-              <Grid xs={6} alignItems="center" item container>
-                <Typography className={classes.summaryText}>Estimated Shipping</Typography>
-                <Tooltip placement="top" describeChild title="Shipping description">
-                  <IconButton className={classes.infoBtn}>
-                    <QuestionMark className={classes.infoIcon} />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid xs={6} item>
-                <Typography className={classes.summaryText} align="right">
-                  {priceCalculation.shippingAmount === 'FREE'
-                    ? 'FREE'
-                    : `$${priceCalculation.shippingAmount}`}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid justifyContent="space-between" item container>
-              <Grid xs={6} alignItems="center" item container>
-                <Typography className={classes.summaryText}>Estimated Cost</Typography>
-                <Tooltip
-                  placement="top"
-                  describeChild
-                  title="This covers the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your 
-applicable state or local government for more information"
-                >
-                  <IconButton className={classes.infoBtn}>
-                    <QuestionMark className={classes.infoIcon} />
-                  </IconButton>
-                </Tooltip>
-              </Grid>
-              <Grid xs={2} item>
-                <Typography className={classes.summaryText} align="right">
-                  ${priceCalculation.taxAmount}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid justifyContent="space-between" item container>
-              <Typography className={classes.summaryText}>Total</Typography>
-              <Typography className={classes.totalText} align="right">
-                ${priceCalculation.amountWithTaxAndShipping}
+            <Grid xs={6} item>
+              <Typography className={classes.summaryText} align="right">
+                ${priceCalculation.orderActualAmount}
               </Typography>
             </Grid>
           </Grid>
-        </AccordionDetails>
-      </Accordion>
-    </Grid>
+
+          <Grid justifyContent="space-between" item container>
+            <Grid xs={6} alignItems="center" item container>
+              <Typography className={classes.summaryText}>Estimated Shipping</Typography>
+              <Tooltip placement="top" describeChild title="Shipping description">
+                <IconButton className={classes.infoBtn}>
+                  <QuestionMark className={classes.infoIcon} />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid xs={6} item>
+              <Typography className={classes.summaryText} align="right">
+                {priceCalculation.shippingAmount === 'FREE'
+                  ? 'FREE'
+                  : `$${priceCalculation.shippingAmount}`}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid justifyContent="space-between" item container>
+            <Grid xs={6} alignItems="center" item container>
+              <Typography className={classes.summaryText}>Estimated Cost</Typography>
+              <Tooltip
+                placement="top"
+                describeChild
+                title="This covers the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your 
+applicable state or local government for more information"
+              >
+                <IconButton className={classes.infoBtn}>
+                  <QuestionMark className={classes.infoIcon} />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid xs={2} item>
+              <Typography className={classes.summaryText} align="right">
+                ${priceCalculation.taxAmount}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid justifyContent="space-between" item container>
+            <Typography className={classes.summaryText}>Total</Typography>
+            <Typography className={classes.totalText} align="right">
+              ${priceCalculation.amountWithTaxAndShipping}
+            </Typography>
+          </Grid>
+        </Grid>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 
 const mapDispatch = dispatch => ({
   addToCart: (store, products) => dispatch(addToCart(store, products)),
-})
+});
 
 const mapState = state => ({
-  reduxCartProducts: state.cart.cart.products
-})
+  reduxCartProducts: state.cart.cart.products,
+});
 
-
-export default connect(mapState, mapDispatch)(Customer)
+export default connect(mapState, mapDispatch)(Customer);

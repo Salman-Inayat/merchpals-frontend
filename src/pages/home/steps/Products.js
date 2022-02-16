@@ -8,11 +8,15 @@ import { getSelectedVariants, updateSelectedVariants } from '../../../store/redu
 
 const useStyles = makeStyles(theme => ({
   footer: {
-    // backgroundColor: '#babdb3',
     maxWidth: '100%',
-    // position: 'fixed',
-    bottom: '0',
+
     padding: '10px 0px',
+    [theme.breakpoints.down('sm')]: {
+      position: 'fixed',
+      bottom: '0',
+      backgroundColor: '#babdb3',
+      opacity: 0.7,
+    },
   },
   btn: {
     color: '#fff',
@@ -32,9 +36,23 @@ const useStyles = makeStyles(theme => ({
     },
   },
   productsContainer: {
-    padding: '2rem 10rem',
+    padding: '0 22%',
     [theme.breakpoints.down('sm')]: {
       padding: '0.2rem',
+    },
+  },
+  ProductCard: {
+    padding: '2% 4% 0px 4%',
+    // [theme.breakpoints.up('xl')]: {
+    //   padding: '20px 5rem',
+    // },
+    [theme.breakpoints.down('sm')]: {
+      padding: '20px 1% 0px 1%',
+    },
+  },
+  smallScreen: {
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '15%',
     },
   },
 }));
@@ -153,28 +171,34 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
 
   console.log({ selectedVariants });
   return (
-    <Grid container>
-      <Grid container justifyContent="center" alignItems="center" mt={5} pb={2}>
-        <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start" spacing={3}>
-          <Grid item md={12} sm={12} xs={12}>
-            <Typography align="center" variant="h3" style={{ color: '#000', fontFamily: 'Roboto' }}>
-              Save Your Merch
-            </Typography>
-          </Grid>
-          <Grid container spacing={isMobile ? 1 : 14} className={classes.productsContainer}>
-            {products.map((product, i) => (
-              <Grid item md={4} mt={5} xs={6} key={`product-${i}`}>
-                <ProductCard
-                  product={product}
-                  designName={designName}
-                  onVariantClick={onVariantClick}
-                  onProductClick={onProductClick}
-                  selectedVariants={selectedVariants}
-                  unselectProducts={unselectProducts}
-                  unselectProductId={unselectProductId}
-                />
-              </Grid>
-            ))}
+    <>
+      <Grid container className={classes.smallScreen}>
+        <Grid container justifyContent="center" alignItems="center">
+          <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start" spacing={3}>
+            <Grid item md={12} sm={12} xs={12}>
+              <Typography
+                align="center"
+                variant="h3"
+                style={{ color: '#000', fontFamily: 'Roboto' }}
+              >
+                Save Your Merch
+              </Typography>
+            </Grid>
+            <Grid item md={12} container className={classes.productsContainer}>
+              {products.map((product, i) => (
+                <Grid item md={4} xs={6} key={`product-${i}`} className={classes.ProductCard}>
+                  <ProductCard
+                    product={product}
+                    designName={designName}
+                    onVariantClick={onVariantClick}
+                    onProductClick={onProductClick}
+                    selectedVariants={selectedVariants}
+                    unselectProducts={unselectProducts}
+                    unselectProductId={unselectProductId}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -198,7 +222,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
           Save &#38; Continue
         </Button>
       </Grid>
-    </Grid>
+    </>
   );
 };
 

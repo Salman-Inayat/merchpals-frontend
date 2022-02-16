@@ -69,6 +69,7 @@ const OtpVerification = ({
   const theme = useTheme();
 
   const [otp, setOtp] = useState();
+  const [countOtp, setCountOtp] = useState(0);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [toggleWrongPhoneNo, setToggleWrongPhoneNo] = useState(false);
@@ -109,6 +110,14 @@ const OtpVerification = ({
       clearError();
     }
   }, [otpSent, sendingError]);
+
+  useEffect(() => {
+    if (otp) {
+      if (otp.length === 4) {
+        handleSubmit();
+      }
+    }
+  }, [otp]);
 
   const handleSubmit = () => {
     const phoneNo = localStorage.getItem('phoneNoForOTP');

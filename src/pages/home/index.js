@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
 
-const useStyle = makeStyles(() => ({
+const useStyle = makeStyles(theme => ({
   fluid: {
     maxWidth: '100%',
     paddingLeft: '0px',
@@ -33,18 +33,29 @@ const useStyle = makeStyles(() => ({
     color: 'red',
   },
   backArrow: {
-    position: 'absolute',
-    left: '20px',
-    backgroundColor: 'black',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: 'black',
-      color: 'white',
+    // position: 'absolute',
+    // left: '20px',
+    marginLeft: '10%',
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: '15%',
     },
   },
   svg: {
-    width: '0.5em',
-    height: '0.5em',
+    width: '0.7em',
+    height: '0.7em',
+    color: '#116DFF',
+  },
+  logo: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
+    },
+  },
+  muistep: {
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft: '0px !important',
+    },
   },
 }));
 const Home = () => {
@@ -163,25 +174,23 @@ const Home = () => {
   return (
     <Container className={classes.fluid}>
       <Grid className={classes.header} justifyContent="space-between" alignItems="center" container>
-        <Grid xs={4} item>
-          <Grid alignItems="center" container>
-            {step > 0 && (
-              <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
-                <ArrowBackIosIcon className={classes.svg} />
-              </IconButton>
-            )}
-          </Grid>
+        <Grid xs={1} md={1} sm={1} item alignItems="center">
+          {step > 0 && (
+            <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
+              <ArrowBackIosIcon className={classes.svg} />
+            </IconButton>
+          )}
         </Grid>
-        <Grid xs={4} item>
-          <Grid justifyContent="center" alignItems="center" container>
-            <Avatar src={Logo} className={classes.avatar} />
-          </Grid>
+        <Grid xs={6} md={7} sm={6} item className={classes.logo}>
+          {/* <Grid justifyContent="center" alignItems="center" container> */}
+          <Avatar src={Logo} className={classes.avatar} />
+          {/* </Grid> */}
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={5} md={4} sm={5}>
           <Stepper activeStep={step}>
             {[1, 2, 3, 4].map(label => (
-              <Step key={label}>
+              <Step key={label} className={classes.muistep}>
                 <StepLabel />
               </Step>
             ))}

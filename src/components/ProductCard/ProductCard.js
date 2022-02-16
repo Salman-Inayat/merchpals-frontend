@@ -45,12 +45,8 @@ const useStyles = makeStyles(theme => ({
     top: '45%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    height: '100px',
-    width: '100px',
-    [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
-    },
+    height: '35%',
+    width: '35%',
   },
   absolute: {
     position: 'absolute',
@@ -92,43 +88,43 @@ const useStyles = makeStyles(theme => ({
   },
 
   poster: {
-    height: '150px',
-    width: '150px',
+    height: '57%',
+    width: '57%',
     borderRadius: '5px',
     top: '50%',
 
-    [theme.breakpoints.down('sm')]: {
-      height: '105px',
-      width: '105px',
-    },
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '105px',
+    //   width: '105px',
+    // },
   },
   phoneCase: {
-    height: '80px',
-    width: '80px',
     top: '50%',
-    [theme.breakpoints.down('sm')]: {
-      height: '50px',
-      width: '50px',
-      top: '52%',
-    },
+    width: '31%',
+    height: '29%',
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '50px',
+    //   width: '50px',
+    //   top: '52%',
+    // },
   },
   mug: {
-    height: '90px',
-    width: '90px',
+    height: '30%',
+    width: '30%',
     top: '55%',
     left: '52%',
-    [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
-    },
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '60px',
+    //   width: '60px',
+    // },
   },
   productImage: {},
   checkboxContainer: {
     position: 'absolute',
-    top: '10px',
-    right: '10px',
+    top: '0px',
+    right: '5px',
     [theme.breakpoints.down('sm')]: {
-      top: '10px',
+      top: '0px',
       right: '5px',
     },
   },
@@ -150,25 +146,31 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '50%',
     width: '100%',
     height: '100%',
-    display: 'flex',
+    display: 'grid',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '2px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '3px 13px',
+    },
   },
 
   largeRadioBox: {
     borderRadius: '50%',
-    width: '42px',
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '4px 0px',
+    padding: '3px',
   },
 
   radioButton: {
-    height: '30px',
-    width: '30px',
+    height: '20px',
+    width: '20px',
+    [theme.breakpoints.down('lg')]: {
+      width: '30px',
+      height: '30px',
+    },
     [theme.breakpoints.down('sm')]: {
       width: '20px',
       height: '20px',
@@ -240,6 +242,9 @@ const ProductCard = ({
             value={product._id}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<CheckCircleIcon />}
+            style={{
+              color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
+            }}
           />
         </Box>
 
@@ -260,7 +265,7 @@ const ProductCard = ({
                 ? classes.poster
                 : product.name === 'Case'
                 ? classes.phoneCase
-                : product.name === 'white glossy mug'
+                : product.name === 'Mug'
                 ? classes.mug
                 : '',
             ].join(' ')}
@@ -288,14 +293,22 @@ const ProductCard = ({
                       <Box
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
-                            ? '2px solid #116dff'
+                            ? '2px solid #116DFF'
+                            : pm.label === 'white'
+                            ? '1px solid #00000066'
                             : '',
+                          // border: selectedVariants[product._id]?.includes(pm.id)
+                          //   ? pm.label === 'white'
+                          //     ? ''
+                          //     : '2px solid #116DFF'
+                          //   : '',
                         }}
                         className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
                       >
                         <Radio
                           style={{
                             backgroundColor: `${pm.label}`,
+                            border: pm.label === 'white' ? '1px solid #00000066' : '',
                           }}
                           value={pm.label}
                           sx={{

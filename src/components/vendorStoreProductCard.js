@@ -130,7 +130,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${color} Colors`}
+          {color > 1 ? `${color} colors` : `${color} color`}
         </Typography>
         <Typography gutterBottom align="center" variant="h5" component="div">
           {`$${product.price}`}
