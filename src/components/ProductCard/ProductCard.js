@@ -294,6 +294,8 @@ const ProductCard = ({
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
                             ? '2px solid #116DFF'
+                            : pm.label === 'white'
+                            ? '1px solid #00000066'
                             : '',
                           // border: selectedVariants[product._id]?.includes(pm.id)
                           //   ? pm.label === 'white'
