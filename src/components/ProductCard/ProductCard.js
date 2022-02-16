@@ -146,25 +146,31 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '50%',
     width: '100%',
     height: '100%',
-    display: 'flex',
+    display: 'grid',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '2px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '3px 13px',
+    },
   },
 
   largeRadioBox: {
     borderRadius: '50%',
-    width: '42px',
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '4px 0px',
+    padding: '3px',
   },
 
   radioButton: {
-    height: '30px',
-    width: '30px',
+    height: '20px',
+    width: '20px',
+    [theme.breakpoints.down('lg')]: {
+      width: '30px',
+      height: '30px',
+    },
     [theme.breakpoints.down('sm')]: {
       width: '20px',
       height: '20px',
@@ -284,7 +290,7 @@ const ProductCard = ({
                   product.colors.label !== 'n/a' &&
                   product.colors.map((pm, i) => (
                     <Grid key={`colors-${i}`} item md={2} xs={2}>
-                      {/* <Box
+                      <Box
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
                             ? '2px solid #116DFF'
@@ -296,27 +302,23 @@ const ProductCard = ({
                           //   : '',
                         }}
                         className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
-                      > */}
-                      <Radio
-                        style={{
-                          backgroundColor: `${pm.label}`,
-                          border: selectedVariants[product._id]?.includes(pm.id)
-                            ? '2px solid #116DFF'
-                            : pm.label === 'white'
-                            ? '1px solid #00000066'
-                            : '',
-                        }}
-                        value={pm.label}
-                        sx={{
-                          color: `${pm.label}`,
-                          '&.Mui-checked': {
+                      >
+                        <Radio
+                          style={{
+                            backgroundColor: `${pm.label}`,
+                            border: pm.label === 'white' ? '1px solid #00000066' : '',
+                          }}
+                          value={pm.label}
+                          sx={{
                             color: `${pm.label}`,
-                            boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                          },
-                        }}
-                        className={classes.radioButton}
-                      />
-                      {/* </Box> */}
+                            '&.Mui-checked': {
+                              color: `${pm.label}`,
+                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                            },
+                          }}
+                          className={classes.radioButton}
+                        />
+                      </Box>
                     </Grid>
                   ))}
               </Grid>

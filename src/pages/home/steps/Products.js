@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
       position: 'fixed',
       bottom: '0',
       backgroundColor: '#babdb3',
+      opacity: 0.7,
     },
   },
   btn: {

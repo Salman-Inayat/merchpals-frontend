@@ -41,8 +41,8 @@ const useStyle = makeStyles(theme => ({
     },
   },
   svg: {
-    width: '1em',
-    height: '1em',
+    width: '0.7em',
+    height: '0.7em',
     color: '#116DFF',
   },
   logo: {
