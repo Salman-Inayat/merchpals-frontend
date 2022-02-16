@@ -124,6 +124,7 @@ const useEditor = canvasId => {
 
     if (canvasJSON) {
       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
+        canvasProperties.canvasFill = canvas.backgroundColor;
         afterRender();
         canvas.on({
           'selection:created': function () {
@@ -1164,13 +1165,13 @@ const useEditor = canvasId => {
       var mult1 = 3600 / 225;
       var mult2 = 2700 / 225;
       var mult3 = 1050 / 225;
-      var mult4 = 831 / 225;
+      var mult4 = 879 / 225;
     }
     if (!isMobile) {
       var mult1 = 3600 / 450;
       var mult2 = 2700 / 450;
       var mult3 = 1050 / 450;
-      var mult4 = 600 / 450;
+      var mult4 = 879 / 450;
     }
     formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
     formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
@@ -1185,11 +1186,12 @@ const useEditor = canvasId => {
 
     const canvas2 = document.createElement('canvas');
     const ctx2 = canvas2.getContext('2d');
-    canvas2.width = 600;
-    canvas2.height = 1830;
+    canvas2.width = 879;
+    canvas2.height = 1833;
 
-    const backgroundColor = canvasProperties.canvasFill;
-
+    const backgroundColor = canvas.backgroundColor;
+    console.log('backgroundColor', backgroundColor);
+    // ctx2.fillStyle = '#000080';
     ctx2.fillStyle = backgroundColor;
     ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
 
@@ -1223,7 +1225,7 @@ const useEditor = canvasId => {
             data: formatThree.src,
           },
           {
-            name: '600x1830',
+            name: '879x1833',
             data: formatFour.src,
           },
           {

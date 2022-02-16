@@ -240,6 +240,9 @@ const ProductCard = ({
             value={product._id}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<CheckCircleIcon />}
+            style={{
+              color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
+            }}
           />
         </Box>
 
@@ -260,7 +263,7 @@ const ProductCard = ({
                 ? classes.poster
                 : product.name === 'Case'
                 ? classes.phoneCase
-                : product.name === 'white glossy mug'
+                : product.name === 'Mug'
                 ? classes.mug
                 : '',
             ].join(' ')}
@@ -285,29 +288,40 @@ const ProductCard = ({
                   product.colors.label !== 'n/a' &&
                   product.colors.map((pm, i) => (
                     <Grid key={`colors-${i}`} item md={2} xs={2}>
-                      <Box
+                      {/* <Box
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
                             ? '2px solid #116dff'
                             : '',
+                          // border: selectedVariants[product._id]?.includes(pm.id)
+                          //   ? pm.label === 'white'
+                          //     ? ''
+                          //     : '2px solid #116dff'
+                          //   : '',
                         }}
                         className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
-                      >
-                        <Radio
-                          style={{
-                            backgroundColor: `${pm.label}`,
-                          }}
-                          value={pm.label}
-                          sx={{
+                      > */}
+                      <Radio
+                        style={{
+                          backgroundColor: `${pm.label}`,
+                          border: selectedVariants[product._id]?.includes(pm.id)
+                            ? '2px solid #116dff'
+                            : pm.label === 'white'
+                            ? '1px solid #00000066'
+                            : '',
+                        }}
+                        value={pm.label}
+                        sx={{
+                          color: `${pm.label}`,
+
+                          '&.Mui-checked': {
                             color: `${pm.label}`,
-                            '&.Mui-checked': {
-                              color: `${pm.label}`,
-                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                            },
-                          }}
-                          className={classes.radioButton}
-                        />
-                      </Box>
+                            boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                          },
+                        }}
+                        className={classes.radioButton}
+                      />
+                      {/* </Box> */}
                     </Grid>
                   ))}
               </Grid>
