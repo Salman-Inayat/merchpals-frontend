@@ -1,4 +1,6 @@
 export const baseURL = `${process.env.REACT_APP_SERVER_URL}/api/v1`;
+export const VENDOR_PROFIT_MARGIN = 0.7;
+export const MERCHPALS_PROFIT_MARGIN = 0.3;
 
 export const calculateProfit = (price, shippingCost, costPrice) => {
   return (price - shippingCost - costPrice - (0.029 * price + 0.3)) * 0.7;
@@ -6,10 +8,11 @@ export const calculateProfit = (price, shippingCost, costPrice) => {
 
 export const calculateOrderProfit = order => {
   const orderPrice = order.price;
-  const productsTotal = order.products.reduce(
-    (sum, curr) => sum + curr.vendorProduct.productId.basePrice,
-    0,
-  );
-  const profit = orderPrice - (orderPrice * 0.029 + 0.3) - productsTotal;
-  return (profit * 0.7).toFixed(2);
+  // const productsTotal = order.products.reduce(
+  //   (sum, curr) => sum + curr.vendorProduct.productId.basePrice,
+  //   0,
+  // );
+  const printfulCost = order.printfulOrderMetadata.costs.total;
+  const profit = orderPrice - (orderPrice * 0.029 + 0.3) - printfulCost;
+  return (profit * VENDOR_PROFIT_MARGIN).toFixed(2);
 };

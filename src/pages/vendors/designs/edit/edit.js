@@ -43,8 +43,8 @@ const EditDesign = () => {
 
       let form = new FormData();
       form.append('design', JSON.stringify(newDesign));
+      console.log(form._boundary);
 
-      console.log('newDesign: ', newDesign);
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
           headers: {

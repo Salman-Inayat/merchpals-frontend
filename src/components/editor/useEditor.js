@@ -124,6 +124,7 @@ const useEditor = canvasId => {
 
     if (canvasJSON) {
       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
+        canvasProperties.canvasFill = canvas.backgroundColor;
         afterRender();
         canvas.on({
           'selection:created': function () {
@@ -167,7 +168,7 @@ const useEditor = canvasId => {
       'selection:updated': e => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
-
+        document.getElementById('deleteButton').hidden = false;
         resetPanels();
         if (selectedObject.type !== 'textbox') {
           document.getElementById('textControls').hidden = true;
@@ -236,6 +237,7 @@ const useEditor = canvasId => {
       },
       'selection:created': e => {
         const selectedObject = e.target;
+        document.getElementById('deleteButton').hidden = false;
         if (selectedObject.type === 'textbox') {
           selectedObject.set({
             editable: true,
@@ -258,6 +260,7 @@ const useEditor = canvasId => {
       },
       'selection:cleared': e => {
         localStorage.setItem('clearLines', 'true');
+        document.getElementById('deleteButton').hidden = true;
         const selectedObject = e.target;
         selected = null;
         resetPanels();
@@ -448,12 +451,14 @@ const useEditor = canvasId => {
       canvas.setActiveObject(text);
       canvas.centerObject(text);
       canvas.renderAll();
+      afterRender();
     }
   };
 
   const finishTextEditing = () => {
     const activeObject = canvas.getActiveObject();
     canvas.fire('text:editing:exited');
+    afterRender();
   };
 
   const getImgPolaroid = img => {
@@ -555,6 +560,7 @@ const useEditor = canvasId => {
     var minX, minY, maxX, maxY;
 
     image = canvas.getActiveObject();
+    console.log('Image angle', image.angle);
 
     minX = image.oCoords.tl.x;
     maxX = image.oCoords.br.x;
@@ -578,6 +584,7 @@ const useEditor = canvasId => {
       top: image.aCoords.tl.y,
       width: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
       height: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+      angle: image.angle,
       hasRotatingPoint: false,
       transparentCorners: false,
       borderColor: 'black',
@@ -587,6 +594,8 @@ const useEditor = canvasId => {
       borderScaleFactor: 1.3,
       maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
       maxHeight: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+      // lockMovementX: true,
+      // lockMovementY: true,
     });
 
     mask.on('scaling', function () {
@@ -636,26 +645,33 @@ const useEditor = canvasId => {
       width: mask.getScaledWidth(),
       height: mask.getScaledHeight(),
       absolutePositioned: true,
+      angle: mask.angle,
     });
 
     // add to the current image clicpPath property
-    image.clipPath = rect;
+    // image.clipPath = rect;
 
     canvas.remove(mask);
     var cropped = new Image();
 
-    // set src value of canvas croped area as toDataURL
+    const canvasBackgroundColor = canvas.backgroundColor;
+    canvas.backgroundColor = '#ffffff00';
+
     cropped.src = canvas.toDataURL({
+      format: 'png',
       left: rect.left,
       top: rect.top,
       width: rect.width,
       height: rect.height,
     });
 
+    canvas.backgroundColor = canvasBackgroundColor;
+
     cropped.onload = function () {
       let cropped_image = new fabric.Image(cropped);
       cropped_image.left = rect.left;
       cropped_image.top = rect.top;
+      cropped_image.angle = rect.angle;
       cropped_image.setCoords();
       canvas.add(cropped_image);
       canvas.remove(image);
@@ -1159,13 +1175,13 @@ const useEditor = canvasId => {
       var mult1 = 3600 / 225;
       var mult2 = 2700 / 225;
       var mult3 = 1050 / 225;
-      var mult4 = 831 / 225;
+      var mult4 = 879 / 225;
     }
     if (!isMobile) {
       var mult1 = 3600 / 450;
       var mult2 = 2700 / 450;
       var mult3 = 1050 / 450;
-      var mult4 = 600 / 450;
+      var mult4 = 879 / 450;
     }
     formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
     formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
@@ -1180,11 +1196,12 @@ const useEditor = canvasId => {
 
     const canvas2 = document.createElement('canvas');
     const ctx2 = canvas2.getContext('2d');
-    canvas2.width = 600;
-    canvas2.height = 1830;
+    canvas2.width = 879;
+    canvas2.height = 1833;
 
-    const backgroundColor = canvasProperties.canvasFill;
-
+    const backgroundColor = canvas.backgroundColor;
+    console.log('backgroundColor', backgroundColor);
+    // ctx2.fillStyle = '#000080';
     ctx2.fillStyle = backgroundColor;
     ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
 
@@ -1200,7 +1217,6 @@ const useEditor = canvasId => {
       formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
       formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 
-      console.log('Canvas name: ', canvasName);
       design = {
         designName: canvasName === undefined ? 'default' : canvasName,
         designJson: json,
@@ -1219,7 +1235,7 @@ const useEditor = canvasId => {
             data: formatThree.src,
           },
           {
-            name: '600x1830',
+            name: '879x1833',
             data: formatFour.src,
           },
           {

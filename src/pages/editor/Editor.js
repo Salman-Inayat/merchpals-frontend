@@ -280,7 +280,7 @@ const Editor = forwardRef((props, ref) => {
       </Grid>
       <Grid item md={12} spacing={1} sm={12} xs={12} className={classes.canvasContainer}>
         <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
-          <Grid item md={2} sm={3} xs={3}>
+          <Grid item md={2} sm={2} xs={2}>
             <Smileys addPng={addPng} />
             <FontControls
               setFontColor={setFontColor}
@@ -310,8 +310,8 @@ const Editor = forwardRef((props, ref) => {
           <Grid
             item
             md={8}
-            xs={6}
-            sm={6}
+            xs={8}
+            sm={8}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -325,7 +325,7 @@ const Editor = forwardRef((props, ref) => {
               />
             </Card>
           </Grid>
-          <Grid item md={2} sm={3} xs={3}>
+          <Grid item md={2} sm={2} xs={2}>
             <ColorPallete setCanvasBackground={setCanvasBackground} />
           </Grid>
         </Grid>
@@ -421,13 +421,15 @@ const Editor = forwardRef((props, ref) => {
             >
               Redo
             </Button>
-            <Button
-              onClick={deleteSelected}
-              variant="contained"
-              className={`${classes.delete} ${classes.button}`}
-            >
-              <Delete />
-            </Button>
+            <div id="deleteButton" hidden>
+              <Button
+                onClick={deleteSelected}
+                variant="contained"
+                className={`${classes.delete} ${classes.button}`}
+              >
+                <Delete />
+              </Button>
+            </div>
           </Stack>
         </Grid>
       </Grid>
