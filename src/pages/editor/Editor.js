@@ -421,13 +421,15 @@ const Editor = forwardRef((props, ref) => {
             >
               Redo
             </Button>
-            <Button
-              onClick={deleteSelected}
-              variant="contained"
-              className={`${classes.delete} ${classes.button}`}
-            >
-              <Delete />
-            </Button>
+            <div id="deleteButton" hidden>
+              <Button
+                onClick={deleteSelected}
+                variant="contained"
+                className={`${classes.delete} ${classes.button}`}
+              >
+                <Delete />
+              </Button>
+            </div>
           </Stack>
         </Grid>
       </Grid>

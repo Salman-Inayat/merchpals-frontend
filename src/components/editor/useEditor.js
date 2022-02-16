@@ -168,7 +168,7 @@ const useEditor = canvasId => {
       'selection:updated': e => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
-
+        document.getElementById('deleteButton').hidden = false;
         resetPanels();
         if (selectedObject.type !== 'textbox') {
           document.getElementById('textControls').hidden = true;
@@ -237,6 +237,7 @@ const useEditor = canvasId => {
       },
       'selection:created': e => {
         const selectedObject = e.target;
+        document.getElementById('deleteButton').hidden = false;
         if (selectedObject.type === 'textbox') {
           selectedObject.set({
             editable: true,
@@ -259,6 +260,7 @@ const useEditor = canvasId => {
       },
       'selection:cleared': e => {
         localStorage.setItem('clearLines', 'true');
+        document.getElementById('deleteButton').hidden = true;
         const selectedObject = e.target;
         selected = null;
         resetPanels();
@@ -592,6 +594,8 @@ const useEditor = canvasId => {
       borderScaleFactor: 1.3,
       maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
       maxHeight: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+      // lockMovementX: true,
+      // lockMovementY: true,
     });
 
     mask.on('scaling', function () {
@@ -641,27 +645,33 @@ const useEditor = canvasId => {
       width: mask.getScaledWidth(),
       height: mask.getScaledHeight(),
       absolutePositioned: true,
+      angle: mask.angle,
     });
 
     // add to the current image clicpPath property
-    image.clipPath = rect;
+    // image.clipPath = rect;
 
     canvas.remove(mask);
     var cropped = new Image();
 
-    // set src value of canvas croped area as toDataURL
+    const canvasBackgroundColor = canvas.backgroundColor;
+    canvas.backgroundColor = '#ffffff00';
+
     cropped.src = canvas.toDataURL({
+      format: 'png',
       left: rect.left,
       top: rect.top,
       width: rect.width,
       height: rect.height,
     });
 
+    canvas.backgroundColor = canvasBackgroundColor;
+
     cropped.onload = function () {
       let cropped_image = new fabric.Image(cropped);
       cropped_image.left = rect.left;
       cropped_image.top = rect.top;
-      cropped_image.angle = image.angle;
+      cropped_image.angle = rect.angle;
       cropped_image.setCoords();
       canvas.add(cropped_image);
       canvas.remove(image);
