@@ -230,8 +230,6 @@ const Product = () => {
           : '';
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
-      console.log(' fetched product', fetchedProduct);
-      console.log('colr array', colorsArr);
       const formattedProduct = {
         vendorProduct: fetchedProduct.vendorProductId,
         productId: fetchedProduct._id,
@@ -250,7 +248,6 @@ const Product = () => {
         design: designUrl,
       };
 
-      console.log(formattedProduct.colors);
       setProduct(formattedProduct);
       setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);
@@ -286,9 +283,7 @@ const Product = () => {
 
     const productMapping = selectedVariant._id;
     let updatedCart = {};
-    // console.log({selectedVariant});
     const prevProduct = cartsVariants.find(v => v.vendorProduct === product.vendorProduct);
-    // console.log({prevProduct});
 
     if (prevProduct) {
       const isSameVariantAlreadySelected = prevProduct.productMappings.find(
@@ -298,7 +293,6 @@ const Product = () => {
       if (isSameVariantAlreadySelected) {
         mappings = mappings.filter(m => m.id !== selectedVariant._id);
       }
-      // console.log({ selectedVariant });
       updatedCart = {
         ...prevProduct,
         productMappings: [
@@ -353,7 +347,7 @@ const Product = () => {
     );
     setTotalNumberOfVariants(totalItems);
   };
-  
+
   const handleCartButton = () => {
     if (reduxCartProducts.length === 0) {
       setSnackBarToggle({
@@ -372,7 +366,6 @@ const Product = () => {
     });
   };
   let opacity;
-  // console.log(product);
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="center">
       <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
@@ -458,9 +451,6 @@ const Product = () => {
                           value={id}
                           control={
                             <Radio
-                              onClick={() => {
-                                console.log('radio call', id, label);
-                              }}
                               className={classes.radio}
                               sx={{
                                 '&.Mui-checked': {
@@ -540,7 +530,7 @@ const Product = () => {
                             >
                               <Typography
                                 component="h4"
-                                className={product.slug === 'case' && classes.caseSizeHeading}
+                                className={product.slug === 'case' ? classes.caseSizeHeading : null}
                               >
                                 {label.toUpperCase()}
                               </Typography>
@@ -582,10 +572,10 @@ const Product = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <List>
-                      {product.details?.map(detail => (
-                        <ListItem disablePadding>
+                      {product.details?.map((detail, index) => (
+                        <ListItem disablepadding="true" key={index}>
                           <ListItemIcon
-                            disablePadding
+                            disablepadding="true"
                             sx={{ fontSize: '10px' }}
                           >{`\u2B24`}</ListItemIcon>
                           {detail}
@@ -613,8 +603,13 @@ const Product = () => {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    {product.shippingText?.map(shippingText => (
-                      <Typography variant="body1" sx={{ fontWeight: '400 !important' }} mb={4}>
+                    {product.shippingText?.map((shippingText, index) => (
+                      <Typography
+                        key={index}
+                        variant="body1"
+                        sx={{ fontWeight: '400 !important' }}
+                        mb={4}
+                      >
                         {shippingText}
                       </Typography>
                     ))}

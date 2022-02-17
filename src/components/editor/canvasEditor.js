@@ -35,7 +35,6 @@ const CanvasEditor = _ref => {
 
     canvas.setDimensions({ width: 450, height: 450 });
 
-    console.log(canvas);
     // if (isDesktop){
 
     // }
@@ -57,7 +56,6 @@ const CanvasEditor = _ref => {
         height: containerWidth / ratio,
       });
       canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
-      console.log('Scale: ', scale, ' Zoom: ', zoom);
 
       canvas.renderAll();
     };

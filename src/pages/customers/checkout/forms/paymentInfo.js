@@ -75,12 +75,10 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
     setLoading(true);
     const cardElement = elements.getElement(CardElement);
     const { error, token } = await stripe.createToken(cardElement);
-    console.log({ token });
     placeOrder(token);
     if (!error) {
       setLoading(false);
     } else {
-      console.log(error);
       setLoading(false);
     }
   };
@@ -110,15 +108,17 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
               <CardElement options={cardOptions} />
             </Grid>
           </Grid>
-          <Grid justifyContent="center" xs={10} mt={3} container>
-            <LoadingButton
-              disabled={!completedAddress}
-              loading={loading}
-              onClick={createToken}
-              className={classes.continueBtn}
-            >
-              Place your order
-            </LoadingButton>
+          <Grid mt={3} container justifyContent="center">
+            <Grid item xs={10} display="flex" justifyContent="center">
+              <LoadingButton
+                disabled={!completedAddress}
+                loading={loading}
+                onClick={createToken}
+                className={classes.continueBtn}
+              >
+                Place your order
+              </LoadingButton>
+            </Grid>
             <Grid xs={10} mt={3} item>
               <Typography>
                 By clicking the &#39;Place Order&#39; button, you confirm that youu have read,

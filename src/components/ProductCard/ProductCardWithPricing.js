@@ -186,7 +186,6 @@ const ProductCard = ({
       const productSelectedVariants = selectedVariants[product._id];
       const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
-      // console.log({ bgColor });
     }
     return bgColor;
   };

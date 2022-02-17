@@ -291,7 +291,6 @@ const useEditor = canvasId => {
 
     canvas.on({
       'text:editing:entered': e => {
-        console.log('Editing text');
         if (e.target.type === 'textbox') {
           // if (e.target.text === 'Sample Text') {
           //   e.target.text = '';
@@ -316,7 +315,6 @@ const useEditor = canvasId => {
         });
 
         canvas.renderAll();
-        console.log('Exited editing text', activeObject);
         document.getElementById('editing-button').hidden = true;
       },
     });
@@ -560,7 +558,6 @@ const useEditor = canvasId => {
     var minX, minY, maxX, maxY;
 
     image = canvas.getActiveObject();
-    console.log('Image angle', image.angle);
 
     minX = image.oCoords.tl.x;
     maxX = image.oCoords.br.x;
@@ -1200,7 +1197,6 @@ const useEditor = canvasId => {
     canvas2.height = 1833;
 
     const backgroundColor = canvas.backgroundColor;
-    console.log('backgroundColor', backgroundColor);
     // ctx2.fillStyle = '#000080';
     ctx2.fillStyle = backgroundColor;
     ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
@@ -1249,7 +1245,6 @@ const useEditor = canvasId => {
   };
 
   const canvasReady = (canvasReady, canvasJSON, designName) => {
-    console.log('Design Name: ', designName);
     setCanvas(canvasReady);
     setCanvasName(designName);
     setCanvasJSON(canvasJSON);

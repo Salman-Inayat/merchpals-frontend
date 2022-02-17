@@ -93,7 +93,6 @@ const TransactionHistory = ({
     axios
       .get(`${baseURL}/cron-job`)
       .then(response => {
-        console.log(response);
         alert('Escrow payment released successfully');
       })
       .catch(error => {
@@ -101,12 +100,9 @@ const TransactionHistory = ({
       });
   };
 
-  console.log(vendor.transactions);
   const vendorTransaction = vendor.transactions.filter(
     transaction => transaction.status === 'succeeded',
   );
-
-  console.log(vendorTransaction);
 
   return (
     <Grid container spacing={2} className={classes.container}>
@@ -121,22 +117,11 @@ const TransactionHistory = ({
             justifyContent="flex-start"
             alignItems="center"
           >
-            <AccountCircleIcon
-              sx={{ fontSize: 60, marginRight: '10px', color: '#cfd7df' }}
-            />
-            <Stack
-              direction="column"
-              justifyContent="center"
-              alignItems="flex-start"
-            >
-              <Typography className={classes.name}>
-                {vendor.displayName}
-              </Typography>
+            <AccountCircleIcon sx={{ fontSize: 60, marginRight: '10px', color: '#cfd7df' }} />
+            <Stack direction="column" justifyContent="center" alignItems="flex-start">
+              <Typography className={classes.name}>{vendor.displayName}</Typography>
 
-              <Typography
-                onClick={handleViewStripeDashboard}
-                className={classes.buttonText}
-              >
+              <Typography onClick={handleViewStripeDashboard} className={classes.buttonText}>
                 View stripe account
               </Typography>
             </Stack>
@@ -149,11 +134,7 @@ const TransactionHistory = ({
               <Typography className={classes.balance}>
                 ${pendingBalance.pendingBalance.toFixed(2)}
               </Typography>
-              <Typography
-                variant="p"
-                component="p"
-                className={classes.lightText}
-              >
+              <Typography variant="p" component="p" className={classes.lightText}>
                 {pendingBalance.numberOfTransactions} transactions
               </Typography>
             </Stack>
@@ -163,14 +144,8 @@ const TransactionHistory = ({
               <Typography variant="p" component="p" className={classes.topText}>
                 Your Balance
               </Typography>
-              <Typography className={classes.balance}>
-                ${vendor.balance.toFixed(2)}
-              </Typography>
-              <Typography
-                variant="p"
-                component="p"
-                className={classes.lightText}
-              >
+              <Typography className={classes.balance}>${vendor.balance.toFixed(2)}</Typography>
+              <Typography variant="p" component="p" className={classes.lightText}>
                 ${vendor.balance.toFixed(2)} available
               </Typography>
             </Stack>
@@ -199,12 +174,7 @@ const TransactionHistory = ({
         </Grid>
       </Grid>
       <Grid item md={12} xs={12}>
-        <Button
-          onClick={callCronJob}
-          fullWidth
-          variant="contained"
-          color="primary"
-        >
+        <Button onClick={callCronJob} fullWidth variant="contained" color="primary">
           Testing purpose: Release Escrow payments
         </Button>
       </Grid>
@@ -215,42 +185,24 @@ const TransactionHistory = ({
             {transactionHistory.length > 0 && (
               <Grid container spacing={2}>
                 <Grid item md={12} xs={12}>
-                  <Typography className={classes.tableHeading}>
-                    Escrow Details
-                  </Typography>
+                  <Typography className={classes.tableHeading}>Escrow Details</Typography>
                 </Grid>
                 <Grid item md={12} xs={12}>
                   <Card className={classes.card}>
                     <TableContainer>
-                      <Table
-                        sx={{ minWidth: 650 }}
-                        size="small"
-                        aria-label="a dense table"
-                      >
+                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                         <TableHead>
                           <TableRow className={classes.tableRow}>
-                            <TableCell
-                              align="center"
-                              className={classes.tableColumnHeading}
-                            >
+                            <TableCell align="center" className={classes.tableColumnHeading}>
                               Date
                             </TableCell>
-                            <TableCell
-                              align="center"
-                              className={classes.tableColumnHeading}
-                            >
+                            <TableCell align="center" className={classes.tableColumnHeading}>
                               Release Date
                             </TableCell>
-                            <TableCell
-                              align="center"
-                              className={classes.tableColumnHeading}
-                            >
+                            <TableCell align="center" className={classes.tableColumnHeading}>
                               Status
                             </TableCell>
-                            <TableCell
-                              align="center"
-                              className={classes.tableColumnHeading}
-                            >
+                            <TableCell align="center" className={classes.tableColumnHeading}>
                               Amount
                             </TableCell>
                           </TableRow>
@@ -308,18 +260,12 @@ const TransactionHistory = ({
             {vendorTransaction.length > 0 && (
               <Grid container spacing={2}>
                 <Grid item md={12} xs={12}>
-                  <Typography className={classes.tableHeading}>
-                    Transaction history
-                  </Typography>
+                  <Typography className={classes.tableHeading}>Transaction history</Typography>
                 </Grid>
                 <Grid item md={12} xs={12}>
                   <Card className={classes.card}>
                     <TableContainer>
-                      <Table
-                        sx={{ minWidth: 650 }}
-                        size="small"
-                        aria-label="a dense table"
-                      >
+                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                         <TableHead>
                           <TableRow className={classes.tableRow}>
                             <TableCell align="center">Name</TableCell>

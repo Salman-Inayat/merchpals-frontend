@@ -28,7 +28,6 @@ const EditDesign = () => {
         },
       })
       .then(response => {
-        console.log('Design printing: ', response.data.design);
         setDesignData(response.data.design);
         setCanvasJSON(response.data.design.designJson);
       })
@@ -43,7 +42,6 @@ const EditDesign = () => {
 
       let form = new FormData();
       form.append('design', JSON.stringify(newDesign));
-      console.log(form._boundary);
 
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
@@ -53,7 +51,6 @@ const EditDesign = () => {
           },
         })
         .then(response => {
-          console.log(response);
           navigate('/vendor/designs');
         })
         .catch(error => console.log({ error }));

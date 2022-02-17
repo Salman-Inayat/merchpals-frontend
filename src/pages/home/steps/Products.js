@@ -156,7 +156,6 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
           [],
         );
         productMappingsIds.push(...productMappings.map(rp => rp._id));
-        console.log({ productMappingsIds });
       });
 
       return { productId, productMappings: productMappingsIds };
@@ -169,7 +168,6 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
     setUnselectProducts(!unselectProducts);
   };
 
-  console.log({ selectedVariants });
   return (
     <>
       <Grid container className={classes.smallScreen}>

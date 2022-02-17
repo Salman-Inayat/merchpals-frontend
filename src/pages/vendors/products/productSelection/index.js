@@ -23,7 +23,6 @@ const ProductSelection = ({ designName }) => {
   });
 
   const products = useSelector(state => state.product.products);
-  console.log({ products });
   useEffect(() => {
     if (!localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
       navigate('/login', { replace: true });

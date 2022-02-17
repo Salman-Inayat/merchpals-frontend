@@ -71,7 +71,6 @@ const VendorDesigns = () => {
       })
       .then(response => {
         response.data.designs.map(design => {
-          console.log('Design: ', design);
           setDesignImage(prevState => [
             ...prevState,
             { id: design._id, url: design.designImages[4].imageUrl },

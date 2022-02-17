@@ -20,16 +20,15 @@ const Cart = ({ cartProducts }) => {
   const classes = useStyle();
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-  const [store, setStore] = useState(null)
-  const [selectedProducts, setSelectedProducts] = useState([])
+  const [store, setStore] = useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const { storeUrl } = useParams();
 
   useEffect(() => {
-    const storedCart = localStorage.getItem('MERCHPALS_CART')
+    const storedCart = localStorage.getItem('MERCHPALS_CART');
     if (storedCart) {
-      const parsedCart = JSON.parse(storedCart)
-      console.log({parsedCart});
-      setSelectedProducts(parsedCart)
+      const parsedCart = JSON.parse(storedCart);
+      setSelectedProducts(parsedCart);
     }
   }, []);
 
@@ -39,16 +38,15 @@ const Cart = ({ cartProducts }) => {
 
   const total = () => {
     let totalCartPrice = 0;
-    for(let i=0; i< selectedProducts.length; i++){
+    for (let i = 0; i < selectedProducts.length; i++) {
       const product = selectedProducts[i];
       const quantities = product.productMappings.reduce((sum, cur) => sum + cur.quantity, 0);
-      // console.log({quantities});
       const productPrice = product.price * quantities;
       totalCartPrice = totalCartPrice + productPrice;
     }
 
     return totalCartPrice;
-  }
+  };
 
   const updateQuantity = (productId, variantId, op) => {
     let updatedCart = [...selectedProducts];
@@ -58,61 +56,57 @@ const Cart = ({ cartProducts }) => {
     const prevProductIndex = selectedProducts.findIndex(v => v.productId === productId);
     const prevProduct = selectedProducts[prevProductIndex];
 
-    const variantIndex = prevProduct.productMappings.findIndex(prv => prv.id === variantId)
-    const variant = {...prevProduct.productMappings[variantIndex]}
-    let mappings = [...prevProduct.productMappings]
+    const variantIndex = prevProduct.productMappings.findIndex(prv => prv.id === variantId);
+    const variant = { ...prevProduct.productMappings[variantIndex] };
+    let mappings = [...prevProduct.productMappings];
 
-
-     if (op === 'add') {
-       console.log('add - operator');
-        updatedVariant =  { 
-          ...variant,
-          quantity: variant.quantity + 1
-        }
-     } else { 
-      const newQuantity = variant.quantity - 1 > -1 ? variant.quantity - 1 : 0
-
-      updatedVariant =  { 
+    if (op === 'add') {
+      updatedVariant = {
         ...variant,
-        quantity: newQuantity
-      }
-     }
+        quantity: variant.quantity + 1,
+      };
+    } else {
+      const newQuantity = variant.quantity - 1 > -1 ? variant.quantity - 1 : 0;
+
+      updatedVariant = {
+        ...variant,
+        quantity: newQuantity,
+      };
+    }
 
     mappings.splice(variantIndex, 1, updatedVariant);
     updatedProduct = {
       ...prevProduct,
-      productMappings: mappings
+      productMappings: mappings,
     };
-    updatedCart.splice(prevProductIndex, 1, updatedProduct)
-    setSelectedProducts(updatedCart)
-    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCart))
-  }
+    updatedCart.splice(prevProductIndex, 1, updatedProduct);
+    setSelectedProducts(updatedCart);
+    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCart));
+  };
 
   const emptyCart = () => {
     localStorage.removeItem('MERCHPALS_CART');
     navigate(`/store/${storeUrl}`);
-  }
+  };
 
   const removeFromCart = (productId, variantId) => {
     let updatedCart = {};
-    
+
     const prevProduct = selectedProducts.find(v => v.productId === productId);
-    let mappings = [...prevProduct.productMappings]
-    mappings = mappings.filter(m => m.id !== variantId)
+    let mappings = [...prevProduct.productMappings];
+    mappings = mappings.filter(m => m.id !== variantId);
 
     updatedCart = {
       ...prevProduct,
-      productMappings: [
-        ...mappings, 
-      ]
-    }
+      productMappings: [...mappings],
+    };
 
-    const otherProductVariants = selectedProducts.filter(cv => cv.productId !== productId)
+    const otherProductVariants = selectedProducts.filter(cv => cv.productId !== productId);
     const updatedCartList = [updatedCart, ...otherProductVariants];
-    setSelectedProducts(updatedCartList)
-    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList))
-  }
-  
+    setSelectedProducts(updatedCartList);
+    localStorage.setItem('MERCHPALS_CART', JSON.stringify(updatedCartList));
+  };
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -132,7 +126,7 @@ const Cart = ({ cartProducts }) => {
       {selectedProducts.length > 0 ? (
         <Grid item md={12} xs={12} className={classes.productsContainer}>
           <Grid container spacing={2}>
-            {selectedProducts.map(product => (
+            {selectedProducts.map(product =>
               product.productMappings.map(variant => (
                 <Grid item md={4} xs={6} key={product.id}>
                   <CartProductCard
@@ -145,26 +139,13 @@ const Cart = ({ cartProducts }) => {
                     removeFromCart={removeFromCart}
                   />
                 </Grid>
-              ))
-            ))}
+              )),
+            )}
           </Grid>
-          <Grid
-            item
-            md={12}
-            display="flex"
-            justifyContent="space-around"
-            alignItems="center"
-          >
-            <Typography variant="h5">
-              Total: $
-              {total()}
-            </Typography>
+          <Grid item md={12} display="flex" justifyContent="space-around" alignItems="center">
+            <Typography variant="h5">Total: ${total()}</Typography>
 
-            <Button
-              onClick={handleCheckout}
-              variant="contained"
-              color="secondary"
-            >
+            <Button onClick={handleCheckout} variant="contained" color="secondary">
               Checkout
             </Button>
           </Grid>

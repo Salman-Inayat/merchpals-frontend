@@ -77,7 +77,6 @@ const Dashboard = () => {
         },
       })
       .then(response => {
-        console.log({ store: response.data.store });
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         // setStore(store);

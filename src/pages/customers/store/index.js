@@ -89,8 +89,6 @@ const Store = ({ fetchStore, store }) => {
 
   useEffect(() => {
     if (store) {
-      console.log('from use effect');
-      console.log('from setting theme');
       themeColor = store.themeColor;
       const tmpthemeClass = ThemeCustomise(themeClasses, themeColor);
       const tmpthemeColorClass = ThemeColorCustomise(themeClasses, themeColor);
@@ -110,6 +108,7 @@ const Store = ({ fetchStore, store }) => {
   const handleCartButton = () => {
     navigate(`/cart/${storeUrl}`);
   };
+
   return store ? (
     <Grid container spacing={3} className={themeClass}>
       <Grid item container md={12} xs={12} alignItems="center" className={classes.topBar}>
@@ -144,9 +143,9 @@ const Store = ({ fetchStore, store }) => {
           spacing={isMobile ? 1 : 10}
           className={`${themeClass} ${classes.productsContainer}`}
         >
-          {store.vendorProductIds?.map(product => {
+          {store.vendorProductIds?.map((product, index) => {
             return (
-              <Grid item md={4} xs={6}>
+              <Grid item md={4} xs={6} key={index}>
                 <StoreProductCard product={product} storeName={store.name} storeUrl={storeUrl} />
               </Grid>
             );

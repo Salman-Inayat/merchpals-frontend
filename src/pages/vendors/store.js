@@ -119,7 +119,6 @@ const VendorStore = () => {
         },
       })
       .then(response => {
-        // console.log('sotre ', { store: response.data.store });
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         setStore(store);

@@ -80,7 +80,6 @@ const OtpVerification = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Setting Phone No: ', `${phoneNo}`);
     setOldPhoneNo(`${phoneNo}`);
   }, [phoneNo]);
 
@@ -162,7 +161,6 @@ const OtpVerification = ({
       axios
         .post(`${baseURL}/auth/send-otp-with-new-phone-no`, data)
         .then(res => {
-          console.log(res);
           setToggleWrongPhoneNo(false);
           setPhoneError('');
           setOldPhoneNo(`+${phoneNo}`);

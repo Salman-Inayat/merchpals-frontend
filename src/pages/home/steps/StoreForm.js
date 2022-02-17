@@ -268,7 +268,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       data.themeColor = themeColor;
     }
     createStore({ ...data, ...images });
-    // console.log(images);
   };
 
   const onError = err => {
@@ -283,25 +282,21 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
   //   axios
   //     .post(`${baseURL}/store/validate-slug`, { storeName })
   //     .then(response => {
-  //       console.log({ response });
   //       setSlugMessage('');
   //       setLoading(false);
   //     })
   //     .catch(err => {
   //       setLoading(false);
-  //       console.log({ errp: err.response.data });
   //       setSlugMessage(err.response.data.message);
   //     });
   //   // axios
   //   //   .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
   //   //   .then(response => {
-  //   //     console.log({ response });
   //   //     setSlugMessage('');
   //   //     setLoading(false);
   //   //   })
   //   //   .catch(err => {
   //   //     setLoading(false);
-  //   //     console.log({ errp: err.response.data });
   //   //     setSlugMessage(err.response.data.message);
   //   //   });
   // };
@@ -338,13 +333,11 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       axios
         .post(`${baseURL}/store/validate-slug`, { storeName: name })
         .then(response => {
-          console.log({ response });
           setSlugMessage('');
           setLoading(false);
         })
         .catch(err => {
           setLoading(false);
-          console.log({ errp: err.response.data });
           setSlugMessage(err.response.data.message);
         });
     }, 500);
@@ -376,7 +369,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       <Grid item md={12} xs={12} className={classes.formContainer}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <Stack spacing={3} className={classes.form}>
-
             <Grid container>
               <Grid item md={6} xs={12}>
                 <Grid container justifyContent="center" alignItems="center" spacing={3}>
@@ -462,33 +454,30 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                               </Box>
                             </Modal>
                             <Box className={classes.logoContainer}>
-                              <img
-                                src={
-                                  images.logo === ''
-                                    ? 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
-                                    : URL.createObjectURL(images.logo)
-                                }
-                                className={classes.logoPhoto}
-                                onClick={handleChangeStoreLogoButton}
-                              ></img>
-
-                              <IconButton
-                                aria-label="upload"
-                                className={classes.uploadIcon}
-                                sx={{ display: images.logo ? 'none' : 'block' }}
-                                onClick={handleChangeStoreLogoButton}
-                              >
-                                {/* <img src="assets/img/camera.png" width="auto" /> */}
-                                <CameraAltIcon
-                                  sx={{
-                                    borderRadius: '50%',
-                                    backgroundColor: '#2C9BF4',
-                                    color: '#fff',
-                                    padding: '5px',
-                                    fontSize: '2rem',
-                                  }}
+                              {images.logo ? (
+                                <img
+                                  src={images.logo && URL.createObjectURL(images.logo)}
+                                  className={classes.logoPhoto}
+                                  onClick={handleChangeStoreLogoButton}
                                 />
-                              </IconButton>
+                              ) : (
+                                <IconButton
+                                  aria-label="upload"
+                                  className={classes.uploadIcon}
+                                  sx={{ display: images.logo ? 'none' : 'block' }}
+                                  onClick={handleChangeStoreLogoButton}
+                                >
+                                  <CameraAltIcon
+                                    sx={{
+                                      borderRadius: '50%',
+                                      backgroundColor: '#2C9BF4',
+                                      color: '#fff',
+                                      padding: '13px',
+                                      fontSize: '5rem',
+                                    }}
+                                  />
+                                </IconButton>
+                              )}
                             </Box>
                             <Modal
                               open={openAvatarModal}

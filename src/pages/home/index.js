@@ -124,7 +124,6 @@ const Home = () => {
         },
       })
       .then(response => {
-        console.log({ createstore: response });
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
@@ -132,7 +131,6 @@ const Home = () => {
         setShowWelcomeMessage(true);
       })
       .catch(err => {
-        console.log('err', err);
         setCreateStoreError(true);
       });
   };

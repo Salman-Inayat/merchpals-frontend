@@ -135,7 +135,6 @@ const Checkout = ({
   };
 
   useEffect(() => {
-    console.log('billing', billingAddress);
     const { zip, state, country } = billingAddress;
     if (zip?.length === 5 && country && state) {
       updateTaxAndShipping();
@@ -176,7 +175,6 @@ const Checkout = ({
       },
       items,
     };
-    console.log({ data });
     if (items.length > 0) {
       setPrintfulData(data);
       getPriceCalculation(data);
@@ -231,7 +229,6 @@ const Checkout = ({
     };
 
     setCustomer(data.customer);
-    console.log({ data });
 
     createOrder(data);
   };

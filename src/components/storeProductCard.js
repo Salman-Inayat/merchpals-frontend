@@ -87,7 +87,6 @@ const useStyles = makeStyles(theme => ({
 const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  console.log(product);
   const [color, setColor] = useState();
   const exploreProduct = () => {
     navigate({

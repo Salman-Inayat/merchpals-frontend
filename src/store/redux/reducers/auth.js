@@ -122,7 +122,6 @@ const authReducer = (state = initialState, action) => {
       localStorage.removeItem('MERCHPAL_AUTH_TOKEN');
       return { ...state, isLoggedOut: true, isLoggedIn: false };
     case GET_LOGGED_IN_USER_INFO_SUCCESS:
-      console.log({ payload: action });
       return { ...state, user: action.payload };
     case AUTH_LOGOUT_CLEAR:
       return { ...state, isLoggedOut: false };

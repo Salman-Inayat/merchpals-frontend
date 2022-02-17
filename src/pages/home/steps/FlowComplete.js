@@ -43,13 +43,11 @@ function FlowComplete({ storeURL }) {
   const [confettiRun, setConfettiRun] = useState(true);
   const navigate = useNavigate();
 
-  console.log('storeURL', storeURL);
   useEffect(() => {
     setTimeout(() => {
       setConfettiRun(false);
     }, 3000);
   }, []);
-  console.log('conetti', confettiRun);
   const copyToClipboard = text => {
     const el = document.createElement('textarea');
     el.value = text;
@@ -83,15 +81,13 @@ function FlowComplete({ storeURL }) {
                   readOnly: true,
                   endAdornment: (
                     <Box>
-                        <Button
-                          color="primary"
-                          variant='contained'
-                          onClick={() =>
-                            copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)
-                          }
-                        >
-                          <ContentCopyIcon color="white" />
-                        </Button>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)}
+                      >
+                        <ContentCopyIcon color="white" />
+                      </Button>
                     </Box>
                   ),
                 }}

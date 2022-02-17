@@ -75,7 +75,7 @@ function VendorOrderDetails() {
       })
       .then(res => {
         const orderData = res.data.order;
-        console.log({ orderData });
+
         setOrder(orderData);
 
         const profit = calculateOrderProfit(orderData);

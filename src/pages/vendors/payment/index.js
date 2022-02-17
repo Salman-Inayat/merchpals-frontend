@@ -45,7 +45,6 @@ const PaymentOnboarding = () => {
       })
       .then(response => {
         handleClose();
-        console.log(response.data.account.id);
 
         if (response.data.account.id) {
           setHasStripeAcc(true);
@@ -76,16 +75,13 @@ const PaymentOnboarding = () => {
           type: 'success',
           message: 'Payout processed successfully',
         });
-        console.log({ payoutResponse: response });
       })
       .catch(error => {
         setSnackBarToggle({
           visible: true,
           type: 'error',
-          message:
-            'Please complete your account setup by going to your stripe account',
+          message: 'Please complete your account setup by going to your stripe account',
         });
-        console.log(error.message);
       });
   };
 
@@ -194,11 +190,7 @@ const PaymentOnboarding = () => {
         <Payout handleOnboarding={handleOnboarding} />
       )}
 
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={5000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={5000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
       <Backdrop

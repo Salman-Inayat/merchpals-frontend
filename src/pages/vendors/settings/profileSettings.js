@@ -74,11 +74,9 @@ function ProfileSettings() {
         },
       })
       .then(res => {
-        console.log(res.data);
         if (res.data.isPasswordmatched == true) {
           setToggleChangePassword(true);
         } else {
-          console.log('password not matched');
           setPasswordError('Password entered is incorrect');
         }
       })

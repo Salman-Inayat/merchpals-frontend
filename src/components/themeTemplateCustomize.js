@@ -1,8 +1,4 @@
-import {
-  ThemeProvider,
-  createTheme,
-  StyledEngineProvider,
-} from '@mui/material/styles';
+import { ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import palette from '../theme/palette';
@@ -125,6 +121,5 @@ export default function ThemeTemplateCustomise({ children, colors }) {
   }, [colors]);
   const theme = createTheme(themeOptions);
   theme.components = ComponentsOverrides(theme);
-  console.log('theme', theme);
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }
