@@ -122,8 +122,8 @@ const VendorDesigns = () => {
         </Grid>
         <Grid item md={12}>
           <Grid container spacing={isMobile ? 2 : 4}>
-            {designs.map(design => (
-              <Grid item md={3} xs={6}>
+            {designs.map((design, index) => (
+              <Grid item md={3} xs={6} key={index}>
                 <Card className={classes.card}>
                   {designImage.length > 0 && (
                     <CardMedia

@@ -165,37 +165,32 @@ function StoreSettings() {
   };
 
   const handleUpdateStore = () => {
-    console.log('Store name: ', storeName);
-    console.log('Store avatar: ', images.coverAvatar);
-    console.log('Store logo: ', images.logo);
-    console.log('Store theme color: ', themeColor);
+    console.log('Store Id: ', storeId);
+    const store = new FormData();
+    store.append('storeId', storeId);
+    store.append('name', storeName);
+    store.append('coverAvatar', images.coverAvatar);
+    store.append('logo', images.logo);
+    store.append('themeColor', themeColor);
 
-    // console.log('Store Id: ', storeId);
-    // const store = new FormData();
-    // store.append('storeId', storeId);
-    // store.append('name', storeName);
-    // store.append('coverAvatar', images.coverAvatar);
-    // store.append('logo', images.logo);
-    // store.append('themeColor', themeColor);
-
-    // axios
-    //   .put(`${baseURL}/store/update-store-data`, store, {
-    //     headers: {
-    //       Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   })
-    //   .then(res => {
-    //     console.log(res.data);
-    //     setSnackBarToggle({
-    //       visible: true,
-    //       type: 'success',
-    //       message: 'Store updated successfully',
-    //     });
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    axios
+      .put(`${baseURL}/store/update-store-data`, store, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(res => {
+        console.log(res.data);
+        setSnackBarToggle({
+          visible: true,
+          type: 'success',
+          message: 'Store updated successfully',
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   const handleSnackBarClose = () =>

@@ -278,7 +278,7 @@ const Editor = forwardRef((props, ref) => {
           Create Your Design
         </Typography>
       </Grid>
-      <Grid item md={12} spacing={1} sm={12} xs={12} className={classes.canvasContainer}>
+      <Grid item md={12} sm={12} xs={12} className={classes.canvasContainer}>
         <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
           <Grid item md={2} sm={2} xs={2}>
             <Smileys addPng={addPng} />
@@ -331,7 +331,7 @@ const Editor = forwardRef((props, ref) => {
         </Grid>
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
-        <Grid container md={12} sm={12} xs={12} spacing={1} className={classes.controlsContainer}>
+        <Grid container spacing={1} className={classes.controlsContainer}>
           <Stack
             direction="column"
             spacing={3}
@@ -421,13 +421,13 @@ const Editor = forwardRef((props, ref) => {
             >
               Redo
             </Button>
-              <Button
-                onClick={deleteSelected}
-                variant="contained"
-                className={`${classes.delete} ${classes.button}`}
-              >
-                <Delete />
-              </Button>
+            <Button
+              onClick={deleteSelected}
+              variant="contained"
+              className={`${classes.delete} ${classes.button}`}
+            >
+              <Delete />
+            </Button>
           </Stack>
         </Grid>
       </Grid>

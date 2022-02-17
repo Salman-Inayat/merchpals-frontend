@@ -118,6 +118,7 @@ const authReducer = (state = initialState, action) => {
       };
     case AUTH_LOGOUT:
     case AUTH_LOGIN_FAILED:
+      return { ...state, isLoggedIn: false, error: action.payload };
     case GET_LOGGED_IN_USER_INFO_FAILED:
       localStorage.removeItem('MERCHPAL_AUTH_TOKEN');
       return { ...state, isLoggedOut: true, isLoggedIn: false };

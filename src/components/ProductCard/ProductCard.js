@@ -293,7 +293,7 @@ const ProductCard = ({
               value={radioCardColor}
               onChange={handleRadioCardChange}
               row
-              classname={classes.radioGroup}
+              className={classes.radioGroup}
             >
               <Grid justifyContent="center" spacing={1} container>
                 {product.colors.length !== 1 &&
@@ -315,26 +315,26 @@ const ProductCard = ({
                         }}
                         className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
                       >
-                      <Radio
-                        style={{
-                          backgroundColor: `${pm.label}`,
-                          border: selectedVariants[product._id]?.includes(pm.id)
-                            ? '2px solid #116dff'
-                            : pm.label === 'white'
-                            ? '1px solid #00000066'
-                            : '',
-                        }}
-                        value={pm.label}
-                        sx={{
-                          color: `${pm.label}`,
-
-                          '&.Mui-checked': {
+                        <Radio
+                          style={{
+                            backgroundColor: `${pm.label}`,
+                            border: selectedVariants[product._id]?.includes(pm.id)
+                              ? '2px solid #116dff'
+                              : pm.label === 'white'
+                              ? '1px solid #00000066'
+                              : '',
+                          }}
+                          value={pm.label}
+                          sx={{
                             color: `${pm.label}`,
-                            boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                          },
-                        }}
-                        className={classes.radioButton}
-                      />
+
+                            '&.Mui-checked': {
+                              color: `${pm.label}`,
+                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                            },
+                          }}
+                          className={classes.radioButton}
+                        />
                       </Box>
                     </Grid>
                   ))}
