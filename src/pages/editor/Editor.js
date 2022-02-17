@@ -6,15 +6,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import {
-  Button,
-  Card,
-  Grid,
-  Stack,
-  Typography,
-  Input,
-  Avatar,
-} from '@mui/material';
+import { Button, Card, Grid, Stack, Typography, Input, Avatar } from '@mui/material';
 import { fabric } from 'fabric';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
@@ -37,8 +29,6 @@ const useStyles = makeStyles(theme => ({
     },
   },
   controlsContainer: {
-    // padding: '0rem 6rem',
-    // order: 2,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -64,13 +54,16 @@ const useStyles = makeStyles(theme => ({
   },
   buttonContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
+    padding: '0 4%',
+
     [theme.breakpoints.down('md')]: {
       justifyContent: 'space-between',
     },
     [theme.breakpoints.down('sm')]: {
       justifyContent: 'space-between',
+      padding: '0px',
     },
   },
   button: {
@@ -111,7 +104,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Editor = forwardRef((props, ref) => {
-  const { triggerExport = 0, canvasJSON, saveEditDesign } = props;
+  const { triggerExport = 0, canvasJSON, saveEditDesign, designName } = props;
 
   const classes = useStyles();
 
@@ -120,6 +113,7 @@ const Editor = forwardRef((props, ref) => {
   const [toggleFontControls, setToggleFontControls] = useState(false);
   const [miniature, setMiniature] = useState();
 
+  const [finalJson, setFinalJson] = useState([]);
   useEffect(() => {
     var style1 = document.getElementById('style1');
     var style2 = document.getElementById('style2');
@@ -198,10 +192,6 @@ const Editor = forwardRef((props, ref) => {
     saveDesign() {
       exportCanvas();
     },
-
-    saveDesignInJSON() {
-      return exportCanvasToJSON();
-    },
   }));
 
   const addText = () => {
@@ -229,11 +219,7 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const exportCanvas = () => {
-    const exportedImage = editorJs.exportCanvas();
-    localStorage.setItem('design', exportedImage);
-
-    const exportedCanvasJson = editorJs.saveCanvasToJSON();
-    localStorage.setItem('designJSON', exportedCanvasJson);
+    editorJs.exportCanvas();
   };
 
   const exportCanvasToJSON = () => {
@@ -286,26 +272,14 @@ const Editor = forwardRef((props, ref) => {
   };
 
   return (
-    <Grid
-      container
-      spacing={2}
-      alignItems="center"
-      style={{ marginLeft: '10px' }}
-    >
+    <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           Create Your Design
         </Typography>
       </Grid>
-      <Grid
-        item
-        md={12}
-        spacing={1}
-        sm={12}
-        xs={12}
-        className={classes.canvasContainer}
-      >
-        <Grid container spacing={1}>
+      <Grid item md={12} spacing={1} sm={12} xs={12} className={classes.canvasContainer}>
+        <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
           <Grid item md={2} sm={2} xs={2}>
             <Smileys addPng={addPng} />
             <FontControls
@@ -337,6 +311,7 @@ const Editor = forwardRef((props, ref) => {
             item
             md={8}
             xs={8}
+            sm={8}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -346,128 +321,106 @@ const Editor = forwardRef((props, ref) => {
                 onReady={editorJs.onReady}
                 class="fabric-canvas-wrapper"
                 canvasJSON={canvasJSON}
+                designName={designName}
               />
             </Card>
           </Grid>
-          <Grid item md={2} sm={1} xs={2}>
+          <Grid item md={2} sm={2} xs={2}>
             <ColorPallete setCanvasBackground={setCanvasBackground} />
           </Grid>
         </Grid>
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
-        <Grid container spacing={2} className={classes.controlsContainer}>
-          <Grid md={12} sm={12} xs={12}>
-            <Grid
-              container
-              spacing={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
+        <Grid container md={12} sm={12} xs={12} spacing={1} className={classes.controlsContainer}>
+          <Stack
+            direction="column"
+            spacing={3}
+            // justifyContent="center"
+            alignItems="center"
+            // alignContent="center"
+            className={classes.buttonContainer}
+          >
+            <Button
+              variant="contained"
+              onClick={addText}
+              className={`${classes.addText} ${classes.button}`}
             >
-              <Grid item md={2} xs={12}></Grid>
-              <Grid
-                item
-                md={2}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={undo}
-                  className={`${classes.undo} ${classes.button}`}
-                >
-                  Undo
-                </Button>
-              </Grid>
-              <Grid
-                item
-                md={4}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <div className={classes.miniatureContaienr}>
-                  <img src={ShirtSVG} className={classes.shirtImage} />
-                  <span
-                    id="alt-text"
-                    style={{
-                      height: '50px',
-                      width: '50px',
-                      position: 'absolute',
-                      top: '40%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      border: '2px solid white',
-                    }}
-                  ></span>
-                  <canvas
-                    id="static"
-                    width="50"
-                    height="50"
-                    className={classes.miniature}
-                  ></canvas>
-                </div>
-              </Grid>
-              <Grid
-                item
-                md={2}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={redo}
-                  className={`${classes.redo} ${classes.button}`}
-                >
-                  Redo
-                </Button>
-              </Grid>
-              <Grid item md={2} xs={12}></Grid>
+              Text
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={handleControlsToggle}
+              className={`${classes.smileys} ${classes.button}`}
+            >
+              <Avatar src={SmileySVG} style={{ height: '25px', width: '25px' }} />
+            </Button>
+            <Button
+              variant="contained"
+              component="label"
+              className={`${classes.imageUpload} ${classes.button}`}
+            >
+              Image
+              <input
+                type="file"
+                hidden
+                onChange={e => addImage(e)}
+                onClick={event => {
+                  event.target.value = null;
+                }}
+                accept="image/png, image/jpeg"
+              />
+            </Button>
+          </Stack>
+          <Stack
+            direction="column"
+            // spacing={4}
+            // justifyContent="center"
+            alignItems="center"
+            // alignContent="center"
+            className={classes.buttonContainer}
+          >
+            <Grid item display="flex" justifyContent="center" alignItems="center">
+              <div className={classes.miniatureContaienr}>
+                <img src={ShirtSVG} className={classes.shirtImage} />
+                <span
+                  id="alt-text"
+                  style={{
+                    height: '50px',
+                    width: '50px',
+                    position: 'absolute',
+                    top: '40%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    border: '2px solid white',
+                  }}
+                ></span>
+                <canvas id="static" width="50" height="50" className={classes.miniature}></canvas>
+              </div>
             </Grid>
-          </Grid>
-          <Grid item md={2} xs={12}></Grid>
-          <Grid item md={8} sm={12} xs={12}>
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              alignContent="center"
-              className={classes.buttonContainer}
+          </Stack>
+          <Stack
+            direction="column"
+            spacing={3}
+            alignItems="center"
+            className={classes.buttonContainer}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              onClick={undo}
+              className={`${classes.undo} ${classes.button}`}
             >
-              <Button
-                variant="contained"
-                onClick={addText}
-                className={`${classes.addText} ${classes.button}`}
-              >
-                Text
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleControlsToggle}
-                className={`${classes.smileys} ${classes.button}`}
-              >
-                <Avatar
-                  src={SmileySVG}
-                  style={{ height: '25px', width: '25px' }}
-                />
-              </Button>
-              <Button
-                variant="contained"
-                component="label"
-                className={`${classes.imageUpload} ${classes.button}`}
-              >
-                Image
-                <input
-                  type="file"
-                  hidden
-                  onChange={e => addImage(e)}
-                  accept="image/png, image/jpeg"
-                />
-              </Button>
+              Undo
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={redo}
+              className={`${classes.redo} ${classes.button}`}
+            >
+              Redo
+            </Button>
               <Button
                 onClick={deleteSelected}
                 variant="contained"
@@ -475,9 +428,7 @@ const Editor = forwardRef((props, ref) => {
               >
                 <Delete />
               </Button>
-            </Stack>
-          </Grid>
-          <Grid item md={2} xs={12}></Grid>
+          </Stack>
         </Grid>
       </Grid>
       <Grid item md={1}>

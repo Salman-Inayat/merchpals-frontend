@@ -42,7 +42,7 @@ const Checkout = ({
   const [completedPayment, setCompletedPayment] = useState(false);
   const [customer, setCustomer] = useState({});
   const [billingAddress, setBillingAddress] = useState({
-    country: { id: 233, iso2: 'US', name: 'United States' },
+    country: 'US',
     state: 'NY',
     zip: '10001',
   });
@@ -88,14 +88,10 @@ const Checkout = ({
   }, []);
 
   useEffect(() => {
-    updateCart(reduxCartProducts);
-  }, [reduxCartProducts]);
-
-  useEffect(() => {
     if (orderCreated) {
       emptyCart();
       resetOrder();
-      navigate(`/store/${storeUrl}`);
+      navigate('/checkout/complete', { state: { customer: customer, storeUrl: storeUrl } });
     }
   }, [orderCreated]);
   const getCountries = () => {
@@ -139,8 +135,16 @@ const Checkout = ({
   };
 
   useEffect(() => {
-    updateTaxAndShipping();
-  }, [cart]);
+    console.log('billing', billingAddress);
+    const { zip, state, country } = billingAddress;
+    if (zip?.length === 5 && country && state) {
+      updateTaxAndShipping();
+    }
+  }, [cart, billingAddress]);
+
+  useEffect(() => {
+    updateCart(reduxCartProducts);
+  }, [reduxCartProducts]);
 
   const updateTaxAndShipping = () => {
     const { aptNo, street, zip, city, state, country } = billingAddress;
@@ -172,9 +176,11 @@ const Checkout = ({
       },
       items,
     };
-
-    setPrintfulData(data);
-    getPriceCalculation(data);
+    console.log({ data });
+    if (items.length > 0) {
+      setPrintfulData(data);
+      getPriceCalculation(data);
+    }
   };
 
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_CUSTOMER_KEY);
@@ -223,14 +229,16 @@ const Checkout = ({
         last4: token.card.last4,
       },
     };
+
+    setCustomer(data.customer);
     console.log({ data });
 
     createOrder(data);
   };
 
   return (
-    <Grid justifyContent="center" alignItems="center" mt={12} p={3} container>
-      <Grid className={classes.card} xs={12} item>
+    <Grid justifyContent="center" alignItems="center" container className={classes.card}>
+      <Grid xs={12} item pt={2}>
         <Grid container alignItems="center" justifyContent="flex-end" xs={12} item>
           <Grid xs={5} item style={{ padding: '10px' }}>
             <Button className={classes.back} onClick={() => navigate(-1)}>

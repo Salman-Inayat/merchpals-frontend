@@ -7,7 +7,6 @@ import {
   Button,
   FormControl,
   MenuItem,
-  FormHelperText,
   Select,
   Typography,
   Input,
@@ -139,6 +138,11 @@ const BillingAddress = ({
     mode: 'onBlur',
     reValidateMode: 'onBlur',
     resolver: yupResolver(CustomerSchema),
+    defaultValues: {
+      country: 'US',
+      state: 'NY',
+      zip: '10001',
+    },
   });
 
   const [firstName, lastName, aptNo, zip, street, city, state, country] = watch([
@@ -156,14 +160,19 @@ const BillingAddress = ({
     if (country) {
       getStatesOfCountry(country);
       getRegionOfCountry(country);
+      setBillingAddress({
+        firstName,
+        lastName,
+        aptNo,
+        zip,
+        street,
+        city,
+        state,
+        country,
+        tax_number: cpf,
+      });
     }
   }, [country]);
-
-  useEffect(() => {
-    setValue('country', 'US');
-    setValue('state', 'NY');
-    setValue('zip', '10001');
-  }, []);
 
   useEffect(() => {
     setBillingAddress({
@@ -181,17 +190,17 @@ const BillingAddress = ({
       firstName,
       lastName,
     });
-  }, [firstName, lastName, aptNo, zip, street, city, state, country, cpf]);
+  }, [firstName, lastName, aptNo, zip, street, city, state, cpf]);
 
-  useEffect(() => {
-    if (zip?.length === 5 && country && state) {
-      updateTaxAndShipping();
-    }
-  }, [zip, country, state]);
+  // useEffect(() => {
+  //   if (zip?.length === 5 && country && state) {
+  //     updateTaxAndShipping();
+  //   }
+  // }, [zip, country, state]);
 
-  useEffect(() => {
-    setValue('state', '');
-  }, [country]);
+  // useEffect(() => {
+  //   setValue('state', '');
+  // }, [country]);
 
   const validateAndContinue = async () => {
     if (!phoneNo) {
@@ -339,6 +348,7 @@ const BillingAddress = ({
               Country<span className={classes.required}>*</span>
             </InputLabel>
             <Select
+              value={country}
               fullWidth
               style={{ height: '45px' }}
               {...register('country', {
@@ -362,6 +372,7 @@ const BillingAddress = ({
               State<span className={classes.required}>*</span>
             </InputLabel>
             <Select
+              value={state}
               fullWidth
               style={{ height: '45px' }}
               {...register('state', {

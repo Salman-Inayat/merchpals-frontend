@@ -74,15 +74,22 @@ export default function ImageCrop(props) {
       return;
     }
 
-    const base64Image = canvas.toDataURL('image/jpeg');
-
-    if (props.variant === 'storeLogo') {
-      props.handleStoreLogoChange(base64Image);
-    } else {
-      props.handleStoreAvatarChange(base64Image);
-    }
-
-    props.handleClose();
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        blob => {
+          blob.name = 'image.jpg';
+          resolve(blob);
+          if (props.variant === 'storeLogo') {
+            props.setImage('logo', blob);
+          } else {
+            props.setImage('coverAvatar', blob);
+          }
+        },
+        'image/jpeg',
+        1,
+      );
+      props.handleClose();
+    });
   };
 
   const handleClose = () => {
@@ -104,12 +111,7 @@ export default function ImageCrop(props) {
         >
           <Button variant="contained" component="label">
             Upload File
-            <input
-              type="file"
-              accept="image/png, image/jpeg"
-              onChange={onSelectFile}
-              hidden
-            />
+            <input type="file" accept="image/png, image/jpeg" onChange={onSelectFile} hidden />
           </Button>
         </Grid>
       ) : (
@@ -128,11 +130,7 @@ export default function ImageCrop(props) {
               }}
             >
               <Button onClick={handleClose}>Cancel</Button>
-              <Button
-                onClick={() =>
-                  cropImage(previewCanvasRef.current, completedCrop)
-                }
-              >
+              <Button onClick={() => cropImage(previewCanvasRef.current, completedCrop)}>
                 Done
               </Button>
             </Box>

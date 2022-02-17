@@ -58,7 +58,7 @@ const EditDesign = () => {
     let tmpVariants = {};
 
     design.vendorProductIds.forEach(product => {
-      const variantsOfProduct = product.productMappings.map(pm => pm.color.id);
+      const variantsOfProduct = product.productMappings.map(pm => pm.color.value);
 
       const uniqVariantIds = variantsOfProduct.filter(function (item, pos) {
         return variantsOfProduct.indexOf(item) == pos;
@@ -68,12 +68,12 @@ const EditDesign = () => {
         ...tmpVariants,
         [product.productId]: [...uniqVariantIds],
       };
-
       setSelectedVariants(tmpVariants);
     });
   };
 
   const onVariantClick = productVariant => {
+    console.log({ productVariant });
     const [product, color] = productVariant.split(',');
     let removedProduct = false;
     let productColors = [];
@@ -223,26 +223,12 @@ const EditDesign = () => {
     <LoggedInVendor>
       <Grid mt={5} container>
         <BackButton />
-        <Grid
-          item
-          xs={12}
-          justifyContent="flex-start"
-          alignItems="flex-start"
-          spacing={3}
-        >
+        <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start" spacing={3}>
           <Grid item md={12} sm={12} xs={12}>
-            <Typography
-              align="center"
-              variant="h3"
-              style={{ color: '#0097a7' }}
-            >
+            <Typography align="center" variant="h3" style={{ color: '#0097a7' }}>
               Product Selection
             </Typography>
-            <Typography
-              align="center"
-              variant="h5"
-              style={{ fontWeight: 'normal' }}
-            >
+            <Typography align="center" variant="h5" style={{ fontWeight: 'normal' }}>
               Please select products for your design
             </Typography>
           </Grid>

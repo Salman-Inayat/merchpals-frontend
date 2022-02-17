@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import { fabric } from 'fabric';
 /**
  * Augments canvas by assigning to `onObjectMove` and `onAfterRender`.
  * This kind of sucks because other code using those methods will stop functioning.
@@ -9,8 +9,8 @@ export const initCenteringGuidelines = (canvas, mobile) => {
   if (mobile) {
     var canvasWidth = 225,
       canvasHeight = 225,
-      canvasWidthCenter = 112.5;
-    canvasHeightCenter = 112.5;
+      canvasWidthCenter = canvasWidth / 2;
+    canvasHeightCenter = canvasHeight / 2;
   } else {
     var canvasWidth = 450,
       canvasHeight = 450,
@@ -21,22 +21,20 @@ export const initCenteringGuidelines = (canvas, mobile) => {
   var canvasWidthCenterMap = {},
     canvasHeightCenterMap = {},
     centerLineMargin = 2,
-    centerLineColor = "#007bff",
+    centerLineColor = '#007bff',
     centerLineWidth = 2,
     ctx = canvas.getSelectionContext(),
     viewportTransform;
 
   for (
-    var i = canvasWidthCenter - centerLineMargin,
-      len = canvasWidthCenter + centerLineMargin;
+    var i = canvasWidthCenter - centerLineMargin, len = canvasWidthCenter + centerLineMargin;
     i <= len;
     i++
   ) {
     canvasWidthCenterMap[Math.round(i)] = true;
   }
   for (
-    var i = canvasHeightCenter - centerLineMargin,
-      len = canvasHeightCenter + centerLineMargin;
+    var i = canvasHeightCenter - centerLineMargin, len = canvasHeightCenter + centerLineMargin;
     i <= len;
     i++
   ) {
@@ -44,12 +42,7 @@ export const initCenteringGuidelines = (canvas, mobile) => {
   }
 
   function showVerticalCenterLine() {
-    showCenterLine(
-      canvasWidthCenter + 0.5,
-      0,
-      canvasWidthCenter + 0.5,
-      canvasHeight
-    );
+    showCenterLine(canvasWidthCenter + 0.5, 0, canvasWidthCenter + 0.5, canvasHeight);
   }
 
   function showHorizontalCenterLineMobile() {
@@ -68,12 +61,7 @@ export const initCenteringGuidelines = (canvas, mobile) => {
   }
 
   function showHorizontalCenterLine() {
-    showCenterLine(
-      0,
-      canvasHeightCenter + 0.5,
-      canvasWidth,
-      canvasHeightCenter + 0.5
-    );
+    showCenterLine(0, canvasHeightCenter + 0.5, canvasWidth, canvasHeightCenter + 0.5);
   }
   function showCenterLine(x1, y1, x2, y2) {
     ctx.save();
@@ -90,11 +78,11 @@ export const initCenteringGuidelines = (canvas, mobile) => {
     isInVerticalCenter,
     isInHorizontalCenter;
 
-  canvas.on("mouse:down", function () {
+  canvas.on('mouse:down', function () {
     viewportTransform = canvas.viewportTransform;
   });
 
-  canvas.on("object:moving", function (e) {
+  canvas.on('object:moving', function (e) {
     var object = e.target,
       objectCenter = object.getCenterPoint(),
       transform = canvas._currentTransform;
@@ -108,19 +96,19 @@ export const initCenteringGuidelines = (canvas, mobile) => {
       object.setPositionByOrigin(
         new fabric.Point(
           isInVerticalCenter ? canvasWidthCenter : objectCenter.x,
-          isInHorizontalCenter ? canvasHeightCenter : objectCenter.y
+          isInHorizontalCenter ? canvasHeightCenter : objectCenter.y,
         ),
-        "center",
-        "center"
+        'center',
+        'center',
       );
     }
   });
 
-  canvas.on("before:render", function () {
+  canvas.on('before:render', function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 
-  canvas.on("after:render", function () {
+  canvas.on('after:render', function () {
     if (isInVerticalCenter) {
       showVerticalCenterLine();
     }
@@ -133,17 +121,17 @@ export const initCenteringGuidelines = (canvas, mobile) => {
     }
   });
 
-  canvas.on("mouse:up", function () {
+  canvas.on('mouse:up', function () {
     // clear these values, to stop drawing guidelines once mouse is up
     isInVerticalCenter = isInHorizontalCenter = null;
     canvas.renderAll();
   });
   var intervalId = window.setInterval(function () {
-    let lines = localStorage.getItem("clearLines");
-    if (lines == "true") {
+    let lines = localStorage.getItem('clearLines');
+    if (lines == 'true') {
       isInVerticalCenter = isInHorizontalCenter = null;
-      canvas.renderAll();
-      localStorage.setItem("clearLines", "false");
+      // canvas.renderAll();
+      localStorage.setItem('clearLines', 'false');
     }
   }, 500);
 };

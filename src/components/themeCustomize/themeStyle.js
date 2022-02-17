@@ -32,11 +32,8 @@ const themeStyles = makeStyles({
     color: '#fff !important',
   },
 });
-ThemeCustomise.propTypes = {
-  children: PropTypes.node,
-};
-function ThemeCustomise(colors) {
-  const classes = themeStyles();
+
+const ThemeCustomise = (classes, colors) => {
   switch (colors) {
     case 'WHITE':
       return classes.white;
@@ -49,9 +46,8 @@ function ThemeCustomise(colors) {
     default:
       return classes.white;
   }
-}
-function ThemeColorCustomise(colors) {
-  const classes = themeStyles();
+};
+const ThemeColorCustomise = (classes, colors) => {
   switch (colors) {
     case 'WHITE':
       return classes.white_clr;
@@ -64,5 +60,5 @@ function ThemeColorCustomise(colors) {
     default:
       return classes.white_clr;
   }
-}
-export { ThemeCustomise, ThemeColorCustomise };
+};
+export { ThemeCustomise, ThemeColorCustomise, themeStyles };

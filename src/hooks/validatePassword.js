@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export const usePasswordValidation = ({
   firstPassword = '',
   secondPassword = '',
-  requiredLength = 8,
+  requiredLength = 6,
 }) => {
   const [validLength, setValidLength] = useState(null);
   const [hasNumber, setHasNumber] = useState(null);

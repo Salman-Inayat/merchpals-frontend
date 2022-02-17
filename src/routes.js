@@ -14,10 +14,14 @@ import Home from './pages/home';
 import VendorDashboard from './pages/vendors';
 import Store from './pages/customers/store';
 import Product from './pages/products';
+import FAQ from './pages/static/faq';
+import PrivaryPolicay from './pages/static/privacyPolicy';
+import TermsOfServices from './pages/static/TermsOfServices';
 // import Vendor from './pages/vendors';
 import VendorStore from './pages/vendors/store';
 import Cart from './pages/customers/cart';
 import Checkout from './pages/customers/checkout';
+import CheckoutComplete from './pages/customers/checkout/checkoutComplete';
 import VendorDesigns from './pages/vendors/designs';
 import VendorCreateDesigns from './pages/vendors/designs/create';
 import VendorEditDesigns from './pages/vendors/designs/edit';
@@ -31,6 +35,9 @@ import StoreSettings from './pages/vendors/settings/storeSettings';
 // import ContactSupport from './pages/vendors/contactSupport';
 import PaymentOnboarding from './pages/vendors/payment';
 import StripeOnboardingReturn from './pages/vendors/payment/return';
+import FlowComplete from './pages/home/steps/FlowComplete';
+import TrackOrder from './pages/static/trackOrder';
+import { StoreForm, WelcomeMessage } from './pages/home/steps';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -67,7 +74,19 @@ export default function Router() {
     { path: '/vendor/store-settings', element: <StoreSettings /> },
     // { path: '/contact-support', element: <ContactSupport /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
-    { path: '/store/:storeUrl', element: <Store /> },
+    { path: '/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
+    { path: '/checkout/complete', element: <CheckoutComplete /> },
+    { path: '/faq', element: <FAQ /> },
+    { path: '/privacy-policy', element: <PrivaryPolicay /> },
+
+    { path: '/terms-of-services', element: <TermsOfServices /> },
+    { path: 'track-order', element: <TrackOrder /> },
+    { path: '/store-form', element: <StoreForm /> },
+
+    {
+      path: '/flow-complete',
+      element: <FlowComplete />,
+    },
   ]);
 }

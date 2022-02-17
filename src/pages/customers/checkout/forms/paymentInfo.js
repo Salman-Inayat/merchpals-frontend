@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import {
-  Avatar,
-  Grid,
-  Typography,
-  Button,
-  Input,
-  InputLabel,
-} from '@mui/material';
+import { Avatar, Grid, Typography, Link, Input, InputLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import './stripeElement.css';
 
@@ -70,12 +63,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PaymentInfo = ({
-  placeOrder = () => {},
-  completedAddress = false,
-  loading,
-  setLoading,
-}) => {
+const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading, setLoading }) => {
   const stripe = useStripe();
   const elements = useElements();
   const classes = useStyles();
@@ -122,7 +110,7 @@ const PaymentInfo = ({
               <CardElement options={cardOptions} />
             </Grid>
           </Grid>
-          <Grid justifyContent="center" mt={3} container>
+          <Grid justifyContent="center" xs={10} mt={3} container>
             <LoadingButton
               disabled={!completedAddress}
               loading={loading}
@@ -131,6 +119,27 @@ const PaymentInfo = ({
             >
               Place your order
             </LoadingButton>
+            <Grid xs={10} mt={3} item>
+              <Typography>
+                By clicking the &#39;Place Order&#39; button, you confirm that youu have read,
+                understand and accept our{' '}
+                <Link underline="always" sx={{ color: 'text.primary' }}>
+                  Terms of Use
+                </Link>
+                ,{' '}
+                <Link underline="always" sx={{ color: 'text.primary' }}>
+                  Terms of Sale
+                </Link>
+                ,{' '}
+                <Link underline="always" sx={{ color: 'text.primary' }}>
+                  Privacy Policy
+                </Link>{' '}
+                and{' '}
+                <Link underline="always" sx={{ color: 'text.primary' }}>
+                  Return Policy
+                </Link>
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
       )}

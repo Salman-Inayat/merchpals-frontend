@@ -4,15 +4,7 @@ import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
 import BackButton from '../../components/backButton';
 
-import {
-  Typography,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Paper,
-  Button,
-} from '@mui/material';
+import { Typography, Grid, Card, CardMedia, CardContent, Paper, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
@@ -21,19 +13,19 @@ import { calculateOrderProfit } from '../../configs/const';
 const useStyles = makeStyles(theme => ({
   design: {
     position: 'absolute',
-    top: '50%',
-    left: '50%',
+    top: '35%',
+    left: '49%',
     transform: 'translate(-50%, -50%)',
-    height: '100px',
-    width: '100px',
+    height: '60px',
+    width: '60px',
     [theme.breakpoints.down('sm')]: {
-      height: '70px',
-      width: '70px',
+      height: '90px',
+      width: '90px',
     },
   },
   poster: {
-    height: '190px',
-    width: '190px',
+    height: '150px',
+    width: '150px',
     borderRadius: '5px',
     [theme.breakpoints.down('sm')]: {
       height: '130px',
@@ -118,7 +110,7 @@ function VendorOrderDetails() {
                       />
                       {product?.vendorProduct?.designId && (
                         <img
-                          src={product.vendorProduct.designId.url}
+                          src={product.vendorProduct.designId.designImages[4].imageUrl}
                           className={[
                             classes.design,
                             product.vendorProduct.productId.name === 'Poster'

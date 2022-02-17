@@ -4,6 +4,9 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
 import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
 import { Products } from '../../../home/steps';
+import { fetchProducts } from '../../../../store/redux/actions/product';
+import { useDispatch, useSelector } from 'react-redux';
+import store from '../../../../store';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -12,13 +15,15 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const ProductSelection = ({ designName }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
     message: 'Design added successfully',
   });
 
+  const products = useSelector(state => state.product.products);
+  console.log({ products });
   useEffect(() => {
     if (!localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
       navigate('/login', { replace: true });
@@ -27,32 +32,19 @@ const ProductSelection = ({ designName }) => {
     }
   }, []);
 
-  const fetchProducts = async () => {
-    axios
-      .get(`${baseURL}/products`)
-      .then(response => {
-        console.log({ response }, 'Calling products');
-        setProducts(response.data.products);
-      })
-      .catch(err => {
-        console.log({ err });
-      });
-  };
-
   const productSelectionCompleted = selectedProducts => {
-    const data = {
-      products: selectedProducts,
-      design: JSON.stringify({
-        base64Image: localStorage.getItem('design'),
-        name: location.state.name,
-        canvasJson: localStorage.getItem('designJSON'),
-      }),
-    };
+    let design = store.getState().design.design;
+    design.designName = location.state.name;
+
+    const form = new FormData();
+    form.append('design', JSON.stringify(design));
+    form.append('products', JSON.stringify([...selectedProducts]));
 
     axios
-      .post(`${baseURL}/store/add-design`, data, {
+      .post(`${baseURL}/store/add-design`, form, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then(response => {
@@ -94,11 +86,7 @@ const ProductSelection = ({ designName }) => {
         designName={location.state.name}
         productSelectionCompleted={productSelectionCompleted}
       />
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={3000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Grid>

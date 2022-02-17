@@ -28,16 +28,20 @@ const useStyles = makeStyles(theme => ({
       padding: '10px',
     },
   },
+  card: {
+    borderRadius: '0px',
+    backgroundColor: '#F6F0ED',
+    boxShadow: '0 0 18px #BDBCBC',
+  },
   button: {
     backgroundColor: '#116DFF',
     marginTop: '20px',
   },
   productName: {
     // color: '#0097a7',
-    width: '90%',
-    margin: 'auto',
-    fontWeight: '500',
+    margin: '7px auto 0 auto',
   },
+
   design: {
     position: 'absolute',
     top: '50%',
@@ -80,27 +84,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const StoreProductCard = ({ product, storeUrl }) => {
+const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  console.log(product);
+  const [color, setColor] = useState();
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
     });
   };
 
+  useEffect(() => {
+    if (product) {
+      const colorsArr = product.productMappings.map(c => c.color);
+
+      const formattedProduct = {
+        colors: [...new Map(colorsArr.map(item => [item['value'], item])).values()],
+      };
+      setColor(formattedProduct.colors.length);
+    }
+  }, [product]);
   return (
     <Box className={classes.container} onClick={exploreProduct}>
-      <Typography
-        gutterBottom
-        variant="h4"
-        component="div"
-        align="center"
-        className={classes.productName}
-      >
-        {product.name}
-      </Typography>
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
@@ -110,7 +116,7 @@ const StoreProductCard = ({ product, storeUrl }) => {
         />
         {product?.designId && (
           <img
-            src={product.designId.url}
+            src={product.designId.designImages[4].imageUrl}
             className={[
               classes.design,
               product.name === 'Poster'
@@ -124,6 +130,29 @@ const StoreProductCard = ({ product, storeUrl }) => {
           />
         )}
       </Card>
+      <Grid className={classes.productName}>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`${product.name} // ${storeName}`}
+        </Typography>
+        <Typography
+          gutterBottom
+          align="center"
+          variant="h5"
+          component="div"
+          className={classes.productTextcolor}
+        >
+          {`${color} Colors`}
+        </Typography>
+        <Typography gutterBottom align="center" variant="h5" component="div">
+          {`$${product.price}`}
+        </Typography>
+      </Grid>
       {/* <Button
         size="medium"
         variant="contained"

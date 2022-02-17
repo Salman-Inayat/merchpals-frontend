@@ -23,7 +23,15 @@ const getPricing = (state, payload) => ({
 });
 
 const getPricingFail = payload => ({
-  priceCalculation: { ...initialState, taxError: payload },
+  priceCalculation: {
+    taxRate: 0,
+    taxAmount: 0,
+    shippingRate: 0,
+    shippingAmount: 0,
+    orderActualAmount: 0,
+    amountWithTaxAndShipping: 0,
+    taxError: payload,
+  },
 });
 
 const printfulReducer = (state = initialState, action) => {
