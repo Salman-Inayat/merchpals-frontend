@@ -117,6 +117,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           <TextField
             fullWidth
             label="First name"
+            autoComplete="firstName"
             {...register('firstName')}
             error={Boolean(errors.firstName?.message)}
             helperText={errors.firstName?.message}
@@ -125,6 +126,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           <TextField
             fullWidth
             label="Last name"
+            autoComplete="lastName"
             {...register('lastName')}
             error={Boolean(errors.lastName?.message)}
             helperText={errors.lastName?.message}

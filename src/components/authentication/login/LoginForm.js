@@ -23,7 +23,10 @@ import { login, clearError } from '../../../store/redux/actions/auth';
 import { makeStyles } from '@mui/styles';
 
 const useStyle = makeStyles(() => ({
-  error: {
+  root: {
+    color: '#FF4842',
+  },
+  errorMessage: {
     marginTop: '5px',
     color: '#FF4842',
     marginLeft: '14px',
@@ -40,6 +43,8 @@ const LoginForm = ({
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNo, setPhoneNo] = useState();
   const [password, setPassword] = useState('');
+  const [phoneNoError, setPhoneNoError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const navigate = useNavigate();
   const classes = useStyle();
@@ -48,10 +53,22 @@ const LoginForm = ({
     if (isLoggedIn || localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
       navigate('/vendor', { replace: true });
     }
+    console.log('loginError', loginError);
   }, [loginError, isLoggedIn]);
 
   const handleSubmit = () => {
-    login(phoneNo, password);
+    if (phoneNo && password) {
+      setPhoneNoError('');
+      login(phoneNo, password);
+    } else {
+      if (!phoneNo) {
+        setPhoneNoError('Phone number is required');
+      }
+      if (!password) {
+        setPasswordError('Password is required');
+      }
+    }
+    // login(phoneNo, password);
   };
 
   const handleShowPassword = () => setShowPassword(!showPassword);
@@ -62,6 +79,7 @@ const LoginForm = ({
         <PhoneNumberInput
           phoneNo={phoneNo}
           setPhoneNo={val => setPhoneNo(val)}
+          error={phoneNoError}
         />
 
         <TextField
@@ -78,13 +96,22 @@ const LoginForm = ({
               </InputAdornment>
             ),
           }}
-          onChange={e => setPassword(e.target.value)}
+          onChange={e => {
+            setPassword(e.target.value);
+            setPasswordError('');
+          }}
           value={password}
+          helperText={passwordError}
+          FormHelperTextProps={{
+            classes: {
+              root: classes.root,
+            },
+          }}
         />
       </Stack>
 
       <Stack
-        className={classes.error}
+        className={classes.errorMessage}
         alignItems="center"
         justifyContent="space-between"
         sx={{ my: 2 }}
@@ -92,16 +119,8 @@ const LoginForm = ({
         <Typography>{loginError}</Typography>
       </Stack>
 
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ my: 2 }}
-      >
-        <FormControlLabel
-          control={<Checkbox checked={false} />}
-          label="Remember me"
-        />
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+        <FormControlLabel control={<Checkbox checked={false} />} label="Remember me" />
 
         <Link component={RouterLink} variant="subtitle2" to="/forgot-password">
           Forgot password?

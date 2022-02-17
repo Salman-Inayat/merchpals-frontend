@@ -175,6 +175,10 @@ function StoreSettings() {
         },
       })
       .then(res => {
+<<<<<<< HEAD
+=======
+        console.log(res.data);
+>>>>>>> 6fe0ee0f3490a108c2bdd336c3f52f4496a5e040
         setSnackBarToggle({
           visible: true,
           type: 'success',

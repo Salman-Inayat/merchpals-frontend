@@ -352,6 +352,10 @@ const ProductCard = ({
                         backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
                       }}
                       onChange={() => onVariantClick(event.target.value)}
+<<<<<<< HEAD
+=======
+                      onClick={() => console.log('clicked the checkbox')}
+>>>>>>> 6fe0ee0f3490a108c2bdd336c3f52f4496a5e040
                       checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
                       value={`${product._id},${pm.id}`}
                       sx={{
