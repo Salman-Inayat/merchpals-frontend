@@ -157,11 +157,21 @@ const useStyles = makeStyles(theme => ({
 
   largeRadioBox: {
     borderRadius: '50%',
+    width: '100%',
     height: '100%',
-    display: 'flex',
+    display: 'grid',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '3px',
+    padding: '2px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '3px 13px',
+    },
+    // borderRadius: '50%',
+    // height: '100%',
+    // display: 'flex',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // padding: '3px',
   },
 
   radioButton: {
@@ -290,7 +300,7 @@ const ProductCard = ({
                   product.colors.label !== 'n/a' &&
                   product.colors.map((pm, i) => (
                     <Grid key={`colors-${i}`} item md={2} xs={2}>
-                      {/* <Box
+                      <Box
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
                             ? '2px solid #116DFF'
@@ -304,7 +314,7 @@ const ProductCard = ({
                           //   : '',
                         }}
                         className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
-                      > */}
+                      >
                       <Radio
                         style={{
                           backgroundColor: `${pm.label}`,
@@ -325,7 +335,7 @@ const ProductCard = ({
                         }}
                         className={classes.radioButton}
                       />
-                      {/* </Box> */}
+                      </Box>
                     </Grid>
                   ))}
               </Grid>

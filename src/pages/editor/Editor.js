@@ -421,7 +421,6 @@ const Editor = forwardRef((props, ref) => {
             >
               Redo
             </Button>
-            <div id="deleteButton" hidden>
               <Button
                 onClick={deleteSelected}
                 variant="contained"
@@ -429,7 +428,6 @@ const Editor = forwardRef((props, ref) => {
               >
                 <Delete />
               </Button>
-            </div>
           </Stack>
         </Grid>
       </Grid>

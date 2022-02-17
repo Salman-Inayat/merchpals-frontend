@@ -168,7 +168,7 @@ const useEditor = canvasId => {
       'selection:updated': e => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
-        document.getElementById('deleteButton').hidden = false;
+        // document.getElementById('deleteButton').hidden = false;
         resetPanels();
         if (selectedObject.type !== 'textbox') {
           document.getElementById('textControls').hidden = true;
@@ -237,7 +237,7 @@ const useEditor = canvasId => {
       },
       'selection:created': e => {
         const selectedObject = e.target;
-        document.getElementById('deleteButton').hidden = false;
+        // document.getElementById('deleteButton').hidden = false;
         if (selectedObject.type === 'textbox') {
           selectedObject.set({
             editable: true,
@@ -260,7 +260,7 @@ const useEditor = canvasId => {
       },
       'selection:cleared': e => {
         localStorage.setItem('clearLines', 'true');
-        document.getElementById('deleteButton').hidden = true;
+        // document.getElementById('deleteButton').hidden = true;
         const selectedObject = e.target;
         selected = null;
         resetPanels();

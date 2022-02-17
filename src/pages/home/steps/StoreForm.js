@@ -376,9 +376,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       <Grid item md={12} xs={12} className={classes.formContainer}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <Stack spacing={3} className={classes.form}>
-            <Typography align="center" className={classes.heading}>
-              Lets create your Store
-            </Typography>
 
             <Grid container>
               <Grid item md={6} xs={12}>

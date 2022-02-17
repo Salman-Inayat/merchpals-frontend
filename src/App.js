@@ -5,7 +5,7 @@ import ThemeConfig from './theme';
 import GlobalStyles from './theme/globalStyles';
 // components
 import ScrollToTop from './components/ScrollToTop';
-import store from './store'
+import store from './store';
 import { useEffect } from 'react';
 
 export default function App() {
@@ -15,7 +15,7 @@ export default function App() {
 
     if (process.env.REACT_APP_ENV !== 'development') {
       window.onbeforeunload = showAlert;
-    }    
+    }
   }, []);
 
   const showAlert = () => 'Are you sure you want to leave?';

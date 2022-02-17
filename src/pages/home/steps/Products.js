@@ -14,8 +14,8 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       position: 'fixed',
       bottom: '0',
-      backgroundColor: '#babdb3',
-      opacity: 0.7,
+      backgroundColor: '#ccc',
+      opacity: 1,
     },
   },
   btn: {

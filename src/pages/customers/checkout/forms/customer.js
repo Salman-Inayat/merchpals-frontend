@@ -256,11 +256,6 @@ taxes"
           <Grid justifyContent="space-between" item container>
             <Grid xs={6} alignItems="center" item container>
               <Typography className={classes.summaryText}>Estimated Shipping</Typography>
-              <Tooltip placement="top" describeChild title="Shipping description">
-                <IconButton className={classes.infoBtn}>
-                  <QuestionMark className={classes.infoIcon} />
-                </IconButton>
-              </Tooltip>
             </Grid>
             <Grid xs={6} item>
               <Typography className={classes.summaryText} align="right">

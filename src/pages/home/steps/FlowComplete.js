@@ -83,18 +83,15 @@ function FlowComplete({ storeURL }) {
                   readOnly: true,
                   endAdornment: (
                     <Box>
-                      {copied ? (
-                        <DoneIcon color="secondary" />
-                      ) : (
                         <Button
+                          color="primary"
+                          variant='contained'
                           onClick={() =>
                             copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)
                           }
                         >
-                          Copy
-                          <ContentCopyIcon color="secondary" />
+                          <ContentCopyIcon color="white" />
                         </Button>
-                      )}
                     </Box>
                   ),
                 }}
@@ -105,7 +102,7 @@ function FlowComplete({ storeURL }) {
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => navigate('/vendor/store', { replace: true })}
+              onClick={() => navigate('/vendor', { replace: true })}
             >
               Go to dashboard
             </Button>

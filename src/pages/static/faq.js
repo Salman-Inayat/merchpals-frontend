@@ -86,8 +86,8 @@ const CustomizedAccordions = () => {
     {
       question: 'Can I cancel my order?',
       answer: `<div style="margin-left:30px;">
-      <p style="font-size:16px;">You may be able to cancel an order for a full refund as long as your order has not processed. To reach out about canceling your order, please contact us at the bottom of this page.
-      <br><br>If your order has already processed, we are unable to cancel your order</p></div>`,
+      <p style="font-size:16px;">You may be able to cancel an order for a full refund as long as your order has not succeeded. To reach out about canceling your order, please contact us at the bottom of this page.
+      <br><br>If your order has already succeeded, we are unable to cancel your order</p></div>`,
       open: false,
     },
     {
