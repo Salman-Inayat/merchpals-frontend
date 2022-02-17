@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Avatar, Grid, Typography, Link, Input, InputLabel } from '@mui/material';
+import {
+  Avatar,
+  Grid,
+  Typography,
+  Link,
+  Input,
+  InputLabel,
+  CircularProgress,
+  Button,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import './stripeElement.css';
 
@@ -76,9 +85,7 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
     const cardElement = elements.getElement(CardElement);
     const { error, token } = await stripe.createToken(cardElement);
     placeOrder(token);
-    if (!error) {
-      setLoading(false);
-    } else {
+    if (error) {
       setLoading(false);
     }
   };
@@ -110,14 +117,13 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
           </Grid>
           <Grid mt={3} container justifyContent="center">
             <Grid item xs={10} display="flex" justifyContent="center">
-              <LoadingButton
+              <Button
                 disabled={!completedAddress}
-                loading={loading}
                 onClick={createToken}
                 className={classes.continueBtn}
               >
-                Place your order
-              </LoadingButton>
+                {loading ? <CircularProgress size="1rem" /> : 'Place your order'}
+              </Button>
             </Grid>
             <Grid xs={10} mt={3} item>
               <Typography>

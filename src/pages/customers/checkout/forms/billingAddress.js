@@ -190,7 +190,7 @@ const BillingAddress = ({
       firstName,
       lastName,
     });
-  }, [firstName, lastName, aptNo, zip, street, city, state, cpf]);
+  }, [zip, state, cpf]);
 
   // useEffect(() => {
   //   if (zip?.length === 5 && country && state) {
@@ -221,6 +221,21 @@ const BillingAddress = ({
     const isValid = await trigger();
 
     if (isValid) {
+      setBillingAddress({
+        firstName,
+        lastName,
+        aptNo,
+        zip,
+        street,
+        city,
+        state,
+        country,
+        tax_number: cpf,
+      });
+      setCustomer({
+        firstName,
+        lastName,
+      });
       markAddressComplete(true);
     } else {
       markAddressComplete(false);
