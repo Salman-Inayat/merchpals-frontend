@@ -342,31 +342,35 @@ const ProductCard = ({
             </RadioGroup>
           </Grid>
         ) : (
-          product.colors.length !== 1 &&
-          product.colors.label !== 'n/a' &&
-          product.colors.map((pm, i) => (
-            <Grid key={`colors-${i}`} item md={2} xs={2}>
-              <Checkbox
-                style={{
-                  backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
-                }}
-                onChange={() => onVariantClick(event.target.value)}
-                onClick={() => console.log('clicked the checkbox')}
-                checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
-                value={`${product._id},${pm.id}`}
-                sx={{
-                  color: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
-                  border: '2px solid blue',
+          <Grid item md={12} xs={12}>
+            <Grid container spacing={1} display="flex" justifyContent="center" alignItems="center">
+              {product.colors.length !== 1 &&
+                product.colors.label !== 'n/a' &&
+                product.colors.map((pm, i) => (
+                  <Grid key={`colors-${i}`} item md={2} xs={2}>
+                    <Checkbox
+                      style={{
+                        backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                      }}
+                      onChange={() => onVariantClick(event.target.value)}
+                      onClick={() => console.log('clicked the checkbox')}
+                      checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
+                      value={`${product._id},${pm.id}`}
+                      sx={{
+                        color: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                        border: '2px solid blue',
 
-                  '&.Mui-checked': {
-                    color: `${pm.label}`,
-                    boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                  },
-                }}
-                className={classes.colorsCheckbox}
-              />
+                        '&.Mui-checked': {
+                          color: `${pm.label}`,
+                          boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                        },
+                      }}
+                      className={classes.colorsCheckbox}
+                    />
+                  </Grid>
+                ))}
             </Grid>
-          ))
+          </Grid>
         )}
       </Grid>
     </>
