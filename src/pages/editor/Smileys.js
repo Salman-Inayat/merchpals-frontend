@@ -31,6 +31,7 @@ const Smileys = ({ addPng, className }) => {
   const classes = useStyles();
 
   const images = [
+    '1-smiley.svg',
     '1.svg',
     '2.svg',
     '3.svg',
@@ -49,10 +50,7 @@ const Smileys = ({ addPng, className }) => {
     '16.svg',
     '17.svg',
     '18.svg',
-    '19.svg',
     '20.svg',
-
-    '21.svg',
     '22.svg',
     '23.svg',
     '24.svg',
@@ -114,7 +112,6 @@ const Smileys = ({ addPng, className }) => {
     '78.svg',
     '79.svg',
     '80.svg',
-
     '81.svg',
     '82.svg',
     '83.svg',
@@ -138,27 +135,26 @@ const Smileys = ({ addPng, className }) => {
     '101.svg',
   ];
 
-  const [smiley, setSmiley] = useState('');
+  const [smiley, setSmiley] = useState('1.svg');
 
   const handleSmileyChange = event => {
     setSmiley(event.target.value);
     addPng(`/svg-icons/${event.target.value}`);
-    setSmiley('');
+    setSmiley('1-smiley.svg');
   };
 
   return (
     <div id="smileyContainer" hidden>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Smiley</InputLabel>
+        <InputLabel id="demo-simple-select-label">
+          Smiley
+        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={smiley}
           label="Color"
           onChange={handleSmileyChange}
-          onClick={() => {
-            setSmiley('');
-          }}
           autoWidth
         >
           {images.map((image, index) => (

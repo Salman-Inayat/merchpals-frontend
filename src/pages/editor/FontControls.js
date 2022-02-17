@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 
 const FontColor = props => {
-  const [fontColor, setFontColor] = useState('');
+  const [fontColor, setFontColor] = useState('#000000');
 
   const colors = [
     '#000000',
@@ -69,6 +69,7 @@ const FontColor = props => {
   const handleFontColorChange = event => {
     setFontColor(event.target.value);
     props.setFontColor(event.target.value);
+    setFontColor('#000000');
   };
 
   return (

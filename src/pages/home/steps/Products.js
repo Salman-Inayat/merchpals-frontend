@@ -174,7 +174,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
         {/* <Grid container justifyContent="center" alignItems="center"> */}
         <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start">
           <Grid item md={12} sm={12} xs={12}>
-            <Typography align="center" variant="h3" style={{ color: '#000', fontFamily: 'Roboto' }}>
+            <Typography align="center" variant="h3" style={{ color: '#000' }}>
               Save Your Merch
             </Typography>
           </Grid>

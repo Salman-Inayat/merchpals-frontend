@@ -435,11 +435,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            // if (e.target.text === 'Sample Text') {
-            //   e.target.text = 'Sample Text';
-            //   e.target.hiddenTextarea.value = 'Sample Text';
-            //   canvas.renderAll();
-            // }
+            if (e.target.text === 'Sample Text') {
+              e.target.text = '';
+              e.target.hiddenTextarea.value = '';
+              canvas.renderAll();
+            }
           }
         },
       });
