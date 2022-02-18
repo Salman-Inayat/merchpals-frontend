@@ -264,6 +264,7 @@ const CustomizedAccordions = () => {
               fullWidth
               placeholder="ORDER NUMBER (DO NOT INCLUDE '#'"
               className={classes.order_number}
+              type="number"
               // {...register('firstName')}
               // error={Boolean(errors.firstName?.message)}
               // helperText={errors.firstName?.message}

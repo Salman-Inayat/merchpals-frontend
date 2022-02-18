@@ -5,7 +5,7 @@ export const createOrder = data => async dispatch => {
   axios
     .post('/order', data)
     .then(res => {
-      dispatch({ type: CREATE_ORDER_SUCCESS, payload: res.data.order.printfulOrderMetadata.id });
+      dispatch({ type: CREATE_ORDER_SUCCESS, payload: res.data.order.orderNo });
     })
     .catch(() => dispatch({ type: CREATE_ORDER_FAILED }));
 };

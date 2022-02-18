@@ -264,7 +264,7 @@ taxes"
               <Typography className={classes.summaryText} align="right">
                 {priceCalculation.shippingAmount === 'FREE'
                   ? 'FREE'
-                  : `$${priceCalculation.shippingAmount.toFixed(2)}`}
+                  : `$${priceCalculation.shippingAmount}`}
               </Typography>
             </Grid>
           </Grid>

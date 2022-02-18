@@ -114,10 +114,34 @@ const Home = () => {
   };
   const prevStep = () => setStep(step - 1);
 
-  const handleEmptyImages = () => {
-    var logoBlob;
-    var coverAvatarBlob;
+  const handleEmptyLogo = data => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
+    var img = new Image();
+    img.src = Tick;
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+
+    new Promise(resolve => {
+      canvas.toBlob(
+        blob => {
+          blob.name = 'image.jpg';
+          data.logo = blob;
+          resolve(data);
+        },
+        'image/jpeg',
+        1,
+      );
+
+      canvas.remove();
+    });
+
+    return data;
+  };
+
+  const handleEmptyCoverAvatar = data => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
@@ -130,31 +154,36 @@ const Home = () => {
     canvas.toBlob(
       blob => {
         blob.name = 'image.jpg';
-        console.log('Blob', blob);
+        data.coverAvatar = blob;
       },
       'image/jpeg',
       1,
     );
 
-    if (data.logo === '') {
-      logoBlob = new Blob([Tick], { type: 'image/jpeg' });
-      data.logo = logoBlob;
-    }
+    console.log('Cover Avatar: ', data);
 
-    if (data.coverAvatar === '') {
-      coverAvatarBlob = new Blob([Tick], { type: 'image/jpeg' });
-      data.coverAvatar = coverAvatarBlob;
-    }
+    canvas.remove();
+    return data;
   };
 
   const createStore = data => {
+    if (data.logo === '') {
+      data = handleEmptyLogo(data);
+    }
+
+    if (data.coverAvatar === '') {
+      data = handleEmptyCoverAvatar(data);
+    }
+
+    console.log('data', data);
+
     let store = new FormData();
     store.append('name', data.name);
     store.append('facebook', data.facebook);
     store.append('instagram', data.instagram);
     store.append('twitter', data.twitter);
-    store.append('logo', data.logo, 'logo');
-    store.append('coverAvatar', data.coverAvatar, 'coverAvatar');
+    store.append('logo', data.logo);
+    store.append('coverAvatar', data.coverAvatar);
     store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
     store.append('themeColor', data.themeColor);
