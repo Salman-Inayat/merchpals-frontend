@@ -114,6 +114,7 @@ const BillingAddress = ({
   const [emailErr, setEmailErr] = useState('');
   const [cpf, setCPF] = useState('');
   const [cpfErr, setCpfErr] = useState('');
+  const [displayContinueButton, setDisplayContinueButton] = useState(true);
 
   const classes = useStyles();
   const CustomerSchema = Yup.object().shape({
@@ -240,6 +241,7 @@ const BillingAddress = ({
     } else {
       markAddressComplete(false);
     }
+    setDisplayContinueButton(false);
   };
 
   return (
@@ -262,7 +264,7 @@ const BillingAddress = ({
                 },
               })}
               className={classes.textField}
-              placeholder="First name"
+              placeholder="First"
             />
             <span className={classes.fieldError}>{errors?.firstName?.message}</span>
           </Grid>
@@ -279,7 +281,7 @@ const BillingAddress = ({
                 },
               })}
               className={classes.textField}
-              placeholder="Last name"
+              placeholder="Last"
             />
             <span className={classes.fieldError}>{errors?.lastName?.message}</span>
           </Grid>
@@ -471,9 +473,11 @@ const BillingAddress = ({
           {shippingError && <Typography className={classes.error}>{shippingError}</Typography>}
         </Grid>
         <Grid justifyContent="center" mt={3} container>
-          <Button onClick={validateAndContinue} className={classes.continueBtn}>
-            Continue
-          </Button>
+          {displayContinueButton && (
+            <Button onClick={validateAndContinue} className={classes.continueBtn}>
+              Continue
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Grid>

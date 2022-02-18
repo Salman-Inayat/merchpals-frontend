@@ -35,7 +35,11 @@ const useStyles = makeStyles(theme => ({
 const Footer = () => {
   const navigate = useNavigate();
   const classes = useStyles();
-  const handleOrderClick = () => {};
+  const handleOrderClick = () => {
+    navigate({
+      pathname: `/faq`,
+    });
+  };
   const handlePrivacyPolicyClick = () => {
     navigate({
       pathname: `/privacy-policy`,

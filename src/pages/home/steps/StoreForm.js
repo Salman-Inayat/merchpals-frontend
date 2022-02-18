@@ -658,7 +658,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                       size="large"
                       type="submit"
                       variant="contained"
-                      loading={loading}
+                      // loading={loading}
                     >
                       Get Store
                     </LoadingButton>

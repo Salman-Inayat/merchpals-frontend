@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Grid, Avatar, Typography, Button } from '@mui/material';
+import { Grid, Avatar, Typography, Button, Stack } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,6 +16,10 @@ import { createOrder, resetOrder } from '../../../store/redux/actions/order';
 const useStyles = makeStyles(theme => ({
   card: {
     boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    padding: '0rem  15rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0rem  1rem',
+    },
   },
   heading: {
     fontWeight: 'bolder',
@@ -237,7 +241,17 @@ const Checkout = ({
     <Grid justifyContent="center" alignItems="center" container className={classes.card}>
       <Grid xs={12} item pt={2}>
         <Grid container alignItems="center" justifyContent="flex-end" xs={12} item>
-          <Grid xs={5} item style={{ padding: '10px' }}>
+          <Grid item md={12} xs={12} p={2}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={4}>
+              <Button className={classes.back} onClick={() => navigate(-1)}>
+                Back
+              </Button>
+              <Typography align="left" className={classes.heading}>
+                Checkout
+              </Typography>
+              <img src={Lock} style={{ width: '20px', height: '20px' }} />
+            </Stack>
+            {/* <Grid xs={5} item style={{ padding: '10px' }}>
             <Button className={classes.back} onClick={() => navigate(-1)}>
               Back
             </Button>
@@ -248,7 +262,8 @@ const Checkout = ({
             </Typography>
           </Grid>
           <Grid xs={1} item>
-            <Avatar src={Lock} style={{ width: '20px', height: '20px' }} />
+            <img src={Lock} style={{ width: '20px', height: '20px' }} />
+          </Grid> */}
           </Grid>
         </Grid>
 

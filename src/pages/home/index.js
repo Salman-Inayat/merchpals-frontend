@@ -10,6 +10,7 @@ import { baseURL } from '../../configs/const';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
+import Tick from '../../assets/images/tick.png';
 
 const useStyle = makeStyles(theme => ({
   fluid: {
@@ -27,7 +28,7 @@ const useStyle = makeStyles(theme => ({
     height: '50px',
   },
   content: {
-    marginTop: '16px',
+    // marginTop: '16px',
   },
   root: {
     color: 'red',
@@ -83,7 +84,16 @@ const Home = () => {
     } else {
       dispatch(fetchProducts());
     }
+
+    // In advance versions  of browsers instead of our provided message a default message from browsers
+    // will be displayed as alert saying 'Changes that you made may not be saved.'
+
+    // if (process.env.REACT_APP_ENV !== 'development') {
+    window.onbeforeunload = showAlert;
+    // }
   }, []);
+
+  const showAlert = () => 'Are you sure you want to leave?';
 
   // useEffect(() => {
   //   setCanvasJSON(designJSON.json);
@@ -104,14 +114,47 @@ const Home = () => {
   };
   const prevStep = () => setStep(step - 1);
 
+  const handleEmptyImages = () => {
+    var logoBlob;
+    var coverAvatarBlob;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    var img = new Image();
+    img.src = Tick;
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+
+    canvas.toBlob(
+      blob => {
+        blob.name = 'image.jpg';
+        console.log('Blob', blob);
+      },
+      'image/jpeg',
+      1,
+    );
+
+    if (data.logo === '') {
+      logoBlob = new Blob([Tick], { type: 'image/jpeg' });
+      data.logo = logoBlob;
+    }
+
+    if (data.coverAvatar === '') {
+      coverAvatarBlob = new Blob([Tick], { type: 'image/jpeg' });
+      data.coverAvatar = coverAvatarBlob;
+    }
+  };
+
   const createStore = data => {
     let store = new FormData();
     store.append('name', data.name);
     store.append('facebook', data.facebook);
     store.append('instagram', data.instagram);
     store.append('twitter', data.twitter);
-    store.append('logo', data.logo);
-    store.append('coverAvatar', data.coverAvatar);
+    store.append('logo', data.logo, 'logo');
+    store.append('coverAvatar', data.coverAvatar, 'coverAvatar');
     store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
     store.append('themeColor', data.themeColor);
@@ -173,7 +216,7 @@ const Home = () => {
     <Container className={classes.fluid}>
       <Grid className={classes.header} justifyContent="space-between" alignItems="center" container>
         <Grid xs={1} md={1} sm={1} item alignItems="center">
-          {step > 0 && (
+          {step > 0 && step < 3 && (
             <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
               <ArrowBackIosIcon className={classes.svg} />
             </IconButton>

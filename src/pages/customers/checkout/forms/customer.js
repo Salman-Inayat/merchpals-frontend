@@ -170,7 +170,10 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
 
   return (
     <Accordion defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
+        className={classes.accordian}
+      >
         <Typography className={classes.heading}>In your bag</Typography>
       </AccordionSummary>
       <AccordionDetails>
@@ -248,7 +251,7 @@ taxes"
             </Grid>
             <Grid xs={6} item>
               <Typography className={classes.summaryText} align="right">
-                ${priceCalculation.orderActualAmount}
+                ${priceCalculation.orderActualAmount.toFixed(2)}
               </Typography>
             </Grid>
           </Grid>
@@ -261,7 +264,7 @@ taxes"
               <Typography className={classes.summaryText} align="right">
                 {priceCalculation.shippingAmount === 'FREE'
                   ? 'FREE'
-                  : `$${priceCalculation.shippingAmount}`}
+                  : `$${priceCalculation.shippingAmount.toFixed(2)}`}
               </Typography>
             </Grid>
           </Grid>
@@ -281,14 +284,14 @@ applicable state or local government for more information"
             </Grid>
             <Grid xs={2} item>
               <Typography className={classes.summaryText} align="right">
-                ${priceCalculation.taxAmount}
+                ${priceCalculation.taxAmount.toFixed(2)}
               </Typography>
             </Grid>
           </Grid>
           <Grid justifyContent="space-between" item container>
             <Typography className={classes.summaryText}>Total</Typography>
             <Typography className={classes.totalText} align="right">
-              ${priceCalculation.amountWithTaxAndShipping}
+              ${priceCalculation.amountWithTaxAndShipping.toFixed(2)}
             </Typography>
           </Grid>
         </Grid>

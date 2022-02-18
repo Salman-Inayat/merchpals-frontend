@@ -381,7 +381,7 @@ const Product = () => {
           size="large"
           style={{ height: '50px', width: '50px' }}
         >
-          <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem' }} />
+          <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: 'black' }} />
         </IconButton>
       </Grid>
       {fetchedProduct ? (
@@ -567,7 +567,7 @@ const Product = () => {
                     id="panel1a-header"
                   >
                     <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
-                      DETAILS
+                      Details
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -599,7 +599,7 @@ const Product = () => {
                     id="panel1a-header"
                   >
                     <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
-                      SHIPPING DETAILS
+                      Size and Shipping
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>

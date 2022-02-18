@@ -107,8 +107,8 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
       </Grid>
       {completedAddress && (
         <Grid direction="row" justifyContent="center" className={classes.box} container>
-          <Grid item xs={12} mt={3}>
-            <Avatar src={CardsLogos} className={classes.banner} />
+          <Grid item xs={12} mt={3} display="flex" justifyContent="center">
+            <img src={CardsLogos} className={classes.banner} />
           </Grid>
           <Grid item container justifyContent="center" xs={10} mt={3}>
             <Grid item xs={12} mt={3}>
