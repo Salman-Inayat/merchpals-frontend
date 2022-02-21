@@ -175,53 +175,72 @@ const Home = () => {
       data = handleEmptyCoverAvatar(data);
     }
 
-    console.log('data', data);
+    // let store = new FormData();
+    // store.append('name', data.name);
+    // store.append('facebook', data.facebook);
+    // store.append('instagram', data.instagram);
+    // store.append('twitter', data.twitter);
+    // store.append('logo', data.logo);
+    // store.append('coverAvatar', data.coverAvatar);
+    // store.append('products', JSON.stringify([...selectedVariants]));
+    // store.append('themeColor', data.themeColor);
+    // store.append('designName', designData.designName);
+    // // store.append('designJson', designData.designJson);
+    // // store.append(
+    // //   designData.designImages[0].name,
+    // //   dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
+    // // );
+    // // store.append(
+    // //   designData.designImages[1].name,
+    // //   dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
+    // // );
+    // // store.append(
+    // //   designData.designImages[2].name,
+    // //   dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
+    // // );
+    // // store.append(
+    // //   designData.designImages[3].name,
+    // //   dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
+    // // );
+    // store.append(
+    //   designData.designImages[4].name,
+    //   dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
+    // );
 
-    let store = new FormData();
-    store.append('name', data.name);
-    store.append('facebook', data.facebook);
-    store.append('instagram', data.instagram);
-    store.append('twitter', data.twitter);
-    store.append('logo', data.logo);
-    store.append('coverAvatar', data.coverAvatar);
-    store.append('products', JSON.stringify([...selectedVariants]));
-    store.append('themeColor', data.themeColor);
-    store.append('designName', designData.designName);
-    store.append('designJson', designData.designJson);
-    store.append(
-      designData.designImages[0].name,
-      dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
-    );
-    store.append(
-      designData.designImages[1].name,
-      dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
-    );
-    store.append(
-      designData.designImages[2].name,
-      dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
-    );
-    store.append(
-      designData.designImages[3].name,
-      dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
-    );
-    store.append(
-      designData.designImages[4].name,
-      dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
-    );
+    const storeData = {
+      name: data.name,
+      facebook: data.facebook,
+      instagram: data.instagram,
+      twitter: data.twitter,
+      logo: data.logo,
+      coverAvatar: data.coverAvatar,
+      products: JSON.stringify([...selectedVariants]),
+      themeColor: data.themeColor,
+      designName: designData.designName,
+      // designJson: designData.designJson,
+    };
 
     axios
-      .post(`${baseURL}/store`, store, {
+      .post(`${baseURL}/store`, storeData, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       })
       .then(response => {
-        localStorage.removeItem('design');
-        localStorage.removeItem('selectedVariants');
+        // localStorage.removeItem('design');
+        // localStorage.removeItem('selectedVariants');
 
-        setStoreURL(response.data.store.slug);
-        setShowWelcomeMessage(true);
+        console.log(response.data.urls.logo);
+        axios
+          .post(response.data.urls.logo, data.logo)
+          .then(response => {
+            console.log(response.data);
+          })
+          .catch(error => {
+            console.log(error);
+          });
       })
       .catch(err => {
         setCreateStoreError(true);
