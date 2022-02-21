@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { baseURL } from '../../../../configs/const';
+import { baseURL, dataURLtoFile } from '../../../../configs/const';
 import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
 import { Products } from '../../../home/steps';
 import { fetchProducts } from '../../../../store/redux/actions/product';
@@ -36,7 +36,30 @@ const ProductSelection = ({ designName }) => {
     design.designName = location.state.name;
 
     const form = new FormData();
-    form.append('design', JSON.stringify(design));
+    // form.append('design', JSON.stringify(design));
+    form.append('designName', design.designName);
+    form.append('designJson', design.designJson);
+    form.append(
+      design.designImages[0].name,
+      dataURLtoFile(design.designImages[0].data, `${design.designImages[0].name}.png`),
+    );
+    form.append(
+      design.designImages[1].name,
+      dataURLtoFile(design.designImages[1].data, `${design.designImages[1].name}.png`),
+    );
+    form.append(
+      design.designImages[2].name,
+      dataURLtoFile(design.designImages[2].data, `${design.designImages[2].name}.png`),
+    );
+    form.append(
+      design.designImages[3].name,
+      dataURLtoFile(design.designImages[3].data, `${design.designImages[3].name}.png`),
+    );
+    form.append(
+      design.designImages[4].name,
+      dataURLtoFile(design.designImages[4].data, `${design.designImages[4].name}.png`),
+    );
+
     form.append('products', JSON.stringify([...selectedProducts]));
 
     axios

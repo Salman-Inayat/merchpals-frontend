@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Grid, Button } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseURL } from '../../../../configs/const';
+import { baseURL, dataURLtoFile } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
@@ -41,7 +41,32 @@ const EditDesign = () => {
       const newDesign = store.getState().design.design;
 
       let form = new FormData();
-      form.append('design', JSON.stringify(newDesign));
+      form.append('designName', newDesign.designName);
+      form.append('designJson', newDesign.designJson);
+      form.append(
+        newDesign.designImages[0].name,
+        dataURLtoFile(newDesign.designImages[0].data, `${newDesign.designImages[0].name}.png`),
+      );
+      form.append(
+        newDesign.designImages[1].name,
+        dataURLtoFile(newDesign.designImages[1].data, `${newDesign.designImages[1].name}.png`),
+      );
+      form.append(
+        newDesign.designImages[2].name,
+        dataURLtoFile(newDesign.designImages[2].data, `${newDesign.designImages[2].name}.png`),
+      );
+      form.append(
+        newDesign.designImages[3].name,
+        dataURLtoFile(newDesign.designImages[3].data, `${newDesign.designImages[3].name}.png`),
+      );
+      form.append(
+        newDesign.designImages[4].name,
+        dataURLtoFile(newDesign.designImages[4].data, `${newDesign.designImages[4].name}.png`),
+      );
+
+      for (var pair of form.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+      }
 
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
@@ -54,7 +79,7 @@ const EditDesign = () => {
           navigate('/vendor/designs');
         })
         .catch(error => console.log({ error }));
-    }, 2000);
+    }, 100);
   };
 
   return (

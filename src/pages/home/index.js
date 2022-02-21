@@ -6,7 +6,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
 import { Editor, Products, SignUp, StoreForm, Otp, WelcomeMessage } from './steps';
-import { baseURL } from '../../configs/const';
+import { baseURL, dataURLtoFile } from '../../configs/const';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
@@ -184,9 +184,30 @@ const Home = () => {
     store.append('twitter', data.twitter);
     store.append('logo', data.logo);
     store.append('coverAvatar', data.coverAvatar);
-    store.append('design', JSON.stringify(designData));
     store.append('products', JSON.stringify([...selectedVariants]));
     store.append('themeColor', data.themeColor);
+    store.append('designName', designData.designName);
+    store.append('designJson', designData.designJson);
+    store.append(
+      designData.designImages[0].name,
+      dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
+    );
+    store.append(
+      designData.designImages[1].name,
+      dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
+    );
+    store.append(
+      designData.designImages[2].name,
+      dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
+    );
+    store.append(
+      designData.designImages[3].name,
+      dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
+    );
+    store.append(
+      designData.designImages[4].name,
+      dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
+    );
 
     axios
       .post(`${baseURL}/store`, store, {
