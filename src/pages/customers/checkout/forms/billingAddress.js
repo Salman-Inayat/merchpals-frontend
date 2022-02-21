@@ -141,8 +141,8 @@ const BillingAddress = ({
     resolver: yupResolver(CustomerSchema),
     defaultValues: {
       country: 'US',
-      state: 'NY',
-      zip: '10001',
+      // state: 'NY',
+      // zip: '10001',
     },
   });
 
@@ -251,7 +251,7 @@ const BillingAddress = ({
       </Grid>
       <Grid direction="row" className={`${classes.box} `} container>
         <Grid justifyContent="space-between" mt={3} container spacing={2}>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={6}>
             <InputLabel className={`${classes.label} `}>
               First Name <span className={classes.required}>*</span>
             </InputLabel>
@@ -268,7 +268,7 @@ const BillingAddress = ({
             />
             <span className={classes.fieldError}>{errors?.firstName?.message}</span>
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={6}>
             <InputLabel className={classes.label}>
               Last Name<span className={classes.required}>*</span>
             </InputLabel>
@@ -323,7 +323,7 @@ const BillingAddress = ({
         </Grid>
 
         <Grid justifyContent="space-between" mt={3} container spacing={2}>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={6}>
             <InputLabel className={classes.label}>
               City<span className={classes.required}>*</span>
             </InputLabel>
@@ -340,7 +340,7 @@ const BillingAddress = ({
             />
             <span className={classes.fieldError}>{errors?.city?.message}</span>
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={6}>
             <InputLabel className={classes.label}>
               Postal Code<span className={classes.required}>*</span>
             </InputLabel>
@@ -360,7 +360,7 @@ const BillingAddress = ({
         </Grid>
 
         <Grid justifyContent="space-between" mt={3} container spacing={2}>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={6}>
             <InputLabel className={classes.label}>
               Country<span className={classes.required}>*</span>
             </InputLabel>
@@ -384,7 +384,7 @@ const BillingAddress = ({
             </Select>
             <span className={classes.fieldError}>{errors?.country?.message}</span>
           </Grid>
-          <Grid item md={6} xs={12}>
+          <Grid item md={6} xs={6}>
             <InputLabel className={classes.label}>
               State<span className={classes.required}>*</span>
             </InputLabel>

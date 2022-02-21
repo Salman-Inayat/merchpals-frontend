@@ -11,6 +11,9 @@ import {
   // ListItemText,
   ListItem,
   ListItemIcon,
+  CircularProgress,
+  Slide,
+  Collapse,
 } from '@mui/material';
 // import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 // import axios from 'axios';
@@ -42,7 +45,7 @@ import Footer from '../../layouts/static/footer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { TransitionGroup } from 'react-transition-group';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -65,6 +68,7 @@ const useStyle = makeStyles(theme => ({
       height: '100%',
     },
   },
+
   stack: {
     width: '100%',
     height: '100%',
@@ -159,6 +163,14 @@ const useStyle = makeStyles(theme => ({
   caseSizeHeading: {
     fontSize: '12px !important',
   },
+  // '& .MuiSlider-thumb': {
+  //   '& .MuiSlider-active': {
+  //     transition: 'left 1s ease-in'
+  // },
+  //  '& .MuiSlider-track': {
+  //     transition: 'width 1s ease-in'
+  //   }
+  // },
 }));
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -201,6 +213,7 @@ const Product = () => {
   const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
   const fetchedProduct = useSelector(state => state.product?.product);
@@ -255,8 +268,12 @@ const Product = () => {
   }, [fetchedProduct]);
 
   const handleColorChange = event => {
-    const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
-    setColor(selectedColor);
+    setLoading(!loading);
+    setTimeout(() => {
+      const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
+      setColor(selectedColor);
+      setLoading(false);
+    }, 500);
   };
 
   const handleSizeChange = event => {
@@ -381,7 +398,7 @@ const Product = () => {
           size="large"
           style={{ height: '50px', width: '50px' }}
         >
-          <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: 'black' }} />
+          <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: '#000000' }} />
         </IconButton>
       </Grid>
       {fetchedProduct ? (
@@ -403,10 +420,24 @@ const Product = () => {
                   alignItems: 'center',
                 }}
               >
-                <div className={classes.imageContainer} style={{ backgroundColor: color.label }}>
-                  <img src={`${product.image}`} alt="" className={classes.image} />
-                  <img src={product.design} alt="design" className={classes.design} />
-                </div>
+                {loading ? (
+                  <CircularProgress size="2rem" />
+                ) : (
+                  <div
+                    className={classes.imageContainer}
+                    style={{
+                      backgroundColor:
+                        color.label === 'white'
+                          ? '#ffffff'
+                          : color.label === 'navy'
+                          ? '#262d4f '
+                          : '#121616',
+                    }}
+                  >
+                    <img src={`${product.image}`} alt="" className={classes.image} />
+                    <img src={product.design} alt="design" className={classes.design} />{' '}
+                  </div>
+                )}
               </div>
             </Grid>
             <Grid
@@ -465,7 +496,12 @@ const Product = () => {
                             <div
                               className={classes.color}
                               style={{
-                                backgroundColor: label,
+                                backgroundColor:
+                                  label === 'white'
+                                    ? '#ffffff'
+                                    : label === 'navy'
+                                    ? '#262d4f '
+                                    : '#121616',
                                 backgroundImage: `url(${product.image})`,
                                 backgroundSize: '100% 100%',
                                 backgroundRepeat: 'no-repeat',
