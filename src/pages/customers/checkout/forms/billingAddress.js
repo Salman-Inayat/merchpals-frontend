@@ -241,7 +241,6 @@ const BillingAddress = ({
     }
     setDisplayContinueButton(false);
   };
-  console.log(state);
   return (
     <Grid item>
       <Grid className={classes.accordian}>
