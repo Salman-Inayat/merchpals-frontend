@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Grid, Button } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseURL, dataURLtoFile } from '../../../../configs/const';
+import { baseURL, dataURLtoFile, getJSONFromUrl } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
@@ -29,9 +29,30 @@ const EditDesign = () => {
       })
       .then(response => {
         setDesignData(response.data.design);
-        setCanvasJSON(response.data.design.designJson);
+        getJSONFromUrl(response.data.design.designJson, (err, data) => {
+          if (err !== null) {
+            alert('Something went wrong: ' + err);
+          } else {
+            setCanvasJSON(data);
+          }
+        });
       })
       .catch(error => console.log({ error }));
+  };
+
+  const getJSONFromUrl = function (url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function () {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
   };
 
   const finishDesignEdit = () => {
