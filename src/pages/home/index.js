@@ -166,6 +166,21 @@ const Home = () => {
     return data;
   };
 
+  const postDataToURL = async (url, data) => {
+    axios
+      .put(url, data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   const createStore = data => {
     if (data.logo === '') {
       data = handleEmptyLogo(data);
@@ -212,35 +227,58 @@ const Home = () => {
       facebook: data.facebook,
       instagram: data.instagram,
       twitter: data.twitter,
-      logo: data.logo,
-      coverAvatar: data.coverAvatar,
       products: JSON.stringify([...selectedVariants]),
       themeColor: data.themeColor,
       designName: designData.designName,
       // designJson: designData.designJson,
     };
 
+    const JSONBlob = new Blob([JSON.stringify(designData.designJson)], {
+      type: 'application/json',
+    });
+
+    console.log(JSONBlob);
+
     axios
       .post(`${baseURL}/store`, storeData, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          // 'Content-Type': 'multipart/form-data',
           'Content-Type': 'application/json',
         },
       })
       .then(response => {
-        // localStorage.removeItem('design');
-        // localStorage.removeItem('selectedVariants');
+        localStorage.removeItem('design');
+        localStorage.removeItem('selectedVariants');
 
-        console.log(response.data.urls.logo);
-        axios
-          .post(response.data.urls.logo, data.logo)
-          .then(response => {
-            console.log(response.data);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        console.log(response.data.data);
+        setStoreURL(response.data.data.store.slug);
+
+        postDataToURL(response.data.data.urls.logo, data.logo);
+        postDataToURL(response.data.data.urls.coverAvatar, data.coverAvatar);
+        postDataToURL(
+          response.data.data.urls.variant1,
+          dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
+        );
+        postDataToURL(
+          response.data.data.urls.variant2,
+          dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
+        );
+        postDataToURL(
+          response.data.data.urls.variant3,
+          dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
+        );
+        postDataToURL(
+          response.data.data.urls.variant4,
+          dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
+        );
+        postDataToURL(
+          response.data.data.urls.variant5,
+          dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
+        );
+
+        postDataToURL(response.data.data.urls.designJson, JSONBlob);
+
+        setShowWelcomeMessage(true);
       })
       .catch(err => {
         setCreateStoreError(true);
