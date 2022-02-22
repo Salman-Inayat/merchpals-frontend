@@ -180,12 +180,13 @@ const ProductCard = ({
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const renderBgColor = () => {
-    let bgColor = 'white';
+    let bgColor = '#ffffff';
 
     if (selectedVariants[product._id]) {
       const productSelectedVariants = selectedVariants[product._id];
       const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
+      bgColor = bgColor === 'white' ? '#ffffff' : bgColor === 'navy' ? '#262d4f ' : '#121616';
     }
     return bgColor;
   };
@@ -285,16 +286,30 @@ const ProductCard = ({
                     style={{
                       width: `${isMobile ? '25px' : '30px'}`,
                       height: `${isMobile ? '25px' : '30px'}`,
-                      backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                      backgroundColor:
+                        `${pm.label}` === 'transparent'
+                          ? '#ffffff'
+                          : pm.label === 'white'
+                          ? '#ffffff'
+                          : pm.label === 'navy'
+                          ? '#262d4f '
+                          : '#121616',
                     }}
                     onChange={() => onVariantClick(event.target.value)}
                     checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
                     value={`${product._id},${pm.id}`}
                     sx={{
                       border: '1px solid #000',
-                      color: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                      color:
+                        `${pm.label}` === 'transparent'
+                          ? 'white'
+                          : pm.label === 'white'
+                          ? '#ffffff'
+                          : pm.label === 'navy'
+                          ? '#262d4f '
+                          : '#121616',
                       '&.Mui-checked': {
-                        color: `${pm.label}` == 'white' ? 'black' : 'white',
+                        color: `${pm.label}` == 'white' ? '#000000' : '#ffffff',
                       },
                     }}
                     checkedIcon={<DoneIcon style={{ fontSize: `${isMobile ? '20px' : '25px'}` }} />}

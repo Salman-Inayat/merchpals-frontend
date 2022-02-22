@@ -184,7 +184,16 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                 <Stack className={classes.imageCard}>
                   <Avatar
                     className={classes.avatar}
-                    style={{ backgroundColor: variant.color === 'n/a' ? '#fff' : variant.color }}
+                    style={{
+                      backgroundColor:
+                        variant.color === 'n/a'
+                          ? '#fff'
+                          : variant.color === 'white'
+                          ? '#ffffff'
+                          : variant.color === 'navy'
+                          ? '#262d4f '
+                          : '#121616',
+                    }}
                     src={product.image}
                     variant="square"
                   />
@@ -251,7 +260,10 @@ taxes"
             </Grid>
             <Grid xs={6} item>
               <Typography className={classes.summaryText} align="right">
-                ${priceCalculation.orderActualAmount.toFixed(2)}
+                $
+                {priceCalculation.orderActualAmount
+                  ? priceCalculation.orderActualAmount.toFixed(2)
+                  : 0}
               </Typography>
             </Grid>
           </Grid>
@@ -264,7 +276,9 @@ taxes"
               <Typography className={classes.summaryText} align="right">
                 {priceCalculation.shippingAmount === 'FREE'
                   ? 'FREE'
-                  : `$${priceCalculation.shippingAmount}`}
+                  : `$${
+                      priceCalculation.shippingAmount ? priceCalculation.shippingAmount : 'FREE'
+                    }`}
               </Typography>
             </Grid>
           </Grid>
@@ -284,14 +298,17 @@ applicable state or local government for more information"
             </Grid>
             <Grid xs={2} item>
               <Typography className={classes.summaryText} align="right">
-                ${priceCalculation.taxAmount.toFixed(2)}
+                ${priceCalculation.taxAmount ? priceCalculation.taxAmount.toFixed(2) : 0}
               </Typography>
             </Grid>
           </Grid>
           <Grid justifyContent="space-between" item container>
             <Typography className={classes.summaryText}>Total</Typography>
             <Typography className={classes.totalText} align="right">
-              ${priceCalculation.amountWithTaxAndShipping.toFixed(2)}
+              $
+              {priceCalculation.amountWithTaxAndShipping
+                ? priceCalculation.amountWithTaxAndShipping.toFixed(2)
+                : 0}
             </Typography>
           </Grid>
         </Grid>
