@@ -141,8 +141,6 @@ const BillingAddress = ({
     resolver: yupResolver(CustomerSchema),
     defaultValues: {
       country: 'US',
-      // state: 'NY',
-      // zip: '10001',
     },
   });
 
@@ -199,9 +197,9 @@ const BillingAddress = ({
   //   }
   // }, [zip, country, state]);
 
-  // useEffect(() => {
-  //   setValue('state', '');
-  // }, [country]);
+  useEffect(() => {
+    setValue('state', '');
+  }, [country]);
 
   const validateAndContinue = async () => {
     if (!phoneNo) {
@@ -243,7 +241,7 @@ const BillingAddress = ({
     }
     setDisplayContinueButton(false);
   };
-
+  console.log(state);
   return (
     <Grid item>
       <Grid className={classes.accordian}>
@@ -389,7 +387,7 @@ const BillingAddress = ({
               State<span className={classes.required}>*</span>
             </InputLabel>
             <Select
-              value={state ? state : ''}
+              value={state && state}
               fullWidth
               style={{ height: '45px' }}
               {...register('state', {
@@ -409,65 +407,56 @@ const BillingAddress = ({
             <span className={classes.fieldError}>{errors?.state?.message}</span>
           </Grid>
         </Grid>
-        {
-          (firstName,
-          lastName,
-          aptNo,
-          zip,
-          street,
-          city,
-          state,
-          country && (
-            <Grid mt={3} justifyContent="space-between" container spacing={2}>
-              <Grid item md={6} xs={12}>
-                <InputLabel className={classes.label}>
-                  Phone Number<span className={classes.required}>*</span>
-                </InputLabel>
-                <PhoneNumberInput
-                  inputStyle={{ height: '45px', paddingLeft: '55px' }}
-                  phoneNo={phoneNo}
-                  setPhoneNo={value => {
-                    setFormErrors({ ...formErrors, phoneNo: '' });
-                    setPhoneNo(value);
-                    setPhoneErr('');
-                  }}
-                  error={formErrors.phoneNo || phoneErr}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <InputLabel className={classes.label}>Email</InputLabel>
-                <Input
-                  value={email}
-                  onChange={e => {
-                    setEmailErr('');
-                    setEmail(e.target.value);
-                  }}
-                  onKeyUp={() => setFormErrors({ ...formErrors, email: '' })}
-                  className={classes.textField}
-                  placeholder="Email"
-                />
-                <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
-              </Grid>
-              {country === 'BR' && (
-                <Grid item md={6} xs={12}>
-                  <InputLabel className={classes.label}>CPF</InputLabel>
-                  <Input
-                    value={cpf}
-                    onChange={e => {
-                      setCpfErr('');
-                      setCPF(e.target.value);
-                    }}
-                    onKeyUp={() => setFormErrors({ cpf: '' })}
-                    className={classes.textField}
-                    placeholder="CPF"
-                    inputComponent={TextMaskCustom}
-                  />
-                  <span className={classes.fieldError}>{cpfErr}</span>
-                </Grid>
-              )}
+        {state && (
+          <Grid mt={3} justifyContent="space-between" container spacing={2}>
+            <Grid item md={6} xs={12}>
+              <InputLabel className={classes.label}>
+                Phone Number<span className={classes.required}>*</span>
+              </InputLabel>
+              <PhoneNumberInput
+                inputStyle={{ height: '45px', paddingLeft: '55px' }}
+                phoneNo={phoneNo}
+                setPhoneNo={value => {
+                  setFormErrors({ ...formErrors, phoneNo: '' });
+                  setPhoneNo(value);
+                  setPhoneErr('');
+                }}
+                error={formErrors.phoneNo || phoneErr}
+              />
             </Grid>
-          ))
-        }
+            <Grid item md={6} xs={12}>
+              <InputLabel className={classes.label}>Email</InputLabel>
+              <Input
+                value={email}
+                onChange={e => {
+                  setEmailErr('');
+                  setEmail(e.target.value);
+                }}
+                onKeyUp={() => setFormErrors({ ...formErrors, email: '' })}
+                className={classes.textField}
+                placeholder="Email"
+              />
+              <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
+            </Grid>
+            {country === 'BR' && (
+              <Grid item md={6} xs={12}>
+                <InputLabel className={classes.label}>CPF</InputLabel>
+                <Input
+                  value={cpf}
+                  onChange={e => {
+                    setCpfErr('');
+                    setCPF(e.target.value);
+                  }}
+                  onKeyUp={() => setFormErrors({ cpf: '' })}
+                  className={classes.textField}
+                  placeholder="CPF"
+                  inputComponent={TextMaskCustom}
+                />
+                <span className={classes.fieldError}>{cpfErr}</span>
+              </Grid>
+            )}
+          </Grid>
+        )}
         <Grid justifyContent="center" mt={3} container>
           {taxError && <Typography className={classes.error}>{taxError}</Typography>}
           {shippingError && <Typography className={classes.error}>{shippingError}</Typography>}
