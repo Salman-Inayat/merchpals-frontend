@@ -389,7 +389,7 @@ const BillingAddress = ({
               State<span className={classes.required}>*</span>
             </InputLabel>
             <Select
-              value={state}
+              value={state ? state : ''}
               fullWidth
               style={{ height: '45px' }}
               {...register('state', {

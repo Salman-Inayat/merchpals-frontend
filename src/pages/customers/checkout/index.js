@@ -75,7 +75,13 @@ const Checkout = ({
   const classes = useStyles();
   const { storeUrl } = useParams();
   const navigate = useNavigate();
-  let initializepriceCalculation = 0;
+  let initializepriceCalculation = {
+    orderActualAmount: 0,
+    shippingAmount: '',
+    taxAmount: 0,
+    amountWithTaxAndShipping: 0,
+  };
+  let shippingAmount = 0;
   const total = products => {
     let totalCartPrice = 0;
 
@@ -91,32 +97,13 @@ const Checkout = ({
   };
 
   useEffect(() => {
-    console.log('storeUrl', storeUrl);
     getCart(storeUrl);
     getCountries();
   }, []);
-  let check = 0;
+
   useEffect(() => {
-    if (cart && check === 0) {
-      console.log('call', check);
-      let items = [];
-      let productPrice = 0;
-      for (let i = 0; i < reduxCartProducts.length; i++) {
-        let curProduct = reduxCartProducts[i];
-        for (let j = 0; j < curProduct.productMappings.length; j++) {
-          const curVariant = curProduct.productMappings[j];
-          console.log('data', curVariant.quantity * curProduct.price);
-          productPrice = productPrice + curProduct.price * curVariant.quantity;
-        }
-      }
-      initializepriceCalculation = {
-        orderActualAmount: Number(productPrice.toFixed(2)),
-        amountWithTaxAndShipping: Number(productPrice.toFixed(2)),
-      };
-      if (initializepriceCalculation) {
-        getInitializePriceCalculation(initializepriceCalculation);
-      }
-      check = 1;
+    if (cart) {
+      initializePrice();
     }
   }, [cart]);
 
@@ -179,31 +166,43 @@ const Checkout = ({
   }, [reduxCartProducts]);
 
   const initializePrice = () => {
-    console.log('cart', reduxCartProducts);
-    let items = [];
     let productPrice = 0;
-    for (let i = 0; i < reduxCartProducts.length; i++) {
-      let curProduct = reduxCartProducts[i];
+    for (let i = 0; i < cart.savedProducts.length; i++) {
+      let curProduct = cart.savedProducts[i];
       for (let j = 0; j < curProduct.productMappings.length; j++) {
         const curVariant = curProduct.productMappings[j];
-        console.log('data', curVariant.quantity * curProduct.price);
         productPrice = productPrice + curProduct.price * curVariant.quantity;
       }
     }
-    initializepriceCalculation = {
-      orderActualAmount: Number(productPrice.toFixed(2)),
-      amountWithTaxAndShipping: Number(productPrice.toFixed(2)),
-    };
-    if (initializepriceCalculation) {
-      getInitializePriceCalculation(initializepriceCalculation);
-    }
+    if (productPrice > 0) {
+      shippingAmount =
+        priceCalculation.shippingAmount === 'FREE'
+          ? Number('0')
+          : Number(priceCalculation.shippingAmount);
 
-    // productPrice = items;
+      initializepriceCalculation = {
+        orderActualAmount: Number(productPrice.toFixed(2)),
+        shippingAmount:
+          priceCalculation.shippingAmount === 0 ? 'FREE' : priceCalculation.shippingAmount,
+        taxAmount: Number(priceCalculation.taxAmount.toFixed(2)),
+
+        amountWithTaxAndShipping: Number(
+          (productPrice + shippingAmount + priceCalculation.taxAmount).toFixed(2),
+        ),
+      };
+    } else {
+      initializepriceCalculation = {
+        orderActualAmount: 0,
+        taxAmount: 0,
+        shippingAmount: 'FREE',
+        amountWithTaxAndShipping: 0,
+      };
+    }
+    getInitializePriceCalculation(initializepriceCalculation);
   };
   const updateTaxAndShipping = () => {
     const { aptNo, street, zip, city, state, country } = billingAddress;
     let items = [];
-    console.log(cart);
     for (let i = 0; i < cart.savedProducts.length; i++) {
       let curProduct = cart.savedProducts[i];
       for (let j = 0; j < curProduct.productMappings.length; j++) {
