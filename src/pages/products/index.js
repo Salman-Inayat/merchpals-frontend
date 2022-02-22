@@ -46,7 +46,8 @@ import Footer from '../../layouts/static/footer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-import Carousel from 'react-material-ui-carousel';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -96,10 +97,10 @@ const useStyle = makeStyles(theme => ({
   },
   design: {
     position: 'absolute',
-    width: '150px',
+    width: '150px !important',
     height: '150px',
     [theme.breakpoints.down('sm')]: {
-      width: '100px',
+      width: '100px !important',
       height: '100px',
     },
   },
@@ -215,7 +216,7 @@ const Product = () => {
   const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
-  const [loading, setLoading] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
   const fetchedProduct = useSelector(state => state.product?.product);
@@ -270,8 +271,19 @@ const Product = () => {
   }, [fetchedProduct]);
 
   const handleColorChange = event => {
-    setLoading(3);
     const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
+
+    switch (selectedColor.label) {
+      case 'white':
+        setIndex(1);
+        break;
+      case 'black':
+        setIndex(0);
+        break;
+      case 'navy':
+        setIndex(2);
+        break;
+    }
     setColor(selectedColor);
   };
 
@@ -382,7 +394,7 @@ const Product = () => {
     });
   };
   let opacity;
-  console.log('laodng', loading);
+  console.log('index', index);
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -410,20 +422,27 @@ const Product = () => {
             <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: '#000000' }} />
           </IconButton>
         </Grid>
+
         {fetchedProduct ? (
           <Grid item md={12} xs={12}>
             <Grid container display="flex" justifyContent="center" alignItems="center">
               <Grid item md={4} xs={12}>
                 <Carousel
-                  sx={{ height: '430px' }}
-                  autoPlay={false}
-                  animation="slide"
-                  navButtonsAlwaysInvisible={true}
-                  stopAutoPlayOnHover={true}
-                  IndicatorIcon={false}
-                  index={3}
-                  strictIndexing={true}
+                  selectedItem={index}
+                  showThumbs={false}
+                  showArrows={false}
+                  swipeable={false}
+                  showStatus={false}
                 >
+                  <div
+                    className={classes.imageContainer}
+                    style={{
+                      backgroundColor: '#121616',
+                    }}
+                  >
+                    <img src={`${product.image}`} alt="" className={classes.image} />
+                    <img src={product.design} alt="design" className={classes.design} />
+                  </div>
                   <div
                     className={classes.imageContainer}
                     style={{
@@ -436,16 +455,7 @@ const Product = () => {
                   <div
                     className={classes.imageContainer}
                     style={{
-                      backgroundColor: '#262d4f',
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
-                  </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor: '#121616',
+                      backgroundColor: '#262d4f ',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
