@@ -4,7 +4,16 @@ import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
 import BackButton from '../../components/backButton';
 
-import { Typography, Grid, Card, CardMedia, CardContent, Paper, Button } from '@mui/material';
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Paper,
+  Button,
+  CardHeader,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
@@ -90,6 +99,7 @@ function VendorOrderDetails() {
         console.log(err);
       });
   }, []);
+  console.log({ order });
   return (
     <LoggedInVendor>
       <Grid container>
@@ -105,6 +115,9 @@ function VendorOrderDetails() {
               <Grid container spacing={4} p={4}>
                 {order.products.map(product => (
                   <Grid key={product._id} item xs={12} sm={6} md={6} lg={4}>
+                    <Typography sx={{ textAlign: 'center' }} variant="h5">
+                      {product.vendorProduct.productId.name}
+                    </Typography>
                     <Card>
                       <CardMedia
                         src={product.vendorProduct.productId.image}
@@ -137,12 +150,12 @@ function VendorOrderDetails() {
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="h5"
+                          variant="bosy1"
                           fontWeight="light"
-                          component="h5"
-                          align="center"
+                          component="body1"
+                          textAlign="center"
                         >
-                          {product.vendorProduct.productId.name}
+                          {`Total quantity: ${product.quantity}`}
                         </Typography>
                       </CardContent>
                     </Card>
