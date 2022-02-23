@@ -16,6 +16,11 @@ const EditDesign = () => {
   const childRef = useRef();
 
   const [designData, setDesignData] = useState();
+
+  useEffect(() => {
+    getDesign();
+  }, []);
+
   useEffect(() => {
     getDesign();
   }, [designId]);
@@ -48,31 +53,6 @@ const EditDesign = () => {
 
       let form = new FormData();
       form.append('designName', newDesign.designName);
-      form.append('designJson', newDesign.designJson);
-      form.append(
-        newDesign.designImages[0].name,
-        dataURLtoFile(newDesign.designImages[0].data, `${newDesign.designImages[0].name}.png`),
-      );
-      form.append(
-        newDesign.designImages[1].name,
-        dataURLtoFile(newDesign.designImages[1].data, `${newDesign.designImages[1].name}.png`),
-      );
-      form.append(
-        newDesign.designImages[2].name,
-        dataURLtoFile(newDesign.designImages[2].data, `${newDesign.designImages[2].name}.png`),
-      );
-      form.append(
-        newDesign.designImages[3].name,
-        dataURLtoFile(newDesign.designImages[3].data, `${newDesign.designImages[3].name}.png`),
-      );
-      form.append(
-        newDesign.designImages[4].name,
-        dataURLtoFile(newDesign.designImages[4].data, `${newDesign.designImages[4].name}.png`),
-      );
-
-      for (var pair of form.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
 
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
