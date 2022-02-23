@@ -83,6 +83,10 @@ export default function Router() {
     { path: '/terms-of-services', element: <TermsOfServices /> },
     { path: 'track-order', element: <TrackOrder /> },
     {
+      path: '/welcome',
+      element: <WelcomeMessage />,
+    },
+    {
       path: '/flow-complete',
       element: <FlowComplete />,
     },

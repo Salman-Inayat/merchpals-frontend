@@ -263,7 +263,7 @@ const ProductCard = ({
         </Box>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {design?.name} {product.name}
+            {product.name}
           </Typography>
           <Typography
             variant="body2"

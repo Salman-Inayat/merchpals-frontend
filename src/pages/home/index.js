@@ -254,7 +254,8 @@ const Home = () => {
         );
 
         postDataToURL(designJson, JSONBlob);
-
+        nextStep();
+        navigate('/welcome', { state: { storeURL: response.data.data.store.slug } });
         setShowWelcomeMessage(true);
       })
       .catch(err => {
@@ -288,11 +289,11 @@ const Home = () => {
           />
         );
       case 3:
-        if (showWelcomeMessage) {
-          return <WelcomeMessage storeURL={storeURL} />;
-        }
         return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
+        // if (showWelcomeMessage) {
+        //   return <WelcomeMessage storeURL={storeURL} />;
+        // }
         return <Editor nextStep={nextStep} design={designData} />;
     }
   };
