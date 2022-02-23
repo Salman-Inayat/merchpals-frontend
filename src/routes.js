@@ -82,8 +82,6 @@ export default function Router() {
 
     { path: '/terms-of-services', element: <TermsOfServices /> },
     { path: 'track-order', element: <TrackOrder /> },
-    { path: '/store-form', element: <StoreForm /> },
-
     {
       path: '/flow-complete',
       element: <FlowComplete />,

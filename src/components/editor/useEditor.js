@@ -4,7 +4,6 @@ import * as changedpi from 'changedpi';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
-import 'fabric-history';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_DESIGN } from '../../store/redux/types';
