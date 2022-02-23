@@ -31,7 +31,7 @@ export const dataURLtoFile = (dataurl, filename) => {
   return new File([u8arr], filename, { type: mime });
 };
 
-const getJSONFromUrl = function (url, callback) {
+export const getJSONFromUrl = function (url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'json';
