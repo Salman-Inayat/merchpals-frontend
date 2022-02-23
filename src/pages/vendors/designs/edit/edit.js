@@ -45,6 +45,21 @@ const EditDesign = () => {
       .catch(error => console.log({ error }));
   };
 
+  const postDataToURL = async (url, data) => {
+    axios
+      .put(url, data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   const finishDesignEdit = () => {
     childRef.current.saveDesign();
 
@@ -62,7 +77,45 @@ const EditDesign = () => {
           },
         })
         .then(response => {
-          navigate('/vendor/designs');
+          const urls = response.data.response;
+
+          const designaVariant1 = urls[0].imageUrl;
+          const designaVariant2 = urls[1].imageUrl;
+          const designaVariant3 = urls[2].imageUrl;
+          const designaVariant4 = urls[3].imageUrl;
+          const designaVariant5 = urls[4].imageUrl;
+          const designJson = urls[5].imageUrl;
+
+          const JSONBlob = new Blob([JSON.stringify(newDesign.designJson)], {
+            type: 'application/json',
+          });
+
+          postDataToURL(
+            designaVariant1,
+            dataURLtoFile(newDesign.designImages[0].data, `${newDesign.designImages[0].name}.png`),
+          );
+          postDataToURL(
+            designaVariant2,
+            dataURLtoFile(newDesign.designImages[1].data, `${newDesign.designImages[1].name}.png`),
+          );
+          postDataToURL(
+            designaVariant3,
+            dataURLtoFile(newDesign.designImages[2].data, `${newDesign.designImages[2].name}.png`),
+          );
+          postDataToURL(
+            designaVariant4,
+            dataURLtoFile(newDesign.designImages[3].data, `${newDesign.designImages[3].name}.png`),
+          );
+          postDataToURL(
+            designaVariant5,
+            dataURLtoFile(newDesign.designImages[4].data, `${newDesign.designImages[4].name}.png`),
+          );
+
+          postDataToURL(designJson, JSONBlob);
+
+          setTimeout(() => {
+            navigate('/vendor/designs');
+          }, 2000);
         })
         .catch(error => console.log({ error }));
     }, 100);
