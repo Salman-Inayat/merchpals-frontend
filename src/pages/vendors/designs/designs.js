@@ -70,7 +70,8 @@ const VendorDesigns = () => {
         },
       })
       .then(response => {
-        response.data.designs.map(design => {
+        const designs = response.data.designs;
+        designs.map(design => {
           setDesignImage(prevState => [
             ...prevState,
             { id: design._id, url: design.designImages[4].imageUrl },
