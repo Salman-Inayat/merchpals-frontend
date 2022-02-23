@@ -74,6 +74,10 @@ function StoreSettings() {
     coverAvatar: '',
     logo: '',
   });
+  const [showImg, setShowImg] = useState({
+    coverAvatar: '',
+    logo: '',
+  });
 
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
@@ -149,6 +153,7 @@ function StoreSettings() {
 
   const setImage = async (name, file) => {
     setImages({ ...images, [name]: file });
+    setShowImg({ ...showImg, [name]: URL.createObjectURL(file) });
   };
 
   const checkFieldsEmpty = () => {
@@ -252,9 +257,11 @@ function StoreSettings() {
                 >
                   <img
                     src={
-                      images.coverAvatar === ''
+                      showImg.coverAvatar
+                        ? showImg.coverAvatar
+                        : images.coverAvatar === ''
                         ? storeAvatar
-                        : URL.createObjectURL(images.coverAvatar)
+                        : images.coverAvatar
                     }
                   />
                 </Grid>
@@ -305,7 +312,7 @@ function StoreSettings() {
                   alignItems="center"
                 >
                   <img
-                    src={images.logo === '' ? storeLogo : URL.createObjectURL(images.logo)}
+                    src={showImg.logo ? showImg.logo : images.logo === '' ? storeLogo : images.logo}
                     style={{
                       width: '200px',
                       height: '200px',

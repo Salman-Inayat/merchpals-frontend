@@ -437,41 +437,17 @@ const Product = () => {
                   <div
                     className={classes.imageContainer}
                     style={{
-                      backgroundColor: '#121616',
+                      backgroundColor:
+                        color.label === 'white'
+                          ? '#ffffff'
+                          : color.label === 'navy'
+                          ? '#262d4f '
+                          : '#121616',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
                     <img src={product.design} alt="design" className={classes.design} />
                   </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor: '#ffffff',
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
-                  </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor: '#262d4f ',
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
-                  </div>
-                </Carousel>
-                {/* <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                {loading ? (
-                  <CircularProgress size="2rem" />
-                ) : (
                   <div
                     className={classes.imageContainer}
                     style={{
@@ -484,10 +460,23 @@ const Product = () => {
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />{' '}
+                    <img src={product.design} alt="design" className={classes.design} />
                   </div>
-                )}
-              </div> */}
+                  <div
+                    className={classes.imageContainer}
+                    style={{
+                      backgroundColor:
+                        color.label === 'white'
+                          ? '#ffffff'
+                          : color.label === 'navy'
+                          ? '#262d4f '
+                          : '#121616',
+                    }}
+                  >
+                    <img src={`${product.image}`} alt="" className={classes.image} />
+                    <img src={product.design} alt="design" className={classes.design} />
+                  </div>
+                </Carousel>
               </Grid>
               <Grid
                 item

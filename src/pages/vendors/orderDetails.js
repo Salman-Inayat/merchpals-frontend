@@ -24,31 +24,36 @@ const useStyles = makeStyles(theme => ({
     },
   },
   poster: {
-    height: '150px',
-    width: '150px',
+    height: '106px',
+    width: '106px',
     borderRadius: '5px',
+    top: '40%',
+    left: '50%',
     [theme.breakpoints.down('sm')]: {
-      height: '130px',
-      width: '130px',
+      height: '200px',
+      width: '200px',
+      top: '44%',
     },
   },
   phoneCase: {
-    height: '80px',
-    width: '80px',
+    height: '60px',
+    width: '60px',
+    top: '43%',
     [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
-      top: '52%',
+      height: '100px',
+      width: '100px',
+      top: '45%',
     },
   },
   mug: {
-    height: '90px',
-    width: '90px',
-    top: '55%',
+    height: '60px',
+    width: '60px',
+    top: '44%',
     left: '52%',
     [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
+      height: '100px',
+      width: '100px',
+      top: '48%',
     },
   },
   productImage: {
@@ -85,7 +90,6 @@ function VendorOrderDetails() {
         console.log(err);
       });
   }, []);
-
   return (
     <LoggedInVendor>
       <Grid container>
@@ -104,7 +108,14 @@ function VendorOrderDetails() {
                     <Card>
                       <CardMedia
                         src={product.vendorProduct.productId.image}
-                        style={{ backgroundColor: product.productMapping.color.label }}
+                        style={{
+                          backgroundColor:
+                            product.productMapping.color.label === 'white'
+                              ? '#ffffff'
+                              : product.productMapping.color.label === 'navy'
+                              ? '#262d4f '
+                              : '#121616',
+                        }}
                         height="100%"
                         component="img"
                       />
@@ -115,7 +126,7 @@ function VendorOrderDetails() {
                             classes.design,
                             product.vendorProduct.productId.name === 'Poster'
                               ? classes.poster
-                              : product.vendorProduct.productId.name === 'Phone Case'
+                              : product.vendorProduct.productId.name === 'Case'
                               ? classes.phoneCase
                               : product.vendorProduct.productId.name === 'Mug'
                               ? classes.mug
@@ -149,11 +160,11 @@ function VendorOrderDetails() {
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Total Amount: {order.totalAmount}
+                        Total Amount: {order.totalAmount}$
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Profit: {totalProfit}
+                        Profit: {totalProfit}$
                       </Typography>
 
                       <Typography variant="p" component="p">
