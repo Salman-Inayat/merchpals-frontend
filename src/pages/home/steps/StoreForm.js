@@ -229,6 +229,10 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     logo: '',
     coverAvatar: '',
   });
+  const [showImg, setShowImg] = useState({
+    coverAvatar: '',
+    logo: '',
+  });
   // let themeClass;
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
@@ -276,6 +280,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
 
   const setImage = async (name, file) => {
     setImages({ ...images, [name]: file });
+    setShowImg({ ...showImg, [name]: URL.createObjectURL(file) });
   };
 
   // const isSlugValid = () => {
@@ -340,7 +345,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
           setLoading(false);
           setSlugMessage(err.response.data.message);
         });
-    }, 500);
+    }, 1000);
 
     setTimer(newTimer);
   };
@@ -420,9 +425,11 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           <Box className={classes.uploadingPhotos}>
                             <img
                               src={
-                                images.coverAvatar === ''
+                                showImg.coverAvatar
+                                  ? showImg.coverAvatar
+                                  : images.coverAvatar === ''
                                   ? '/assets/img/sand_cover_pic.jpg'
-                                  : URL.createObjectURL(images.coverAvatar)
+                                  : images.coverAvatar
                               }
                               className={classes.coverPhoto}
                               onClick={handleChangeStoreAvatarButton}
@@ -454,9 +461,9 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                               </Box>
                             </Modal>
                             <Box className={classes.logoContainer}>
-                              {images.logo ? (
+                              {showImg.logo ? (
                                 <img
-                                  src={images.logo && URL.createObjectURL(images.logo)}
+                                  src={showImg.logo}
                                   className={classes.logoPhoto}
                                   onClick={handleChangeStoreLogoButton}
                                 />

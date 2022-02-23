@@ -66,6 +66,7 @@ const useStyles = makeStyles(theme => ({
   phoneCase: {
     height: '80px',
     width: '80px',
+    top: '53%',
     [theme.breakpoints.down('sm')]: {
       height: '50px',
       width: '50px',
@@ -78,8 +79,8 @@ const useStyles = makeStyles(theme => ({
     top: '55%',
     left: '52%',
     [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
+      height: '45px',
+      width: '45px',
     },
   },
 }));
@@ -120,7 +121,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
               classes.design,
               product.name === 'Poster'
                 ? classes.poster
-                : product.name === 'Phone Case'
+                : product.name === 'Case'
                 ? classes.phoneCase
                 : product.name === 'Mug'
                 ? classes.mug
