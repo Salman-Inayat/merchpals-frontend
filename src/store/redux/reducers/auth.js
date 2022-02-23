@@ -89,7 +89,7 @@ const authReducer = (state = initialState, action) => {
     case AUTH_OTP_VERFICATION_SUCCESS:
       return { ...state, otpVerified: true, verificationError: '' };
     case AUTH_OTP_VERFICATION_FAILED:
-      return { ...state, otpVerified: false, verificationError: 'Something went wrong!' };
+      return { ...state, otpVerified: false, verificationError: 'Invalid OTP!' };
     case AUTH_OTP_SEND:
     case AUTH_FORGOT_PASSWORD_OTP:
       return { ...state, otpSent: false };

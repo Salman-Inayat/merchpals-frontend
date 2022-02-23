@@ -190,38 +190,6 @@ const Home = () => {
       data = handleEmptyCoverAvatar(data);
     }
 
-    // let store = new FormData();
-    // store.append('name', data.name);
-    // store.append('facebook', data.facebook);
-    // store.append('instagram', data.instagram);
-    // store.append('twitter', data.twitter);
-    // store.append('logo', data.logo);
-    // store.append('coverAvatar', data.coverAvatar);
-    // store.append('products', JSON.stringify([...selectedVariants]));
-    // store.append('themeColor', data.themeColor);
-    // store.append('designName', designData.designName);
-    // // store.append('designJson', designData.designJson);
-    // // store.append(
-    // //   designData.designImages[0].name,
-    // //   dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
-    // // );
-    // // store.append(
-    // //   designData.designImages[1].name,
-    // //   dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
-    // // );
-    // // store.append(
-    // //   designData.designImages[2].name,
-    // //   dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
-    // // );
-    // // store.append(
-    // //   designData.designImages[3].name,
-    // //   dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
-    // // );
-    // store.append(
-    //   designData.designImages[4].name,
-    //   dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
-    // );
-
     const storeData = {
       name: data.name,
       facebook: data.facebook,
@@ -230,7 +198,6 @@ const Home = () => {
       products: JSON.stringify([...selectedVariants]),
       themeColor: data.themeColor,
       designName: designData.designName,
-      // designJson: designData.designJson,
     };
 
     const JSONBlob = new Blob([JSON.stringify(designData.designJson)], {
@@ -250,33 +217,43 @@ const Home = () => {
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
-        console.log(response.data.data);
         setStoreURL(response.data.data.store.slug);
 
-        postDataToURL(response.data.data.urls.logo, data.logo);
-        postDataToURL(response.data.data.urls.coverAvatar, data.coverAvatar);
+        const urls = response.data.data.urls;
+
+        const storeLogo = urls[0].imageUrl;
+        const storeCoverAvatar = urls[1].imageUrl;
+        const designaVariant1 = urls[2].imageUrl;
+        const designaVariant2 = urls[3].imageUrl;
+        const designaVariant3 = urls[4].imageUrl;
+        const designaVariant4 = urls[5].imageUrl;
+        const designaVariant5 = urls[6].imageUrl;
+        const designJson = urls[7].imageUrl;
+
+        postDataToURL(storeLogo, data.logo);
+        postDataToURL(storeCoverAvatar, data.coverAvatar);
         postDataToURL(
-          response.data.data.urls.variant1,
+          designaVariant1,
           dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
         );
         postDataToURL(
-          response.data.data.urls.variant2,
+          designaVariant2,
           dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
         );
         postDataToURL(
-          response.data.data.urls.variant3,
+          designaVariant3,
           dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
         );
         postDataToURL(
-          response.data.data.urls.variant4,
+          designaVariant4,
           dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
         );
         postDataToURL(
-          response.data.data.urls.variant5,
+          designaVariant5,
           dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
         );
 
-        postDataToURL(response.data.data.urls.designJson, JSONBlob);
+        postDataToURL(designJson, JSONBlob);
 
         setShowWelcomeMessage(true);
       })
