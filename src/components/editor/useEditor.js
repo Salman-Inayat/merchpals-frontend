@@ -8,12 +8,16 @@ import 'fabric-history';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_DESIGN } from '../../store/redux/types';
+import { fill } from 'lodash';
 
 const useEditor = canvasId => {
+  const canvasShape = useSelector(state => state.canvas.shape);
+
   let [canvas, setCanvas] = useState();
   let [canvasJSON, setCanvasJSON] = useState();
   let [canvasName, setCanvasName] = useState();
   let [miniature, setMiniature] = useState();
+  let [isSquare, setIsSquare] = useState(true);
   const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
@@ -114,7 +118,69 @@ const useEditor = canvasId => {
   useEffect(() => {
     setC2(document.getElementById('static'));
     setCtx2(document.getElementById('static').getContext('2d'));
+
+    if (canvasShape === 'circle' || canvasShape === 'triangle') {
+      setIsSquare(false);
+      console.log('is not square');
+    }
   }, []);
+
+  const updateShape = () => {
+    const canvasWrapper = document.getElementById('fabric-canvas-wrapper');
+
+    const circle = new fabric.Circle({
+      radius: 225,
+    });
+
+    const rect = new fabric.Rect({
+      width: 450,
+      height: 450,
+    });
+
+    const p1 = { left: 0, top: 0 };
+    const p2 = { left: canvas.width, top: 0 };
+    const p3 = { left: canvas.width / 2, top: canvas.height };
+
+    const triangle = new fabric.Polygon([
+      { x: p1.left, y: p1.top },
+      { x: p2.left, y: p2.top },
+      { x: p3.left, y: p3.top },
+    ]);
+
+    const canvasClipPaths = [
+      'circle(225px at center)',
+      'none',
+      'polygon(0px 0px, 450px 0px, 225px 450px)',
+    ];
+
+    const previewClipPaths = ['circle(20px at center)', 'none', 'polygon(0 0, 100% 0, 50% 100%)'];
+
+    switch (canvasShape) {
+      case 'circle':
+        canvasWrapper.style.clipPath = canvasClipPaths[0];
+        canvas.clipPath = circle;
+        c2.style.clipPath = previewClipPaths[0];
+
+        break;
+      case 'square':
+        canvasWrapper.style.clipPath = canvasClipPaths[1];
+        canvas.clipPath = rect;
+
+        c2.style.clipPath = previewClipPaths[1];
+        break;
+      case 'triangle':
+        c2.style.clipPath = '';
+        canvasWrapper.style.clipPath = canvasClipPaths[2];
+        canvas.clipPath = triangle;
+
+        c2.style.clipPath = previewClipPaths[2];
+
+        break;
+      default:
+        canvas.clipPath = rect;
+        break;
+    }
+  };
 
   useLayoutEffect(() => {
     if (firstUpdate.current) {
@@ -123,6 +189,19 @@ const useEditor = canvasId => {
     }
 
     if (canvasJSON) {
+      if (isSquare) {
+        console.log('canvas shape is  square');
+
+        updateShape();
+      } else {
+        console.log('canvas shape is not square', c2);
+        c2.style.clipPath = null;
+        console.log('canvas shape is not square', c2);
+
+        setTimeout(() => {
+          updateShape();
+        }, 100);
+      }
       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
         canvasProperties.canvasFill = canvas.backgroundColor;
 
@@ -146,6 +225,7 @@ const useEditor = canvasId => {
 
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
+    updateShape();
 
     canvas.on({
       'object:moving': e => {},
@@ -1258,7 +1338,7 @@ const useEditor = canvasId => {
     };
   };
 
-  const canvasReady = (canvasReady, canvasJSON, designName) => {
+  const canvasReady = (canvasReady, canvasJSON, designName, shape) => {
     setCanvas(canvasReady);
     setCanvasName(designName);
     setCanvasJSON(canvasJSON);

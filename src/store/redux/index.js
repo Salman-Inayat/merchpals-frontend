@@ -6,6 +6,7 @@ import store from './reducers/store';
 import product from './reducers/product';
 import printful from './reducers/printful';
 import order from './reducers/order';
+import canvas from './reducers/canvas';
 
 export default combineReducers({
   auth,
@@ -15,4 +16,5 @@ export default combineReducers({
   product,
   printful,
   order,
+  canvas,
 });

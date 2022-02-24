@@ -16,6 +16,7 @@ const CanvasEditor = _ref => {
     onReady = _ref.onReady,
     canvasJSON = _ref.canvasJSON,
     designName = _ref.designName;
+
   var canvasElParent = useRef(null);
   var canvasEl = useRef(null);
 
@@ -44,7 +45,6 @@ const CanvasEditor = _ref => {
     var setCurrentDimensions = function setCurrentDimensions() {
       var _canvasElParent$curre, _canvasElParent$curre2;
       const outerCanvasContainer = document.getElementsByClassName(className)[0];
-
       const ratio = canvas.getWidth() / canvas.getHeight();
       const containerWidth = outerCanvasContainer.clientWidth;
       const containerHeight = outerCanvasContainer.clientHeight;
@@ -76,11 +76,12 @@ const CanvasEditor = _ref => {
       window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
+
   return React__default.createElement(
     'div',
     {
       ref: canvasElParent,
-      className: className,
+      id: className,
     },
     React__default.createElement('canvas', {
       ref: canvasEl,

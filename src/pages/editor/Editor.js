@@ -18,11 +18,14 @@ import CanvasEditor from '../../components/editor/canvasEditor';
 import Smileys from './Smileys';
 import ShirtSVG from '../../assets/images/gray-tshirt.svg';
 import SmileySVG from '../../assets/images/smiley.svg';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCanvasShape } from '../../store/redux/actions/canvas';
 
 const useStyles = makeStyles(theme => ({
   editor: {
     width: '450px',
     height: '450px',
+    background: 'transparent',
     [theme.breakpoints.down('sm')]: {
       width: '225px',
       height: '225px',
@@ -106,14 +109,21 @@ const useStyles = makeStyles(theme => ({
 const Editor = forwardRef((props, ref) => {
   const { triggerExport = 0, canvasJSON, saveEditDesign, designName } = props;
 
+  const canvasShape = useSelector(state => state.canvas.shape);
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const editorJs = useEditor();
-  const [toggleSmileys, setToggleSmileys] = useState(false);
-  const [toggleFontControls, setToggleFontControls] = useState(false);
-  const [miniature, setMiniature] = useState();
+  const [shapeCounter, setShapeCounter] = useState(
+    canvasShape === 'square'
+      ? 0
+      : canvasShape === 'triangle'
+      ? 1
+      : canvasShape === 'circle'
+      ? 2
+      : 0,
+  );
 
-  const [finalJson, setFinalJson] = useState([]);
   useEffect(() => {
     var style1 = document.getElementById('style1');
     var style2 = document.getElementById('style2');
@@ -271,6 +281,19 @@ const Editor = forwardRef((props, ref) => {
     imageControls.hidden = true;
   };
 
+  const changeShape = shape => {
+    if (shapeCounter == 2) {
+      setShapeCounter(0);
+      dispatch(updateCanvasShape('square'));
+    } else if (shapeCounter == 0) {
+      setShapeCounter(1);
+      dispatch(updateCanvasShape('triangle'));
+    } else if (shapeCounter == 1) {
+      setShapeCounter(2);
+      dispatch(updateCanvasShape('circle'));
+    }
+  };
+
   return (
     <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
       <Grid item md={12} sm={12} xs={12}>
@@ -315,8 +338,12 @@ const Editor = forwardRef((props, ref) => {
             display="flex"
             justifyContent="center"
             alignItems="center"
+            style={{ padding: '0px' }}
           >
-            <Card className={`${classes.editor} fabric-canvas-wrapper`}>
+            <Card
+              className={`${classes.editor} fabric-canvas-wrapper`}
+              style={{ borderRadius: canvasShape === 'triangle' ? '0px' : '1rem' }}
+            >
               <CanvasEditor
                 onReady={editorJs.onReady}
                 class="fabric-canvas-wrapper"
@@ -340,6 +367,13 @@ const Editor = forwardRef((props, ref) => {
             // alignContent="center"
             className={classes.buttonContainer}
           >
+            <Button
+              variant="contained"
+              onClick={changeShape}
+              className={`${classes.addText} ${classes.button}`}
+            >
+              shapes
+            </Button>
             <Button
               variant="contained"
               onClick={addText}
