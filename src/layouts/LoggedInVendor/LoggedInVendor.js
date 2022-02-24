@@ -115,7 +115,7 @@ const LoggedInVendor = ({
     });
 
   return (
-    <Grid direction="column" container>
+    <Grid container>
       <Grid xs={12} item>
         <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">

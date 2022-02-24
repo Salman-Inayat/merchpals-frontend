@@ -5,7 +5,6 @@ import { Grid, Button, Typography, Stack, CircularProgress } from '@mui/material
 import MerchPalsLogo from '../../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
-import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   welcome_container: {
@@ -17,13 +16,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const WelcomeMessage = () => {
+const WelcomeMessage = ({ storeURL }) => {
   const [toggleFlowComplete, setToggleFlowComplete] = useState(false);
   const classes = useStyles();
-  const location = useLocation();
-  console.log('location', location);
-  const storeURL = location.state.storeURL;
-  console.log(storeURL);
 
   useEffect(() => {
     setInterval(() => {

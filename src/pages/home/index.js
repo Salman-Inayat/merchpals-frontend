@@ -255,7 +255,6 @@ const Home = () => {
 
         postDataToURL(designJson, JSONBlob);
         nextStep();
-        navigate('/welcome', { state: { storeURL: response.data.data.store.slug } });
         setShowWelcomeMessage(true);
       })
       .catch(err => {
@@ -291,38 +290,45 @@ const Home = () => {
       case 3:
         return <StoreForm createStore={createStore} createStoreError={createStoreError} />;
       default:
-        // if (showWelcomeMessage) {
-        //   return <WelcomeMessage storeURL={storeURL} />;
-        // }
+        if (showWelcomeMessage) {
+          return <WelcomeMessage storeURL={storeURL} />;
+        }
         return <Editor nextStep={nextStep} design={designData} />;
     }
   };
   return (
     <Container className={classes.fluid}>
-      <Grid className={classes.header} justifyContent="space-between" alignItems="center" container>
-        <Grid xs={1} md={1} sm={1} item alignItems="center">
-          {step > 0 && step < 3 && (
-            <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
-              <ArrowBackIosIcon className={classes.svg} />
-            </IconButton>
-          )}
-        </Grid>
-        <Grid xs={6} md={7} sm={6} item className={classes.logo}>
-          {/* <Grid justifyContent="center" alignItems="center" container> */}
-          <Avatar src={Logo} className={classes.avatar} />
-          {/* </Grid> */}
-        </Grid>
+      {step < 4 && (
+        <Grid
+          className={classes.header}
+          justifyContent="space-between"
+          alignItems="center"
+          container
+        >
+          <Grid xs={1} md={1} sm={1} item alignItems="center">
+            {step > 0 && step < 3 && (
+              <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
+                <ArrowBackIosIcon className={classes.svg} />
+              </IconButton>
+            )}
+          </Grid>
+          <Grid xs={6} md={7} sm={6} item className={classes.logo}>
+            {/* <Grid justifyContent="center" alignItems="center" container> */}
+            <Avatar src={Logo} className={classes.avatar} />
+            {/* </Grid> */}
+          </Grid>
 
-        <Grid item xs={5} md={4} sm={5}>
-          <Stepper activeStep={step}>
-            {[1, 2, 3, 4].map(label => (
-              <Step key={label} className={classes.muistep}>
-                <StepLabel />
-              </Step>
-            ))}
-          </Stepper>
+          <Grid item xs={5} md={4} sm={5}>
+            <Stepper activeStep={step}>
+              {[1, 2, 3, 4].map(label => (
+                <Step key={label} className={classes.muistep}>
+                  <StepLabel />
+                </Step>
+              ))}
+            </Stepper>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
       <Grid container className={classes.content}>
         {yieldStep()}
       </Grid>
