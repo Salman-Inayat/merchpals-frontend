@@ -6,7 +6,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import { Button, Card, Grid, Stack, Typography, Input, Avatar } from '@mui/material';
+import { Button, Card, Grid, Stack, Typography, Input, Avatar, Modal, Paper } from '@mui/material';
 import { fabric } from 'fabric';
 import { makeStyles } from '@mui/styles';
 import { Delete, Undo, Redo } from '@mui/icons-material';
@@ -18,6 +18,7 @@ import CanvasEditor from '../../components/editor/canvasEditor';
 import Smileys from './Smileys';
 import ShirtSVG from '../../assets/images/gray-tshirt.svg';
 import SmileySVG from '../../assets/images/smiley.svg';
+import ColorPng from '../../assets/images/color.png';
 
 const useStyles = makeStyles(theme => ({
   editor: {
@@ -101,6 +102,22 @@ const useStyles = makeStyles(theme => ({
     height: '40px',
     border: 'none',
   },
+  colorModal: {
+    position: 'absolute',
+    top: '280px',
+    left: '62%',
+    transform: 'translate(-50%, -50%)',
+    width: '150px',
+    height: '170px',
+    padding: '8px 8px',
+    backgroundColor: '#fff',
+    [theme.breakpoints.down('sm')]: {
+      width: '120px',
+
+      top: '230px',
+      left: '85%',
+    },
+  },
 }));
 
 const Editor = forwardRef((props, ref) => {
@@ -112,6 +129,7 @@ const Editor = forwardRef((props, ref) => {
   const [toggleSmileys, setToggleSmileys] = useState(false);
   const [toggleFontControls, setToggleFontControls] = useState(false);
   const [miniature, setMiniature] = useState();
+  const [openColorModal, setOpenColorModal] = useState(false);
 
   const [finalJson, setFinalJson] = useState([]);
   useEffect(() => {
@@ -271,6 +289,8 @@ const Editor = forwardRef((props, ref) => {
     imageControls.hidden = true;
   };
 
+  const handleOpenColorModal = () => setOpenColorModal(!openColorModal);
+
   return (
     <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
       <Grid item md={12} sm={12} xs={12}>
@@ -324,9 +344,6 @@ const Editor = forwardRef((props, ref) => {
                 designName={designName}
               />
             </Card>
-          </Grid>
-          <Grid item md={2} sm={2} xs={2}>
-            <ColorPallete setCanvasBackground={setCanvasBackground} />
           </Grid>
         </Grid>
       </Grid>
@@ -399,12 +416,29 @@ const Editor = forwardRef((props, ref) => {
               </div>
             </Grid>
           </Stack>
+
+          {openColorModal && (
+            <Paper elevation={5} className={classes.colorModal}>
+              <ColorPallete
+                setCanvasBackground={setCanvasBackground}
+                setOpenColorModal={setOpenColorModal}
+              />
+            </Paper>
+          )}
           <Stack
             direction="column"
             spacing={3}
             alignItems="center"
             className={classes.buttonContainer}
           >
+            <Button
+              variant="contained"
+              onClick={handleOpenColorModal}
+              className={`${classes.button}`}
+            >
+              <Avatar src={ColorPng} style={{ height: '25px', width: '25px' }} />
+            </Button>
+
             <Button
               size="small"
               variant="contained"

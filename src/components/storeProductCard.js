@@ -138,7 +138,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${product.name} // ${storeName}`}
+          {`${product.slug === 'longsleeve' ? 'Long' : product.name} // ${storeName}`}
         </Typography>
         <Typography
           gutterBottom

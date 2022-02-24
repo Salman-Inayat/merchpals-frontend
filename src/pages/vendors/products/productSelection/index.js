@@ -15,7 +15,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const ProductSelection = ({ designName }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const dispatch = useDispatch();
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -27,7 +27,7 @@ const ProductSelection = ({ designName }) => {
     if (!localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
       navigate('/login', { replace: true });
     } else {
-      fetchProducts();
+      dispatch(fetchProducts());
     }
   }, []);
 

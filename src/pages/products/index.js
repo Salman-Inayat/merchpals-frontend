@@ -394,7 +394,7 @@ const Product = () => {
     });
   };
   let opacity;
-  console.log('index', index);
+  console.log('index', product);
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -490,7 +490,7 @@ const Product = () => {
               >
                 <Stack direction="column" spacing={2} className={classes.stack}>
                   <Typography gutterBottom variant="h3" component="div" align="center">
-                    {product.name}
+                    {product.slug === 'Case' ? 'Iphone Case' : product.name}
                   </Typography>
 
                   <Typography
@@ -599,13 +599,13 @@ const Product = () => {
                             label={
                               <div
                                 className={
-                                  product.slug === 'case' ? classes.caseSize : classes.selectSize
+                                  product.slug === 'Case' ? classes.caseSize : classes.selectSize
                                 }
                               >
                                 <Typography
                                   component="h4"
                                   className={
-                                    product.slug === 'case' ? classes.caseSizeHeading : null
+                                    product.slug === 'Case' ? classes.caseSizeHeading : null
                                   }
                                 >
                                   {label.toUpperCase()}

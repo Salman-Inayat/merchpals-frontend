@@ -124,7 +124,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${product.name} // ${vendorName}`}
+          {`${product.slug === 'longsleeve' ? 'Long' : product.name} // ${vendorName}`}
         </Typography>
         <Typography
           gutterBottom
