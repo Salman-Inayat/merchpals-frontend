@@ -19,7 +19,7 @@ import Smileys from './Smileys';
 import ShirtSVG from '../../assets/images/gray-tshirt.svg';
 import SmileySVG from '../../assets/images/smiley.svg';
 import ColorPng from '../../assets/images/color.png';
-
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 const useStyles = makeStyles(theme => ({
   editor: {
     width: '450px',
@@ -117,6 +117,13 @@ const useStyles = makeStyles(theme => ({
       top: '230px',
       left: '85%',
     },
+  },
+  closeColorModal: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: '-10px',
+    right: '-4px',
+    opacity: '0.8',
   },
 }));
 
@@ -225,7 +232,12 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const setCanvasBackground = bgColor => {
+    console.log('call color');
     editorJs.setCanvasFill(bgColor);
+  };
+  const setCavasTextureImage = imgUrl => {
+    console.log('call textue', imgUrl);
+    editorJs.setCanvasImage(imgUrl);
   };
 
   const setFontColor = color => {
@@ -289,7 +301,7 @@ const Editor = forwardRef((props, ref) => {
     imageControls.hidden = true;
   };
 
-  const handleOpenColorModal = () => setOpenColorModal(!openColorModal);
+  const handleOpenColorModal = () => setOpenColorModal(true);
 
   return (
     <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
@@ -417,14 +429,19 @@ const Editor = forwardRef((props, ref) => {
             </Grid>
           </Stack>
 
-          {openColorModal && (
+          {openColorModal ? (
             <Paper elevation={5} className={classes.colorModal}>
+              <CancelOutlinedIcon
+                fontSize="small"
+                className={classes.closeColorModal}
+                onClick={() => setOpenColorModal(false)}
+              />
               <ColorPallete
                 setCanvasBackground={setCanvasBackground}
-                setOpenColorModal={setOpenColorModal}
+                setCavasTextureImage={setCavasTextureImage}
               />
             </Paper>
-          )}
+          ) : null}
           <Stack
             direction="column"
             spacing={3}

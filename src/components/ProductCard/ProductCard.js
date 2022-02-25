@@ -211,13 +211,20 @@ const ProductCard = ({
   }, []);
 
   const renderBgColor = () => {
-    let bgColor = '#ffffff';
+    let bgColor = '#fff';
 
     if (selectedVariants[product._id]) {
       const productSelectedVariants = selectedVariants[product._id];
       const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
-      bgColor = bgColor === 'white' ? '#ffffff' : bgColor === 'navy' ? '#262d4f ' : '#121616';
+      bgColor =
+        bgColor === 'white'
+          ? '#fff'
+          : bgColor === 'navy'
+          ? '#262d4f '
+          : bgColor === 'black'
+          ? '#121616'
+          : '';
     }
     return bgColor;
   };
@@ -228,7 +235,9 @@ const ProductCard = ({
         ? '#ffffff'
         : event.target.value === 'navy'
         ? '#262d4f '
-        : '#121616';
+        : event.target.value === 'black'
+        ? '#121616'
+        : '';
     console.log('event color', bgColor);
     setRadioCardColor(bgColor);
   };
@@ -329,7 +338,9 @@ const ProductCard = ({
                                 ? '#fff'
                                 : pm.label === 'navy'
                                 ? '#262d4f '
-                                : '#121616',
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
                             border: selectedVariants[product._id]?.includes(pm.id)
                               ? '2px solid #116dff'
                               : pm.label === 'white'
@@ -343,7 +354,9 @@ const ProductCard = ({
                                 ? '#ffffff'
                                 : pm.label === 'navy'
                                 ? '#262d4f '
-                                : '#121616',
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
 
                             '&.Mui-checked': {
                               color:
@@ -351,7 +364,9 @@ const ProductCard = ({
                                   ? '#ffffff'
                                   : pm.label === 'navy'
                                   ? '#262d4f '
-                                  : '#121616',
+                                  : pm.label === 'black'
+                                  ? '#121616'
+                                  : '',
                               boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
                             },
                           }}
@@ -374,12 +389,14 @@ const ProductCard = ({
                       style={{
                         backgroundColor:
                           `${pm.label}` === 'transparent'
-                            ? '#ffffff'
+                            ? '#fff'
                             : pm.label === 'white'
-                            ? '#ffffff'
+                            ? '#fff'
                             : pm.label === 'navy'
                             ? '#262d4f '
-                            : '#121616',
+                            : pm.label === 'black'
+                            ? '#121616'
+                            : '',
                       }}
                       onChange={() => onVariantClick(event.target.value)}
                       checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
@@ -392,7 +409,9 @@ const ProductCard = ({
                             ? '#ffffff'
                             : pm.label === 'navy'
                             ? '#262d4f '
-                            : '#121616',
+                            : pm.label === 'black'
+                            ? '#121616'
+                            : '',
                         border: '2px solid blue',
 
                         '&.Mui-checked': {
@@ -401,7 +420,9 @@ const ProductCard = ({
                               ? '#ffffff'
                               : pm.label === 'navy'
                               ? '#262d4f '
-                              : '#121616',
+                              : pm.label === 'black'
+                              ? '#121616'
+                              : '',
                           boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
                         },
                       }}

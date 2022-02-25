@@ -442,7 +442,9 @@ const Product = () => {
                           ? '#ffffff'
                           : color.label === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : color.label === 'black'
+                          ? '#121616'
+                          : '',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
@@ -456,7 +458,9 @@ const Product = () => {
                           ? '#ffffff'
                           : color.label === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : color.label === 'black'
+                          ? '#121616'
+                          : '',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
@@ -470,7 +474,9 @@ const Product = () => {
                           ? '#ffffff'
                           : color.label === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : color.label === 'black'
+                          ? '#121616'
+                          : '',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
@@ -539,7 +545,9 @@ const Product = () => {
                                       ? '#ffffff'
                                       : label === 'navy'
                                       ? '#262d4f '
-                                      : '#121616',
+                                      : label === 'black'
+                                      ? '#121616'
+                                      : '',
                                   backgroundImage: `url(${product.image})`,
                                   backgroundSize: '100% 100%',
                                   backgroundRepeat: 'no-repeat',

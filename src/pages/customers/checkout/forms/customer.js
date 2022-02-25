@@ -192,7 +192,9 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                           ? '#ffffff'
                           : variant.color === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : variant.label === 'black'
+                          ? '#121616'
+                          : '',
                     }}
                     src={product.image}
                     variant="square"

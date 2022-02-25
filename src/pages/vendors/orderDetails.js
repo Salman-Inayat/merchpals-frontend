@@ -127,7 +127,9 @@ function VendorOrderDetails() {
                               ? '#ffffff'
                               : product.productMapping.color.label === 'navy'
                               ? '#262d4f '
-                              : '#121616',
+                              : product.productMapping.color.label === 'black'
+                              ? '#121616'
+                              : '',
                         }}
                         height="100%"
                         component="img"

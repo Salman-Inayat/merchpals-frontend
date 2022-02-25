@@ -32,9 +32,24 @@ const useStyles = makeStyles(theme => ({
   rootFirstSelect: {
     padding: '0px',
   },
+  texture: {
+    width: '4rem',
+
+    overflow: 'auto',
+    [theme.breakpoints.down('md')]: {
+      width: '60px',
+
+      display: 'inline-block',
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      width: '2rem',
+      display: 'inline-block',
+    },
+  },
 }));
 
-const ColorPallete = ({ setCanvasBackground, setOpenColorModal, customClass }) => {
+const ColorPallete = ({ setCanvasBackground, setCavasTextureImage, customClass }) => {
   const classes = useStyles();
 
   const solid = [
@@ -91,60 +106,7 @@ const ColorPallete = ({ setCanvasBackground, setOpenColorModal, customClass }) =
     '#FDC0B3',
     '#8c8c88',
   ];
-  const texture = [
-    '#ffffff00',
-    '#000000',
-    '#FFFFFF',
-    '#9c9793',
-    '#490097',
-    '#727DCE',
-    '#B400FF',
-    '#B674CA',
-    '#FF00FF',
-    '#F5a0d2',
-    '#EC008C',
-    '#FF0060',
-    '#A11851',
-    '#F7A1A0',
-    '#FFBE9F',
-    '#FF534C',
-    '#FF3D4C',
-    '#FF1730',
-    '#FFD100',
-    '#DAAA00',
-    '#321900',
-    '#AA9C81',
-    '#8A7C48',
-    '#2A360F',
-    '#006500',
-    '#5D6A12',
-    '#E1FFA9',
-    '#B5F746',
-    '#00FF00',
-    '#7CFFA3',
-    '#00FFC5',
-    '#57C793',
-    '#96C8A2',
-    '#008675',
-    '#009EE0',
-    '#00BEFF',
-    '#00FFFA',
-    '#CDE0F0',
-    '#f5f5f5',
-    '#CE2357',
-    '#6EE7C2',
-    '#87AEB4',
-    '#FCBC0A',
-    '#ED553B',
-    '#006763',
-    '#FFF4E0',
-    '#C06C84',
-    '#FCBC0A',
-    '#6B4A7D',
-    '#152551',
-    '#FDC0B3',
-    '#8c8c88',
-  ];
+  const textures = ['1.png', '2.png', '3.png'];
   const background = [
     '#ffffff00',
     '#000000',
@@ -201,25 +163,34 @@ const ColorPallete = ({ setCanvasBackground, setOpenColorModal, customClass }) =
   ];
 
   const [bgSolid, setBgSolid] = useState(solid[2]);
-  const [bgTexture, setBgTexture] = useState(texture[5]);
+  const [bgTexture, setBgTexture] = useState('1.png');
   const [bgBackground, setBgBackground] = useState(background[8]);
 
   const handleBgSolidChange = event => {
     setBgSolid(event.target.value);
     setCanvasBackground(event.target.value);
-    setOpenColorModal(false);
   };
 
   const handleBgTextureChange = event => {
     setBgTexture(event.target.value);
-    setCanvasBackground(event.target.value);
-    setOpenColorModal(false);
+    console.log(`/texture-image/${event.target.value}`);
+
+    setCavasTextureImage(`/texture-image/${event.target.value}`);
+    // const addImage = e => {
+    //   var file = e.target.files[0];
+    //   var reader = new FileReader();
+    //   reader.onload = function (f) {
+    //     var data = f.target.result;
+    //     editorJs.addImageOnCanvas(data);
+    //   };
+    //   reader.readAsDataURL(file);
+    // };
+    // setCanvasBackground(event.target.value);
   };
 
   const handleBgBackgroundChange = event => {
     setBgBackground(event.target.value);
     setCanvasBackground(event.target.value);
-    setOpenColorModal(false);
   };
 
   // return (
@@ -278,18 +249,9 @@ const ColorPallete = ({ setCanvasBackground, setOpenColorModal, customClass }) =
             label="Color"
             onChange={handleBgTextureChange}
           >
-            {texture.map((bgTexture, index) => (
-              <MenuItem value={bgTexture} key={index}>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <div
-                      style={{
-                        backgroundColor: bgTexture,
-                      }}
-                      className={classes.bgColors}
-                    />
-                  </Grid>
-                </Grid>
+            {textures.map((texture, index) => (
+              <MenuItem value={texture} key={index}>
+                <img key={index} src={`/texture-image/${texture}`} className={classes.texture} />
               </MenuItem>
             ))}
           </Select>

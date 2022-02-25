@@ -13,6 +13,7 @@ const useEditor = canvasId => {
   let [canvasJSON, setCanvasJSON] = useState();
   let [canvasName, setCanvasName] = useState();
   let [miniature, setMiniature] = useState();
+  const [counter, setCounter] = useState(0);
   const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
@@ -113,34 +114,36 @@ const useEditor = canvasId => {
   useEffect(() => {
     setC2(document.getElementById('static'));
     setCtx2(document.getElementById('static').getContext('2d'));
+    setCounter(counter + 1);
   }, []);
-
+  useEffect(() => {
+    if (counter == 1) {
+      if (canvasJSON) {
+        canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
+          canvasProperties.canvasFill = canvas.backgroundColor;
+          canvas.on({
+            'selection:created': function () {
+              let selectedObject = canvas.getActiveObject();
+              if (selectedObject) {
+                applyProperties(selectedObject);
+              }
+            },
+            'object:added': e => {
+              const selectedObject = e.target;
+              applyProperties(selectedObject);
+              localStorage.setItem('design', canvas.toDataURL());
+              resetPanels();
+            },
+          });
+        });
+        afterRender();
+      }
+    }
+  }, [counter]);
   useLayoutEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
-    }
-
-    if (canvasJSON) {
-      canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
-        canvasProperties.canvasFill = canvas.backgroundColor;
-
-        canvas.on({
-          'selection:created': function () {
-            let selectedObject = canvas.getActiveObject();
-            if (selectedObject) {
-              applyProperties(selectedObject);
-            }
-          },
-          'object:added': e => {
-            const selectedObject = e.target;
-            applyProperties(selectedObject);
-            localStorage.setItem('design', canvas.toDataURL());
-            resetPanels();
-          },
-        });
-      });
-      afterRender();
     }
 
     initAligningGuidelines(canvas);
@@ -322,6 +325,7 @@ const useEditor = canvasId => {
   });
 
   function copy(copiedCanvas, canvas) {
+    console.log('copy', canvas.width, canvas.height);
     if (canvas.backgroundColor === '#ffffff00' || canvas.backgroundColor === '') {
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
     }
@@ -336,6 +340,7 @@ const useEditor = canvasId => {
     } else {
       canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
     }
+
     copy(canvas.toCanvasElement(), canvas);
     canvas.viewportTransform = originalVP;
   }
@@ -767,12 +772,15 @@ const useEditor = canvasId => {
 
   const setCanvasFill = bgcolor => {
     canvasProperties.canvasFill = bgcolor;
+    console.log('color', canvas);
+    if (canvasProperties.canvasImage) canvasProperties.canvasImage = '';
     if (!canvasProperties.canvasImage) {
+      canvas.setBackgroundImage(null);
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
+      afterRender();
     }
     //setMiniature(canvas.toDataURL());
-    afterRender();
   };
 
   const extend = (obj, id) => {
@@ -785,19 +793,51 @@ const useEditor = canvasId => {
     })(obj.toObject);
   };
 
-  const setCanvasImage = () => {
-    const self = this;
+  const setCanvasImage = imgUrl => {
+    console.log('set canvas img', imgUrl);
+    canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
-      canvas.setBackgroundColor(
-        new fabric.Pattern({
-          source: canvasProperties.canvasImage,
-          repeat: 'repeat',
-        }),
-        () => {
-          self.canvasProperties.canvasFill = '';
-          self.canvas.renderAll();
-        },
-      );
+      // canvas.setBackgroundImage(
+      //   canvasProperties.canvasImage,
+      //   () => {
+      //     canvasProperties.canvasFill = '';
+      //     canvas.renderAll();
+      //     afterRender();
+      //   },
+      //   // {
+      //   //   // Needed to position backgroundImage at 0/0
+      //   //   originX: 'left',
+      //   //   originY: 'top',
+      //   // },
+      // );
+      fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
+        console.log('size', { canvas }, canvas.width, canvas.height);
+        // img.set({ width: canvas.width, height: canvas.height, originX: 'left', originY: 'top' });
+        canvas.setBackgroundImage(
+          img,
+          () => {
+            canvas.backgroundColor = '';
+            canvas.renderAll();
+            afterRender();
+          },
+          { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
+          // {
+          //   // Needed to position backgroundImage at 0/0
+          //   originX: 'left',
+          //   originY: 'top',
+          // },
+        );
+      });
+      // canvas.setBackgroundColor(
+      //   new fabric.Pattern({
+      //     source: canvasProperties.canvasImage,
+      //     repeat: 'repeat',
+      //   }),
+      //   () => {
+      //     canvasProperties.canvasImage = '';
+      //     canvas.renderAll();
+      //   },
+      // );
     }
   };
 

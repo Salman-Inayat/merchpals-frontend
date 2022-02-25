@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     borderRadius: '0px',
-    backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
   },
   button: {
