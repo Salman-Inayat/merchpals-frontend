@@ -19,6 +19,7 @@ const useEditor = canvasId => {
   let [miniature, setMiniature] = useState();
   let [isSquare, setIsSquare] = useState(true);
   const dispatch = useDispatch();
+  const [counter, setCounter] = useState(0);
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
   let isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -123,6 +124,8 @@ const useEditor = canvasId => {
       setIsSquare(false);
       console.log('is not square');
     }
+
+    setCounter(counter + 1);
   }, []);
 
   const updateShape = () => {
@@ -155,23 +158,34 @@ const useEditor = canvasId => {
 
     const previewClipPaths = ['circle(20px at center)', 'none', 'polygon(0 0, 100% 0, 50% 100%)'];
 
+    let json;
+
     switch (canvasShape) {
       case 'circle':
         canvasWrapper.style.clipPath = canvasClipPaths[0];
         canvas.clipPath = circle;
+        json = JSON.stringify(canvas);
+
+        canvas.renderAll();
+
         c2.style.clipPath = previewClipPaths[0];
 
         break;
       case 'square':
         canvasWrapper.style.clipPath = canvasClipPaths[1];
         canvas.clipPath = rect;
+        json = JSON.stringify(canvas);
+
+        canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[1];
         break;
       case 'triangle':
-        c2.style.clipPath = '';
         canvasWrapper.style.clipPath = canvasClipPaths[2];
         canvas.clipPath = triangle;
+        json = JSON.stringify(canvas);
+
+        canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[2];
 
@@ -180,47 +194,40 @@ const useEditor = canvasId => {
         canvas.clipPath = rect;
         break;
     }
+
+    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
   };
+
+  useEffect(() => {
+    if (counter == 1) {
+      if (canvasJSON) {
+        canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
+          canvasProperties.canvasFill = canvas.backgroundColor;
+
+          canvas.on({
+            'selection:created': function () {
+              let selectedObject = canvas.getActiveObject();
+              if (selectedObject) {
+                applyProperties(selectedObject);
+              }
+            },
+            'object:added': e => {
+              const selectedObject = e.target;
+              applyProperties(selectedObject);
+              localStorage.setItem('design', canvas.toDataURL());
+              resetPanels();
+            },
+          });
+        });
+        afterRender();
+      }
+    }
+  }, [counter]);
 
   useLayoutEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
-    }
-
-    if (canvasJSON) {
-      if (isSquare) {
-        console.log('canvas shape is  square');
-
-        updateShape();
-      } else {
-        console.log('canvas shape is not square', c2);
-        c2.style.clipPath = null;
-        console.log('canvas shape is not square', c2);
-
-        setTimeout(() => {
-          updateShape();
-        }, 100);
-      }
-      canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
-        canvasProperties.canvasFill = canvas.backgroundColor;
-
-        canvas.on({
-          'selection:created': function () {
-            let selectedObject = canvas.getActiveObject();
-            if (selectedObject) {
-              applyProperties(selectedObject);
-            }
-          },
-          'object:added': e => {
-            const selectedObject = e.target;
-            applyProperties(selectedObject);
-            localStorage.setItem('design', canvas.toDataURL());
-            resetPanels();
-          },
-        });
-      });
-      afterRender();
     }
 
     initAligningGuidelines(canvas);
