@@ -211,18 +211,35 @@ const ProductCard = ({
   }, []);
 
   const renderBgColor = () => {
-    let bgColor = 'white';
+    let bgColor = '#fff';
 
     if (selectedVariants[product._id]) {
       const productSelectedVariants = selectedVariants[product._id];
       const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
+      bgColor =
+        bgColor === 'white'
+          ? '#fff'
+          : bgColor === 'navy'
+          ? '#262d4f '
+          : bgColor === 'black'
+          ? '#121616'
+          : '';
     }
     return bgColor;
   };
 
   const handleRadioCardChange = event => {
-    setRadioCardColor(event.target.value);
+    const bgColor =
+      event.target.value === 'white'
+        ? '#ffffff'
+        : event.target.value === 'navy'
+        ? '#262d4f '
+        : event.target.value === 'black'
+        ? '#121616'
+        : '';
+    console.log('event color', bgColor);
+    setRadioCardColor(bgColor);
   };
 
   return (
@@ -303,11 +320,11 @@ const ProductCard = ({
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
                             ? '2px solid #116DFF'
-                            : pm.label === 'white'
+                            : pm.label === '#ffffff'
                             ? '1px solid #00000066'
                             : '',
                           // border: selectedVariants[product._id]?.includes(pm.id)
-                          //   ? pm.label === 'white'
+                          //   ? pm.label === '#ffffff'
                           //     ? ''
                           //     : '2px solid #116dff'
                           //   : '',
@@ -316,7 +333,14 @@ const ProductCard = ({
                       >
                         <Radio
                           style={{
-                            backgroundColor: `${pm.label}`,
+                            backgroundColor:
+                              pm.label === 'white'
+                                ? '#fff'
+                                : pm.label === 'navy'
+                                ? '#262d4f '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
                             border: selectedVariants[product._id]?.includes(pm.id)
                               ? '2px solid #116dff'
                               : pm.label === 'white'
@@ -325,10 +349,24 @@ const ProductCard = ({
                           }}
                           value={pm.label}
                           sx={{
-                            color: `${pm.label}`,
+                            color:
+                              pm.label === 'white'
+                                ? '#ffffff'
+                                : pm.label === 'navy'
+                                ? '#262d4f '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
 
                             '&.Mui-checked': {
-                              color: `${pm.label}`,
+                              color:
+                                pm.label === 'white'
+                                  ? '#ffffff'
+                                  : pm.label === 'navy'
+                                  ? '#262d4f '
+                                  : pm.label === 'black'
+                                  ? '#121616'
+                                  : '',
                               boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
                             },
                           }}
@@ -349,17 +387,42 @@ const ProductCard = ({
                   <Grid key={`colors-${i}`} item md={2} xs={2}>
                     <Checkbox
                       style={{
-                        backgroundColor: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                        backgroundColor:
+                          `${pm.label}` === 'transparent'
+                            ? '#fff'
+                            : pm.label === 'white'
+                            ? '#fff'
+                            : pm.label === 'navy'
+                            ? '#262d4f '
+                            : pm.label === 'black'
+                            ? '#121616'
+                            : '',
                       }}
                       onChange={() => onVariantClick(event.target.value)}
                       checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
                       value={`${product._id},${pm.id}`}
                       sx={{
-                        color: `${pm.label}` === 'transparent' ? 'white' : `${pm.label}`,
+                        color:
+                          `${pm.label}` === 'transparent'
+                            ? '#ffffff'
+                            : pm.label === 'white'
+                            ? '#ffffff'
+                            : pm.label === 'navy'
+                            ? '#262d4f '
+                            : pm.label === 'black'
+                            ? '#121616'
+                            : '',
                         border: '2px solid blue',
 
                         '&.Mui-checked': {
-                          color: `${pm.label}`,
+                          color:
+                            pm.label === 'white'
+                              ? '#ffffff'
+                              : pm.label === 'navy'
+                              ? '#262d4f '
+                              : pm.label === 'black'
+                              ? '#121616'
+                              : '',
                           boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
                         },
                       }}

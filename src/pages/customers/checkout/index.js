@@ -10,7 +10,10 @@ import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import Lock from '../../../assets/images/icons/lock1.png';
-import { getPriceCalculation } from '../../../store/redux/actions/printful';
+import {
+  getInitializePriceCalculation,
+  getPriceCalculation,
+} from '../../../store/redux/actions/printful';
 import { createOrder, resetOrder } from '../../../store/redux/actions/order';
 
 const useStyles = makeStyles(theme => ({
@@ -34,6 +37,7 @@ const useStyles = makeStyles(theme => ({
 const Checkout = ({
   getCart = () => {},
   getPriceCalculation = () => {},
+  getInitializePriceCalculation = () => {},
   priceCalculation = {},
   emptyCart = () => {},
   reduxCartProducts = [],
@@ -47,8 +51,8 @@ const Checkout = ({
   const [customer, setCustomer] = useState({});
   const [billingAddress, setBillingAddress] = useState({
     country: 'US',
-    state: 'NY',
-    zip: '10001',
+    // state: 'NY',
+    // zip: '10001',
   });
   const [payment, setPayment] = useState({});
   const [cart, setCart] = useState({
@@ -71,7 +75,13 @@ const Checkout = ({
   const classes = useStyles();
   const { storeUrl } = useParams();
   const navigate = useNavigate();
-
+  let initializepriceCalculation = {
+    orderActualAmount: 0,
+    shippingAmount: '',
+    taxAmount: 0,
+    amountWithTaxAndShipping: 0,
+  };
+  let shippingAmount = 0;
   const total = products => {
     let totalCartPrice = 0;
 
@@ -90,6 +100,12 @@ const Checkout = ({
     getCart(storeUrl);
     getCountries();
   }, []);
+
+  useEffect(() => {
+    if (cart) {
+      initializePrice();
+    }
+  }, [cart]);
 
   useEffect(() => {
     if (orderCreated) {
@@ -149,6 +165,41 @@ const Checkout = ({
     updateCart(reduxCartProducts);
   }, [reduxCartProducts]);
 
+  const initializePrice = () => {
+    let productPrice = 0;
+    for (let i = 0; i < cart.savedProducts.length; i++) {
+      let curProduct = cart.savedProducts[i];
+      for (let j = 0; j < curProduct.productMappings.length; j++) {
+        const curVariant = curProduct.productMappings[j];
+        productPrice = productPrice + curProduct.price * curVariant.quantity;
+      }
+    }
+    if (productPrice > 0) {
+      shippingAmount =
+        priceCalculation.shippingAmount === 'FREE'
+          ? Number('0')
+          : Number(priceCalculation.shippingAmount);
+
+      initializepriceCalculation = {
+        orderActualAmount: Number(productPrice.toFixed(2)),
+        shippingAmount:
+          priceCalculation.shippingAmount === 0 ? 'FREE' : priceCalculation.shippingAmount,
+        taxAmount: Number(priceCalculation.taxAmount.toFixed(2)),
+
+        amountWithTaxAndShipping: Number(
+          (productPrice + shippingAmount + priceCalculation.taxAmount).toFixed(2),
+        ),
+      };
+    } else {
+      initializepriceCalculation = {
+        orderActualAmount: 0,
+        taxAmount: 0,
+        shippingAmount: 'FREE',
+        amountWithTaxAndShipping: 0,
+      };
+    }
+    getInitializePriceCalculation(initializepriceCalculation);
+  };
   const updateTaxAndShipping = () => {
     const { aptNo, street, zip, city, state, country } = billingAddress;
     let items = [];
@@ -272,6 +323,7 @@ const Checkout = ({
           products={cart.savedProducts}
           setProducts={updateCart}
           priceCalculation={priceCalculation}
+          initializepriceCalculation={initializepriceCalculation}
           storeUrl={storeUrl}
         />
 
@@ -310,6 +362,7 @@ const mapDispatch = dispatch => ({
   getCart: store => dispatch(getCart(store)),
   emptyCart: () => dispatch(emptyCart()),
   getPriceCalculation: data => dispatch(getPriceCalculation(data)),
+  getInitializePriceCalculation: data => dispatch(getInitializePriceCalculation(data)),
   createOrder: data => dispatch(createOrder(data)),
   resetOrder: () => dispatch(resetOrder()),
 });

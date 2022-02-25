@@ -21,11 +21,7 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {
-  clearLogoutFlag,
-  logout,
-  getLoggedInUserInfo,
-} from '../../store/redux/actions/auth';
+import { clearLogoutFlag, logout, getLoggedInUserInfo } from '../../store/redux/actions/auth';
 import { useNavigate } from 'react-router-dom';
 import ContactSupport from '../../pages/vendors/contactSupport';
 import { makeStyles } from '@mui/styles';
@@ -119,7 +115,7 @@ const LoggedInVendor = ({
     });
 
   return (
-    <Grid direction="column" container>
+    <Grid container>
       <Grid xs={12} item>
         <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">
@@ -242,11 +238,7 @@ const LoggedInVendor = ({
           />
         </Card>
       </Modal>
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={2000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Grid>

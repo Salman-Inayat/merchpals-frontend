@@ -16,7 +16,6 @@ const ProductSelection = ({ designName }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  // const [products, setProducts] = useState([]);
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -132,7 +131,6 @@ const ProductSelection = ({ designName }) => {
       visible: false,
     });
   };
-
   return (
     <Grid container>
       <Products

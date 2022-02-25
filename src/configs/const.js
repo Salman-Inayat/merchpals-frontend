@@ -1,6 +1,12 @@
 export const baseURL = `${process.env.REACT_APP_SERVER_URL}/api/v1`;
 export const VENDOR_PROFIT_MARGIN = 0.7;
 export const MERCHPALS_PROFIT_MARGIN = 0.3;
+export const CANVAS_WIDTH_DESKTOP = 450;
+export const CANVAS_HEIGHT_DESKTOP = 450;
+export const CANVAS_WIDTH_MOBILE = 350;
+export const CANVAS_HEIGHT_MOBILE = 350;
+export const CANVAS_WIDTH_TABLET = 340;
+export const CANVAS_HEIGHT_TABLET = 340;
 
 export const calculateProfit = (price, shippingCost, costPrice) => {
   return (price - shippingCost - costPrice - (0.029 * price + 0.3)) * 0.7;

@@ -5,6 +5,7 @@ export const createOrder = data => async dispatch => {
   axios
     .post('/order', data)
     .then(res => {
+      console.log('redux data', res.data);
       dispatch({ type: CREATE_ORDER_SUCCESS, payload: res.data.order.orderNo });
     })
     .catch(() => dispatch({ type: CREATE_ORDER_FAILED }));

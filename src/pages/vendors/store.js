@@ -157,6 +157,7 @@ const VendorStore = () => {
       setThemeColorClass(tmpthemeColorClass);
     }
   }, [store]);
+  console.log('store', store);
   return store ? (
     <LoggedInVendor>
       <Grid container spacing={3} style={{ margin: '0px' }} className={themeClass}>
