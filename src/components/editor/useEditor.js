@@ -17,7 +17,6 @@ const useEditor = canvasId => {
   let [canvasJSON, setCanvasJSON] = useState();
   let [canvasName, setCanvasName] = useState();
   let [miniature, setMiniature] = useState();
-  let [isSquare, setIsSquare] = useState(true);
   const dispatch = useDispatch();
   const [counter, setCounter] = useState(0);
 
@@ -118,12 +117,8 @@ const useEditor = canvasId => {
 
   useEffect(() => {
     setC2(document.getElementById('static'));
-    setCtx2(document.getElementById('static').getContext('2d'));
-
-    if (canvasShape === 'circle' || canvasShape === 'triangle') {
-      setIsSquare(false);
-      console.log('is not square');
-    }
+    var ctx = document.getElementById('static').getContext('2d');
+    setCtx2(ctx);
 
     setCounter(counter + 1);
   }, []);
@@ -219,6 +214,20 @@ const useEditor = canvasId => {
             },
           });
         });
+        if (canvas.getObjects().length == 0) {
+          const text = new fabric.Textbox('s', {
+            left: 40,
+            top: 100,
+            opacity: 0.1,
+            fontSize: 5,
+            hasControls: false,
+            hasRotatingPoint: false,
+            lockMovementX: true,
+            lockMovementY: true,
+          });
+          canvas.add(text);
+        }
+        canvas.renderAll();
         afterRender();
       }
     }
