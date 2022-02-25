@@ -496,7 +496,7 @@ const Product = () => {
               >
                 <Stack direction="column" spacing={2} className={classes.stack}>
                   <Typography gutterBottom variant="h3" component="div" align="center">
-                    {product.slug === 'Case' ? 'Iphone Case' : product.name}
+                    {product.name}
                   </Typography>
 
                   <Typography

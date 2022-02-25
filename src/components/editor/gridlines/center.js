@@ -1,4 +1,10 @@
 import { fabric } from 'fabric';
+import {
+  CANVAS_WIDTH_DESKTOP,
+  CANVAS_HEIGHT_DESKTOP,
+  CANVAS_WIDTH_MOBILE,
+  CANVAS_HEIGHT_MOBILE,
+} from '../../../configs/const';
 /**
  * Augments canvas by assigning to `onObjectMove` and `onAfterRender`.
  * This kind of sucks because other code using those methods will stop functioning.
@@ -7,13 +13,13 @@ import { fabric } from 'fabric';
  */
 export const initCenteringGuidelines = (canvas, mobile) => {
   if (mobile) {
-    var canvasWidth = 225,
-      canvasHeight = 225,
+    var canvasWidth = CANVAS_WIDTH_MOBILE,
+      canvasHeight = CANVAS_HEIGHT_MOBILE,
       canvasWidthCenter = canvasWidth / 2;
     canvasHeightCenter = canvasHeight / 2;
   } else {
-    var canvasWidth = 450,
-      canvasHeight = 450,
+    var canvasWidth = CANVAS_WIDTH_DESKTOP,
+      canvasHeight = CANVAS_HEIGHT_DESKTOP,
       canvasWidthCenter = canvasWidth / 2,
       canvasHeightCenter = canvasHeight / 2;
   }

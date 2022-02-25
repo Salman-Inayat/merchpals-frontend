@@ -7,7 +7,14 @@ import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_DESIGN } from '../../store/redux/types';
-
+import {
+  CANVAS_WIDTH_DESKTOP,
+  CANVAS_HEIGHT_DESKTOP,
+  CANVAS_WIDTH_MOBILE,
+  CANVAS_HEIGHT_MOBILE,
+  CANVAS_WIDTH_TABLET,
+  CANVAS_HEIGHT_TABLET,
+} from '../../configs/const';
 const useEditor = canvasId => {
   let [canvas, setCanvas] = useState();
   let [canvasJSON, setCanvasJSON] = useState();
@@ -21,17 +28,17 @@ const useEditor = canvasId => {
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const size = {
-    width: 450,
-    height: 450,
+    width: CANVAS_WIDTH_DESKTOP,
+    height: CANVAS_HEIGHT_DESKTOP,
   };
   const sizeMobile = {
-    width: 225,
-    height: 225,
+    width: CANVAS_WIDTH_MOBILE,
+    height: CANVAS_HEIGHT_MOBILE,
   };
 
   const sizeTablet = {
-    width: 340,
-    height: 340,
+    width: CANVAS_WIDTH_TABLET,
+    height: CANVAS_HEIGHT_TABLET,
   };
 
   let canvasProperties = {
@@ -336,7 +343,7 @@ const useEditor = canvasId => {
     var originalVP = canvas.viewportTransform;
     // place the canvas on center of the preview
     if (isMobile) {
-      canvas.viewportTransform = [0.21, 0, 0, 0.21, 0, 0];
+      canvas.viewportTransform = [0.14, 0, 0, 0.14, 0, 0];
     } else {
       canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
     }
@@ -1222,16 +1229,16 @@ const useEditor = canvasId => {
     const formatFour = new Image();
     const formatFive = new Image();
     if (isMobile) {
-      var mult1 = 3600 / 225;
-      var mult2 = 2700 / 225;
-      var mult3 = 1050 / 225;
-      var mult4 = 879 / 225;
+      var mult1 = 3600 / CANVAS_WIDTH_MOBILE;
+      var mult2 = 2700 / CANVAS_WIDTH_MOBILE;
+      var mult3 = 1050 / CANVAS_WIDTH_MOBILE;
+      var mult4 = 879 / CANVAS_WIDTH_MOBILE;
     }
     if (!isMobile) {
-      var mult1 = 3600 / 450;
-      var mult2 = 2700 / 450;
-      var mult3 = 1050 / 450;
-      var mult4 = 879 / 450;
+      var mult1 = 3600 / CANVAS_WIDTH_DESKTOP;
+      var mult2 = 2700 / CANVAS_WIDTH_DESKTOP;
+      var mult3 = 1050 / CANVAS_WIDTH_DESKTOP;
+      var mult4 = 879 / CANVAS_WIDTH_DESKTOP;
     }
     formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
     formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });

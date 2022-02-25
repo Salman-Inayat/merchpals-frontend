@@ -10,6 +10,12 @@ import { useEffect, useRef } from 'react';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
 import { useMediaQuery } from 'react-responsive';
+import {
+  CANVAS_HEIGHT_DESKTOP,
+  CANVAS_HEIGHT_MOBILE,
+  CANVAS_WIDTH_DESKTOP,
+  CANVAS_WIDTH_MOBILE,
+} from '../../configs/const';
 
 const CanvasEditor = _ref => {
   var className = _ref.class,
@@ -33,8 +39,12 @@ const CanvasEditor = _ref => {
       stopContextMenu: true, // <--  prevent context menu from showing
     });
 
-    canvas.setDimensions({ width: 450, height: 450 });
-
+    if (isDesktop) {
+      canvas.setDimensions({ width: CANVAS_WIDTH_DESKTOP, height: CANVAS_HEIGHT_DESKTOP });
+    }
+    if (isMobile) {
+      canvas.setDimensions({ width: CANVAS_WIDTH_MOBILE, height: CANVAS_HEIGHT_MOBILE });
+    }
     // if (isDesktop){
 
     // }

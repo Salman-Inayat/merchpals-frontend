@@ -20,13 +20,19 @@ import ShirtSVG from '../../assets/images/gray-tshirt.svg';
 import SmileySVG from '../../assets/images/smiley.svg';
 import ColorPng from '../../assets/images/color.png';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import {
+  CANVAS_WIDTH_DESKTOP,
+  CANVAS_HEIGHT_DESKTOP,
+  CANVAS_WIDTH_MOBILE,
+  CANVAS_HEIGHT_MOBILE,
+} from '../../configs/const';
 const useStyles = makeStyles(theme => ({
   editor: {
-    width: '450px',
-    height: '450px',
+    width: CANVAS_WIDTH_DESKTOP,
+    height: CANVAS_HEIGHT_DESKTOP,
     [theme.breakpoints.down('sm')]: {
-      width: '225px',
-      height: '225px',
+      width: CANVAS_WIDTH_MOBILE,
+      height: CANVAS_HEIGHT_MOBILE,
     },
   },
   controlsContainer: {
@@ -111,11 +117,22 @@ const useStyles = makeStyles(theme => ({
     height: '170px',
     padding: '8px 8px',
     backgroundColor: '#fff',
+    zIndex: '1',
     [theme.breakpoints.down('sm')]: {
       width: '120px',
-
-      top: '230px',
-      left: '85%',
+      top: '110px',
+      left: '84%',
+    },
+  },
+  crop_and_done: {
+    position: 'absolute',
+    top: '280px',
+    left: '62%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: '1',
+    [theme.breakpoints.down('sm')]: {
+      top: '110px',
+      left: '90%',
     },
   },
   closeColorModal: {
@@ -124,6 +141,23 @@ const useStyles = makeStyles(theme => ({
     top: '-10px',
     right: '-4px',
     opacity: '0.8',
+  },
+
+  SmileyModal: {
+    position: 'absolute',
+    top: '280px',
+    left: '62%',
+    transform: 'translate(-50%, -50%)',
+    width: '150px',
+    height: '170px',
+    padding: '8px 8px',
+    backgroundColor: '#fff',
+    zIndex: '1',
+    [theme.breakpoints.down('sm')]: {
+      width: '155px',
+      top: '110px',
+      left: '80%',
+    },
   },
 }));
 
@@ -218,9 +252,19 @@ const Editor = forwardRef((props, ref) => {
       exportCanvas();
     },
   }));
+  const handleTextControls = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
 
+    backgroundControl.hidden = true;
+    smileyControls.hidden = true;
+    imageControls.hidden = true;
+  };
   const addText = () => {
     editorJs.addText();
+    handleTextControls();
   };
 
   const addPng = img => {
@@ -295,13 +339,36 @@ const Editor = forwardRef((props, ref) => {
     const smileyControls = document.getElementById('smileyContainer');
     const fontControls = document.getElementById('textControls');
     const imageControls = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
 
     smileyControls.hidden = smileyControls.hidden == true ? false : true;
     fontControls.hidden = true;
     imageControls.hidden = true;
+    backgroundControl.hidden = true;
   };
 
-  const handleOpenColorModal = () => setOpenColorModal(true);
+  const handleOpenColorModal = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
+
+    backgroundControl.hidden = !backgroundControl.hidden;
+    smileyControls.hidden = true;
+    fontControls.hidden = true;
+    imageControls.hidden = true;
+  };
+
+  const handleImageControl = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
+
+    backgroundControl.hidden = true;
+    smileyControls.hidden = true;
+    fontControls.hidden = true;
+  };
 
   return (
     <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
@@ -312,18 +379,44 @@ const Editor = forwardRef((props, ref) => {
       </Grid>
       <Grid item md={12} sm={12} xs={12} className={classes.canvasContainer}>
         <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
-          <Grid item md={2} sm={2} xs={2}>
-            <Smileys addPng={addPng} />
-            <FontControls
-              setFontColor={setFontColor}
-              setFontFamily={setFontFamily}
-              handleTextEditingFinished={handleTextEditingFinished}
-            />
+          <Grid
+            item
+            md={10}
+            xs={12}
+            sm={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ position: 'relative' }}
+          >
+            <div id="background-button" hidden>
+              <Paper elevation={5} className={classes.colorModal}>
+                <CancelOutlinedIcon
+                  fontSize="small"
+                  className={classes.closeColorModal}
+                  onClick={() => setOpenColorModal(false)}
+                />
+                <ColorPallete
+                  setCanvasBackground={setCanvasBackground}
+                  setCavasTextureImage={setCavasTextureImage}
+                />
+              </Paper>
+            </div>
+            <div id="smileyContainer" hidden className={classes.SmileyModal}>
+              <Smileys addPng={addPng} />
+            </div>
+            <div id="textControls" hidden>
+              <FontControls
+                setFontColor={setFontColor}
+                setFontFamily={setFontFamily}
+                handleTextEditingFinished={handleTextEditingFinished}
+              />
+            </div>
             <div id="crop-image-button" hidden>
               <Button
                 variant="contained"
                 onClick={cropImage}
-                className={`${classes.crop} ${classes.button}`}
+                className={`${classes.crop_and_done} ${classes.button}`}
               >
                 Crop
               </Button>
@@ -333,21 +426,11 @@ const Editor = forwardRef((props, ref) => {
               <Button
                 variant="contained"
                 onClick={cropImageDone}
-                className={`${classes.cropDone} ${classes.button}`}
+                className={`${classes.crop_and_done} ${classes.button}`}
               >
                 Done
               </Button>
             </div>
-          </Grid>
-          <Grid
-            item
-            md={8}
-            xs={8}
-            sm={8}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
             <Card className={`${classes.editor} fabric-canvas-wrapper`}>
               <CanvasEditor
                 onReady={editorJs.onReady}
@@ -388,6 +471,7 @@ const Editor = forwardRef((props, ref) => {
               variant="contained"
               component="label"
               className={`${classes.imageUpload} ${classes.button}`}
+              onClick={handleImageControl}
             >
               Image
               <input
@@ -429,19 +513,6 @@ const Editor = forwardRef((props, ref) => {
             </Grid>
           </Stack>
 
-          {openColorModal ? (
-            <Paper elevation={5} className={classes.colorModal}>
-              <CancelOutlinedIcon
-                fontSize="small"
-                className={classes.closeColorModal}
-                onClick={() => setOpenColorModal(false)}
-              />
-              <ColorPallete
-                setCanvasBackground={setCanvasBackground}
-                setCavasTextureImage={setCavasTextureImage}
-              />
-            </Paper>
-          ) : null}
           <Stack
             direction="column"
             spacing={3}
