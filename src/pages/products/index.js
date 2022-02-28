@@ -205,7 +205,7 @@ const Product = () => {
 
   const [color, setColor] = useState({ id: '', label: '' });
   const [size, setSize] = useState({ id: '', label: '' });
-  const [productColor, setProductColor] = useState('');
+
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -263,26 +263,39 @@ const Product = () => {
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
         design: designUrl,
       };
-
-      setProduct(formattedProduct);
+      formattedProduct.colors = formattedProduct.colors.sort(function (a, b) {
+        return a.id - b.id || a.label.localeCompare(b.label);
+      });
       setSize(formattedProduct.sizes[0]);
+      setProduct(formattedProduct);
       setColor(formattedProduct.colors[0]);
     }
   }, [fetchedProduct]);
 
   const handleColorChange = event => {
     const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
-
-    switch (selectedColor.label) {
-      case 'white':
-        setIndex(1);
-        break;
-      case 'black':
-        setIndex(0);
-        break;
-      case 'navy':
-        setIndex(2);
-        break;
+    console.log('select coor', selectedColor, event.target.value);
+    if ((product.colors[0].label === 'white', product.colors[1].label === 'navy')) {
+      switch (selectedColor.label) {
+        case 'white':
+          setIndex(0);
+          break;
+        case 'navy':
+          setIndex(1);
+          break;
+      }
+    } else {
+      switch (selectedColor.label) {
+        case 'black':
+          setIndex(0);
+          break;
+        case 'white':
+          setIndex(1);
+          break;
+        case 'navy':
+          setIndex(2);
+          break;
+      }
     }
     setColor(selectedColor);
   };
@@ -393,8 +406,7 @@ const Product = () => {
       visible: false,
     });
   };
-  let opacity;
-  console.log('index', index);
+  console.log('soret', product, color);
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -435,15 +447,43 @@ const Product = () => {
                   showStatus={false}
                   showIndicators={false}
                 >
-                  <div
+                  {product.colors?.map(({ id, label }) => {
+                    return (
+                      <>
+                        {console.log('image color', { id, label })}
+                        <div
+                          className={classes.imageContainer}
+                          style={{
+                            // backgroundColor: '#121616',
+                            backgroundColor:
+                              label === 'white'
+                                ? '#ffffff'
+                                : label === 'navy'
+                                ? '#262d4f '
+                                : label === 'black'
+                                ? '#121616'
+                                : '',
+                          }}
+                        >
+                          <img src={`${product.image}`} alt="" className={classes.image} />
+                          <img src={product.design} alt="design" className={classes.design} />
+                        </div>
+                      </>
+                    );
+                  })}
+
+                  {/* <div
                     className={classes.imageContainer}
                     style={{
-                      backgroundColor:
-                        color.label === 'white'
-                          ? '#ffffff'
-                          : color.label === 'navy'
-                          ? '#262d4f '
-                          : '#121616',
+                      backgroundColor: '#ffffff',
+                      // backgroundColor:
+                      //   color.label === 'white'
+                      //     ? '#ffffff'
+                      //     : color.label === 'navy'
+                      //     ? '#262d4f '
+                      //     : color.label === 'black'
+                      //     ? '#121616'
+                      //     : '',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
@@ -452,31 +492,20 @@ const Product = () => {
                   <div
                     className={classes.imageContainer}
                     style={{
-                      backgroundColor:
-                        color.label === 'white'
-                          ? '#ffffff'
-                          : color.label === 'navy'
-                          ? '#262d4f '
-                          : '#121616',
+                      backgroundColor: '#262d4f',
+                      // backgroundColor:
+                      //   color.label === 'white'
+                      //     ? '#ffffff'
+                      //     : color.label === 'navy'
+                      //     ? '#262d4f '
+                      //     : color.label === 'black'
+                      //     ? '#121616'
+                      //     : '',
                     }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
                     <img src={product.design} alt="design" className={classes.design} />
-                  </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor:
-                        color.label === 'white'
-                          ? '#ffffff'
-                          : color.label === 'navy'
-                          ? '#262d4f '
-                          : '#121616',
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
-                  </div>
+                  </div> */}
                 </Carousel>
               </Grid>
               <Grid
@@ -515,56 +544,61 @@ const Product = () => {
                     >
                       {product.colors.map(({ id, label }) => {
                         return (
-                          <FormControlLabel
-                            style={{ marginLeft: '0px' }}
-                            key={`colors-${id}`}
-                            value={id}
-                            control={
-                              <Radio
-                                className={classes.radio}
-                                sx={{
-                                  '&.Mui-checked': {
-                                    '& + .MuiFormControlLabel-label > div': {
-                                      border: '1px solid gray',
+                          <>
+                            {console.log('radio button color', { id, label })}
+                            <FormControlLabel
+                              style={{ marginLeft: '0px' }}
+                              key={`colors-${id}`}
+                              value={id}
+                              control={
+                                <Radio
+                                  className={classes.radio}
+                                  sx={{
+                                    '&.Mui-checked': {
+                                      '& + .MuiFormControlLabel-label > div': {
+                                        border: '1px solid gray',
+                                      },
                                     },
-                                  },
-                                }}
-                              />
-                            }
-                            label={
-                              <div
-                                className={classes.color}
-                                style={{
-                                  backgroundColor:
-                                    label === 'white'
-                                      ? '#ffffff'
-                                      : label === 'navy'
-                                      ? '#262d4f '
-                                      : '#121616',
-                                  backgroundImage: `url(${product.image})`,
-                                  backgroundSize: '100% 100%',
-                                  backgroundRepeat: 'no-repeat',
-                                  width: '50px',
-                                  height: '50px',
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                {' '}
-                                {/* <Typography>Rehman</Typography> */}
-                                {/* <img src={`${product.image}`} height="50" width="50" /> */}
-                                <img
-                                  src={product.design}
-                                  width="15px"
-                                  height="15px"
-                                  style={{
-                                    position: 'absolute',
                                   }}
                                 />
-                              </div>
-                            }
-                          />
+                              }
+                              label={
+                                <div
+                                  className={classes.color}
+                                  style={{
+                                    backgroundColor:
+                                      label === 'white'
+                                        ? '#ffffff'
+                                        : label === 'navy'
+                                        ? '#262d4f '
+                                        : '#121616',
+
+                                    transition: 'opacity 300ms ease-in',
+                                    backgroundImage: `url(${product.image})`,
+                                    backgroundSize: '100% 100%',
+                                    backgroundRepeat: 'no-repeat',
+                                    width: '50px',
+                                    height: '50px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  {' '}
+                                  {/* <Typography>Rehman</Typography> */}
+                                  {/* <img src={`${product.image}`} height="50" width="50" /> */}
+                                  <img
+                                    src={product.design}
+                                    width="15px"
+                                    height="15px"
+                                    style={{
+                                      position: 'absolute',
+                                    }}
+                                  />
+                                </div>
+                              }
+                            />
+                          </>
                         );
                       })}
                     </RadioGroup>

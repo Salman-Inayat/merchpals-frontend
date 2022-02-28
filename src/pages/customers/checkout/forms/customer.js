@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
 import { addToCart, getCart } from '../../../../store/redux/actions/cart';
+import { useState } from 'react';
 
 const useStyles = makeStyles(theme => ({
   accordian: {
@@ -106,6 +107,10 @@ const useStyles = makeStyles(theme => ({
 
 const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalculation }) => {
   const classes = useStyles();
+  const [showTooltip, setShowToolTip] = useState({
+    estimate: false,
+    subTotal: false,
+  });
   const updateQuantity = (vendorProduct, variantId, op) => {
     let updatedCart = [...products];
     let updatedVariant = {};
@@ -113,7 +118,6 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
 
     const prevProductIndex = products.findIndex(v => v.vendorProduct === vendorProduct);
     const prevProduct = products[prevProductIndex];
-
     const variantIndex = prevProduct.productMappings.findIndex(prv => prv.id === variantId);
     const variant = { ...prevProduct.productMappings[variantIndex] };
     let mappings = [...prevProduct.productMappings];
@@ -192,7 +196,9 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                           ? '#ffffff'
                           : variant.color === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : variant.color === 'black'
+                          ? '#121616'
+                          : '',
                     }}
                     src={product.image}
                     variant="square"
@@ -250,11 +256,21 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
               <Tooltip
                 placement="top"
                 describeChild
+                open={showTooltip.subTotal}
+                onOpen={() => setShowToolTip({ subTotal: true })}
+                onClose={() => setShowToolTip({ subTotal: false })}
                 title="The subtotal reflects the total price of your order before including any shipping, costs, or 
 taxes"
               >
                 <IconButton className={classes.infoBtn}>
-                  <QuestionMark className={classes.infoIcon} />
+                  <QuestionMark
+                    className={classes.infoIcon}
+                    onClick={() =>
+                      setShowToolTip({
+                        subTotal: !showTooltip.subTotal,
+                      })
+                    }
+                  />
                 </IconButton>
               </Tooltip>
             </Grid>
@@ -288,10 +304,20 @@ taxes"
               <Tooltip
                 placement="top"
                 describeChild
+                open={showTooltip.estimate}
+                onOpen={() => setShowToolTip({ estimate: true })}
+                onClose={() => setShowToolTip({ estimate: false })}
                 title="This covers the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your 
 applicable state or local government for more information"
               >
-                <IconButton className={classes.infoBtn}>
+                <IconButton
+                  className={classes.infoBtn}
+                  onClick={() =>
+                    setShowToolTip({
+                      estimate: !showTooltip.estimate,
+                    })
+                  }
+                >
                   <QuestionMark className={classes.infoIcon} />
                 </IconButton>
               </Tooltip>

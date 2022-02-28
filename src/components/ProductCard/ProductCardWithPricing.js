@@ -186,7 +186,14 @@ const ProductCard = ({
       const productSelectedVariants = selectedVariants[product._id];
       const lastSelectedColor = productSelectedVariants[productSelectedVariants?.length - 1];
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
-      bgColor = bgColor === 'white' ? '#ffffff' : bgColor === 'navy' ? '#262d4f ' : '#121616';
+      bgColor =
+        bgColor === 'white'
+          ? '#ffffff'
+          : bgColor === 'navy'
+          ? '#262d4f '
+          : bgColor === 'black'
+          ? '#121616'
+          : '';
     }
     return bgColor;
   };
@@ -293,7 +300,9 @@ const ProductCard = ({
                           ? '#ffffff'
                           : pm.label === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : pm.label === 'black'
+                          ? '#121616'
+                          : '',
                     }}
                     onChange={() => onVariantClick(event.target.value)}
                     checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
@@ -307,7 +316,9 @@ const ProductCard = ({
                           ? '#ffffff'
                           : pm.label === 'navy'
                           ? '#262d4f '
-                          : '#121616',
+                          : pm.label === 'black'
+                          ? '#121616'
+                          : '',
                       '&.Mui-checked': {
                         color: `${pm.label}` == 'white' ? '#000000' : '#ffffff',
                       },
