@@ -1,20 +1,19 @@
-import { SAVE_DESIGN, SAVE_THEME_COLOR } from '../types';
+import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN, SAVE_THEME_COLOR } from '../types';
 
-const saveDesign = (state, action) => {
-  switch (action.type) {
-    case SAVE_DESIGN:
-      return { ...state, design: action.payload };
-    default:
-      return state;
-  }
+const saveFrontDesign = (state, action) => {
+  // append front design into design
+  return { ...state, design: { ...state.design, front: action.payload } };
+  // return { ...state, design: action.payload };
 };
+
+const saveBackDesign = (state, action) => {
+  // append bak design into design
+  return { ...state, design: { ...state.design, back: action.payload } };
+  // return { ...state, design: action.payload };
+};
+
 const saveThemeColor = (state, action) => {
-  switch (action.type) {
-    case SAVE_THEME_COLOR:
-      return { ...state, themeColor: action.payload };
-    default:
-      return state;
-  }
+  return { ...state, themeColor: action.payload };
 };
 
 const initialState = {
@@ -23,8 +22,11 @@ const initialState = {
 
 const designReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SAVE_DESIGN: {
-      return saveDesign(state, action);
+    case SAVE_FRONT_DESIGN: {
+      return saveFrontDesign(state, action);
+    }
+    case SAVE_BACK_DESIGN: {
+      return saveBackDesign(state, action);
     }
     case SAVE_THEME_COLOR: {
       return saveThemeColor(state, action);

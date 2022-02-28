@@ -16,7 +16,8 @@ import useEditor from '../../components/editor/useEditor';
 import FontControls from './FontControls';
 import CanvasEditor from '../../components/editor/canvasEditor';
 import Smileys from './Smileys';
-import ShirtSVG from '../../assets/images/gray-tshirt.svg';
+import FrontShirtSVG from '../../assets/images/gray-front-tshirt.svg';
+import BackShirtSVG from '../../assets/images/gray-back-tshirt.svg';
 import SmileySVG from '../../assets/images/smiley.svg';
 import ColorPng from '../../assets/images/color.png';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -26,17 +27,23 @@ import {
   CANVAS_WIDTH_MOBILE,
   CANVAS_HEIGHT_MOBILE,
 } from '../../configs/const';
-import { updateCanvasShape } from '../../store/redux/actions/canvas';
+import { updateCanvasShape, updateCanvasMode } from '../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   editor: {
     width: CANVAS_WIDTH_DESKTOP,
     height: CANVAS_HEIGHT_DESKTOP,
+    position: 'relative',
     [theme.breakpoints.down('sm')]: {
       width: CANVAS_WIDTH_MOBILE,
       height: CANVAS_HEIGHT_MOBILE,
     },
+  },
+  canvasElement: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
   controlsContainer: {
     display: 'flex',
@@ -165,13 +172,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Editor = forwardRef((props, ref) => {
-  const { triggerExport = 0, canvasJSON, saveEditDesign, designName } = props;
+  const { triggerExport = 0, frontCanvasJSON, backCanvasJSON, saveEditDesign, designName } = props;
 
   const canvasShape = useSelector(state => state.canvas.shape);
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const editorJs = useEditor();
   const [shapeCounter, setShapeCounter] = useState(
     canvasShape === 'square'
       ? 0
@@ -185,6 +191,10 @@ const Editor = forwardRef((props, ref) => {
   const [toggleFontControls, setToggleFontControls] = useState(false);
   const [miniature, setMiniature] = useState();
   const [openColorModal, setOpenColorModal] = useState(false);
+  const [canvasMode, setCanvasMode] = useState('front');
+
+  const editorJs = useEditor('front');
+  const backEditorJs = useEditor('back');
 
   useEffect(() => {
     var style1 = document.getElementById('style1');
@@ -218,18 +228,12 @@ const Editor = forwardRef((props, ref) => {
     style13.style.fontFamily = 'RussoOne';
     style14.style.fontFamily = 'Tourney';
     style15.style.fontFamily = 'BungeeS';
-
-    // if (isCanvasBlank(canvas)) {
-    //   span.hidden = false;
-    // } else {
-    //   span.hidden = true;
-    // }
   }, []);
 
   const MINUTE_MS = 500;
 
   useEffect(() => {
-    var canvas = document.getElementById('canvas');
+    var canvas = document.getElementById(`${canvasMode}-canvas`);
     var span = document.getElementById('alt-text');
     const interval = setInterval(() => {
       if (isCanvasBlank(canvas)) {
@@ -239,7 +243,7 @@ const Editor = forwardRef((props, ref) => {
       }
     }, MINUTE_MS);
 
-    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    return () => clearInterval(interval);
   }, []);
 
   function isCanvasBlank(canvas) {
@@ -252,8 +256,6 @@ const Editor = forwardRef((props, ref) => {
     return !pixelBuffer.some(color => color !== 0);
   }
 
-  const firstUpdate = useRef(true);
-
   useEffect(() => {
     if (triggerExport > 0) {
       exportCanvas();
@@ -265,6 +267,7 @@ const Editor = forwardRef((props, ref) => {
       exportCanvas();
     },
   }));
+
   const handleTextControls = () => {
     const smileyControls = document.getElementById('smileyContainer');
     const fontControls = document.getElementById('textControls');
@@ -276,41 +279,73 @@ const Editor = forwardRef((props, ref) => {
     imageControls.hidden = true;
   };
   const addText = () => {
-    editorJs.addText();
+    if (canvasMode === 'front') {
+      editorJs.addText();
+    } else {
+      backEditorJs.addText();
+    }
     handleTextControls();
   };
 
   const addPng = img => {
-    editorJs.getImgPolaroid(img);
+    if (canvasMode === 'front') {
+      editorJs.getImgPolaroid(img);
+    } else {
+      backEditorJs.getImgPolaroid(img);
+    }
   };
 
   const deleteSelected = () => {
-    editorJs.removeSelected();
+    if (canvasMode === 'front') {
+      editorJs.removeSelected();
+    } else {
+      backEditorJs.removeSelected();
+    }
   };
 
   const setCanvasBackground = bgColor => {
-    console.log('call color');
-    editorJs.setCanvasFill(bgColor);
+    if (canvasMode === 'front') {
+      editorJs.setCanvasFill(bgColor);
+    } else {
+      backEditorJs.setCanvasFill(bgColor);
+    }
   };
+
   const setCavasTextureImage = imgUrl => {
-    console.log('call textue', imgUrl);
-    editorJs.setCanvasImage(imgUrl);
+    if (canvasMode === 'front') {
+      editorJs.setCanvasImage(imgUrl);
+    } else {
+      backEditorJs.setCanvasImage(imgUrl);
+    }
   };
 
   const setFontColor = color => {
-    editorJs?.setFontColor(color);
+    if (canvasMode === 'front') {
+      editorJs?.setFontColor(color);
+    } else {
+      backEditorJs?.setFontColor(color);
+    }
   };
 
   const setFontFamily = fontFamily => {
-    editorJs?.setFontFamily(fontFamily);
+    if (canvasMode === 'front') {
+      editorJs?.setFontFamily(fontFamily);
+    } else {
+      backEditorJs?.setFontFamily(fontFamily);
+    }
   };
 
   const exportCanvas = () => {
-    editorJs.exportCanvas();
+    editorJs.exportCanvas('front');
+    backEditorJs.exportCanvas('back');
   };
 
   const exportCanvasToJSON = () => {
-    const exportedCanvasJson = editorJs.saveCanvasToJSON();
+    if (canvasMode === 'front') {
+      const exportedCanvasJson = editorJs.saveCanvasToJSON();
+    } else {
+      const exportedCanvasJson = backEditorJs.saveCanvasToJSON();
+    }
     return exportedCanvasJson;
   };
 
@@ -319,33 +354,58 @@ const Editor = forwardRef((props, ref) => {
     var reader = new FileReader();
     reader.onload = function (f) {
       var data = f.target.result;
-      editorJs.addImageOnCanvas(data);
+      if (canvasMode === 'front') {
+        editorJs.addImageOnCanvas(data);
+      } else {
+        backEditorJs.addImageOnCanvas(data);
+      }
     };
     reader.readAsDataURL(file);
   };
 
   const undo = () => {
-    editorJs.undo();
+    if (canvasMode === 'front') {
+      editorJs.undo();
+    } else {
+      backEditorJs.undo();
+    }
   };
 
   const redo = () => {
-    editorJs.redo();
+    if (canvasMode === 'front') {
+      editorJs.redo();
+    } else {
+      backEditorJs.redo();
+    }
   };
 
   const cropImage = () => {
-    editorJs.cropImage();
+    if (canvasMode === 'front') {
+      editorJs.cropImage();
+    } else {
+      backEditorJs.cropImage();
+    }
   };
 
   const cropImageDone = () => {
-    editorJs.cropImageDone();
+    if (canvasMode === 'front') {
+      editorJs.cropImageDone();
+    } else {
+      backEditorJs.cropImageDone();
+    }
   };
 
   const handleExportButton = () => {
-    const editorState = editorJs.exportCanvas();
+    const editorState =
+      canvasMode === 'front' ? editorJs.exportCanvas() : backEditorJs.exportCanvas();
   };
 
   const handleTextEditingFinished = () => {
-    editorJs.finishTextEditing();
+    if (canvasMode === 'front') {
+      editorJs.finishTextEditing();
+    } else {
+      backEditorJs.finishTextEditing();
+    }
   };
 
   const handleControlsToggle = () => {
@@ -383,7 +443,7 @@ const Editor = forwardRef((props, ref) => {
     fontControls.hidden = true;
   };
 
-  const changeShape = shape => {
+  const changeShape = () => {
     if (shapeCounter == 2) {
       setShapeCounter(0);
       dispatch(updateCanvasShape('square'));
@@ -394,6 +454,17 @@ const Editor = forwardRef((props, ref) => {
       setShapeCounter(2);
       dispatch(updateCanvasShape('circle'));
     }
+  };
+
+  const toggleFrontCanvas = () => {
+    setCanvasMode('front');
+
+    dispatch(updateCanvasMode('front'));
+  };
+
+  const toggleBackCanvas = () => {
+    setCanvasMode('back');
+    dispatch(updateCanvasMode('back'));
   };
 
   return (
@@ -472,16 +543,30 @@ const Editor = forwardRef((props, ref) => {
               className={`${classes.editor} fabric-canvas-wrapper`}
               style={{ borderRadius: canvasShape === 'triangle' ? '0px' : '1rem' }}
             >
-              <CanvasEditor
-                onReady={editorJs.onReady}
-                class="fabric-canvas-wrapper"
-                canvasJSON={canvasJSON}
-                designName={designName}
-              />
+              <div hidden={canvasMode === 'front' ? false : true}>
+                <CanvasEditor
+                  onReady={editorJs.onReady}
+                  class="front-canvas-wrapper"
+                  canvasJSON={frontCanvasJSON}
+                  designName={designName}
+                  canvasMode={canvasMode}
+                />
+              </div>
+
+              <div hidden={canvasMode === 'back' ? false : true}>
+                <CanvasEditor
+                  onReady={backEditorJs.onReady}
+                  class="back-canvas-wrapper"
+                  canvasJSON={backCanvasJSON}
+                  designName={designName}
+                  canvasMode={canvasMode}
+                />
+              </div>
             </Card>
           </Grid>
         </Grid>
       </Grid>
+
       <Grid item md={12} sm={12} xs={12}>
         <Grid container spacing={1} className={classes.controlsContainer}>
           <Stack
@@ -540,9 +625,46 @@ const Editor = forwardRef((props, ref) => {
             // alignContent="center"
             className={classes.buttonContainer}
           >
+            <Grid item md={12} sm={12} xs={12}>
+              <Stack direction="row" justifyContent="center" alignItems="center">
+                <Button
+                  variant="contained"
+                  onClick={() => toggleFrontCanvas()}
+                  className={`${classes.button}`}
+                  style={{
+                    backgroundColor: canvasMode === 'front' ? 'rgb(213, 209, 209)' : '#fff',
+                  }}
+                >
+                  Front
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => toggleBackCanvas()}
+                  className={`${classes.button}`}
+                  style={{
+                    backgroundColor: canvasMode === 'back' ? 'rgb(213, 209, 209)' : '#fff',
+                  }}
+                >
+                  Back
+                </Button>
+              </Stack>
+            </Grid>
             <Grid item display="flex" justifyContent="center" alignItems="center">
               <div className={classes.miniatureContaienr}>
-                <img src={ShirtSVG} className={classes.shirtImage} />
+                <img
+                  src={FrontShirtSVG}
+                  className={classes.shirtImage}
+                  style={{
+                    display: canvasMode === 'front' ? 'block' : 'none',
+                  }}
+                />
+                <img
+                  src={BackShirtSVG}
+                  className={classes.shirtImage}
+                  style={{
+                    display: canvasMode === 'front' ? 'none' : 'block',
+                  }}
+                />
                 <span
                   id="alt-text"
                   style={{
@@ -555,7 +677,20 @@ const Editor = forwardRef((props, ref) => {
                     border: '2px solid white',
                   }}
                 ></span>
-                <canvas id="static" width="50" height="50" className={classes.miniature}></canvas>
+                <canvas
+                  hidden={canvasMode === 'front' ? false : true}
+                  id="front-canvas-preview"
+                  width="50"
+                  height="50"
+                  className={classes.miniature}
+                ></canvas>
+                <canvas
+                  hidden={canvasMode === 'back' ? false : true}
+                  id="back-canvas-preview"
+                  width="50"
+                  height="50"
+                  className={classes.miniature}
+                ></canvas>
               </div>
             </Grid>
           </Stack>

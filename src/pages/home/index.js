@@ -197,14 +197,16 @@ const Home = () => {
       twitter: data.twitter,
       products: JSON.stringify([...selectedVariants]),
       themeColor: data.themeColor,
-      designName: designData.designName,
+      designName: designData.front.designName,
     };
 
-    const JSONBlob = new Blob([JSON.stringify(designData.designJson)], {
+    const frontJSONBlob = new Blob([JSON.stringify(designData.front.designJson)], {
       type: 'application/json',
     });
 
-    console.log(JSONBlob);
+    const backJSONBlob = new Blob([JSON.stringify(designData.back.designJson)], {
+      type: 'application/json',
+    });
 
     axios
       .post(`${baseURL}/store`, storeData, {
@@ -223,37 +225,73 @@ const Home = () => {
 
         const storeLogo = urls[0].imageUrl;
         const storeCoverAvatar = urls[1].imageUrl;
-        const designaVariant1 = urls[2].imageUrl;
-        const designaVariant2 = urls[3].imageUrl;
-        const designaVariant3 = urls[4].imageUrl;
-        const designaVariant4 = urls[5].imageUrl;
-        const designaVariant5 = urls[6].imageUrl;
-        const designJson = urls[7].imageUrl;
+        const frontDesignVariant1 = urls[2].imageUrl;
+        const frontDesignVariant2 = urls[3].imageUrl;
+        const frontDesignVariant3 = urls[4].imageUrl;
+        const frontDesignVariant4 = urls[5].imageUrl;
+        const frontDesignVariant5 = urls[6].imageUrl;
+        const frontDesignJson = urls[7].imageUrl;
+        const backDesignVariant1 = urls[8].imageUrl;
+        const backDesignVariant2 = urls[9].imageUrl;
+        const backDesignJson = urls[10].imageUrl;
 
         postDataToURL(storeLogo, data.logo);
         postDataToURL(storeCoverAvatar, data.coverAvatar);
         postDataToURL(
-          designaVariant1,
-          dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
+          frontDesignVariant1,
+          dataURLtoFile(
+            designData.front.designImages[0].data,
+            `${designData.front.designImages[0].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant2,
-          dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
+          frontDesignVariant2,
+          dataURLtoFile(
+            designData.front.designImages[1].data,
+            `${designData.front.designImages[1].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant3,
-          dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
+          frontDesignVariant3,
+          dataURLtoFile(
+            designData.front.designImages[2].data,
+            `${designData.front.designImages[2].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant4,
-          dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
+          frontDesignVariant4,
+          dataURLtoFile(
+            designData.front.designImages[3].data,
+            `${designData.front.designImages[3].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant5,
-          dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
+          frontDesignVariant5,
+          dataURLtoFile(
+            designData.front.designImages[4].data,
+            `${designData.front.designImages[4].name}.png`,
+          ),
         );
 
-        postDataToURL(designJson, JSONBlob);
+        postDataToURL(
+          backDesignVariant1,
+          dataURLtoFile(
+            designData.back.designImages[0].data,
+            `${designData.back.designImages[0].name}.png`,
+          ),
+        );
+
+        postDataToURL(
+          backDesignVariant2,
+          dataURLtoFile(
+            designData.back.designImages[1].data,
+            `${designData.back.designImages[1].name}.png`,
+          ),
+        );
+
+        postDataToURL(frontDesignJson, frontJSONBlob);
+        postDataToURL(backDesignJson, backJSONBlob);
+
         nextStep();
         setShowWelcomeMessage(true);
       })

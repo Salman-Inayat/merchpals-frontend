@@ -206,7 +206,7 @@ const ProductCard = ({
 
   useEffect(() => {
     setTimeout(() => {
-      setDesign(store.getState().design.design.designImages[4].data);
+      setDesign(store.getState().design.design.front.designImages[4].data);
     }, 1000);
   }, []);
 

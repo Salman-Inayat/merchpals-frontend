@@ -120,6 +120,7 @@ const VendorStore = () => {
       })
       .then(response => {
         const store = response.data.store;
+        console.log('Store: ', store);
         setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         setStore(store);
         dispatch(saveThemeColor({ themeColor: store.themeColor }));

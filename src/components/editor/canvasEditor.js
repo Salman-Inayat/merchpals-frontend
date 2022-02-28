@@ -21,24 +21,29 @@ const CanvasEditor = _ref => {
   var className = _ref.class,
     onReady = _ref.onReady,
     canvasJSON = _ref.canvasJSON,
-    designName = _ref.designName;
+    designName = _ref.designName,
+    canvasMode = _ref.canvasMode;
 
   var canvasElParent = useRef(null);
-  var canvasEl = useRef(null);
+  var frontCanvasEl = useRef(null);
+  var backCanvasEl = useRef(null);
 
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(function () {
-    var canvas = new fabric.Canvas(canvasEl.current, {
-      hoverCursor: 'pointer',
-      selection: false,
-      selectionBorderColor: 'blue',
-      fireRightClick: true, // <-- enable firing of right click events
-      fireMiddleClick: true, // <-- enable firing of middle click events
-      stopContextMenu: true, // <--  prevent context menu from showing
-    });
+    const canvas = new fabric.Canvas(
+      canvasMode === 'front' ? frontCanvasEl.current : backCanvasEl.current,
+      {
+        hoverCursor: 'pointer',
+        selection: false,
+        selectionBorderColor: 'blue',
+        fireRightClick: true, // <-- enable firing of right click events
+        fireMiddleClick: true, // <-- enable firing of middle click events
+        stopContextMenu: true, // <--  prevent context menu from showing
+      },
+    );
 
     if (isDesktop) {
       canvas.setDimensions({ width: CANVAS_WIDTH_DESKTOP, height: CANVAS_HEIGHT_DESKTOP });
@@ -46,44 +51,44 @@ const CanvasEditor = _ref => {
     if (isMobile) {
       canvas.setDimensions({ width: CANVAS_WIDTH_MOBILE, height: CANVAS_HEIGHT_MOBILE });
     }
-    // if (isDesktop){
 
-    // }
     initAligningGuidelines(canvas);
-    initCenteringGuidelines(canvas, false);
+    initCenteringGuidelines(canvas, isMobile);
 
-    var setCurrentDimensions = function setCurrentDimensions() {
-      var _canvasElParent$curre, _canvasElParent$curre2;
-      const outerCanvasContainer = document.getElementsByClassName(className)[0];
-      const ratio = canvas.getWidth() / canvas.getHeight();
-      const containerWidth = outerCanvasContainer.clientWidth;
-      const containerHeight = outerCanvasContainer.clientHeight;
+    // var setCurrentDimensions = function setCurrentDimensions() {
+    //   var _canvasElParent$curre, _canvasElParent$curre2;
+    //   console.log('Document: ', document.getElementsByClassName(className)[0]);
 
-      // const scale = containerWidth / canvas.getWidth();
-      // const zoom = canvas.getZoom() * scale;
-      canvas.setDimensions({
-        width: containerWidth,
-        height: containerWidth / ratio,
-      });
-      // canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
+    //   const outerCanvasContainer = document.getElementsByClassName(className)[0];
+    //   const ratio = canvas.getWidth() / canvas.getHeight();
+    //   const containerWidth = outerCanvasContainer.clientWidth;
+    //   const containerHeight = outerCanvasContainer.clientHeight;
 
-      canvas.renderAll();
-    };
+    //   // const scale = containerWidth / canvas.getWidth();
+    //   // const zoom = canvas.getZoom() * scale;
+    //   canvas.setDimensions({
+    //     width: containerWidth,
+    //     height: containerWidth / ratio,
+    //   });
+    //   // canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
 
-    var resizeCanvas = function resizeCanvas() {
-      setCurrentDimensions();
-    };
+    //   canvas.renderAll();
+    // };
 
-    setCurrentDimensions();
-    window.addEventListener('resize', resizeCanvas, false);
+    // var resizeCanvas = function resizeCanvas() {
+    //   setCurrentDimensions();
+    // };
+
+    // setCurrentDimensions();
+    // window.addEventListener('resize', resizeCanvas, false);
 
     if (onReady) {
-      onReady(canvas, canvasJSON, designName);
+      onReady(canvas, canvasJSON, designName, canvasMode);
     }
 
     return function () {
       canvas.dispose();
-      window.removeEventListener('resize', resizeCanvas);
+      // window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 
@@ -94,8 +99,8 @@ const CanvasEditor = _ref => {
       id: className,
     },
     React__default.createElement('canvas', {
-      ref: canvasEl,
-      id: 'canvas',
+      ref: canvasMode === 'front' ? frontCanvasEl : backCanvasEl,
+      id: `${canvasMode}-canvas`,
     }),
   );
 };

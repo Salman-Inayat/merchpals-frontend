@@ -33,7 +33,13 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
           exportBase64={exportBase64}
           triggerExport={triggerExport}
           ref={childRef}
-          canvasJSON={design.design.designJson === '' ? undefined : design.design.designJson}
+          // canvasJSON={design.design.designJson === '' ? undefined : design.design.designJson}
+          frontCanvasJSON={
+            design.design?.front?.designJson === '' ? undefined : design.design?.front?.designJson
+          }
+          backCanvasJSON={
+            design.design?.back?.designJson === '' ? undefined : design.design?.back?.designJson
+          }
         />
         <Button
           variant="contained"
