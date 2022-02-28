@@ -433,6 +433,7 @@ const Product = () => {
                   showArrows={false}
                   swipeable={false}
                   showStatus={false}
+                  showIndicators={false}
                 >
                   <div
                     className={classes.imageContainer}
