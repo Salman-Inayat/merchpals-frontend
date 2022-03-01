@@ -278,19 +278,32 @@ const useEditor = mode => {
         resetPanels();
         if (selectedObject.type !== 'textbox') {
           document.getElementById('textControls').hidden = true;
+          document.getElementById('show-editor').hidden = false;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
         }
 
         if (selectedObject.type === 'textbox') {
           document.getElementById('textControls').hidden = false;
           document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('show-editor').hidden = true;
         }
 
         if (selectedObject.type !== 'image') {
           document.getElementById('crop-image-button').hidden = true;
+          document.getElementById('textControls').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('show-editor').hidden = false;
         }
 
         if (selectedObject.type === 'image') {
           document.getElementById('crop-image-button').hidden = false;
+          document.getElementById('textControls').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('show-editor').hidden = true;
         }
 
         if (selectedObject.type == 'i-text') {
@@ -350,18 +363,37 @@ const useEditor = mode => {
             cursorWidth: 1,
           });
           document.getElementById('textControls').hidden = false;
+          document.getElementById('crop-image-button').hidden = true;
+          document.getElementById('background-button').hidden = true;
           document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('show-editor').hidden = true;
         } else if (selectedObject.type === 'image') {
           document.getElementById('crop-image-button').hidden = false;
           document.getElementById('textControls').hidden = true;
           document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('show-editor').hidden = true;
+          document.getElementById('background-button').hidden = true;
         }
       },
       'before:selection:cleared': e => {
         if (e.target.type === 'textbox') {
           document.getElementById('textControls').hidden = true;
+          document.getElementById('show-editor').hidden = false;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('crop-image-button').hidden = true;
         } else if (e.target.type === 'image') {
           document.getElementById('crop-image-button').hidden = true;
+          document.getElementById('show-editor').hidden = false;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('textControls').hidden = true;
+        } else {
+          document.getElementById('crop-image-button').hidden = true;
+          document.getElementById('show-editor').hidden = false;
+          document.getElementById('background-button').hidden = true;
+          document.getElementById('smileyContainer').hidden = true;
+          document.getElementById('textControls').hidden = true;
         }
       },
       'selection:cleared': e => {
@@ -895,7 +927,6 @@ const useEditor = mode => {
   };
 
   const setCanvasImage = imgUrl => {
-    console.log('set canvas img', imgUrl);
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
       // canvas.setBackgroundImage(

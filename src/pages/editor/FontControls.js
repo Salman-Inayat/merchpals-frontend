@@ -192,7 +192,7 @@ const FontControls = props => {
   };
 
   return (
-    <Paper elevation={5} className={classes.fontModal}>
+    <Paper elevation={5}>
       <Stack direction="column" spacing={2} alignItems="center" alignContent="center">
         <FontFamily setFontFamily={setFontFamily} />
         <FontColor setFontColor={setFontColor} />

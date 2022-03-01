@@ -169,6 +169,12 @@ const useStyles = makeStyles(theme => ({
       left: '80%',
     },
   },
+  frontBack: {
+    backgroundColor: '#E7E9EB',
+    padding: '4px 5px',
+    margin: '24px 10px 0px 10px',
+    borderRadius: '10px',
+  },
 }));
 
 const Editor = forwardRef((props, ref) => {
@@ -268,16 +274,6 @@ const Editor = forwardRef((props, ref) => {
     },
   }));
 
-  const handleTextControls = () => {
-    const smileyControls = document.getElementById('smileyContainer');
-    const fontControls = document.getElementById('textControls');
-    const imageControls = document.getElementById('crop-image-button');
-    const backgroundControl = document.getElementById('background-button');
-
-    backgroundControl.hidden = true;
-    smileyControls.hidden = true;
-    imageControls.hidden = true;
-  };
   const addText = () => {
     if (canvasMode === 'front') {
       editorJs.addText();
@@ -385,6 +381,7 @@ const Editor = forwardRef((props, ref) => {
     } else {
       backEditorJs.cropImage();
     }
+    handleCropDoneControl();
   };
 
   const cropImageDone = () => {
@@ -407,17 +404,28 @@ const Editor = forwardRef((props, ref) => {
       backEditorJs.finishTextEditing();
     }
   };
-
+  const handleTextControls = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
+    const showEditor = document.getElementById('show-editor');
+    backgroundControl.hidden = true;
+    smileyControls.hidden = true;
+    imageControls.hidden = true;
+    showEditor.hidden = true;
+  };
   const handleControlsToggle = () => {
     const smileyControls = document.getElementById('smileyContainer');
     const fontControls = document.getElementById('textControls');
     const imageControls = document.getElementById('crop-image-button');
     const backgroundControl = document.getElementById('background-button');
-
-    smileyControls.hidden = smileyControls.hidden == true ? false : true;
+    const showEditor = document.getElementById('show-editor');
+    smileyControls.hidden = false;
     fontControls.hidden = true;
     imageControls.hidden = true;
     backgroundControl.hidden = true;
+    showEditor.hidden = true;
   };
 
   const handleOpenColorModal = () => {
@@ -425,11 +433,26 @@ const Editor = forwardRef((props, ref) => {
     const fontControls = document.getElementById('textControls');
     const imageControls = document.getElementById('crop-image-button');
     const backgroundControl = document.getElementById('background-button');
-
-    backgroundControl.hidden = !backgroundControl.hidden;
+    const showEditor = document.getElementById('show-editor');
+    console.log('showEditor', showEditor);
+    backgroundControl.hidden = false;
     smileyControls.hidden = true;
     fontControls.hidden = true;
     imageControls.hidden = true;
+    showEditor.hidden = true;
+  };
+  const handleCloseColorModal = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControls = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
+    const showEditor = document.getElementById('show-editor');
+    console.log('showEditor', showEditor);
+    backgroundControl.hidden = true;
+    smileyControls.hidden = true;
+    fontControls.hidden = true;
+    imageControls.hidden = true;
+    showEditor.hidden = false;
   };
 
   const handleImageControl = () => {
@@ -437,10 +460,25 @@ const Editor = forwardRef((props, ref) => {
     const fontControls = document.getElementById('textControls');
     const imageControls = document.getElementById('crop-image-button');
     const backgroundControl = document.getElementById('background-button');
+    const showEditor = document.getElementById('show-editor');
 
     backgroundControl.hidden = true;
     smileyControls.hidden = true;
     fontControls.hidden = true;
+    showEditor.hidden = true;
+  };
+  const handleCropDoneControl = () => {
+    const smileyControls = document.getElementById('smileyContainer');
+    const fontControls = document.getElementById('textControls');
+    const imageControlsCrop = document.getElementById('crop-image-button');
+    const backgroundControl = document.getElementById('background-button');
+    const showEditor = document.getElementById('show-editor');
+
+    imageControlsCrop.hidden = true;
+    backgroundControl.hidden = true;
+    smileyControls.hidden = true;
+    fontControls.hidden = true;
+    showEditor.hidden = true;
   };
 
   const changeShape = () => {
@@ -476,7 +514,7 @@ const Editor = forwardRef((props, ref) => {
       </Grid>
       <Grid item md={12} sm={12} xs={12} className={classes.canvasContainer}>
         <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
-          <Grid
+          {/* <Grid
             item
             md={10}
             xs={12}
@@ -486,49 +524,8 @@ const Editor = forwardRef((props, ref) => {
             alignItems="center"
             sx={{ position: 'relative' }}
           >
-            <div id="background-button" hidden>
-              <Paper elevation={5} className={classes.colorModal}>
-                {/* <CancelOutlinedIcon
-                  fontSize="small"
-                  className={classes.closeColorModal}
-                  onClick={() => setOpenColorModal(false)}
-                /> */}
-                <ColorPallete
-                  setCanvasBackground={setCanvasBackground}
-                  setCavasTextureImage={setCavasTextureImage}
-                />
-              </Paper>
-            </div>
-            <div id="smileyContainer" hidden className={classes.SmileyModal}>
-              <Smileys addPng={addPng} />
-            </div>
-            <div id="textControls" hidden>
-              <FontControls
-                setFontColor={setFontColor}
-                setFontFamily={setFontFamily}
-                handleTextEditingFinished={handleTextEditingFinished}
-              />
-            </div>
-            <div id="crop-image-button" hidden>
-              <Button
-                variant="contained"
-                onClick={cropImage}
-                className={`${classes.crop_and_done} ${classes.button}`}
-              >
-                Crop
-              </Button>
-            </div>
-
-            <div id="crop-image-done-button" hidden>
-              <Button
-                variant="contained"
-                onClick={cropImageDone}
-                className={`${classes.crop_and_done} ${classes.button}`}
-              >
-                Done
-              </Button>
-            </div>
-          </Grid>
+           
+          </Grid> */}
           <Grid
             item
             md={12}
@@ -568,7 +565,7 @@ const Editor = forwardRef((props, ref) => {
       </Grid>
 
       <Grid item md={12} sm={12} xs={12}>
-        <Grid container spacing={1} className={classes.controlsContainer}>
+        <Grid container className={classes.controlsContainer}>
           <Stack
             direction="column"
             spacing={3}
@@ -617,22 +614,22 @@ const Editor = forwardRef((props, ref) => {
               />
             </Button>
           </Stack>
-          <Stack
-            direction="column"
-            // spacing={4}
-            // justifyContent="center"
-            alignItems="center"
-            // alignContent="center"
-            className={classes.buttonContainer}
-          >
+          <Stack direction="column" alignItems="center" className={classes.buttonContainer}>
             <Grid item md={12} sm={12} xs={12}>
-              <Stack direction="row" justifyContent="center" alignItems="center">
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                className={classes.frontBack}
+              >
                 <Button
                   variant="contained"
                   onClick={() => toggleFrontCanvas()}
                   className={`${classes.button}`}
                   style={{
-                    backgroundColor: canvasMode === 'front' ? 'rgb(213, 209, 209)' : '#fff',
+                    backgroundColor: canvasMode === 'front' ? '#fff' : 'transparent',
+                    minWidth: '75px',
+                    boxShadow: 'none',
                   }}
                 >
                   Front
@@ -642,55 +639,94 @@ const Editor = forwardRef((props, ref) => {
                   onClick={() => toggleBackCanvas()}
                   className={`${classes.button}`}
                   style={{
-                    backgroundColor: canvasMode === 'back' ? 'rgb(213, 209, 209)' : '#fff',
+                    backgroundColor: canvasMode === 'back' ? '#fff' : 'transparent',
+                    minWidth: '75px',
+
+                    boxShadow: 'none',
                   }}
                 >
                   Back
                 </Button>
               </Stack>
             </Grid>
-            <Grid item display="flex" justifyContent="center" alignItems="center">
-              <div className={classes.miniatureContaienr}>
-                <img
-                  src={FrontShirtSVG}
-                  className={classes.shirtImage}
-                  style={{
-                    display: canvasMode === 'front' ? 'block' : 'none',
-                  }}
+            <Grid item display="flex" justifyContent="center" alignItems="center" height="12rem">
+              <div id="background-button" hidden>
+                <Paper elevation={5} sx={{ position: 'relative' }}>
+                  <CancelOutlinedIcon
+                    fontSize="small"
+                    className={classes.closeColorModal}
+                    onClick={handleCloseColorModal}
+                  />
+                  <ColorPallete
+                    setCanvasBackground={setCanvasBackground}
+                    setCavasTextureImage={setCavasTextureImage}
+                  />
+                </Paper>
+              </div>
+              <div id="smileyContainer" hidden>
+                <Smileys addPng={addPng} />
+              </div>
+              <div id="textControls" hidden>
+                <FontControls
+                  setFontColor={setFontColor}
+                  setFontFamily={setFontFamily}
+                  handleTextEditingFinished={handleTextEditingFinished}
                 />
-                <img
-                  src={BackShirtSVG}
-                  className={classes.shirtImage}
-                  style={{
-                    display: canvasMode === 'front' ? 'none' : 'block',
-                  }}
-                />
-                <span
-                  id="alt-text"
-                  style={{
-                    height: '50px',
-                    width: '50px',
-                    position: 'absolute',
-                    top: '40%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    border: '2px solid white',
-                  }}
-                ></span>
-                <canvas
-                  hidden={canvasMode === 'front' ? false : true}
-                  id="front-canvas-preview"
-                  width="50"
-                  height="50"
-                  className={classes.miniature}
-                ></canvas>
-                <canvas
-                  hidden={canvasMode === 'back' ? false : true}
-                  id="back-canvas-preview"
-                  width="50"
-                  height="50"
-                  className={classes.miniature}
-                ></canvas>
+              </div>
+              <div id="crop-image-button" hidden>
+                <Button variant="contained" onClick={cropImage} className={` ${classes.button}`}>
+                  Crop
+                </Button>
+              </div>
+
+              <div id="crop-image-done-button" hidden>
+                <Button variant="contained" onClick={cropImageDone} className={`${classes.button}`}>
+                  Done
+                </Button>
+              </div>
+              <div id="show-editor" hidden={false}>
+                <div className={classes.miniatureContaienr}>
+                  <img
+                    src={FrontShirtSVG}
+                    className={classes.shirtImage}
+                    style={{
+                      display: canvasMode === 'front' ? 'block' : 'none',
+                    }}
+                  />
+                  <img
+                    src={BackShirtSVG}
+                    className={classes.shirtImage}
+                    style={{
+                      display: canvasMode === 'front' ? 'none' : 'block',
+                    }}
+                  />
+                  <span
+                    id="alt-text"
+                    style={{
+                      height: '50px',
+                      width: '50px',
+                      position: 'absolute',
+                      top: '40%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      border: '2px solid white',
+                    }}
+                  ></span>
+                  <canvas
+                    hidden={canvasMode === 'front' ? false : true}
+                    id="front-canvas-preview"
+                    width="50"
+                    height="50"
+                    className={classes.miniature}
+                  ></canvas>
+                  <canvas
+                    hidden={canvasMode === 'back' ? false : true}
+                    id="back-canvas-preview"
+                    width="50"
+                    height="50"
+                    className={classes.miniature}
+                  ></canvas>
+                </div>
               </div>
             </Grid>
           </Stack>

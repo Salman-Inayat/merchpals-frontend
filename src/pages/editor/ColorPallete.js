@@ -33,17 +33,16 @@ const useStyles = makeStyles(theme => ({
     padding: '0px',
   },
   texture: {
-    width: '4rem',
-
+    width: '5rem',
+    height: '1.4rem',
     overflow: 'auto',
     [theme.breakpoints.down('md')]: {
       width: '60px',
-
       display: 'inline-block',
     },
-
     [theme.breakpoints.down('sm')]: {
-      width: '2rem',
+      width: '5rem',
+      height: '1.4rem',
       display: 'inline-block',
     },
   },
@@ -106,7 +105,44 @@ const ColorPallete = ({ setCanvasBackground, setCavasTextureImage, customClass }
     '#FDC0B3',
     '#8c8c88',
   ];
-  const textures = ['1.png', '2.png', '3.png'];
+  const textures = [
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+
+    '1.png',
+    '2.png',
+    '3.png',
+
+    '1.png',
+    '2.png',
+    '3.png',
+
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+    '1.png',
+    '2.png',
+    '3.png',
+  ];
   const background = [
     '#ffffff00',
     '#000000',
@@ -219,7 +255,7 @@ const ColorPallete = ({ setCanvasBackground, setCavasTextureImage, customClass }
             value={bgSolid}
             label="Color"
             onChange={handleBgSolidChange}
-            SelectDisplayProps={{ style: { paddingTop: 13, paddingBottom: 10 } }}
+            SelectDisplayProps={{ style: { paddingTop: 10, paddingBottom: 8 } }}
           >
             {solid.map((bgSolid, index) => (
               <MenuItem value={bgSolid} key={index}>

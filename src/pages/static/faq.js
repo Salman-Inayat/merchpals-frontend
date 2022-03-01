@@ -391,6 +391,7 @@ const CustomizedAccordions = () => {
           <ContactSupport
             handleModalAndSnackbar={handleModalAndSnackbar}
             toggleContactModal={toggleContactModal}
+            email_from={process.env.REACT_APP_SUPPORTER_EMAIL}
           />
         </Card>
       </Modal>
