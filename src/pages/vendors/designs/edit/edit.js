@@ -36,14 +36,6 @@ const EditDesign = () => {
       })
       .then(response => {
         setDesignData(response.data.design);
-        console.log('Store design: ', response.data.design);
-        // getJSONFromUrl(response.data.design.designJson, (err, data) => {
-        //   if (err !== null) {
-        //     alert('Something went wrong: ' + err);
-        //   } else {
-        //     setCanvasJSON(data);
-        //   }
-        // });
         getJSONFromUrl(response.data.design.frontDesign.designJson, (err, data) => {
           if (err !== null) {
             alert('Something went wrong: ' + err);
@@ -84,7 +76,7 @@ const EditDesign = () => {
       const newDesign = store.getState().design.design;
 
       let form = new FormData();
-      form.append('designName', newDesign.designName);
+      form.append('designName', newDesign.front.designName);
 
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
@@ -96,39 +88,77 @@ const EditDesign = () => {
         .then(response => {
           const urls = response.data.response;
 
-          const designaVariant1 = urls[0].imageUrl;
-          const designaVariant2 = urls[1].imageUrl;
-          const designaVariant3 = urls[2].imageUrl;
-          const designaVariant4 = urls[3].imageUrl;
-          const designaVariant5 = urls[4].imageUrl;
-          const designJson = urls[5].imageUrl;
+          const frontDesignVariant1 = urls[0].imageUrl;
+          const frontDesignVariant2 = urls[1].imageUrl;
+          const frontDesignVariant3 = urls[2].imageUrl;
+          const frontDesignVariant4 = urls[3].imageUrl;
+          const frontDesignVariant5 = urls[4].imageUrl;
+          const frontDesignJson = urls[5].imageUrl;
+          const backDesignVariant1 = urls[6].imageUrl;
+          const backDesignVariant2 = urls[7].imageUrl;
+          const backDesignJson = urls[8].imageUrl;
 
-          const JSONBlob = new Blob([JSON.stringify(newDesign.designJson)], {
+          const frontJSONBlob = new Blob([JSON.stringify(newDesign.front.designJson)], {
+            type: 'application/json',
+          });
+
+          const backJSONBlob = new Blob([JSON.stringify(newDesign.back.designJson)], {
             type: 'application/json',
           });
 
           postDataToURL(
-            designaVariant1,
-            dataURLtoFile(newDesign.designImages[0].data, `${newDesign.designImages[0].name}.png`),
+            frontDesignVariant1,
+            dataURLtoFile(
+              newDesign.front.designImages[0].data,
+              `${newDesign.front.designImages[0].name}.png`,
+            ),
           );
           postDataToURL(
-            designaVariant2,
-            dataURLtoFile(newDesign.designImages[1].data, `${newDesign.designImages[1].name}.png`),
+            frontDesignVariant2,
+            dataURLtoFile(
+              newDesign.front.designImages[1].data,
+              `${newDesign.front.designImages[1].name}.png`,
+            ),
           );
           postDataToURL(
-            designaVariant3,
-            dataURLtoFile(newDesign.designImages[2].data, `${newDesign.designImages[2].name}.png`),
+            frontDesignVariant3,
+            dataURLtoFile(
+              newDesign.front.designImages[2].data,
+              `${newDesign.front.designImages[2].name}.png`,
+            ),
           );
           postDataToURL(
-            designaVariant4,
-            dataURLtoFile(newDesign.designImages[3].data, `${newDesign.designImages[3].name}.png`),
+            frontDesignVariant4,
+            dataURLtoFile(
+              newDesign.front.designImages[3].data,
+              `${newDesign.front.designImages[3].name}.png`,
+            ),
           );
           postDataToURL(
-            designaVariant5,
-            dataURLtoFile(newDesign.designImages[4].data, `${newDesign.designImages[4].name}.png`),
+            frontDesignVariant5,
+            dataURLtoFile(
+              newDesign.front.designImages[4].data,
+              `${newDesign.front.designImages[4].name}.png`,
+            ),
           );
 
-          postDataToURL(designJson, JSONBlob);
+          postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              newDesign.back.designImages[0].data,
+              `${newDesign.back.designImages[0].name}.png`,
+            ),
+          );
+          postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              newDesign.back.designImages[1].data,
+              `${newDesign.back.designImages[1].name}.png`,
+            ),
+          );
+
+          postDataToURL(frontDesignJson, frontJSONBlob);
+          postDataToURL(backDesignJson, backJSONBlob);
 
           setTimeout(() => {
             navigate('/vendor/designs');

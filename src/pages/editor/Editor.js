@@ -340,15 +340,6 @@ const Editor = forwardRef((props, ref) => {
     backEditorJs.exportCanvas('back');
   };
 
-  const exportCanvasToJSON = () => {
-    if (canvasMode === 'front') {
-      const exportedCanvasJson = editorJs.saveCanvasToJSON();
-    } else {
-      const exportedCanvasJson = backEditorJs.saveCanvasToJSON();
-    }
-    return exportedCanvasJson;
-  };
-
   const addImage = e => {
     var file = e.target.files[0];
     var reader = new FileReader();

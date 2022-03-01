@@ -67,39 +67,77 @@ const ProductSelection = ({ designName }) => {
 
         const urls = response.data.response;
 
-        const designaVariant1 = urls[0].imageUrl;
-        const designaVariant2 = urls[1].imageUrl;
-        const designaVariant3 = urls[2].imageUrl;
-        const designaVariant4 = urls[3].imageUrl;
-        const designaVariant5 = urls[4].imageUrl;
-        const designJson = urls[5].imageUrl;
+        const frontDesignVariant1 = urls[0].imageUrl;
+        const frontDesignVariant2 = urls[1].imageUrl;
+        const frontDesignVariant3 = urls[2].imageUrl;
+        const frontDesignVariant4 = urls[3].imageUrl;
+        const frontDesignVariant5 = urls[4].imageUrl;
+        const frontDesignJson = urls[5].imageUrl;
+        const backDesignVariant1 = urls[6].imageUrl;
+        const backDesignVariant2 = urls[7].imageUrl;
+        const backDesignJson = urls[8].imageUrl;
 
-        const JSONBlob = new Blob([JSON.stringify(design.designJson)], {
+        const frontJSONBlob = new Blob([JSON.stringify(design.front.designJson)], {
+          type: 'application/json',
+        });
+
+        const backJSONBlob = new Blob([JSON.stringify(design.back.designJson)], {
           type: 'application/json',
         });
 
         postDataToURL(
-          designaVariant1,
-          dataURLtoFile(design.designImages[0].data, `${design.designImages[0].name}.png`),
+          frontDesignVariant1,
+          dataURLtoFile(
+            design.front.designImages[0].data,
+            `${design.front.designImages[0].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant2,
-          dataURLtoFile(design.designImages[1].data, `${design.designImages[1].name}.png`),
+          frontDesignVariant2,
+          dataURLtoFile(
+            design.front.designImages[1].data,
+            `${design.front.designImages[1].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant3,
-          dataURLtoFile(design.designImages[2].data, `${design.designImages[2].name}.png`),
+          frontDesignVariant3,
+          dataURLtoFile(
+            design.front.designImages[2].data,
+            `${design.front.designImages[2].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant4,
-          dataURLtoFile(design.designImages[3].data, `${design.designImages[3].name}.png`),
+          frontDesignVariant4,
+          dataURLtoFile(
+            design.front.designImages[3].data,
+            `${design.front.designImages[3].name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant5,
-          dataURLtoFile(design.designImages[4].data, `${design.designImages[4].name}.png`),
+          frontDesignVariant5,
+          dataURLtoFile(
+            design.front.designImages[4].data,
+            `${design.front.designImages[4].name}.png`,
+          ),
         );
 
-        postDataToURL(designJson, JSONBlob);
+        postDataToURL(
+          backDesignVariant1,
+          dataURLtoFile(
+            design.back.designImages[0].data,
+            `${design.back.designImages[0].name}.png`,
+          ),
+        );
+        postDataToURL(
+          backDesignVariant2,
+          dataURLtoFile(
+            design.back.designImages[1].data,
+            `${design.back.designImages[1].name}.png`,
+          ),
+        );
+
+        postDataToURL(frontDesignJson, frontJSONBlob);
+        postDataToURL(backDesignJson, backJSONBlob);
 
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');

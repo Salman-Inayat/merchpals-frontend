@@ -126,6 +126,12 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
                 ? classes.mug
                 : '',
             ].join(' ')}
+            onMouseOver={e =>
+              (e.currentTarget.src = product.designId.backDesign.designImages[1].imageUrl)
+            }
+            onMouseOut={e =>
+              (e.currentTarget.src = product.designId.frontDesign.designImages[4].imageUrl)
+            }
           />
         )}
       </Card>

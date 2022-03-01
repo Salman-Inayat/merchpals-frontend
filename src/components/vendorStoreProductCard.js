@@ -79,6 +79,9 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [color, setColor] = useState();
+  const [designImage, setDesignImage] = useState(
+    product.designId.frontDesign.designImages[4].imageUrl,
+  );
 
   useEffect(() => {
     if (product) {
@@ -99,10 +102,17 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           image={`${product.image}`}
           className={classes.productImage}
           alt="green iguana"
+          onMouseOver={() => {
+            console.log('design: ');
+            setDesignImage(product.designId.backDesign.designImages[1].imageUrl);
+          }}
+          onMouseLeave={() => {
+            setDesignImage(product.designId.frontDesign.designImages[4].imageUrl);
+          }}
         />
         {product?.designId && (
           <img
-            src={product.designId.frontDesign.designImages[4].imageUrl}
+            src={designImage}
             className={[
               classes.design,
               product.name === 'Poster'
@@ -113,6 +123,12 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
                 ? classes.mug
                 : '',
             ].join(' ')}
+            // onMouseOver={e =>
+            //   (e.currentTarget.src = product.designId.backDesign.designImages[1].imageUrl)
+            // }
+            // onMouseOut={e =>
+            //   (e.currentTarget.src = product.designId.frontDesign.designImages[4].imageUrl)
+            // }
           />
         )}
       </Card>
