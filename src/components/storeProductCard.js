@@ -115,7 +115,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
         />
         {product?.designId && (
           <img
-            src={product.designId.designImages[4].imageUrl}
+            src={product.designId.frontDesign.designImages[4].imageUrl}
             className={[
               classes.design,
               product.name === 'Poster'

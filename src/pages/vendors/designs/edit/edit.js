@@ -12,6 +12,8 @@ const EditDesign = () => {
   const navigate = useNavigate();
   const { designId } = useParams();
   const [canvasJSON, setCanvasJSON] = useState('');
+  const [frontCanvasJSON, setFrontCanvasJSON] = useState('');
+  const [backCanvasJSON, setBackCanvasJSON] = useState('');
   const [saveEditDesign, setSaveEditDesign] = useState();
   const childRef = useRef();
 
@@ -34,11 +36,26 @@ const EditDesign = () => {
       })
       .then(response => {
         setDesignData(response.data.design);
-        getJSONFromUrl(response.data.design.designJson, (err, data) => {
+        console.log('Store design: ', response.data.design);
+        // getJSONFromUrl(response.data.design.designJson, (err, data) => {
+        //   if (err !== null) {
+        //     alert('Something went wrong: ' + err);
+        //   } else {
+        //     setCanvasJSON(data);
+        //   }
+        // });
+        getJSONFromUrl(response.data.design.frontDesign.designJson, (err, data) => {
           if (err !== null) {
             alert('Something went wrong: ' + err);
           } else {
-            setCanvasJSON(data);
+            setFrontCanvasJSON(data);
+          }
+        });
+        getJSONFromUrl(response.data.design.backDesign.designJson, (err, data) => {
+          if (err !== null) {
+            alert('Something went wrong: ' + err);
+          } else {
+            setBackCanvasJSON(data);
           }
         });
       })
@@ -128,9 +145,10 @@ const EditDesign = () => {
         <Grid justifyContent="center" container>
           <Grid item md={2} xs={12}></Grid>
           <Grid item md={8} xs={12}>
-            {canvasJSON && (
+            {frontCanvasJSON && backCanvasJSON && (
               <Editor
-                canvasJSON={canvasJSON}
+                frontCanvasJSON={frontCanvasJSON}
+                backCanvasJSON={backCanvasJSON}
                 saveEditDesign={saveEditDesign}
                 ref={childRef}
                 designName={designData.name}

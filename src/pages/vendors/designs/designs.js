@@ -74,7 +74,7 @@ const VendorDesigns = () => {
         designs.map(design => {
           setDesignImage(prevState => [
             ...prevState,
-            { id: design._id, url: design.designImages[4].imageUrl },
+            { id: design._id, url: design.frontDesign.designImages[4].imageUrl },
           ]);
         });
         setFetched(true);
