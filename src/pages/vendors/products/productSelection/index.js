@@ -77,62 +77,62 @@ const ProductSelection = ({ designName }) => {
         const backDesignVariant2 = urls[7].imageUrl;
         const backDesignJson = urls[8].imageUrl;
 
-        const frontJSONBlob = new Blob([JSON.stringify(design.front.designJson)], {
+        const frontJSONBlob = new Blob([JSON.stringify(design?.front?.designJson || '')], {
           type: 'application/json',
         });
 
-        const backJSONBlob = new Blob([JSON.stringify(design.back.designJson)], {
+        const backJSONBlob = new Blob([JSON.stringify(design?.back?.designJson || '')], {
           type: 'application/json',
         });
 
         postDataToURL(
           frontDesignVariant1,
           dataURLtoFile(
-            design.front.designImages[0].data,
-            `${design.front.designImages[0].name}.png`,
+            design?.front?.designImages[0]?.data || design?.back?.designImages[0]?.data,
+            `${design?.front?.designImages[0]?.name || design?.back?.designImages[0]?.name}.png`,
           ),
         );
         postDataToURL(
           frontDesignVariant2,
           dataURLtoFile(
-            design.front.designImages[1].data,
-            `${design.front.designImages[1].name}.png`,
+            design?.front?.designImages[1]?.data || design?.back?.designImages[1]?.data,
+            `${design?.front?.designImages[1]?.name || design?.back?.designImages[1]?.name}.png`,
           ),
         );
         postDataToURL(
           frontDesignVariant3,
           dataURLtoFile(
-            design.front.designImages[2].data,
-            `${design.front.designImages[2].name}.png`,
+            design?.front?.designImages[2]?.data || design?.back?.designImages[2]?.data,
+            `${design?.front?.designImages[2]?.name || design?.back?.designImages[2]?.name}.png`,
           ),
         );
         postDataToURL(
           frontDesignVariant4,
           dataURLtoFile(
-            design.front.designImages[3].data,
-            `${design.front.designImages[3].name}.png`,
+            design?.front?.designImages[3]?.data || design?.back?.designImages[3]?.data,
+            `${design?.front?.designImages[3]?.name || design?.back?.designImages[3]?.name}.png`,
           ),
         );
         postDataToURL(
           frontDesignVariant5,
           dataURLtoFile(
-            design.front.designImages[4].data,
-            `${design.front.designImages[4].name}.png`,
+            design?.front?.designImages[4]?.data || design?.back?.designImages[4]?.data,
+            `${design?.front?.designImages[4]?.name || design?.back?.designImages[4]?.name}.png`,
           ),
         );
 
         postDataToURL(
           backDesignVariant1,
           dataURLtoFile(
-            design.back.designImages[0].data,
-            `${design.back.designImages[0].name}.png`,
+            design?.back?.designImages[1]?.data || '',
+            `${design?.back?.designImages[1]?.name || ''}.png`,
           ),
         );
         postDataToURL(
           backDesignVariant2,
           dataURLtoFile(
-            design.back.designImages[1].data,
-            `${design.back.designImages[1].name}.png`,
+            design?.back?.designImages[4]?.data || '',
+            `${design?.back?.designImages[4]?.name || ''}.png`,
           ),
         );
 

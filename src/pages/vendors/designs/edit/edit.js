@@ -11,11 +11,11 @@ import store from '../../../../store';
 const EditDesign = () => {
   const navigate = useNavigate();
   const { designId } = useParams();
-  const [canvasJSON, setCanvasJSON] = useState('');
-  const [frontCanvasJSON, setFrontCanvasJSON] = useState('');
-  const [backCanvasJSON, setBackCanvasJSON] = useState('');
+  const [frontCanvasJSON, setFrontCanvasJSON] = useState();
+  const [backCanvasJSON, setBackCanvasJSON] = useState();
   const [saveEditDesign, setSaveEditDesign] = useState();
   const childRef = useRef();
+  const [designName, setDesignName] = useState('');
 
   const [designData, setDesignData] = useState();
 
@@ -36,18 +36,27 @@ const EditDesign = () => {
       })
       .then(response => {
         setDesignData(response.data.design);
-        getJSONFromUrl(response.data.design.frontDesign.designJson, (err, data) => {
+        setDesignName(response.data.design.name);
+        getJSONFromUrl(response.data?.design?.frontDesign?.designJson, (err, data) => {
           if (err !== null) {
             alert('Something went wrong: ' + err);
           } else {
-            setFrontCanvasJSON(data);
+            if (data !== 'empty response') {
+              setFrontCanvasJSON(data);
+            } else {
+              setFrontCanvasJSON('');
+            }
           }
         });
-        getJSONFromUrl(response.data.design.backDesign.designJson, (err, data) => {
+        getJSONFromUrl(response.data?.design?.backDesign?.designJson, (err, data) => {
           if (err !== null) {
             alert('Something went wrong: ' + err);
           } else {
-            setBackCanvasJSON(data);
+            if (data !== 'empty response') {
+              setBackCanvasJSON(data);
+            } else {
+              setBackCanvasJSON('');
+            }
           }
         });
       })
@@ -76,7 +85,7 @@ const EditDesign = () => {
       const newDesign = store.getState().design.design;
 
       let form = new FormData();
-      form.append('designName', newDesign.front.designName);
+      form.append('designName', newDesign?.front?.designName);
 
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
@@ -98,62 +107,72 @@ const EditDesign = () => {
           const backDesignVariant2 = urls[7].imageUrl;
           const backDesignJson = urls[8].imageUrl;
 
-          const frontJSONBlob = new Blob([JSON.stringify(newDesign.front.designJson)], {
+          const frontJSONBlob = new Blob([JSON.stringify(newDesign?.front?.designJson || '')], {
             type: 'application/json',
           });
 
-          const backJSONBlob = new Blob([JSON.stringify(newDesign.back.designJson)], {
+          const backJSONBlob = new Blob([JSON.stringify(newDesign?.back?.designJson || '')], {
             type: 'application/json',
           });
 
           postDataToURL(
             frontDesignVariant1,
             dataURLtoFile(
-              newDesign.front.designImages[0].data,
-              `${newDesign.front.designImages[0].name}.png`,
+              newDesign?.front?.designImages[0]?.data || newDesign?.back?.designImages[0]?.data,
+              `${
+                newDesign?.front?.designImages[0]?.name || newDesign?.back?.designImages[0]?.name
+              }.png`,
             ),
           );
           postDataToURL(
             frontDesignVariant2,
             dataURLtoFile(
-              newDesign.front.designImages[1].data,
-              `${newDesign.front.designImages[1].name}.png`,
+              newDesign?.front?.designImages[1]?.data || newDesign?.back?.designImages[1]?.data,
+              `${
+                newDesign?.front?.designImages[1]?.name || newDesign?.back?.designImages[1]?.name
+              }.png`,
             ),
           );
           postDataToURL(
             frontDesignVariant3,
             dataURLtoFile(
-              newDesign.front.designImages[2].data,
-              `${newDesign.front.designImages[2].name}.png`,
+              newDesign?.front?.designImages[2]?.data || newDesign?.back?.designImages[2]?.data,
+              `${
+                newDesign?.front?.designImages[2]?.name || newDesign?.back?.designImages[2]?.name
+              }.png`,
             ),
           );
           postDataToURL(
             frontDesignVariant4,
             dataURLtoFile(
-              newDesign.front.designImages[3].data,
-              `${newDesign.front.designImages[3].name}.png`,
+              newDesign?.front?.designImages[3]?.data || newDesign?.back?.designImages[3]?.data,
+              `${
+                newDesign?.front?.designImages[3]?.name || newDesign?.back?.designImages[3]?.name
+              }.png`,
             ),
           );
           postDataToURL(
             frontDesignVariant5,
             dataURLtoFile(
-              newDesign.front.designImages[4].data,
-              `${newDesign.front.designImages[4].name}.png`,
+              newDesign?.front?.designImages[4]?.data || newDesign?.back?.designImages[4]?.data,
+              `${
+                newDesign?.front?.designImages[4]?.name || newDesign?.back?.designImages[4]?.name
+              }.png`,
             ),
           );
 
           postDataToURL(
             backDesignVariant1,
             dataURLtoFile(
-              newDesign.back.designImages[0].data,
-              `${newDesign.back.designImages[0].name}.png`,
+              newDesign?.back?.designImages[1]?.data || '',
+              `${newDesign?.back?.designImages[1]?.name || ''}.png`,
             ),
           );
           postDataToURL(
             backDesignVariant2,
             dataURLtoFile(
-              newDesign.back.designImages[1].data,
-              `${newDesign.back.designImages[1].name}.png`,
+              newDesign?.back?.designImages[1]?.data || '',
+              `${newDesign?.back?.designImages[1]?.name || ''}.png`,
             ),
           );
 
@@ -175,13 +194,13 @@ const EditDesign = () => {
         <Grid justifyContent="center" container>
           <Grid item md={2} xs={12}></Grid>
           <Grid item md={8} xs={12}>
-            {frontCanvasJSON && backCanvasJSON && (
+            {frontCanvasJSON !== undefined && backCanvasJSON !== undefined && (
               <Editor
                 frontCanvasJSON={frontCanvasJSON}
                 backCanvasJSON={backCanvasJSON}
                 saveEditDesign={saveEditDesign}
                 ref={childRef}
-                designName={designData.name}
+                designName={designName}
               />
             )}
           </Grid>

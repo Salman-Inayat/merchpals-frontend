@@ -173,7 +173,6 @@ const useStyles = makeStyles(theme => ({
 
 const Editor = forwardRef((props, ref) => {
   const { triggerExport = 0, frontCanvasJSON, backCanvasJSON, saveEditDesign, designName } = props;
-
   const canvasShape = useSelector(state => state.canvas.shape);
   const classes = useStyles();
   const dispatch = useDispatch();
