@@ -15,6 +15,8 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
 
   const saveDesignToStore = () => {
     childRef.current.saveDesign();
+
+    console.log('Ath the end');
   };
 
   return (

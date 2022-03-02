@@ -206,7 +206,11 @@ const ProductCard = ({
 
   useEffect(() => {
     setTimeout(() => {
-      setDesign(store.getState().design?.design?.front?.designImages[0]?.data);
+      const design =
+        store.getState().design?.design?.front?.designImages[4]?.data ||
+        store.getState().design?.design?.back?.designImages[4]?.data ||
+        '';
+      setDesign(design);
     }, 1000);
   }, []);
 

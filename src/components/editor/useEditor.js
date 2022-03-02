@@ -1316,119 +1316,105 @@ const useEditor = mode => {
 
   const exportCanvas = mode => {
     if (!canvas.isEmpty()) {
-      if (mode === 'front') {
-        let frontDesign;
-        let json = JSON.stringify(canvas);
-        const formatOne = new Image();
-        const formatTwo = new Image();
-        const formatThree = new Image();
-        const formatFour = new Image();
-        const formatFive = new Image();
-        if (isMobile) {
-          var mult1 = 3600 / CANVAS_WIDTH_MOBILE;
-          var mult2 = 2700 / CANVAS_WIDTH_MOBILE;
-          var mult3 = 1050 / CANVAS_WIDTH_MOBILE;
-          var mult4 = 879 / CANVAS_WIDTH_MOBILE;
-        }
-        if (!isMobile) {
-          var mult1 = 3600 / CANVAS_WIDTH_DESKTOP;
-          var mult2 = 2700 / CANVAS_WIDTH_DESKTOP;
-          var mult3 = 1050 / CANVAS_WIDTH_DESKTOP;
-          var mult4 = 879 / CANVAS_WIDTH_DESKTOP;
-        }
-        formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
-        formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
-        formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
-        formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
-        formatFive.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
-        formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
-        formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
-        formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
+      let json = JSON.stringify(canvas);
+      const formatOne = new Image();
+      const formatTwo = new Image();
+      const formatThree = new Image();
+      const formatFour = new Image();
+      const formatFive = new Image();
+      if (isMobile) {
+        var mult1 = 3600 / CANVAS_WIDTH_MOBILE;
+        var mult2 = 2700 / CANVAS_WIDTH_MOBILE;
+        var mult3 = 1050 / CANVAS_WIDTH_MOBILE;
+        var mult4 = 879 / CANVAS_WIDTH_MOBILE;
+      }
+      if (!isMobile) {
+        var mult1 = 3600 / CANVAS_WIDTH_DESKTOP;
+        var mult2 = 2700 / CANVAS_WIDTH_DESKTOP;
+        var mult3 = 1050 / CANVAS_WIDTH_DESKTOP;
+        var mult4 = 879 / CANVAS_WIDTH_DESKTOP;
+      }
+      formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
+      formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
+      formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
+      formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
+      formatFive.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
+      formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
+      formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
+      formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
+      formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
+      formatFive.src = changedpi.changeDpiDataUrl(formatFive.src, 300);
+
+      const canvas2 = document.createElement('canvas');
+      const ctx2 = canvas2.getContext('2d');
+      canvas2.width = 879;
+      canvas2.height = 1833;
+
+      const backgroundColor = canvas.backgroundColor;
+      ctx2.fillStyle = backgroundColor;
+      ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+
+      var myImage = new Image();
+      myImage.src = formatFour.src;
+
+      myImage.onload = function () {
+        ctx2.drawImage(
+          myImage,
+          canvas2.width / 2 - myImage.width / 2,
+          canvas2.height / 2 - myImage.height / 2,
+        );
+        formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
         formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
-        formatFive.src = changedpi.changeDpiDataUrl(formatFive.src, 300);
 
-        const canvas2 = document.createElement('canvas');
-        const ctx2 = canvas2.getContext('2d');
-        canvas2.width = 879;
-        canvas2.height = 1833;
-
-        const backgroundColor = canvas.backgroundColor;
-        ctx2.fillStyle = backgroundColor;
-        ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
-
-        var myImage = new Image();
-        myImage.src = formatFour.src;
-
-        myImage.onload = function () {
-          ctx2.drawImage(
-            myImage,
-            canvas2.width / 2 - myImage.width / 2,
-            canvas2.height / 2 - myImage.height / 2,
-          );
-          formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
-          formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
-
-          frontDesign = {
-            designName: canvasName === undefined ? 'default' : canvasName,
-            designJson: json,
-            designImages: [
-              {
-                name: '3600x3600',
-                data: formatOne.src,
-              },
-              {
-                name: '2700x2700',
-                data: formatTwo.src,
-              },
-
-              {
-                name: '1050x1050',
-                data: formatThree.src,
-              },
-              {
-                name: '879x1833',
-                data: formatFour.src,
-              },
-              {
-                name: 'thumbnail',
-                data: formatFive.src,
-              },
-            ],
-          };
-          dispatch({ type: SAVE_FRONT_DESIGN, payload: frontDesign });
-        };
-      } else {
-        let backDesign;
-        let json = JSON.stringify(canvas);
-        const formatOne = new Image();
-        const formatTwo = new Image();
-        if (isMobile) {
-          var mult2 = 2700 / CANVAS_WIDTH_MOBILE;
-        }
-        if (!isMobile) {
-          var mult2 = 2700 / CANVAS_WIDTH_DESKTOP;
-        }
-        formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
-
-        formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
-        formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
-        formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
-
-        backDesign = {
+        const design = {
           designName: canvasName === undefined ? 'default' : canvasName,
           designJson: json,
           designImages: [
             {
-              name: '2700x2700',
+              name: '3600x3600',
               data: formatOne.src,
             },
             {
-              name: 'thumbnail',
+              name: '2700x2700',
               data: formatTwo.src,
+            },
+
+            {
+              name: '1050x1050',
+              data: formatThree.src,
+            },
+            {
+              name: '879x1833',
+              data: formatFour.src,
+            },
+            {
+              name: 'thumbnail',
+              data: formatFive.src,
             },
           ],
         };
-        dispatch({ type: SAVE_BACK_DESIGN, payload: backDesign });
+
+        switch (mode) {
+          case 'front':
+            dispatch({ type: SAVE_FRONT_DESIGN, payload: design });
+            break;
+          case 'back':
+            dispatch({ type: SAVE_BACK_DESIGN, payload: design });
+            break;
+          default:
+            break;
+        }
+      };
+    } else {
+      switch (mode) {
+        case 'front':
+          dispatch({ type: SAVE_FRONT_DESIGN, payload: null });
+          break;
+        case 'back':
+          dispatch({ type: SAVE_BACK_DESIGN, payload: null });
+          break;
+        default:
+          break;
       }
     }
   };
