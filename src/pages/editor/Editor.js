@@ -172,7 +172,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Editor = forwardRef((props, ref) => {
-  const { triggerExport = 0, frontCanvasJSON, backCanvasJSON, saveEditDesign, designName } = props;
+  const { triggerExport = 0, frontCanvasJSON, backCanvasJSON, saveEditDesign, designName, title } = props;
   const canvasShape = useSelector(state => state.canvas.shape);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -461,7 +461,7 @@ const Editor = forwardRef((props, ref) => {
     <Grid container spacing={2} alignItems="center" style={{ marginLeft: '10px' }}>
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
-          Create Your Design
+          {title}
         </Typography>
       </Grid>
       <Grid item md={12} sm={12} xs={12} className={classes.canvasContainer}>

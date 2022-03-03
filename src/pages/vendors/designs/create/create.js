@@ -44,7 +44,7 @@ const CreateDesign = () => {
       <Grid mt={5} container mb={3}>
         <Grid item md={2} xs={12}></Grid>
         <Grid item md={8} xs={12}>
-          <Editor triggerExport={triggerExport} />
+          <Editor triggerExport={triggerExport} title="Create your design"/>
         </Grid>
         <Grid item md={2} xs={12}></Grid>
         <Grid

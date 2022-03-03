@@ -42,6 +42,7 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
           backCanvasJSON={
             design.design?.back?.designJson === '' ? undefined : design.design?.back?.designJson
           }
+          title="Create your design"
         />
         <Button
           variant="contained"

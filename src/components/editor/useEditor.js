@@ -197,7 +197,9 @@ const useEditor = mode => {
         break;
     }
 
+
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+ console.log(canvas.toDataURL());
   };
 
   // useEffect(() => {
@@ -1358,6 +1360,7 @@ const useEditor = mode => {
   const exportCanvas = mode => {
     if (!canvas.isEmpty()) {
       let json = JSON.stringify(canvas);
+
       const formatOne = new Image();
       const formatTwo = new Image();
       const formatThree = new Image();
@@ -1457,6 +1460,8 @@ const useEditor = mode => {
         default:
           break;
       }
+
+
     }
   };
 

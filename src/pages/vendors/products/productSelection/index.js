@@ -32,7 +32,7 @@ const ProductSelection = ({ designName }) => {
   }, []);
 
   const postDataToURL = async (url, data) => {
-    axios
+    await axios
       .put(url, data, {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -120,7 +120,6 @@ const ProductSelection = ({ designName }) => {
             `${design?.front?.designImages[4]?.name || design?.back?.designImages[4]?.name}.png`,
           ),
         );
-
         postDataToURL(
           backDesignVariant1,
           dataURLtoFile(
@@ -137,7 +136,7 @@ const ProductSelection = ({ designName }) => {
         );
 
         postDataToURL(frontDesignJson, frontJSONBlob);
-        postDataToURL(backDesignJson, backJSONBlob);
+        postDataToURL(backDesignJson, backJSONBlob)
 
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');

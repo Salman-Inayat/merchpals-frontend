@@ -24,6 +24,9 @@ export const calculateOrderProfit = order => {
 };
 
 export const dataURLtoFile = (dataurl, filename) => {
+  if (!dataurl) {
+    return null;
+  }
   var arr = dataurl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
@@ -50,6 +53,7 @@ export const getJSONFromUrl = function (url, callback) {
         callback(null, xhr.response);
       }
     } else {
+      console.log('Request failed.  Returned status of ' + status);
       callback(status, xhr.response);
     }
   };

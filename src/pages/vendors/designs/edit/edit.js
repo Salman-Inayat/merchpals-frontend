@@ -201,6 +201,7 @@ const EditDesign = () => {
                 saveEditDesign={saveEditDesign}
                 ref={childRef}
                 designName={designName}
+                title="Edit your design"
               />
             )}
           </Grid>
