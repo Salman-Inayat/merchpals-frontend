@@ -666,6 +666,11 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                       type="submit"
                       variant="contained"
                       // loading={loading}
+                      disabled={
+                        images.coverAvatar === '' || images.logo === '' || themeColor === ''
+                          ? true
+                          : false
+                      }
                     >
                       Get Store
                     </LoadingButton>

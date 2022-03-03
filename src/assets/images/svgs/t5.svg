@@ -1,0 +1,16 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225 225" width="225" height="225">
+	<title>t</title>
+	<defs>
+		<image  width="169" height="169" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKkAAACpBAMAAACi+wAcAAAAAXNSR0IB2cksfwAAADBQTFRFAAAANzc3MDAwAAAADg4OPT09Ojo6KysrKioqZmZmTExMUVFRQ0NDWFhYHR0dCgoKpoJCogAAABB0Uk5TAOX////G1v//FHVbqD3///yIvakAAAFSSURBVHic7dtPSsNQEMfxgaIUqRLsBfxzgUJURESE9kDewQu0eAHBCwg9kmt3Llza+ni1QjJvXvoGjHx/q1lMPgyPNiQwEVnl+KxcKgkZ1GUT1MJoPfEYNQxbHF0PW37U9bB9UscOaiXnDuoJKmo/1YtZe6abC5SmWZN6L+3Zi02XSpNMM9X92HSFioqKivoP1XEsH3ZWH2NXJU+x1Ppt6uZReP5TFlTFSY3vMJPd1W3qJZSvBdRlaHpelaPv6lZtN6rb1CB1qmb1F3X49q43m1UD1UXNCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqap9U266uLcMPZa/4syNaJ6LuM7VlmVL1habmjJJoYqOpMZYvL/JVA9rhZF1Uw7F2ONihRb3OVY8s6t3fmNXnXPv0y3L6bx2k0Zt81eee5XR/FVlo3xWezpUrvwBcExvywr+rMQAAAABJRU5ErkJggg=="/>
+	</defs>
+	<style>
+		.s0 { fill: #000000 } 
+	</style>
+	<path id="Layer 2" class="s0" d="m37.5 47c-5.3 0-9.5-4.2-9.5-9.5c0-5.3 4.2-9.5 9.5-9.5c5.3 0 9.5 4.2 9.5 9.5c0 5.3-4.2 9.5-9.5 9.5z" />
+	<path id="Layer 2 copy 5" class="s0" d="m187.5 47c-5.3 0-9.5-4.2-9.5-9.5c0-5.3 4.2-9.5 9.5-9.5c5.3 0 9.5 4.2 9.5 9.5c0 5.3-4.2 9.5-9.5 9.5z" />
+	<path id="Layer 2 copy 4" class="s0" d="m187.5 76c-5.3 0-9.5-4.2-9.5-9.5c0-5.3 4.2-9.5 9.5-9.5c5.3 0 9.5 4.2 9.5 9.5c0 5.3-4.2 9.5-9.5 9.5z" />
+	<path id="Layer 2 copy 3" class="s0" d="m37.5 76c-5.3 0-9.5-4.2-9.5-9.5c0-5.3 4.2-9.5 9.5-9.5c5.3 0 9.5 4.2 9.5 9.5c0 5.3-4.2 9.5-9.5 9.5z" />
+	<path id="Layer 2 copy 2" class="s0" d="m141.5 197c-5.3 0-9.5-4.2-9.5-9.5c0-5.3 4.2-9.5 9.5-9.5c5.3 0 9.5 4.2 9.5 9.5c0 5.3-4.2 9.5-9.5 9.5z" />
+	<path id="Layer 2 copy" class="s0" d="m83.5 197c-5.3 0-9.5-4.2-9.5-9.5c0-5.3 4.2-9.5 9.5-9.5c5.3 0 9.5 4.2 9.5 9.5c0 5.3-4.2 9.5-9.5 9.5z" />
+	<use id="Layer 1" href="#img1" x="28" y="28" />
+</svg>

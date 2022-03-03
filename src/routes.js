@@ -86,6 +86,7 @@ export default function Router() {
       path: '/welcome',
       element: <WelcomeMessage />,
     },
+
     {
       path: '/flow-complete',
       element: <FlowComplete />,

@@ -168,7 +168,6 @@ const Smileys = ({ addPng, className }) => {
         value={smiley}
         label="Color"
         onChange={handleSmileyChange}
-        autoWidth
       >
         {images.map((image, index) => (
           <MenuItem value={image} key={index}>
