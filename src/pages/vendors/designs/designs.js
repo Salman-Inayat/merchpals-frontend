@@ -114,12 +114,17 @@ const VendorDesigns = () => {
           alignItems="center"
         >
           <BackButton />
-          {fetched && (
+          {fetched ? (
             <Button onClick={navigateToCreate} variant="contained" size="medium">
               Add new Design
             </Button>
+          ) : (
+            <Button onClick={() => navigate('/vendor/store')} variant="contained" size="medium">
+              Create a Store
+            </Button>
           )}
         </Grid>
+
         <Grid item md={12}>
           <Grid container spacing={isMobile ? 2 : 4}>
             {designs.map((design, index) => (
