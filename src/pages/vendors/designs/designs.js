@@ -84,7 +84,7 @@ const VendorDesigns = () => {
   };
 
   const navigateToCreate = () => {
-    if (designs.length === 5) {
+    if (designs.length >= 5) {
       setSnackBarToggle({
         visible: true,
         type: 'error',

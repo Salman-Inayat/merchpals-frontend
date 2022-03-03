@@ -1,15 +1,11 @@
 import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN, SAVE_THEME_COLOR } from '../types';
 
 const saveFrontDesign = (state, action) => {
-  // append front design into design
   return { ...state, design: { ...state.design, front: action.payload } };
-  // return { ...state, design: action.payload };
 };
 
 const saveBackDesign = (state, action) => {
-  // append bak design into design
   return { ...state, design: { ...state.design, back: action.payload } };
-  // return { ...state, design: action.payload };
 };
 
 const saveThemeColor = (state, action) => {

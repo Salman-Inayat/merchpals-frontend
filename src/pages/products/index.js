@@ -217,6 +217,7 @@ const Product = () => {
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
   const [index, setIndex] = useState(0);
+  const [designImage, setDesignImage] = useState('');
 
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
   const fetchedProduct = useSelector(state => state.product?.product);
@@ -241,9 +242,15 @@ const Product = () => {
   useEffect(() => {
     if (fetchedProduct) {
       const designUrl =
-        fetchedProduct?.designId?.designImages?.length > 3
-          ? fetchedProduct.designId?.designImages[4].imageUrl
+        fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+          ? fetchedProduct.designId?.frontDesign.designImages[4].imageUrl
           : '';
+
+      const backDesignUrl =
+        fetchedProduct?.designId?.backDesign?.designImages?.length > 1
+          ? fetchedProduct.designId?.backDesign.designImages[1].imageUrl
+          : '';
+
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
       const formattedProduct = {
@@ -262,11 +269,13 @@ const Product = () => {
         sizes: [...new Map(variantArr.map(item => [item['id'], item])).values()],
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
         design: designUrl,
+        backDesign: backDesignUrl,
       };
 
       setProduct(formattedProduct);
       setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);
+      setDesignImage(formattedProduct.design);
     }
   }, [fetchedProduct]);
 
@@ -394,7 +403,11 @@ const Product = () => {
     });
   };
   let opacity;
-  console.log('index', product);
+
+  const changeBackground = () => {
+    console.log('changing');
+  };
+
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -446,9 +459,20 @@ const Product = () => {
                           ? '#121616'
                           : '',
                     }}
+                    onMouseOver={() => {
+                      setDesignImage(product.backDesign);
+                    }}
+                    onMouseLeave={() => {
+                      setDesignImage(product.design);
+                    }}
                   >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
+                    <img
+                      src={`${product.image}`}
+                      alt=""
+                      className={classes.image}
+                      onMouseOver={changeBackground}
+                    />
+                    <img src={designImage} alt="design" className={classes.design} />
                   </div>
                   <div
                     className={classes.imageContainer}
@@ -462,9 +486,15 @@ const Product = () => {
                           ? '#121616'
                           : '',
                     }}
+                    onMouseOver={() => {
+                      setDesignImage(product.backDesign);
+                    }}
+                    onMouseLeave={() => {
+                      setDesignImage(product.design);
+                    }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
+                    <img src={designImage} alt="design" className={classes.design} />
                   </div>
                   <div
                     className={classes.imageContainer}
@@ -478,9 +508,15 @@ const Product = () => {
                           ? '#121616'
                           : '',
                     }}
+                    onMouseOver={() => {
+                      setDesignImage(product.backDesign);
+                    }}
+                    onMouseLeave={() => {
+                      setDesignImage(product.design);
+                    }}
                   >
                     <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
+                    <img src={designImage} alt="design" className={classes.design} />
                   </div>
                 </Carousel>
               </Grid>

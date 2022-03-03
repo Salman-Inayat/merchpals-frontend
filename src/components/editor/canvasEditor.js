@@ -31,7 +31,6 @@ const CanvasEditor = _ref => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
-
   useEffect(function () {
     const canvas = new fabric.Canvas(
       canvasMode === 'front' ? frontCanvasEl.current : backCanvasEl.current,
@@ -55,40 +54,12 @@ const CanvasEditor = _ref => {
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
 
-    // var setCurrentDimensions = function setCurrentDimensions() {
-    //   var _canvasElParent$curre, _canvasElParent$curre2;
-    //   console.log('Document: ', document.getElementsByClassName(className)[0]);
-
-    //   const outerCanvasContainer = document.getElementsByClassName(className)[0];
-    //   const ratio = canvas.getWidth() / canvas.getHeight();
-    //   const containerWidth = outerCanvasContainer.clientWidth;
-    //   const containerHeight = outerCanvasContainer.clientHeight;
-
-    //   // const scale = containerWidth / canvas.getWidth();
-    //   // const zoom = canvas.getZoom() * scale;
-    //   canvas.setDimensions({
-    //     width: containerWidth,
-    //     height: containerWidth / ratio,
-    //   });
-    //   // canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
-
-    //   canvas.renderAll();
-    // };
-
-    // var resizeCanvas = function resizeCanvas() {
-    //   setCurrentDimensions();
-    // };
-
-    // setCurrentDimensions();
-    // window.addEventListener('resize', resizeCanvas, false);
-
     if (onReady) {
-      onReady(canvas, canvasJSON, designName, canvasMode);
+      onReady(canvas, canvasJSON, designName);
     }
 
     return function () {
       canvas.dispose();
-      // window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 

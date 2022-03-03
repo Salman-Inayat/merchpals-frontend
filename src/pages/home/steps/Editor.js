@@ -15,6 +15,8 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
 
   const saveDesignToStore = () => {
     childRef.current.saveDesign();
+
+    console.log('Ath the end');
   };
 
   return (
@@ -40,6 +42,7 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
           backCanvasJSON={
             design.design?.back?.designJson === '' ? undefined : design.design?.back?.designJson
           }
+          title="Create your design"
         />
         <Button
           variant="contained"

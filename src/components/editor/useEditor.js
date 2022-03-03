@@ -197,48 +197,87 @@ const useEditor = mode => {
         break;
     }
 
+
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+ console.log(canvas.toDataURL());
   };
 
-  useEffect(() => {
-    if (counter == 1) {
-      if (canvasJSON) {
-        canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
-          canvasProperties.canvasFill = canvas.backgroundColor;
+  // useEffect(() => {
+  //   if (counter == 1) {
+  //     if (canvasJSON) {
+  //       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
+  //         canvasProperties.canvasFill = canvas.backgroundColor;
 
-          canvas.on({
-            'selection:created': function () {
-              let selectedObject = canvas.getActiveObject();
-              if (selectedObject) {
-                applyProperties(selectedObject);
-              }
-            },
-            'object:added': e => {
-              const selectedObject = e.target;
-              applyProperties(selectedObject);
-              localStorage.setItem('design', canvas.toDataURL());
-              resetPanels();
-            },
-          });
-        });
-        if (canvas.getObjects().length == 0) {
-          const text = new fabric.Textbox('s', {
-            left: 40,
-            top: 100,
-            opacity: 0.1,
-            fontSize: 5,
-            hasControls: false,
-            hasRotatingPoint: false,
-            lockMovementX: true,
-            lockMovementY: true,
-          });
-          canvas.add(text);
-        }
-        canvas.renderAll();
-        afterRender();
-      }
+  //         canvas.on({
+  //           'selection:created': function () {
+  //             let selectedObject = canvas.getActiveObject();
+  //             if (selectedObject) {
+  //               applyProperties(selectedObject);
+  //             }
+  //           },
+  //           'object:added': e => {
+  //             const selectedObject = e.target;
+  //             applyProperties(selectedObject);
+  //             localStorage.setItem('design', canvas.toDataURL());
+  //             resetPanels();
+  //           },
+  //         });
+  //       });
+  //       if (canvas.getObjects().length == 0) {
+  //         const text = new fabric.Textbox('s', {
+  //           left: 40,
+  //           top: 100,
+  //           opacity: 0.1,
+  //           fontSize: 5,
+  //           hasControls: false,
+  //           hasRotatingPoint: false,
+  //           lockMovementX: true,
+  //           lockMovementY: true,
+  //         });
+  //         canvas.add(text);
+  //       }
+  //       canvas.renderAll();
+  //       afterRender();
+  //     }
+  //   }
+  // }, [counter]);
+
+  const loadJson = (canvas, json) => {
+    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
+      canvasProperties.canvasFill = canvas.backgroundColor;
+
+      canvas.on({
+        'selection:created': function () {
+          let selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            applyProperties(selectedObject);
+          }
+        },
+        'object:added': e => {
+          const selectedObject = e.target;
+          applyProperties(selectedObject);
+          localStorage.setItem('design', canvas.toDataURL());
+          resetPanels();
+        },
+      });
+    });
+    if (canvas.getObjects().length == 0) {
+      const text = new fabric.Textbox('s', {
+        left: 40,
+        top: 100,
+        opacity: 0.1,
+        fontSize: 5,
+        hasControls: false,
+        hasRotatingPoint: false,
+        lockMovementX: true,
+        lockMovementY: true,
+      });
+      canvas.add(text);
     }
-  }, [counter]);
+    canvas.renderAll();
+
+    afterRender();
+  };
 
   useLayoutEffect(() => {
     if (firstUpdate.current) {
@@ -247,6 +286,10 @@ const useEditor = mode => {
     }
 
     updateShape();
+
+    if (canvasJSON) {
+      loadJson(canvas, canvasJSON);
+    }
 
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
@@ -1337,9 +1380,9 @@ const useEditor = mode => {
   };
 
   const exportCanvas = mode => {
-    if (mode === 'front') {
-      let frontDesign;
+    if (!canvas.isEmpty()) {
       let json = JSON.stringify(canvas);
+
       const formatOne = new Image();
       const formatTwo = new Image();
       const formatThree = new Image();
@@ -1374,7 +1417,6 @@ const useEditor = mode => {
       canvas2.height = 1833;
 
       const backgroundColor = canvas.backgroundColor;
-      // ctx2.fillStyle = '#000080';
       ctx2.fillStyle = backgroundColor;
       ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
 
@@ -1390,7 +1432,7 @@ const useEditor = mode => {
         formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
         formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 
-        frontDesign = {
+        const design = {
           designName: canvasName === undefined ? 'default' : canvasName,
           designJson: json,
           designImages: [
@@ -1417,40 +1459,31 @@ const useEditor = mode => {
             },
           ],
         };
-        dispatch({ type: SAVE_FRONT_DESIGN, payload: frontDesign });
+
+        switch (mode) {
+          case 'front':
+            dispatch({ type: SAVE_FRONT_DESIGN, payload: design });
+            break;
+          case 'back':
+            dispatch({ type: SAVE_BACK_DESIGN, payload: design });
+            break;
+          default:
+            break;
+        }
       };
     } else {
-      let backDesign;
-      let json = JSON.stringify(canvas);
-      const formatOne = new Image();
-      const formatTwo = new Image();
-      if (isMobile) {
-        var mult2 = 2700 / CANVAS_WIDTH_MOBILE;
+      switch (mode) {
+        case 'front':
+          dispatch({ type: SAVE_FRONT_DESIGN, payload: null });
+          break;
+        case 'back':
+          dispatch({ type: SAVE_BACK_DESIGN, payload: null });
+          break;
+        default:
+          break;
       }
-      if (!isMobile) {
-        var mult2 = 2700 / CANVAS_WIDTH_DESKTOP;
-      }
-      formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
 
-      formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
-      formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
-      formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
 
-      backDesign = {
-        designName: canvasName === undefined ? 'default' : canvasName,
-        designJson: json,
-        designImages: [
-          {
-            name: '2700x2700',
-            data: formatOne.src,
-          },
-          {
-            name: 'thumbnail',
-            data: formatTwo.src,
-          },
-        ],
-      };
-      dispatch({ type: SAVE_BACK_DESIGN, payload: backDesign });
     }
   };
 

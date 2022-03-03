@@ -234,7 +234,7 @@ const ProductCard = ({
       <Card sx={{ maxWidth: 345 }}>
         <Box className={classes.checkboxContainer}>
           <Checkbox
-            checked={selectedVariants[product._id] ? true : false}
+            checked={!!selectedVariants[product._id]}
             onChange={() => onProductClick(event.target.value)}
             value={product._id}
             icon={<RadioButtonUncheckedIcon />}
@@ -263,7 +263,7 @@ const ProductCard = ({
                     ? classes.mug
                     : '',
                 ].join(' ')}
-                src={design.designImages[4].imageUrl}
+                src={design.frontDesign?.designImages[4]?.imageUrl || design.backDesign?.designImages[1]?.imageUrl}
               />
             </Box>
           )}
@@ -305,7 +305,7 @@ const ProductCard = ({
                           : '',
                     }}
                     onChange={() => onVariantClick(event.target.value)}
-                    checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
+                    checked={!!selectedVariants[product._id]?.includes(pm.id)}
                     value={`${product._id},${pm.id}`}
                     sx={{
                       border: '1px solid #000',
@@ -320,7 +320,7 @@ const ProductCard = ({
                           ? '#121616'
                           : '',
                       '&.Mui-checked': {
-                        color: `${pm.label}` == 'white' ? '#000000' : '#ffffff',
+                        color: `${pm.label}` === 'white' ? '#000000' : '#ffffff',
                       },
                     }}
                     checkedIcon={<DoneIcon style={{ fontSize: `${isMobile ? '20px' : '25px'}` }} />}

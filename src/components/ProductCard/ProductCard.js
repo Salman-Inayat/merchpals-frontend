@@ -206,7 +206,11 @@ const ProductCard = ({
 
   useEffect(() => {
     setTimeout(() => {
-      setDesign(store.getState().design.design.front.designImages[4].data);
+      const design =
+        store.getState().design?.design?.front?.designImages[4]?.data ||
+        store.getState().design?.design?.back?.designImages[4]?.data ||
+        '';
+      setDesign(design);
     }, 1000);
   }, []);
 
@@ -284,19 +288,21 @@ const ProductCard = ({
           }}
         />
         <Box>
-          <img
-            className={[
-              classes.design,
-              product.name === 'Poster'
-                ? classes.poster
-                : product.name === 'Case'
-                ? classes.phoneCase
-                : product.name === 'Mug'
-                ? classes.mug
-                : '',
-            ].join(' ')}
-            src={design}
-          />
+          {design && (
+            <img
+              className={[
+                classes.design,
+                product.name === 'Poster'
+                  ? classes.poster
+                  : product.name === 'Case'
+                  ? classes.phoneCase
+                  : product.name === 'Mug'
+                  ? classes.mug
+                  : '',
+              ].join(' ')}
+              src={design}
+            />
+          )}
         </Box>
       </Card>
 
