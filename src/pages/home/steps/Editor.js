@@ -28,7 +28,6 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
         container
         justifyContent="center"
         alignItems="center"
-        spacing={3}
         style={{ marginTop: '20px' }}
       >
         <Editor
