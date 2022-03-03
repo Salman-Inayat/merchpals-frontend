@@ -1,31 +1,40 @@
-import { UPDATE_CANVAS_SHAPE, UPDATE_CANVAS_MODE } from '../types';
+import {UPDATE_FRONT_CANVAS_SHAPE, UPDATE_BACK_CANVAS_SHAPE, UPDATE_CANVAS_MODE} from '../types';
 
 const initialState = {
-  shape: 'square',
-  mode: 'front',
+    frontShape: 'square',
+    backShape: 'square',
+    mode: 'front',
 };
 
-const updateShape = (state, payload) => {
-  return { ...state, shape: payload };
+const updateFrontShape = (state, payload) => {
+    return {...state, frontShape: payload};
+};
+
+const updateBackShape = (state, payload) => {
+    return {...state, backShape: payload};
 };
 
 const updateMode = (state, payload) => {
-  return { ...state, mode: payload };
+    return {...state, mode: payload};
 };
 
 const canvasReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case UPDATE_CANVAS_SHAPE: {
-      return updateShape(state, action.payload);
-    }
+    switch (action.type) {
+        case UPDATE_FRONT_CANVAS_SHAPE: {
+            return updateFrontShape(state, action.payload);
+        }
 
-    case UPDATE_CANVAS_MODE: {
-      return updateMode(state, action.payload);
-    }
+        case UPDATE_BACK_CANVAS_SHAPE: {
+            return updateBackShape(state, action.payload);
+        }
 
-    default:
-      return state;
-  }
+        case UPDATE_CANVAS_MODE: {
+            return updateMode(state, action.payload);
+        }
+
+        default:
+            return state;
+    }
 };
 
-export { canvasReducer as default };
+export {canvasReducer as default};
