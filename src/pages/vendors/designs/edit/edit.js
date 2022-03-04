@@ -216,7 +216,7 @@ const EditDesign = () => {
           }, 500);
         })
         .catch(error => console.log({ error }));
-    }, 100);
+    }, 1000);
   };
 
   return (

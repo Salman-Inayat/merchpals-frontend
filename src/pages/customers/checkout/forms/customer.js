@@ -106,6 +106,8 @@ const useStyles = makeStyles(theme => ({
 
 const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalculation }) => {
   const classes = useStyles();
+  console.log('Variant: ', products);
+
   const updateQuantity = (vendorProduct, variantId, op) => {
     let updatedCart = [...products];
     let updatedVariant = {};
