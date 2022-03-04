@@ -271,7 +271,9 @@ const Product = () => {
         design: designUrl,
         backDesign: backDesignUrl,
       };
-
+      formattedProduct.colors = formattedProduct.colors.sort(function (a, b) {
+        return a.id - b.id || a.label.localeCompare(b.label);
+      });
       setProduct(formattedProduct);
       setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);
@@ -282,16 +284,27 @@ const Product = () => {
   const handleColorChange = event => {
     const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
 
-    switch (selectedColor.label) {
-      case 'white':
-        setIndex(1);
-        break;
-      case 'black':
-        setIndex(0);
-        break;
-      case 'navy':
-        setIndex(2);
-        break;
+    if ((product.colors[0].label === 'white', product.colors[1].label === 'navy')) {
+      switch (selectedColor.label) {
+        case 'white':
+          setIndex(0);
+          break;
+        case 'navy':
+          setIndex(1);
+          break;
+      }
+    } else {
+      switch (selectedColor.label) {
+        case 'black':
+          setIndex(0);
+          break;
+        case 'white':
+          setIndex(1);
+          break;
+        case 'navy':
+          setIndex(2);
+          break;
+      }
     }
     setColor(selectedColor);
   };
@@ -446,78 +459,48 @@ const Product = () => {
                   showArrows={false}
                   swipeable={false}
                   showStatus={false}
+                  showIndicators={false}
                 >
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor:
-                        color.label === 'white'
-                          ? '#ffffff'
-                          : color.label === 'navy'
-                          ? '#262d4f '
-                          : color.label === 'black'
-                          ? '#121616'
-                          : '',
-                    }}
-                    onMouseOver={() => {
-                      setDesignImage(product.backDesign);
-                    }}
-                    onMouseLeave={() => {
-                      setDesignImage(product.design);
-                    }}
-                  >
-                    <img
-                      src={`${product.image}`}
-                      alt=""
-                      className={classes.image}
-                      onMouseOver={changeBackground}
-                    />
-                    <img src={designImage} alt="design" className={classes.design} />
-                  </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor:
-                        color.label === 'white'
-                          ? '#ffffff'
-                          : color.label === 'navy'
-                          ? '#262d4f '
-                          : color.label === 'black'
-                          ? '#121616'
-                          : '',
-                    }}
-                    onMouseOver={() => {
-                      setDesignImage(product.backDesign);
-                    }}
-                    onMouseLeave={() => {
-                      setDesignImage(product.design);
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={designImage} alt="design" className={classes.design} />
-                  </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor:
-                        color.label === 'white'
-                          ? '#ffffff'
-                          : color.label === 'navy'
-                          ? '#262d4f '
-                          : color.label === 'black'
-                          ? '#121616'
-                          : '',
-                    }}
-                    onMouseOver={() => {
-                      setDesignImage(product.backDesign);
-                    }}
-                    onMouseLeave={() => {
-                      setDesignImage(product.design);
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={designImage} alt="design" className={classes.design} />
-                  </div>
+                  {product.colors?.map(({ id, label }) => {
+                    return (
+                      <>
+                        {console.log('image color', { id, label })}
+                        <div
+                          className={classes.imageContainer}
+                          style={{
+                            // backgroundColor: '#121616',
+
+                            backgroundColor:
+                              product.name !== 'Case' && label === 'white'
+                                ? '#ffffff'
+                                : label === 'navy'
+                                ? '#262d4f '
+                                : label === 'black'
+                                ? '#121616'
+                                : '',
+                            backgroundImage: product.name === 'Case' && `url(${designImage})`,
+                            backgroundSize: '37% 80%',
+                          }}
+                          onMouseOver={() => {
+                            setDesignImage(product.backDesign);
+                          }}
+                          onMouseLeave={() => {
+                            setDesignImage(product.design);
+                          }}
+                        >
+                          <img
+                            src={
+                              product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image
+                            }
+                            alt=""
+                            className={classes.image}
+                            onMouseOver={changeBackground}
+                          />
+                          <img src={designImage} a alt="design" className={classes.design} />
+                        </div>
+                      </>
+                    );
+                  })}
                 </Carousel>
               </Grid>
               <Grid
