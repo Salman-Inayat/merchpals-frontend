@@ -228,7 +228,7 @@ const ProductCard = ({
   const updateProfit = price => {
     setProfit(calculateProfit(price, shippingCost, costPrice));
   };
-
+  console.log('design images', design, product);
   return (
     <Grid>
       <Card sx={{ maxWidth: 345 }}>
@@ -244,13 +244,23 @@ const ProductCard = ({
         <Box className={classes.imageContainer}>
           <CardMedia
             component="img"
-            image={`${product.image}`}
+            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
             alt=""
             className={classes.productImage}
-            style={{ backgroundColor: renderBgColor() }}
-          />
+            style={{
+              backgroundColor: renderBgColor(),
+              backgroundImage:
+                product.name === 'Case' &&
+                design &&
+                `url(${
+                  design.frontDesign?.designImages[3]?.imageUrl ||
+                  design.backDesign?.designImages[1]?.imageUrl
+                })`,
 
-          {design && (
+              backgroundSize: '37% 80%',
+            }}
+          />
+          {product.name !== 'Case' && design && (
             <Box>
               <img
                 className={[
@@ -263,7 +273,10 @@ const ProductCard = ({
                     ? classes.mug
                     : '',
                 ].join(' ')}
-                src={design.frontDesign?.designImages[4]?.imageUrl || design.backDesign?.designImages[1]?.imageUrl}
+                src={
+                  design.frontDesign?.designImages[4]?.imageUrl ||
+                  design.backDesign?.designImages[1]?.imageUrl
+                }
               />
             </Box>
           )}
