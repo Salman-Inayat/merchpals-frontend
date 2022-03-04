@@ -104,10 +104,13 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           alt="green iguana"
           onMouseOver={() => {
             console.log('design: ');
-            setDesignImage(product.designId.backDesign.designImages[1].imageUrl);
+            setDesignImage(
+              product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+            );
           }}
           onMouseLeave={() => {
-            setDesignImage(product.designId.frontDesign.designImages[4].imageUrl);
+            setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
           }}
         />
         {product?.designId && (

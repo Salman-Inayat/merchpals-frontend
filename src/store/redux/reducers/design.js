@@ -1,4 +1,4 @@
-import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN, SAVE_THEME_COLOR } from '../types';
+import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN, SAVE_THEME_COLOR, CLEAR_DESIGN } from '../types';
 
 const saveFrontDesign = (state, action) => {
   return { ...state, design: { ...state.design, front: action.payload } };
@@ -10,6 +10,11 @@ const saveBackDesign = (state, action) => {
 
 const saveThemeColor = (state, action) => {
   return { ...state, themeColor: action.payload };
+};
+
+const clearDesign = (state, action) => {
+  console.log('clearDesign');
+  return { ...state, design: {} };
 };
 
 const initialState = {
@@ -27,6 +32,11 @@ const designReducer = (state = initialState, action) => {
     case SAVE_THEME_COLOR: {
       return saveThemeColor(state, action);
     }
+
+    case CLEAR_DESIGN: {
+      return clearDesign(state, action);
+    }
+
     default:
       return state;
   }

@@ -5,6 +5,7 @@ import { baseURL, dataURLtoFile } from '../../../../configs/const';
 import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
 import { Products } from '../../../home/steps';
 import { fetchProducts } from '../../../../store/redux/actions/product';
+import { clearDesign } from '../../../../store/redux/actions/design';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../../../store';
 
@@ -50,16 +51,20 @@ const ProductSelection = ({ designName }) => {
     let design = store.getState().design.design;
     design.designName = location.state.name;
 
-    const form = new FormData();
-    form.append('designName', design.designName);
-
-    form.append('products', JSON.stringify([...selectedProducts]));
+    let data = {
+      designName: design?.front?.designName,
+      products: JSON.stringify([...selectedProducts]),
+      canvasModes: {
+        front: design?.front != null ? true : false,
+        back: design?.back != null ? true : false,
+      },
+    };
 
     axios
-      .post(`${baseURL}/store/add-design`, form, {
+      .post(`${baseURL}/store/add-design`, data, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       })
       .then(response => {
@@ -73,9 +78,6 @@ const ProductSelection = ({ designName }) => {
         const frontDesignVariant4 = urls[3].imageUrl;
         const frontDesignVariant5 = urls[4].imageUrl;
         const frontDesignJson = urls[5].imageUrl;
-        const backDesignVariant1 = urls[6].imageUrl;
-        const backDesignVariant2 = urls[7].imageUrl;
-        const backDesignJson = urls[8].imageUrl;
 
         const frontJSONBlob = new Blob([JSON.stringify(design?.front?.designJson || '')], {
           type: 'application/json',
@@ -120,27 +122,37 @@ const ProductSelection = ({ designName }) => {
             `${design?.front?.designImages[4]?.name || design?.back?.designImages[4]?.name}.png`,
           ),
         );
-        postDataToURL(
-          backDesignVariant1,
-          dataURLtoFile(
-            design?.back?.designImages[1]?.data || '',
-            `${design?.back?.designImages[1]?.name || ''}.png`,
-          ),
-        );
-        postDataToURL(
-          backDesignVariant2,
-          dataURLtoFile(
-            design?.back?.designImages[4]?.data || '',
-            `${design?.back?.designImages[4]?.name || ''}.png`,
-          ),
-        );
 
         postDataToURL(frontDesignJson, frontJSONBlob);
-        postDataToURL(backDesignJson, backJSONBlob)
+
+        if (design?.back != null) {
+          const backDesignVariant1 = urls[6].imageUrl;
+          const backDesignVariant2 = urls[7].imageUrl;
+          const backDesignJson = urls[8].imageUrl;
+
+          postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              design?.back?.designImages[1]?.data || '',
+              `${design?.back?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              design?.back?.designImages[4]?.data || '',
+              `${design?.back?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(backDesignJson, backJSONBlob);
+        }
 
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
         localStorage.removeItem('designJSON');
+
+        dispatch(clearDesign());
 
         setSnackBarToggle({
           visible: true,

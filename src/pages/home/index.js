@@ -10,6 +10,7 @@ import { baseURL, dataURLtoFile } from '../../configs/const';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
+import { clearDesign } from '../../store/redux/actions/design';
 import Tick from '../../assets/images/tick.png';
 
 const useStyle = makeStyles(theme => ({
@@ -198,6 +199,10 @@ const Home = () => {
       products: JSON.stringify([...selectedVariants]),
       themeColor: data.themeColor,
       designName: designData?.front?.designName || designData?.back?.designName,
+      canvasModes: {
+        front: designData?.front != null ? true : false,
+        back: designData?.back != null ? true : false,
+      },
     };
 
     const frontJSONBlob = new Blob([JSON.stringify(designData?.front?.designJson || '')], {
@@ -231,9 +236,6 @@ const Home = () => {
         const frontDesignVariant4 = urls[5].imageUrl;
         const frontDesignVariant5 = urls[6].imageUrl;
         const frontDesignJson = urls[7].imageUrl;
-        const backDesignVariant1 = urls[8].imageUrl;
-        const backDesignVariant2 = urls[9].imageUrl;
-        const backDesignJson = urls[10].imageUrl;
 
         postDataToURL(storeLogo, data.logo);
         postDataToURL(storeCoverAvatar, data.coverAvatar);
@@ -283,27 +285,35 @@ const Home = () => {
           ),
         );
 
-        postDataToURL(
-          backDesignVariant1,
-          dataURLtoFile(
-            designData?.back?.designImages[1]?.data || '',
-            `${designData?.back?.designImages[1]?.name || ''}.png`,
-          ),
-        );
-
-        postDataToURL(
-          backDesignVariant2,
-          dataURLtoFile(
-            designData?.back?.designImages[4]?.data || '',
-            `${designData?.back?.designImages[4]?.name || ''}.png`,
-          ),
-        );
-
         postDataToURL(frontDesignJson, frontJSONBlob);
-        postDataToURL(backDesignJson, backJSONBlob);
+
+        if (designData?.back != null) {
+          const backDesignVariant1 = urls[8].imageUrl;
+          const backDesignVariant2 = urls[9].imageUrl;
+          const backDesignJson = urls[10].imageUrl;
+
+          postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              designData?.back?.designImages[1]?.data || '',
+              `${designData?.back?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              designData?.back?.designImages[4]?.data || '',
+              `${designData?.back?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(backDesignJson, backJSONBlob);
+        }
 
         nextStep();
         setShowWelcomeMessage(true);
+        dispatch(clearDesign());
       })
       .catch(err => {
         setCreateStoreError(true);
