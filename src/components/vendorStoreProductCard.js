@@ -82,7 +82,10 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const [designImage, setDesignImage] = useState(
     product.designId.frontDesign.designImages[4].imageUrl,
   );
-
+  const [iphoneDesignImage, setIphoneDesignImage] = useState(
+    product.designId.frontDesign.designImages[3].imageUrl,
+  );
+  console.log('iphone mag', iphoneDesignImage);
   useEffect(() => {
     if (product) {
       console.log('Product: ', product);
@@ -99,21 +102,29 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
-          image={`${product.image}`}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
           className={classes.productImage}
           alt="green iguana"
           onMouseOver={() => {
             console.log('design: ');
-            setDesignImage(
-              product?.designId?.backDesign?.designImages[1]?.imageUrl ||
-                product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-            );
+            product.name !== 'Case'
+              ? setDesignImage(
+                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+                )
+              : setIphoneDesignImage(product?.designId?.backDesign?.designImages[1]?.imageUrl);
           }}
           onMouseLeave={() => {
-            setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
+            product.name !== 'Case'
+              ? setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl)
+              : setIphoneDesignImage(product?.designId?.frontDesign?.designImages[3]?.imageUrl);
+          }}
+          style={{
+            backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
+            backgroundSize: '37% 80%',
           }}
         />
-        {product?.designId && (
+        {product?.designId && product.name !== 'Case' && (
           <img
             src={designImage}
             className={[

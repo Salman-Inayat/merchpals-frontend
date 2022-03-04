@@ -199,6 +199,7 @@ const ProductCard = ({
 }) => {
   const classes = useStyles();
   const [design, setDesign] = useState('');
+  const [iphoneDesign, setIphoneDesign] = useState('');
 
   const [radioCardColor, setRadioCardColor] = useState('');
 
@@ -210,7 +211,12 @@ const ProductCard = ({
         store.getState().design?.design?.front?.designImages[4]?.data ||
         store.getState().design?.design?.back?.designImages[4]?.data ||
         '';
+      const iphoneDesign =
+        store.getState().design?.design?.front?.designImages[3]?.data ||
+        store.getState().design?.design?.back?.designImages[3]?.data ||
+        '';
       setDesign(design);
+      setIphoneDesign(iphoneDesign);
     }, 1000);
   }, []);
 
@@ -245,7 +251,7 @@ const ProductCard = ({
     console.log('event color', bgColor);
     setRadioCardColor(bgColor);
   };
-
+  console.log('iphone call', iphoneDesign);
   return (
     <>
       <Typography
@@ -280,30 +286,35 @@ const ProductCard = ({
 
         <CardMedia
           component="img"
-          image={`${product.image}`}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
           alt=""
           className={classes.productImage}
           style={{
             border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
+            backgroundImage: product.name === 'Case' && `url(${iphoneDesign})`,
+
+            backgroundSize: '37% 80%',
           }}
         />
-        <Box>
-          {design && (
-            <img
-              className={[
-                classes.design,
-                product.name === 'Poster'
-                  ? classes.poster
-                  : product.name === 'Case'
-                  ? classes.phoneCase
-                  : product.name === 'Mug'
-                  ? classes.mug
-                  : '',
-              ].join(' ')}
-              src={design}
-            />
-          )}
-        </Box>
+        {product.name !== 'Case' && (
+          <Box>
+            {design && (
+              <img
+                className={[
+                  classes.design,
+                  product.name === 'Poster'
+                    ? classes.poster
+                    : product.name === 'Case'
+                    ? classes.phoneCase
+                    : product.name === 'Mug'
+                    ? classes.mug
+                    : '',
+                ].join(' ')}
+                src={design}
+              />
+            )}
+          </Box>
+        )}
       </Card>
 
       <Grid justifyContent="center" spacing={3} className={classes.colorGrid} container>

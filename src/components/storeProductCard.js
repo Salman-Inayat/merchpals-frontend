@@ -88,6 +88,9 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [color, setColor] = useState();
+  const [iphoneDesignImage, setIphoneDesignImage] = useState(
+    product.designId.frontDesign.designImages[3].imageUrl,
+  );
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
@@ -109,11 +112,24 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
-          image={`${product.image}`}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
           alt="green iguana"
           className={classes.productImage}
+          style={{
+            backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
+            backgroundSize: '37% 80%',
+          }}
+          onMouseOver={() => {
+            console.log('design: ');
+            product.name === 'Case' &&
+              setIphoneDesignImage(product.designId.backDesign.designImages[1].imageUrl);
+          }}
+          onMouseLeave={() => {
+            product.name === 'Case' &&
+              setIphoneDesignImage(product.designId.frontDesign.designImages[3].imageUrl);
+          }}
         />
-        {product?.designId && (
+        {product.name !== 'Case' && product?.designId && (
           <img
             src={product.designId.frontDesign.designImages[4].imageUrl}
             className={[
