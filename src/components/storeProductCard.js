@@ -127,7 +127,9 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
                 : '',
             ].join(' ')}
             onMouseOver={e =>
-              (e.currentTarget.src = product.designId.backDesign.designImages[1].imageUrl)
+              (e.currentTarget.src =
+                product.designId?.backDesign?.designImages[1]?.imageUrl ||
+                product.designId.frontDesign.designImages[4].imageUrl)
             }
             onMouseOut={e =>
               (e.currentTarget.src = product.designId.frontDesign.designImages[4].imageUrl)
