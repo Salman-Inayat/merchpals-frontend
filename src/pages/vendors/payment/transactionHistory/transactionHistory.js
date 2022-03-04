@@ -10,6 +10,11 @@ import {
   TableRow,
   Stack,
   Card,
+  Modal,
+  Box,
+  TextField,
+  Divider,
+  CircularProgress,
 } from '@mui/material';
 import moment from 'moment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -17,6 +22,9 @@ import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import { fontSize } from '@mui/system';
+import { useState } from 'react';
+import { remove } from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -86,9 +94,13 @@ const TransactionHistory = ({
   handleViewStripeDashboard,
   pendingBalance,
   transactionHistory,
+  setHasStripeAcc,
 }) => {
   const classes = useStyles();
-
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [removeStatus, setRemoveStatus] = useState(false);
+  const [loading, setLoading] = useState(false);
   const callCronJob = () => {
     axios
       .get(`${baseURL}/cron-job`)
@@ -104,6 +116,36 @@ const TransactionHistory = ({
     transaction => transaction.status === 'succeeded',
   );
 
+  const handleRemoveStripeAccount = () => {
+    console.log('call correct');
+    setLoading(true);
+    axios
+      .delete(`${baseURL}/stripe/delete`, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+        },
+      })
+      .then(response => {
+        setHasStripeAcc(false);
+        handleClose();
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log({ error });
+      });
+  };
+  const handleVerifyRemoveName = e => {
+    //  setStoreName(e.target.value);
+    //  const name = e.target.value.trim();
+
+    if (e.target.value === 'Remove_Stripe_Account') {
+      setRemoveStatus(true);
+    }
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
   return (
     <Grid container spacing={2} className={classes.container}>
       <Grid item md={12} xs={12} mb={3}>
@@ -116,6 +158,7 @@ const TransactionHistory = ({
             flexDirection="row"
             justifyContent="flex-start"
             alignItems="center"
+            sx={{ positon: 'relative' }}
           >
             <AccountCircleIcon sx={{ fontSize: 60, marginRight: '10px', color: '#cfd7df' }} />
             <Stack direction="column" justifyContent="center" alignItems="flex-start">
@@ -123,6 +166,9 @@ const TransactionHistory = ({
 
               <Typography onClick={handleViewStripeDashboard} className={classes.buttonText}>
                 View stripe account
+              </Typography>
+              <Typography onClick={handleOpen} className={classes.buttonText}>
+                Remove account
               </Typography>
             </Stack>
           </Grid>
@@ -173,6 +219,7 @@ const TransactionHistory = ({
           </Grid>
         </Grid>
       </Grid>
+
       <Grid item md={12} xs={12}>
         <Button onClick={callCronJob} fullWidth variant="contained" color="primary">
           Testing purpose: Release Escrow payments
@@ -333,6 +380,63 @@ const TransactionHistory = ({
           </Grid>
         </Grid>
       </Grid>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Box sx={{}} mb={1}>
+            <Typography variant="h6" component="h2">
+              Are you absolutely sure?
+            </Typography>
+          </Box>
+          <Divider />
+          <Typography id="modal-modal-title" variant="h6" component="h2" mt={3} mb={2}>
+            Please type <span style={{ color: 'red' }}>Remove_Stripe_Account</span> to confirm.
+          </Typography>
+          <TextField
+            label="Remove Account"
+            // className={[classes.textfield, classes.storeNameField].join(' ')}
+            fullWidth
+            size="small"
+            onChange={handleVerifyRemoveName}
+            inputProps={{
+              autocomplete: 'off',
+              form: {
+                autocomplete: 'off',
+              },
+            }}
+          />
+          <Button
+            onClick={handleRemoveStripeAccount}
+            disabled={!removeStatus}
+            fullWidth
+            className={classes.payoutButton}
+            variant="contained"
+            color="primary"
+            sx={{ marginTop: '10px' }}
+          >
+            {loading ? <CircularProgress size="2rem" color="inherit" /> : 'Remove Account'}
+          </Button>
+          {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography> */}
+        </Box>
+      </Modal>
     </Grid>
   );
 };

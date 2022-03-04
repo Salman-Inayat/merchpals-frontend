@@ -183,6 +183,7 @@ const PaymentOnboarding = () => {
           handleViewStripeDashboard={handleViewStripeDashboard}
           pendingBalance={pendingBalance}
           transactionHistory={transactionHistory}
+          setHasStripeAcc={setHasStripeAcc}
         />
       ) : open ? (
         ''

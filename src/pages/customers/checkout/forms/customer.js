@@ -195,8 +195,10 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                           : variant.label === 'black'
                           ? '#121616'
                           : '',
+                      backgroundImage: product.name === 'Case' && `url(${variant.design})`,
+                      backgroundSize: '37% 80%',
                     }}
-                    src={product.image}
+                    src={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
                     variant="square"
                   />
                   <Avatar className={classes.design} src={variant.design} variant="square" />
