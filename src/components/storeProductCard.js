@@ -119,15 +119,15 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
             backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
             backgroundSize: '37% 80%',
           }}
-          onMouseOver={() => {
-            console.log('design: ');
-            product.name === 'Case' &&
-              setIphoneDesignImage(product.designId.backDesign.designImages[1].imageUrl);
-          }}
-          onMouseLeave={() => {
-            product.name === 'Case' &&
-              setIphoneDesignImage(product.designId.frontDesign.designImages[3].imageUrl);
-          }}
+          // onMouseOver={() => {
+          //   console.log('design: ');
+          //   product.name === 'Case' &&
+          //     setIphoneDesignImage(product.designId.backDesign.designImages[1].imageUrl);
+          // }}
+          // onMouseLeave={() => {
+          //   product.name === 'Case' &&
+          //     setIphoneDesignImage(product.designId.frontDesign.designImages[3].imageUrl);
+          // }}
         />
         {product.name !== 'Case' && product?.designId && (
           <img
@@ -142,14 +142,20 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
                 ? classes.mug
                 : '',
             ].join(' ')}
-            onMouseOver={e =>
-              (e.currentTarget.src =
-                product.designId?.backDesign?.designImages[1]?.imageUrl ||
-                product.designId.frontDesign.designImages[4].imageUrl)
-            }
-            onMouseOut={e =>
-              (e.currentTarget.src = product.designId.frontDesign.designImages[4].imageUrl)
-            }
+            onMouseOver={e => {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                (e.currentTarget.src =
+                  product.designId?.backDesign?.designImages[1]?.imageUrl ||
+                  product.designId.frontDesign.designImages[4].imageUrl);
+            }}
+            onMouseOut={e => {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                (e.currentTarget.src = product.designId.frontDesign.designImages[4].imageUrl);
+            }}
           />
         )}
       </Card>

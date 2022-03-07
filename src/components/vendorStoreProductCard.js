@@ -80,12 +80,14 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const navigate = useNavigate();
   const [color, setColor] = useState();
   const [designImage, setDesignImage] = useState(
-    product.designId.frontDesign.designImages[4].imageUrl,
+    product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
+      product?.designId?.backDesign?.designImages[1]?.imageUrl,
   );
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
-    product.designId.frontDesign.designImages[3].imageUrl,
+    product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
+      product?.designId?.backDesign?.designImages[1]?.imageUrl,
   );
-  console.log('iphone mag', iphoneDesignImage);
+
   useEffect(() => {
     if (product) {
       console.log('Product: ', product);
@@ -106,18 +108,19 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           className={classes.productImage}
           alt="green iguana"
           onMouseOver={() => {
-            console.log('design: ');
-            product.name !== 'Case'
-              ? setDesignImage(
-                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
-                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-                )
-              : setIphoneDesignImage(product?.designId?.backDesign?.designImages[1]?.imageUrl);
+            product.name !== 'Case' &&
+              product.name !== 'Mug' &&
+              product.name !== 'Poster' &&
+              setDesignImage(
+                product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                  product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+              );
           }}
           onMouseLeave={() => {
-            product.name !== 'Case'
-              ? setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl)
-              : setIphoneDesignImage(product?.designId?.frontDesign?.designImages[3]?.imageUrl);
+            product.name !== 'Case' &&
+              product.name !== 'Mug' &&
+              product.name !== 'Poster' &&
+              setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
           }}
           style={{
             backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,

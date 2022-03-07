@@ -1296,6 +1296,7 @@ const useEditor = mode => {
 
   const exportCanvas = mode => {
     if (!isCanvasEmpty(canvas)) {
+      console.log('canvas no empty call', mode);
       let json = JSON.stringify(canvas);
 
       const formatOne = new Image();

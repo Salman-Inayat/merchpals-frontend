@@ -218,7 +218,6 @@ const Product = () => {
   const [details, setDetails] = useState(false);
   const [index, setIndex] = useState(0);
   const [designImage, setDesignImage] = useState('');
-
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
   const fetchedProduct = useSelector(state => state.product?.product);
 
@@ -241,15 +240,27 @@ const Product = () => {
 
   useEffect(() => {
     if (fetchedProduct) {
-      const designUrl =
-        fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-          ? fetchedProduct.designId?.frontDesign.designImages[4].imageUrl
-          : '';
+      let designUrl;
 
-      const backDesignUrl =
-        fetchedProduct?.designId?.backDesign?.designImages?.length > 1
-          ? fetchedProduct.designId?.backDesign.designImages[1].imageUrl
-          : '';
+      fetchedProduct.name === 'Case'
+        ? (designUrl =
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+              ? fetchedProduct.designId?.frontDesign.designImages[3].imageUrl
+              : '')
+        : (designUrl =
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+              ? fetchedProduct.designId?.frontDesign.designImages[4].imageUrl
+              : '');
+      let backDesignUrl;
+      fetchedProduct.name === 'Case'
+        ? (backDesignUrl =
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+              ? fetchedProduct.designId?.frontDesign.designImages[3].imageUrl
+              : '')
+        : (backDesignUrl =
+            fetchedProduct?.designId?.backDesign?.designImages?.length > 1
+              ? fetchedProduct.designId?.backDesign.designImages[1].imageUrl
+              : fetchedProduct.designId?.frontDesign.designImages[4].imageUrl);
 
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
@@ -420,7 +431,7 @@ const Product = () => {
   const changeBackground = () => {
     console.log('changing');
   };
-
+  console.log('fetched prodcut', fetchedProduct);
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -464,7 +475,7 @@ const Product = () => {
                   {product.colors?.map(({ id, label }) => {
                     return (
                       <>
-                        {console.log('image color', { id, label })}
+                        {console.log('image color', product.slug, { id, label })}
                         <div
                           className={classes.imageContainer}
                           style={{
@@ -479,13 +490,19 @@ const Product = () => {
                                 ? '#121616'
                                 : '',
                             backgroundImage: product.name === 'Case' && `url(${designImage})`,
-                            backgroundSize: '37% 80%',
+                            backgroundSize: product.name === 'Case' && '33% 100%',
                           }}
                           onMouseOver={() => {
-                            setDesignImage(product.backDesign);
+                            product.slug !== 'case' &&
+                              product.slug !== 'mug' &&
+                              product.slug !== 'poster' &&
+                              setDesignImage(product.backDesign);
                           }}
                           onMouseLeave={() => {
-                            setDesignImage(product.design);
+                            product.slug !== 'case' &&
+                              product.slug !== 'mug' &&
+                              product.slug !== 'poster' &&
+                              setDesignImage(product.design);
                           }}
                         >
                           <img
@@ -494,9 +511,10 @@ const Product = () => {
                             }
                             alt=""
                             className={classes.image}
-                            onMouseOver={changeBackground}
                           />
-                          <img src={designImage} a alt="design" className={classes.design} />
+                          {product.name !== 'Case' && (
+                            <img src={designImage} alt="design" className={classes.design} />
+                          )}
                         </div>
                       </>
                     );
@@ -515,7 +533,7 @@ const Product = () => {
               >
                 <Stack direction="column" spacing={2} className={classes.stack}>
                   <Typography gutterBottom variant="h3" component="div" align="center">
-                    {product.name}
+                    {`${product.name === 'Case' ? 'Iphone Case' : product.name}`}
                   </Typography>
 
                   <Typography
