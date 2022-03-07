@@ -81,11 +81,11 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const [color, setColor] = useState();
   const [designImage, setDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+      product?.designId?.backDesign?.designImages[4]?.imageUrl,
   );
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+      product?.designId?.backDesign?.designImages[3]?.imageUrl,
   );
 
   useEffect(() => {
@@ -101,6 +101,10 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
 
   return (
     <>
+      {console.log(
+        'product?.designId?.frontDesign?.designImages[4]?.imageUrl',
+        product?.designId?.backDesign,
+      )}
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
@@ -108,23 +112,28 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           className={classes.productImage}
           alt="green iguana"
           onMouseOver={() => {
-            product.name !== 'Case' &&
-              product.name !== 'Mug' &&
-              product.name !== 'Poster' &&
-              setDesignImage(
-                product?.designId?.backDesign?.designImages[1]?.imageUrl ||
-                  product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-              );
+            console.log('call');
+            if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                setDesignImage(
+                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+                );
+            }
           }}
           onMouseLeave={() => {
-            product.name !== 'Case' &&
-              product.name !== 'Mug' &&
-              product.name !== 'Poster' &&
-              setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
+            if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
+            }
           }}
           style={{
             backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
-            backgroundSize: '37% 80%',
+            backgroundSize: product.name === 'Case' && '37% 80%',
           }}
         />
         {product?.designId && product.name !== 'Case' && (
@@ -140,12 +149,21 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
                 ? classes.mug
                 : '',
             ].join(' ')}
-            // onMouseOver={e =>
-            //   (e.currentTarget.src = product.designId.backDesign.designImages[1].imageUrl)
-            // }
-            // onMouseOut={e =>
-            //   (e.currentTarget.src = product.designId.frontDesign.designImages[4].imageUrl)
-            // }
+            onMouseOver={() => {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                setDesignImage(
+                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+                );
+            }}
+            onMouseLeave={() => {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
+            }}
           />
         )}
       </Card>

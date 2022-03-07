@@ -209,7 +209,9 @@ const ProductCard = ({
       const design =
         store.getState().design?.design?.front?.designImages[4]?.data ||
         store.getState().design?.design?.back?.designImages[4]?.data;
-      const iphoneDesign = store.getState().design?.design?.front?.designImages[3]?.data;
+      const iphoneDesign =
+        store.getState().design?.design?.front?.designImages[3]?.data ||
+        store.getState().design?.design?.back?.designImages[3]?.data;
       console.log('desogn', { design });
       setDesign(design);
       setIphoneDesign(iphoneDesign);

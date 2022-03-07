@@ -716,17 +716,7 @@ const Editor = forwardRef((props, ref) => {
                       ? '50%'
                       : '0px',
                 }}
-              >
-                {(canvasMode === 'front' && frontCanvasShape === 'triangle') ||
-                  (canvasMode === 'back' && backCanvasShape === 'triangle' && (
-                    <svg height="40" width="40">
-                      <polygon
-                        points="0 0, 100 0, 50 100"
-                        style="fill:transparent;stroke:purple;stroke-width:1"
-                      />
-                    </svg>
-                  ))}
-              </span>
+              ></span>
 
               <canvas
                 hidden={canvasMode === 'front' ? false : true}
