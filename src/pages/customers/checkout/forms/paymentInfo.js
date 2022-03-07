@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Avatar, Grid, Typography, Link, Input, InputLabel } from '@mui/material';
+import {
+  Avatar,
+  Grid,
+  Typography,
+  Link,
+  Input,
+  InputLabel,
+  CircularProgress,
+  Button,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import './stripeElement.css';
 
@@ -75,12 +84,8 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
     setLoading(true);
     const cardElement = elements.getElement(CardElement);
     const { error, token } = await stripe.createToken(cardElement);
-    console.log({ token });
     placeOrder(token);
-    if (!error) {
-      setLoading(false);
-    } else {
-      console.log(error);
+    if (error) {
       setLoading(false);
     }
   };
@@ -102,23 +107,24 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
       </Grid>
       {completedAddress && (
         <Grid direction="row" justifyContent="center" className={classes.box} container>
-          <Grid item xs={12} mt={3}>
-            <Avatar src={CardsLogos} className={classes.banner} />
+          <Grid item xs={12} mt={3} display="flex" justifyContent="center">
+            <img src={CardsLogos} className={classes.banner} />
           </Grid>
           <Grid item container justifyContent="center" xs={10} mt={3}>
             <Grid item xs={12} mt={3}>
               <CardElement options={cardOptions} />
             </Grid>
           </Grid>
-          <Grid justifyContent="center" xs={10} mt={3} container>
-            <LoadingButton
-              disabled={!completedAddress}
-              loading={loading}
-              onClick={createToken}
-              className={classes.continueBtn}
-            >
-              Place your order
-            </LoadingButton>
+          <Grid mt={3} container justifyContent="center">
+            <Grid item xs={10} display="flex" justifyContent="center">
+              <Button
+                disabled={!completedAddress}
+                onClick={createToken}
+                className={classes.continueBtn}
+              >
+                {loading ? <CircularProgress size="1rem" /> : 'Place your order'}
+              </Button>
+            </Grid>
             <Grid xs={10} mt={3} item>
               <Typography>
                 By clicking the &#39;Place Order&#39; button, you confirm that youu have read,

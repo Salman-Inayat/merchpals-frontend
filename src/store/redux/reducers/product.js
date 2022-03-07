@@ -20,7 +20,6 @@ const fetchAllProductsFailed = state => ({
 });
 
 const updateSelectedVariants = (state, payload) => {
-  console.log({ payload });
   localStorage.setItem('selectedVariants', JSON.stringify(payload));
   return {
     ...state,

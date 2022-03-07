@@ -84,9 +84,7 @@ const ContactSupport = props => {
   const [toggleSubmit, setToggleSubmit] = useState(true);
 
   const ContactSchema = Yup.object().shape({
-    email: Yup.string()
-      .required('Email is required')
-      .email('Invalid email address'),
+    email: Yup.string().required('Email is required').email('Invalid email address'),
     name: Yup.string().required('Name is required'),
     message: Yup.string().required('Message is required'),
   });
@@ -130,7 +128,7 @@ const ContactSupport = props => {
 
   const handleSubmit = () => {
     props.handleModalAndSnackbar();
-    console.log(contactDetails);
+
     axios
       .post(`${baseURL}/contact`, contactDetails)
       .then(res => {
@@ -225,11 +223,7 @@ const ContactSupport = props => {
         <span className={classes.fieldError}>{errors?.message?.message}</span>
       </Grid>
       <Grid item md={12} display="flex" justifyContent="flex-end">
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={toggleSubmit}
-        >
+        <Button variant="contained" onClick={handleSubmit} disabled={toggleSubmit}>
           Submit
         </Button>
       </Grid>

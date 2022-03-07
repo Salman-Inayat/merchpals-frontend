@@ -80,7 +80,6 @@ const OtpVerification = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Setting Phone No: ', `${phoneNo}`);
     setOldPhoneNo(`${phoneNo}`);
   }, [phoneNo]);
 
@@ -162,7 +161,6 @@ const OtpVerification = ({
       axios
         .post(`${baseURL}/auth/send-otp-with-new-phone-no`, data)
         .then(res => {
-          console.log(res);
           setToggleWrongPhoneNo(false);
           setPhoneError('');
           setOldPhoneNo(`+${phoneNo}`);
@@ -186,8 +184,8 @@ const OtpVerification = ({
             alignItems="center"
             spacing={3}
           >
-            <Grid item container justify="center">
-              <Grid container alignItems="center" direction="column">
+            <Grid item md={12} xs={12}>
+              <Grid container alignItems="center" direction="column" display="flex">
                 <Grid item>
                   <Avatar className={classes.avatar}>
                     <LockOutlined />
@@ -213,7 +211,14 @@ const OtpVerification = ({
                 </Link>
               </Stack>
             </Grid>
-            <Grid item xs={12} container justify="center" alignItems="center" direction="column">
+            <Grid
+              item
+              xs={12}
+              justify="center"
+              alignItems="center"
+              display="flex"
+              direction="column"
+            >
               <Grid item spacing={3} justify="center">
                 <OtpVerifyInput otp={otp} setOtp={setOtp} />
               </Grid>

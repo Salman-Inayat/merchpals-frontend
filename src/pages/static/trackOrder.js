@@ -47,8 +47,6 @@ export default function TrackOrderModal() {
   const { state } = useLocation();
   const order = state.data.data;
 
-  console.log(order);
-
   return (
     <Grid container rowSpacing={6} className={classes.container}>
       <Grid item md={12} xs={12}>

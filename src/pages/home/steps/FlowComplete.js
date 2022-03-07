@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Stack, Box, Typography, Button, TextField } from '@mui/material';
+import {
+  Grid,
+  Stack,
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Alert as MuiAlert,
+  Snackbar,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PhoneFrame from '../../../assets/images/StoreGeneratedPAGE1.png';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import { useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
@@ -42,14 +56,18 @@ function FlowComplete({ storeURL }) {
   const [copied, setCopied] = useState(false);
   const [confettiRun, setConfettiRun] = useState(true);
   const navigate = useNavigate();
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: 'success',
+    message: 'Message sent successfully',
+  });
 
-  console.log('storeURL', storeURL);
   useEffect(() => {
     setTimeout(() => {
       setConfettiRun(false);
     }, 3000);
   }, []);
-  console.log('conetti', confettiRun);
+
   const copyToClipboard = text => {
     const el = document.createElement('textarea');
     el.value = text;
@@ -58,7 +76,18 @@ function FlowComplete({ storeURL }) {
     setCopied(true);
     document.execCommand('copy');
     document.body.removeChild(el);
+    setSnackBarToggle({
+      visible: true,
+      type: 'success',
+      message: 'Test copied to clipboard',
+    });
   };
+
+  const handleSnackBarClose = () =>
+    setSnackBarToggle({
+      ...snackBarToggle,
+      visible: false,
+    });
 
   return (
     <div className={classes.container}>
@@ -83,15 +112,14 @@ function FlowComplete({ storeURL }) {
                   readOnly: true,
                   endAdornment: (
                     <Box>
-                        <Button
-                          color="primary"
-                          variant='contained'
-                          onClick={() =>
-                            copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)
-                          }
-                        >
-                          <ContentCopyIcon color="white" />
-                        </Button>
+                      <Button
+                        color="primary"
+                        // variant="contained"
+                        onClick={() => copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)}
+                      >
+                        Copy
+                        <ContentCopyIcon color="white" />
+                      </Button>
                     </Box>
                   ),
                 }}
@@ -110,6 +138,9 @@ function FlowComplete({ storeURL }) {
         </Grid>
       </Grid>
       <Confetti numberOfPieces={confettiRun ? 500 : 0} />
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
+        <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+      </Snackbar>
     </div>
   );
 }

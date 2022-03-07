@@ -44,14 +44,17 @@ const useStyles = makeStyles(theme => ({
     height: '190px',
     width: '190px',
     borderRadius: '5px',
+    top: '53%',
     [theme.breakpoints.down('sm')]: {
-      height: '130px',
-      width: '130px',
+      height: '120px',
+      width: '120px',
+      top: '56%',
     },
   },
   phoneCase: {
-    height: '80px',
-    width: '80px',
+    height: '100px',
+    width: '100px',
+    top: '52%',
     [theme.breakpoints.down('sm')]: {
       height: '60px',
       width: '60px',
@@ -104,7 +107,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
               classes.design,
               product.name === 'Poster'
                 ? classes.poster
-                : product.name === 'Phone Case'
+                : product.name === 'Case'
                 ? classes.phoneCase
                 : product.name === 'Mug'
                 ? classes.mug

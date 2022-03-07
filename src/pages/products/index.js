@@ -11,6 +11,10 @@ import {
   // ListItemText,
   ListItem,
   ListItemIcon,
+  CircularProgress,
+  Slide,
+  Collapse,
+  Paper,
 } from '@mui/material';
 // import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 // import axios from 'axios';
@@ -42,7 +46,8 @@ import Footer from '../../layouts/static/footer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -55,8 +60,8 @@ const useStyle = makeStyles(theme => ({
     },
   },
   imageContainer: {
-    width: '80%',
-    height: '80%',
+    width: '100%',
+    height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -65,6 +70,7 @@ const useStyle = makeStyles(theme => ({
       height: '100%',
     },
   },
+
   stack: {
     width: '100%',
     height: '100%',
@@ -91,10 +97,10 @@ const useStyle = makeStyles(theme => ({
   },
   design: {
     position: 'absolute',
-    width: '150px',
+    width: '150px !important',
     height: '150px',
     [theme.breakpoints.down('sm')]: {
-      width: '100px',
+      width: '100px !important',
       height: '100px',
     },
   },
@@ -169,7 +175,16 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     padding: '0 4px',
   },
 }));
+function Item(props) {
+  return (
+    <Paper>
+      <h2>{props.item.name}</h2>
+      <p>{props.item.description}</p>
 
+      <Button className="CheckButton">Check it out!</Button>
+    </Paper>
+  );
+}
 const Product = () => {
   const classes = useStyle();
   const dispatch = useDispatch();
@@ -190,7 +205,7 @@ const Product = () => {
 
   const [color, setColor] = useState({ id: '', label: '' });
   const [size, setSize] = useState({ id: '', label: '' });
-  const [productColor, setProductColor] = useState('');
+
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -201,6 +216,7 @@ const Product = () => {
   const [totalNumberOfVariants, setTotalNumberOfVariants] = useState(0);
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
+  const [index, setIndex] = useState(0);
 
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
   const fetchedProduct = useSelector(state => state.product?.product);
@@ -230,8 +246,6 @@ const Product = () => {
           : '';
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
-      console.log(' fetched product', fetchedProduct);
-      console.log('colr array', colorsArr);
       const formattedProduct = {
         vendorProduct: fetchedProduct.vendorProductId,
         productId: fetchedProduct._id,
@@ -249,16 +263,40 @@ const Product = () => {
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
         design: designUrl,
       };
-
-      console.log(formattedProduct.colors);
-      setProduct(formattedProduct);
+      formattedProduct.colors = formattedProduct.colors.sort(function (a, b) {
+        return a.id - b.id || a.label.localeCompare(b.label);
+      });
       setSize(formattedProduct.sizes[0]);
+      setProduct(formattedProduct);
       setColor(formattedProduct.colors[0]);
     }
   }, [fetchedProduct]);
 
   const handleColorChange = event => {
     const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
+    console.log('select coor', selectedColor, event.target.value);
+    if ((product.colors[0].label === 'white', product.colors[1].label === 'navy')) {
+      switch (selectedColor.label) {
+        case 'white':
+          setIndex(0);
+          break;
+        case 'navy':
+          setIndex(1);
+          break;
+      }
+    } else {
+      switch (selectedColor.label) {
+        case 'black':
+          setIndex(0);
+          break;
+        case 'white':
+          setIndex(1);
+          break;
+        case 'navy':
+          setIndex(2);
+          break;
+      }
+    }
     setColor(selectedColor);
   };
 
@@ -286,9 +324,7 @@ const Product = () => {
 
     const productMapping = selectedVariant._id;
     let updatedCart = {};
-    // console.log({selectedVariant});
     const prevProduct = cartsVariants.find(v => v.vendorProduct === product.vendorProduct);
-    // console.log({prevProduct});
 
     if (prevProduct) {
       const isSameVariantAlreadySelected = prevProduct.productMappings.find(
@@ -298,7 +334,6 @@ const Product = () => {
       if (isSameVariantAlreadySelected) {
         mappings = mappings.filter(m => m.id !== selectedVariant._id);
       }
-      // console.log({ selectedVariant });
       updatedCart = {
         ...prevProduct,
         productMappings: [
@@ -353,7 +388,7 @@ const Product = () => {
     );
     setTotalNumberOfVariants(totalItems);
   };
-  
+
   const handleCartButton = () => {
     if (reduxCartProducts.length === 0) {
       setSnackBarToggle({
@@ -371,274 +406,346 @@ const Product = () => {
       visible: false,
     });
   };
-  let opacity;
-  // console.log(product);
+  console.log('soret', product, color);
   return (
-    <Grid container spacing={1} justifyContent="center" alignItems="center">
-      <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
-        <ArrowBackIcon onClick={handleBackButton} sx={{ cursor: 'pointer' }} />
-      </Grid>
-      <Grid item md={10} xs={8} sm={10} display="flex" justifyContent="center">
-        <Typography variant="h4">Official Store</Typography>
-      </Grid>
-      <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pr={{ xs: 5, sm: 0 }}>
-        <IconButton
-          aria-label="cart"
-          onClick={handleCartButton}
-          size="large"
-          style={{ height: '50px', width: '50px' }}
+    <>
+      <Grid container spacing={1} justifyContent="center" alignItems="center">
+        <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
+          <ArrowBackIcon onClick={handleBackButton} sx={{ cursor: 'pointer' }} />
+        </Grid>
+        <Grid item md={10} xs={8} sm={10} display="flex" justifyContent="center">
+          <Typography variant="h4">Official Store</Typography>
+        </Grid>
+        <Grid
+          item
+          md={1}
+          xs={1}
+          sm={1}
+          display="flex"
+          justifyContent="center"
+          pr={{ xs: 5, sm: 0 }}
         >
-          <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem' }} />
-        </IconButton>
-      </Grid>
-      {fetchedProduct ? (
-        <Grid item md={12} xs={12}>
-          <Grid container>
-            <Grid
-              item
-              md={7}
-              p={5}
-              xs={12}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <div className={classes.imageContainer} style={{ backgroundColor: color.label }}>
-                  <img src={`${product.image}`} alt="" className={classes.image} />
-                  <img src={product.design} alt="design" className={classes.design} />
-                </div>
-              </div>
-            </Grid>
-            <Grid
-              item
-              md={5}
-              // p={5}
-              xs={12}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              className={classes.gridContainer}
-            >
-              <Stack direction="column" spacing={2} className={classes.stack}>
-                <Typography gutterBottom variant="h3" component="div" align="center">
-                  {product.name}
-                </Typography>
+          <IconButton
+            aria-label="cart"
+            onClick={handleCartButton}
+            size="large"
+            style={{ height: '50px', width: '50px' }}
+          >
+            <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: '#000000' }} />
+          </IconButton>
+        </Grid>
 
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  className={classes.price}
-                  align="center"
+        {fetchedProduct ? (
+          <Grid item md={12} xs={12}>
+            <Grid container display="flex" justifyContent="center" alignItems="center">
+              <Grid item md={4} xs={12}>
+                <Carousel
+                  selectedItem={index}
+                  showThumbs={false}
+                  showArrows={false}
+                  swipeable={false}
+                  showStatus={false}
+                  showIndicators={false}
                 >
-                  $ {product?.cost ? product.cost.toFixed(2) : 0}
-                </Typography>
+                  {product.colors?.map(({ id, label }) => {
+                    return (
+                      <>
+                        {console.log('image color', { id, label })}
+                        <div
+                          className={classes.imageContainer}
+                          style={{
+                            // backgroundColor: '#121616',
+                            backgroundColor:
+                              label === 'white'
+                                ? '#ffffff'
+                                : label === 'navy'
+                                ? '#262d4f '
+                                : label === 'black'
+                                ? '#121616'
+                                : '',
+                          }}
+                        >
+                          <img src={`${product.image}`} alt="" className={classes.image} />
+                          <img src={product.design} alt="design" className={classes.design} />
+                        </div>
+                      </>
+                    );
+                  })}
 
-                <FormControl component="fieldset">
-                  {/* <FormLabel component="legend">Color</FormLabel> */}
-                  <RadioGroup
-                    row
-                    aria-label="color"
-                    name="controlled-radio-buttons-group"
-                    value={color.id}
-                    onChange={handleColorChange}
+                  {/* <div
+                    className={classes.imageContainer}
+                    style={{
+                      backgroundColor: '#ffffff',
+                      // backgroundColor:
+                      //   color.label === 'white'
+                      //     ? '#ffffff'
+                      //     : color.label === 'navy'
+                      //     ? '#262d4f '
+                      //     : color.label === 'black'
+                      //     ? '#121616'
+                      //     : '',
+                    }}
                   >
-                    {product.colors.map(({ id, label }) => {
-                      return (
-                        <FormControlLabel
-                          style={{ marginLeft: '0px' }}
-                          key={`colors-${id}`}
-                          value={id}
-                          control={
-                            <Radio
-                              onClick={() => {
-                                console.log('radio call', id, label);
-                              }}
-                              className={classes.radio}
-                              sx={{
-                                '&.Mui-checked': {
-                                  '& + .MuiFormControlLabel-label > div': {
-                                    border: '1px solid gray',
-                                  },
-                                },
-                              }}
+                    <img src={`${product.image}`} alt="" className={classes.image} />
+                    <img src={product.design} alt="design" className={classes.design} />
+                  </div>
+                  <div
+                    className={classes.imageContainer}
+                    style={{
+                      backgroundColor: '#262d4f',
+                      // backgroundColor:
+                      //   color.label === 'white'
+                      //     ? '#ffffff'
+                      //     : color.label === 'navy'
+                      //     ? '#262d4f '
+                      //     : color.label === 'black'
+                      //     ? '#121616'
+                      //     : '',
+                    }}
+                  >
+                    <img src={`${product.image}`} alt="" className={classes.image} />
+                    <img src={product.design} alt="design" className={classes.design} />
+                  </div> */}
+                </Carousel>
+              </Grid>
+              <Grid
+                item
+                md={5}
+                // p={5}
+                xs={12}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                className={classes.gridContainer}
+              >
+                <Stack direction="column" spacing={2} className={classes.stack}>
+                  <Typography gutterBottom variant="h3" component="div" align="center">
+                    {product.name}
+                  </Typography>
+
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    className={classes.price}
+                    align="center"
+                  >
+                    $ {product?.cost ? product.cost.toFixed(2) : 0}
+                  </Typography>
+
+                  <FormControl component="fieldset">
+                    {/* <FormLabel component="legend">Color</FormLabel> */}
+                    <RadioGroup
+                      row
+                      aria-label="color"
+                      name="controlled-radio-buttons-group"
+                      value={color.id}
+                      onChange={handleColorChange}
+                    >
+                      {product.colors.map(({ id, label }) => {
+                        return (
+                          <>
+                            {console.log('radio button color', { id, label })}
+                            <FormControlLabel
+                              style={{ marginLeft: '0px' }}
+                              key={`colors-${id}`}
+                              value={id}
+                              control={
+                                <Radio
+                                  className={classes.radio}
+                                  sx={{
+                                    '&.Mui-checked': {
+                                      '& + .MuiFormControlLabel-label > div': {
+                                        border: '1px solid gray',
+                                      },
+                                    },
+                                  }}
+                                />
+                              }
+                              label={
+                                <div
+                                  className={classes.color}
+                                  style={{
+                                    backgroundColor:
+                                      label === 'white'
+                                        ? '#ffffff'
+                                        : label === 'navy'
+                                        ? '#262d4f '
+                                        : '#121616',
+
+                                    transition: 'opacity 300ms ease-in',
+                                    backgroundImage: `url(${product.image})`,
+                                    backgroundSize: '100% 100%',
+                                    backgroundRepeat: 'no-repeat',
+                                    width: '50px',
+                                    height: '50px',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  {' '}
+                                  {/* <Typography>Rehman</Typography> */}
+                                  {/* <img src={`${product.image}`} height="50" width="50" /> */}
+                                  <img
+                                    src={product.design}
+                                    width="15px"
+                                    height="15px"
+                                    style={{
+                                      position: 'absolute',
+                                    }}
+                                  />
+                                </div>
+                              }
                             />
-                          }
-                          label={
-                            <div
-                              className={classes.color}
-                              style={{
-                                backgroundColor: label,
-                                backgroundImage: `url(${product.image})`,
-                                backgroundSize: '100% 100%',
-                                backgroundRepeat: 'no-repeat',
-                                width: '50px',
-                                height: '50px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                            >
-                              {' '}
-                              {/* <Typography>Rehman</Typography> */}
-                              {/* <img src={`${product.image}`} height="50" width="50" /> */}
-                              <img
-                                src={product.design}
-                                width="15px"
-                                height="15px"
-                                style={{
-                                  position: 'absolute',
+                          </>
+                        );
+                      })}
+                    </RadioGroup>
+                  </FormControl>
+
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Select Size</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-label="color"
+                      name="controlled-radio-buttons-group"
+                      value={size.id}
+                      onChange={handleSizeChange}
+                    >
+                      {product.sizes.map(({ id, label }) => {
+                        return (
+                          <FormControlLabel
+                            className={classes.parentSelectSize}
+                            key={`sizes-${id}`}
+                            value={id}
+                            control={
+                              <Radio
+                                className={classes.radio}
+                                sx={{
+                                  '&.Mui-checked': {
+                                    '& + .MuiFormControlLabel-label > div': {
+                                      backgroundColor: '#c1bdbd;',
+                                    },
+                                  },
                                 }}
                               />
-                            </div>
-                          }
-                        />
-                      );
-                    })}
-                  </RadioGroup>
-                </FormControl>
-
-                <FormControl component="fieldset">
-                  <FormLabel component="legend">Select Size</FormLabel>
-                  <RadioGroup
-                    row
-                    aria-label="color"
-                    name="controlled-radio-buttons-group"
-                    value={size.id}
-                    onChange={handleSizeChange}
-                  >
-                    {product.sizes.map(({ id, label }) => {
-                      return (
-                        <FormControlLabel
-                          className={classes.parentSelectSize}
-                          key={`sizes-${id}`}
-                          value={id}
-                          control={
-                            <Radio
-                              className={classes.radio}
-                              sx={{
-                                '&.Mui-checked': {
-                                  '& + .MuiFormControlLabel-label > div': {
-                                    backgroundColor: '#c1bdbd;',
-                                  },
-                                },
-                              }}
-                            />
-                          }
-                          label={
-                            <div
-                              className={
-                                product.slug === 'case' ? classes.caseSize : classes.selectSize
-                              }
-                            >
-                              <Typography
-                                component="h4"
-                                className={product.slug === 'case' && classes.caseSizeHeading}
+                            }
+                            label={
+                              <div
+                                className={
+                                  product.slug === 'case' ? classes.caseSize : classes.selectSize
+                                }
                               >
-                                {label.toUpperCase()}
-                              </Typography>
-                            </div>
-                          }
-                        />
-                      );
-                    })}
-                  </RadioGroup>
-                </FormControl>
-                <Grid item md={12} display="flex" justifyContent="center">
-                  <Button
-                    color="secondary"
-                    variant="outlined"
-                    size="large"
-                    onClick={handleAddToCart}
-                    className={classes.addToCartButton}
-                  >
-                    Add to Cart
-                  </Button>
-                </Grid>
+                                <Typography
+                                  component="h4"
+                                  className={
+                                    product.slug === 'case' ? classes.caseSizeHeading : null
+                                  }
+                                >
+                                  {label.toUpperCase()}
+                                </Typography>
+                              </div>
+                            }
+                          />
+                        );
+                      })}
+                    </RadioGroup>
+                  </FormControl>
+                  <Grid item md={12} display="flex" justifyContent="center">
+                    <Button
+                      color="secondary"
+                      variant="outlined"
+                      size="large"
+                      onClick={handleAddToCart}
+                      className={classes.addToCartButton}
+                    >
+                      Add to Cart
+                    </Button>
+                  </Grid>
 
-                <Accordion className={classes.accordian}>
-                  <AccordionSummary
-                    onClick={() => handleDetailsChange(details)}
-                    expandIcon={
-                      details ? (
-                        <RemoveIcon sx={{ color: '#EAEAEA' }} />
-                      ) : (
-                        <AddIcon sx={{ color: '#EAEAEA' }} />
-                      )
-                    }
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
-                      DETAILS
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <List>
-                      {product.details?.map(detail => (
-                        <ListItem disablePadding>
-                          <ListItemIcon
-                            disablePadding
-                            sx={{ fontSize: '10px' }}
-                          >{`\u2B24`}</ListItemIcon>
-                          {detail}
-                        </ListItem>
-                      ))}
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion className={classes.accordian}>
-                  <AccordionSummary
-                    onClick={() => handleShippingChange(shipping)}
-                    expandIcon={
-                      shipping ? (
-                        <RemoveIcon sx={{ color: '#EAEAEA' }} />
-                      ) : (
-                        <AddIcon sx={{ color: '#EAEAEA' }} />
-                      )
-                    }
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
-                      SHIPPING DETAILS
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {product.shippingText?.map(shippingText => (
-                      <Typography variant="body1" sx={{ fontWeight: '400 !important' }} mb={4}>
-                        {shippingText}
+                  <Accordion className={classes.accordian}>
+                    <AccordionSummary
+                      onClick={() => handleDetailsChange(details)}
+                      expandIcon={
+                        details ? (
+                          <RemoveIcon sx={{ color: '#EAEAEA' }} />
+                        ) : (
+                          <AddIcon sx={{ color: '#EAEAEA' }} />
+                        )
+                      }
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
+                        Details
                       </Typography>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <List>
+                        {product.details?.map((detail, index) => (
+                          <ListItem disablepadding="true" key={index}>
+                            <ListItemIcon
+                              disablepadding="true"
+                              sx={{ fontSize: '10px' }}
+                            >{`\u2B24`}</ListItemIcon>
+                            {detail}
+                          </ListItem>
+                        ))}
+                      </List>
+                    </AccordionDetails>
+                  </Accordion>
 
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Snackbar
-                    open={snackBarToggle.visible}
-                    autoHideDuration={3000}
-                    onClose={handleSnackBarClose}
-                  >
-                    <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
-                  </Snackbar>
+                  <Accordion className={classes.accordian}>
+                    <AccordionSummary
+                      onClick={() => handleShippingChange(shipping)}
+                      expandIcon={
+                        shipping ? (
+                          <RemoveIcon sx={{ color: '#EAEAEA' }} />
+                        ) : (
+                          <AddIcon sx={{ color: '#EAEAEA' }} />
+                        )
+                      }
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
+                        Size and Shipping
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {product.shippingText?.map((shippingText, index) => (
+                        <Typography
+                          key={index}
+                          variant="body1"
+                          sx={{ fontWeight: '400 !important' }}
+                          mb={4}
+                        >
+                          {shippingText}
+                        </Typography>
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
+
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Snackbar
+                      open={snackBarToggle.visible}
+                      autoHideDuration={3000}
+                      onClose={handleSnackBarClose}
+                    >
+                      <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+                    </Snackbar>
+                  </Stack>
                 </Stack>
-              </Stack>
+              </Grid>
             </Grid>
           </Grid>
+        ) : null}
+        <Grid item md={12}>
+          <Footer />
         </Grid>
-      ) : null}
-      <Grid item md={12}>
-        <Footer />
       </Grid>
-    </Grid>
+    </>
   );
 };
 

@@ -36,7 +36,9 @@ const Footer = () => {
   const navigate = useNavigate();
   const classes = useStyles();
   const handleOrderClick = () => {
-    console.log('Track Order Button click');
+    navigate({
+      pathname: `/faq`,
+    });
   };
   const handlePrivacyPolicyClick = () => {
     navigate({

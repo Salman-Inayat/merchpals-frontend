@@ -4,7 +4,16 @@ import { baseURL } from '../../configs/const';
 import LoggedInVendor from '../../layouts/LoggedInVendor';
 import BackButton from '../../components/backButton';
 
-import { Typography, Grid, Card, CardMedia, CardContent, Paper, Button } from '@mui/material';
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Paper,
+  Button,
+  CardHeader,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
@@ -24,31 +33,36 @@ const useStyles = makeStyles(theme => ({
     },
   },
   poster: {
-    height: '150px',
-    width: '150px',
+    height: '106px',
+    width: '106px',
     borderRadius: '5px',
+    top: '40%',
+    left: '50%',
     [theme.breakpoints.down('sm')]: {
-      height: '130px',
-      width: '130px',
+      height: '200px',
+      width: '200px',
+      top: '44%',
     },
   },
   phoneCase: {
-    height: '80px',
-    width: '80px',
+    height: '60px',
+    width: '60px',
+    top: '43%',
     [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
-      top: '52%',
+      height: '100px',
+      width: '100px',
+      top: '45%',
     },
   },
   mug: {
-    height: '90px',
-    width: '90px',
-    top: '55%',
+    height: '60px',
+    width: '60px',
+    top: '44%',
     left: '52%',
     [theme.breakpoints.down('sm')]: {
-      height: '60px',
-      width: '60px',
+      height: '100px',
+      width: '100px',
+      top: '48%',
     },
   },
   productImage: {
@@ -75,7 +89,7 @@ function VendorOrderDetails() {
       })
       .then(res => {
         const orderData = res.data.order;
-        console.log({ orderData });
+
         setOrder(orderData);
 
         const profit = calculateOrderProfit(orderData);
@@ -85,7 +99,7 @@ function VendorOrderDetails() {
         console.log(err);
       });
   }, []);
-
+  console.log({ order });
   return (
     <LoggedInVendor>
       <Grid container>
@@ -101,10 +115,22 @@ function VendorOrderDetails() {
               <Grid container spacing={4} p={4}>
                 {order.products.map(product => (
                   <Grid key={product._id} item xs={12} sm={6} md={6} lg={4}>
+                    <Typography sx={{ textAlign: 'center' }} variant="h5">
+                      {product.vendorProduct.productId.name}
+                    </Typography>
                     <Card>
                       <CardMedia
                         src={product.vendorProduct.productId.image}
-                        style={{ backgroundColor: product.productMapping.color.label }}
+                        style={{
+                          backgroundColor:
+                            product.productMapping.color.label === 'white'
+                              ? '#ffffff'
+                              : product.productMapping.color.label === 'navy'
+                              ? '#262d4f '
+                              : color.label === 'black'
+                              ? '#121616'
+                              : '',
+                        }}
                         height="100%"
                         component="img"
                       />
@@ -115,7 +141,7 @@ function VendorOrderDetails() {
                             classes.design,
                             product.vendorProduct.productId.name === 'Poster'
                               ? classes.poster
-                              : product.vendorProduct.productId.name === 'Phone Case'
+                              : product.vendorProduct.productId.name === 'Case'
                               ? classes.phoneCase
                               : product.vendorProduct.productId.name === 'Mug'
                               ? classes.mug
@@ -126,12 +152,12 @@ function VendorOrderDetails() {
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="h5"
+                          variant="bosy1"
                           fontWeight="light"
-                          component="h5"
-                          align="center"
+                          component="body1"
+                          textAlign="center"
                         >
-                          {product.vendorProduct.productId.name}
+                          {`Total quantity: ${product.quantity}`}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -149,11 +175,11 @@ function VendorOrderDetails() {
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Total Amount: {order.totalAmount}
+                        Total Amount: {order.totalAmount}$
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Profit: {totalProfit}
+                        Profit: {totalProfit}$
                       </Typography>
 
                       <Typography variant="p" component="p">

@@ -88,7 +88,9 @@ export const login = (phoneNo, password) => async dispatch => {
       password,
     })
     .then(res => dispatch({ type: AUTH_LOGIN_SUCCESS, payload: res.data }))
-    .catch(err => dispatch({ type: AUTH_LOGIN_FAILED, message: err.response.data.message }));
+    .catch(err => {
+      dispatch({ type: AUTH_LOGIN_FAILED, payload: err.response.data.message });
+    });
 };
 
 export const logout = () => dispatch => {

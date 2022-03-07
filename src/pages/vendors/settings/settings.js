@@ -52,7 +52,6 @@ function Settings() {
       })
       .then(res => {
         setVendorData(res.data.vendor);
-        console.log(res.data.vendor);
       })
       .catch(err => {
         console.log(err);
@@ -99,9 +98,7 @@ function Settings() {
               {vendorData && <ProfileSettings vendorData={vendorData} />}
             </TabPanel>
             <TabPanel value={value} index={1}>
-              {vendorStoreData && (
-                <StoreSettings vendorStoreData={vendorStoreData} />
-              )}
+              {vendorStoreData && <StoreSettings vendorStoreData={vendorStoreData} />}
             </TabPanel>
           </Box>
         </Grid>

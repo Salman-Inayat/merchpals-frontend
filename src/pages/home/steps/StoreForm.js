@@ -20,7 +20,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import ImageCrop from '../../../components/imageCrop';
-import PhoneFrame from '../../../assets/images/iphone_white_mookup.png';
+import PhoneFrame from '../../../assets/images/iPhone-display.png';
 
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';
@@ -229,6 +229,10 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
     logo: '',
     coverAvatar: '',
   });
+  const [showImg, setShowImg] = useState({
+    coverAvatar: '',
+    logo: '',
+  });
   // let themeClass;
   const classes = useStyle();
   const [slugMessage, setSlugMessage] = useState('');
@@ -268,7 +272,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       data.themeColor = themeColor;
     }
     createStore({ ...data, ...images });
-    // console.log(images);
   };
 
   const onError = err => {
@@ -277,31 +280,28 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
 
   const setImage = async (name, file) => {
     setImages({ ...images, [name]: file });
+    setShowImg({ ...showImg, [name]: URL.createObjectURL(file) });
   };
 
   // const isSlugValid = () => {
   //   axios
   //     .post(`${baseURL}/store/validate-slug`, { storeName })
   //     .then(response => {
-  //       console.log({ response });
   //       setSlugMessage('');
   //       setLoading(false);
   //     })
   //     .catch(err => {
   //       setLoading(false);
-  //       console.log({ errp: err.response.data });
   //       setSlugMessage(err.response.data.message);
   //     });
   //   // axios
   //   //   .get(`${baseURL}/store/validate-slug/${encodeURI(slug)}`)
   //   //   .then(response => {
-  //   //     console.log({ response });
   //   //     setSlugMessage('');
   //   //     setLoading(false);
   //   //   })
   //   //   .catch(err => {
   //   //     setLoading(false);
-  //   //     console.log({ errp: err.response.data });
   //   //     setSlugMessage(err.response.data.message);
   //   //   });
   // };
@@ -338,16 +338,14 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       axios
         .post(`${baseURL}/store/validate-slug`, { storeName: name })
         .then(response => {
-          console.log({ response });
           setSlugMessage('');
           setLoading(false);
         })
         .catch(err => {
           setLoading(false);
-          console.log({ errp: err.response.data });
           setSlugMessage(err.response.data.message);
         });
-    }, 500);
+    }, 1000);
 
     setTimer(newTimer);
   };
@@ -376,7 +374,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
       <Grid item md={12} xs={12} className={classes.formContainer}>
         <form onSubmit={handleSubmit(onSubmit, onError)}>
           <Stack spacing={3} className={classes.form}>
-
             <Grid container>
               <Grid item md={6} xs={12}>
                 <Grid container justifyContent="center" alignItems="center" spacing={3}>
@@ -428,9 +425,11 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                           <Box className={classes.uploadingPhotos}>
                             <img
                               src={
-                                images.coverAvatar === ''
+                                showImg.coverAvatar
+                                  ? showImg.coverAvatar
+                                  : images.coverAvatar === ''
                                   ? '/assets/img/sand_cover_pic.jpg'
-                                  : URL.createObjectURL(images.coverAvatar)
+                                  : images.coverAvatar
                               }
                               className={classes.coverPhoto}
                               onClick={handleChangeStoreAvatarButton}
@@ -462,33 +461,30 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                               </Box>
                             </Modal>
                             <Box className={classes.logoContainer}>
-                              <img
-                                src={
-                                  images.logo === ''
-                                    ? 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
-                                    : URL.createObjectURL(images.logo)
-                                }
-                                className={classes.logoPhoto}
-                                onClick={handleChangeStoreLogoButton}
-                              ></img>
-
-                              <IconButton
-                                aria-label="upload"
-                                className={classes.uploadIcon}
-                                sx={{ display: images.logo ? 'none' : 'block' }}
-                                onClick={handleChangeStoreLogoButton}
-                              >
-                                {/* <img src="assets/img/camera.png" width="auto" /> */}
-                                <CameraAltIcon
-                                  sx={{
-                                    borderRadius: '50%',
-                                    backgroundColor: '#2C9BF4',
-                                    color: '#fff',
-                                    padding: '5px',
-                                    fontSize: '2rem',
-                                  }}
+                              {showImg.logo ? (
+                                <img
+                                  src={showImg.logo}
+                                  className={classes.logoPhoto}
+                                  onClick={handleChangeStoreLogoButton}
                                 />
-                              </IconButton>
+                              ) : (
+                                <IconButton
+                                  aria-label="upload"
+                                  className={classes.uploadIcon}
+                                  sx={{ display: images.logo ? 'none' : 'block' }}
+                                  onClick={handleChangeStoreLogoButton}
+                                >
+                                  <CameraAltIcon
+                                    sx={{
+                                      borderRadius: '50%',
+                                      backgroundColor: '#2C9BF4',
+                                      color: '#fff',
+                                      padding: '13px',
+                                      fontSize: '5rem',
+                                    }}
+                                  />
+                                </IconButton>
+                              )}
                             </Box>
                             <Modal
                               open={openAvatarModal}
@@ -669,7 +665,7 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                       size="large"
                       type="submit"
                       variant="contained"
-                      loading={loading}
+                      // loading={loading}
                     >
                       Get Store
                     </LoadingButton>

@@ -23,3 +23,9 @@ export const getPriceCalculation = data => async dispatch => {
       });
     });
 };
+export const getInitializePriceCalculation = data => async dispatch => {
+  dispatch({
+    type: GET_PRICING_SUCCESS,
+    payload: data,
+  });
+};

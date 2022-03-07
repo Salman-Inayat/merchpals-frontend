@@ -35,7 +35,6 @@ const CanvasEditor = _ref => {
 
     canvas.setDimensions({ width: 450, height: 450 });
 
-    console.log(canvas);
     // if (isDesktop){
 
     // }
@@ -50,14 +49,13 @@ const CanvasEditor = _ref => {
       const containerWidth = outerCanvasContainer.clientWidth;
       const containerHeight = outerCanvasContainer.clientHeight;
 
-      const scale = containerWidth / canvas.getWidth();
-      const zoom = canvas.getZoom() * scale;
+      // const scale = containerWidth / canvas.getWidth();
+      // const zoom = canvas.getZoom() * scale;
       canvas.setDimensions({
         width: containerWidth,
         height: containerWidth / ratio,
       });
-      canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
-      console.log('Scale: ', scale, ' Zoom: ', zoom);
+      // canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
 
       canvas.renderAll();
     };

@@ -25,7 +25,6 @@ const EditDesign = () => {
     axios
       .get(`${baseURL}/products`)
       .then(response => {
-        console.log({ response }, 'Calling products');
         setProducts(response.data.products);
       })
       .catch(err => {
@@ -41,7 +40,6 @@ const EditDesign = () => {
         },
       })
       .then(response => {
-        console.log({ design: response.data.design });
         setDesign(response.data.design);
       })
       .catch(error => console.log({ error: error.response.data.message }));
@@ -73,7 +71,6 @@ const EditDesign = () => {
   };
 
   const onVariantClick = productVariant => {
-    console.log({ productVariant });
     const [product, color] = productVariant.split(',');
     let removedProduct = false;
     let productColors = [];
@@ -165,7 +162,6 @@ const EditDesign = () => {
           [],
         );
         productMappingsIds.push(...productMappings.map(rp => rp._id));
-        console.log({ productMappingsIds });
       });
 
       return { productId, productMappings: productMappingsIds };
@@ -182,13 +178,10 @@ const EditDesign = () => {
         },
       )
       .then(response => {
-        console.log({ response });
         navigate('/vendor/designs');
       })
       .catch(error => console.log({ error: error.response.data.message }));
   };
-
-  console.log({ vendorUpdatedPrices });
 
   const productPrice = pr => {
     let price;

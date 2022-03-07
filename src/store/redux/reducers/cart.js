@@ -4,43 +4,42 @@ import {
   ADD_QUANTITY,
   SUB_QUANTITY,
   EMPTY_CART,
-  GET_CART
+  GET_CART,
 } from '../types';
 
 const initialState = {
   stringifyCart: '',
   cart: {
     store: '',
-    products: [] // order => [{variant_id, productMapping, quantity}]
-  }
-}
+    products: [], // order => [{variant_id, productMapping, quantity}]
+  },
+};
 const addToCart = (state, payload) => {
-  const stringifyCart = JSON.stringify({ ...payload })
+  const stringifyCart = JSON.stringify({ ...payload });
   localStorage.setItem('MERCHPALS_CART', stringifyCart);
-  return { ...state, stringifyCart }
+  return { ...state, stringifyCart };
 };
 
 const getCart = (state, store) => {
   let cart = {};
   if (state.stringifyCart) {
-    cart = JSON.parse(state.stringifyCart)
+    cart = JSON.parse(state.stringifyCart);
   } else {
-    cart = JSON.parse(localStorage.getItem('MERCHPALS_CART'));  
+    cart = JSON.parse(localStorage.getItem('MERCHPALS_CART'));
   }
 
   if (!cart?.store) {
-    return { state, cart: { store: '', products: []}}
+    return { state, cart: { store: '', products: [] } };
   }
 
   if (cart.store !== store) {
-    return { state, cart: { store, products: []}}
+    return { state, cart: { store, products: [] } };
   }
 
-  return { ...state, cart }
-}
+  return { ...state, cart };
+};
 
-const emptyCart = (state) => {
-  console.log('emptyCart');
+const emptyCart = state => {
   localStorage.removeItem('MERCHPALS_CART');
   return {
     stringifyCart: '',
@@ -49,7 +48,7 @@ const emptyCart = (state) => {
       products: [],
     },
   };
-}
+};
 
 const removeFromCart = (state, action) => {
   return state.filter(item => item.id !== action.payload);
@@ -80,7 +79,7 @@ const cartReducer = (state = initialState, action) => {
       return addToCart(state, action.payload);
     }
 
-    case GET_CART: 
+    case GET_CART:
       return getCart(state, action.payload);
 
     case REMOVE_FROM_CART: {

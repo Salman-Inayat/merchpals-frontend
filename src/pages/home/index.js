@@ -6,10 +6,11 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/images/Merchpals-logo.png';
 import { makeStyles } from '@mui/styles';
 import { Editor, Products, SignUp, StoreForm, Otp, WelcomeMessage } from './steps';
-import { baseURL } from '../../configs/const';
+import { baseURL, dataURLtoFile } from '../../configs/const';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
+import Tick from '../../assets/images/tick.png';
 
 const useStyle = makeStyles(theme => ({
   fluid: {
@@ -27,7 +28,7 @@ const useStyle = makeStyles(theme => ({
     height: '50px',
   },
   content: {
-    marginTop: '16px',
+    // marginTop: '16px',
   },
   root: {
     color: 'red',
@@ -83,7 +84,16 @@ const Home = () => {
     } else {
       dispatch(fetchProducts());
     }
+
+    // In advance versions  of browsers instead of our provided message a default message from browsers
+    // will be displayed as alert saying 'Changes that you made may not be saved.'
+
+    // if (process.env.REACT_APP_ENV !== 'development') {
+    window.onbeforeunload = showAlert;
+    // }
   }, []);
+
+  const showAlert = () => 'Are you sure you want to leave?';
 
   // useEffect(() => {
   //   setCanvasJSON(designJSON.json);
@@ -104,35 +114,150 @@ const Home = () => {
   };
   const prevStep = () => setStep(step - 1);
 
-  const createStore = data => {
-    let store = new FormData();
-    store.append('name', data.name);
-    store.append('facebook', data.facebook);
-    store.append('instagram', data.instagram);
-    store.append('twitter', data.twitter);
-    store.append('logo', data.logo);
-    store.append('coverAvatar', data.coverAvatar);
-    store.append('design', JSON.stringify(designData));
-    store.append('products', JSON.stringify([...selectedVariants]));
-    store.append('themeColor', data.themeColor);
+  const handleEmptyLogo = data => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
+    var img = new Image();
+    img.src = Tick;
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+
+    new Promise(resolve => {
+      canvas.toBlob(
+        blob => {
+          blob.name = 'image.jpg';
+          data.logo = blob;
+          resolve(data);
+        },
+        'image/jpeg',
+        1,
+      );
+
+      canvas.remove();
+    });
+
+    return data;
+  };
+
+  const handleEmptyCoverAvatar = data => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    var img = new Image();
+    img.src = Tick;
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+
+    canvas.toBlob(
+      blob => {
+        blob.name = 'image.jpg';
+        data.coverAvatar = blob;
+      },
+      'image/jpeg',
+      1,
+    );
+
+    console.log('Cover Avatar: ', data);
+
+    canvas.remove();
+    return data;
+  };
+
+  const postDataToURL = async (url, data) => {
     axios
-      .post(`${baseURL}/store`, store, {
+      .put(url, data, {
         headers: {
-          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'multipart/form-data',
+          'Access-Control-Allow-Origin': '*',
         },
       })
       .then(response => {
-        console.log({ createstore: response });
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const createStore = data => {
+    if (data.logo === '') {
+      data = handleEmptyLogo(data);
+    }
+
+    if (data.coverAvatar === '') {
+      data = handleEmptyCoverAvatar(data);
+    }
+
+    const storeData = {
+      name: data.name,
+      facebook: data.facebook,
+      instagram: data.instagram,
+      twitter: data.twitter,
+      products: JSON.stringify([...selectedVariants]),
+      themeColor: data.themeColor,
+      designName: designData.designName,
+    };
+
+    const JSONBlob = new Blob([JSON.stringify(designData.designJson)], {
+      type: 'application/json',
+    });
+
+    console.log(JSONBlob);
+
+    axios
+      .post(`${baseURL}/store`, storeData, {
+        headers: {
+          Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
 
-        setStoreURL(response.data.store.slug);
+        setStoreURL(response.data.data.store.slug);
+
+        const urls = response.data.data.urls;
+
+        const storeLogo = urls[0].imageUrl;
+        const storeCoverAvatar = urls[1].imageUrl;
+        const designaVariant1 = urls[2].imageUrl;
+        const designaVariant2 = urls[3].imageUrl;
+        const designaVariant3 = urls[4].imageUrl;
+        const designaVariant4 = urls[5].imageUrl;
+        const designaVariant5 = urls[6].imageUrl;
+        const designJson = urls[7].imageUrl;
+
+        postDataToURL(storeLogo, data.logo);
+        postDataToURL(storeCoverAvatar, data.coverAvatar);
+        postDataToURL(
+          designaVariant1,
+          dataURLtoFile(designData.designImages[0].data, `${designData.designImages[0].name}.png`),
+        );
+        postDataToURL(
+          designaVariant2,
+          dataURLtoFile(designData.designImages[1].data, `${designData.designImages[1].name}.png`),
+        );
+        postDataToURL(
+          designaVariant3,
+          dataURLtoFile(designData.designImages[2].data, `${designData.designImages[2].name}.png`),
+        );
+        postDataToURL(
+          designaVariant4,
+          dataURLtoFile(designData.designImages[3].data, `${designData.designImages[3].name}.png`),
+        );
+        postDataToURL(
+          designaVariant5,
+          dataURLtoFile(designData.designImages[4].data, `${designData.designImages[4].name}.png`),
+        );
+
+        postDataToURL(designJson, JSONBlob);
+
         setShowWelcomeMessage(true);
       })
       .catch(err => {
-        console.log('err', err);
         setCreateStoreError(true);
       });
   };
@@ -175,7 +300,7 @@ const Home = () => {
     <Container className={classes.fluid}>
       <Grid className={classes.header} justifyContent="space-between" alignItems="center" container>
         <Grid xs={1} md={1} sm={1} item alignItems="center">
-          {step > 0 && (
+          {step > 0 && step < 3 && (
             <IconButton className={classes.backArrow} aria-label="back" onClick={prevStep}>
               <ArrowBackIosIcon className={classes.svg} />
             </IconButton>

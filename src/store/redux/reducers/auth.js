@@ -89,7 +89,7 @@ const authReducer = (state = initialState, action) => {
     case AUTH_OTP_VERFICATION_SUCCESS:
       return { ...state, otpVerified: true, verificationError: '' };
     case AUTH_OTP_VERFICATION_FAILED:
-      return { ...state, otpVerified: false, verificationError: 'Something went wrong!' };
+      return { ...state, otpVerified: false, verificationError: 'Invalid OTP!' };
     case AUTH_OTP_SEND:
     case AUTH_FORGOT_PASSWORD_OTP:
       return { ...state, otpSent: false };
@@ -117,12 +117,14 @@ const authReducer = (state = initialState, action) => {
         error: '',
       };
     case AUTH_LOGOUT:
+      localStorage.removeItem('MERCHPAL_AUTH_TOKEN');
+      return { ...state, isLoggedOut: true };
     case AUTH_LOGIN_FAILED:
+      return { ...state, isLoggedIn: false, error: action.payload };
     case GET_LOGGED_IN_USER_INFO_FAILED:
       localStorage.removeItem('MERCHPAL_AUTH_TOKEN');
       return { ...state, isLoggedOut: true, isLoggedIn: false };
     case GET_LOGGED_IN_USER_INFO_SUCCESS:
-      console.log({ payload: action });
       return { ...state, user: action.payload };
     case AUTH_LOGOUT_CLEAR:
       return { ...state, isLoggedOut: false };

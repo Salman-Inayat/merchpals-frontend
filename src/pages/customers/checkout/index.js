@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Grid, Avatar, Typography, Button } from '@mui/material';
+import { Grid, Avatar, Typography, Button, Stack } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,12 +10,19 @@ import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import Lock from '../../../assets/images/icons/lock1.png';
-import { getPriceCalculation } from '../../../store/redux/actions/printful';
+import {
+  getInitializePriceCalculation,
+  getPriceCalculation,
+} from '../../../store/redux/actions/printful';
 import { createOrder, resetOrder } from '../../../store/redux/actions/order';
 
 const useStyles = makeStyles(theme => ({
   card: {
     boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+    padding: '0rem  15rem',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0rem  1rem',
+    },
   },
   heading: {
     fontWeight: 'bolder',
@@ -30,6 +37,7 @@ const useStyles = makeStyles(theme => ({
 const Checkout = ({
   getCart = () => {},
   getPriceCalculation = () => {},
+  getInitializePriceCalculation = () => {},
   priceCalculation = {},
   emptyCart = () => {},
   reduxCartProducts = [],
@@ -43,8 +51,8 @@ const Checkout = ({
   const [customer, setCustomer] = useState({});
   const [billingAddress, setBillingAddress] = useState({
     country: 'US',
-    state: 'NY',
-    zip: '10001',
+    // state: 'NY',
+    // zip: '10001',
   });
   const [payment, setPayment] = useState({});
   const [cart, setCart] = useState({
@@ -67,7 +75,13 @@ const Checkout = ({
   const classes = useStyles();
   const { storeUrl } = useParams();
   const navigate = useNavigate();
-
+  let initializepriceCalculation = {
+    orderActualAmount: 0,
+    shippingAmount: '',
+    taxAmount: 0,
+    amountWithTaxAndShipping: 0,
+  };
+  let shippingAmount = 0;
   const total = products => {
     let totalCartPrice = 0;
 
@@ -86,6 +100,12 @@ const Checkout = ({
     getCart(storeUrl);
     getCountries();
   }, []);
+
+  useEffect(() => {
+    if (cart) {
+      initializePrice();
+    }
+  }, [cart]);
 
   useEffect(() => {
     if (orderCreated) {
@@ -135,7 +155,6 @@ const Checkout = ({
   };
 
   useEffect(() => {
-    console.log('billing', billingAddress);
     const { zip, state, country } = billingAddress;
     if (zip?.length === 5 && country && state) {
       updateTaxAndShipping();
@@ -146,6 +165,41 @@ const Checkout = ({
     updateCart(reduxCartProducts);
   }, [reduxCartProducts]);
 
+  const initializePrice = () => {
+    let productPrice = 0;
+    for (let i = 0; i < cart.savedProducts.length; i++) {
+      let curProduct = cart.savedProducts[i];
+      for (let j = 0; j < curProduct.productMappings.length; j++) {
+        const curVariant = curProduct.productMappings[j];
+        productPrice = productPrice + curProduct.price * curVariant.quantity;
+      }
+    }
+    if (productPrice > 0) {
+      shippingAmount =
+        priceCalculation.shippingAmount === 'FREE'
+          ? Number('0')
+          : Number(priceCalculation.shippingAmount);
+
+      initializepriceCalculation = {
+        orderActualAmount: Number(productPrice.toFixed(2)),
+        shippingAmount:
+          priceCalculation.shippingAmount === 0 ? 'FREE' : priceCalculation.shippingAmount,
+        taxAmount: Number(priceCalculation.taxAmount.toFixed(2)),
+
+        amountWithTaxAndShipping: Number(
+          (productPrice + shippingAmount + priceCalculation.taxAmount).toFixed(2),
+        ),
+      };
+    } else {
+      initializepriceCalculation = {
+        orderActualAmount: 0,
+        taxAmount: 0,
+        shippingAmount: 'FREE',
+        amountWithTaxAndShipping: 0,
+      };
+    }
+    getInitializePriceCalculation(initializepriceCalculation);
+  };
   const updateTaxAndShipping = () => {
     const { aptNo, street, zip, city, state, country } = billingAddress;
     let items = [];
@@ -176,7 +230,6 @@ const Checkout = ({
       },
       items,
     };
-    console.log({ data });
     if (items.length > 0) {
       setPrintfulData(data);
       getPriceCalculation(data);
@@ -231,7 +284,6 @@ const Checkout = ({
     };
 
     setCustomer(data.customer);
-    console.log({ data });
 
     createOrder(data);
   };
@@ -240,7 +292,17 @@ const Checkout = ({
     <Grid justifyContent="center" alignItems="center" container className={classes.card}>
       <Grid xs={12} item pt={2}>
         <Grid container alignItems="center" justifyContent="flex-end" xs={12} item>
-          <Grid xs={5} item style={{ padding: '10px' }}>
+          <Grid item md={12} xs={12} p={2}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={4}>
+              <Button className={classes.back} onClick={() => navigate(-1)}>
+                Back
+              </Button>
+              <Typography align="left" className={classes.heading}>
+                Checkout
+              </Typography>
+              <img src={Lock} style={{ width: '20px', height: '20px' }} />
+            </Stack>
+            {/* <Grid xs={5} item style={{ padding: '10px' }}>
             <Button className={classes.back} onClick={() => navigate(-1)}>
               Back
             </Button>
@@ -251,7 +313,8 @@ const Checkout = ({
             </Typography>
           </Grid>
           <Grid xs={1} item>
-            <Avatar src={Lock} style={{ width: '20px', height: '20px' }} />
+            <img src={Lock} style={{ width: '20px', height: '20px' }} />
+          </Grid> */}
           </Grid>
         </Grid>
 
@@ -260,6 +323,7 @@ const Checkout = ({
           products={cart.savedProducts}
           setProducts={updateCart}
           priceCalculation={priceCalculation}
+          initializepriceCalculation={initializepriceCalculation}
           storeUrl={storeUrl}
         />
 
@@ -298,6 +362,7 @@ const mapDispatch = dispatch => ({
   getCart: store => dispatch(getCart(store)),
   emptyCart: () => dispatch(emptyCart()),
   getPriceCalculation: data => dispatch(getPriceCalculation(data)),
+  getInitializePriceCalculation: data => dispatch(getInitializePriceCalculation(data)),
   createOrder: data => dispatch(createOrder(data)),
   resetOrder: () => dispatch(resetOrder()),
 });

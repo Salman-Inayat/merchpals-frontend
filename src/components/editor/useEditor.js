@@ -4,7 +4,6 @@ import * as changedpi from 'changedpi';
 import { initAligningGuidelines } from './gridlines/alignment';
 import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
-import 'fabric-history';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_DESIGN } from '../../store/redux/types';
@@ -125,7 +124,7 @@ const useEditor = canvasId => {
     if (canvasJSON) {
       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
         canvasProperties.canvasFill = canvas.backgroundColor;
-        afterRender();
+
         canvas.on({
           'selection:created': function () {
             let selectedObject = canvas.getActiveObject();
@@ -141,6 +140,7 @@ const useEditor = canvasId => {
           },
         });
       });
+      afterRender();
     }
 
     initAligningGuidelines(canvas);
@@ -162,6 +162,7 @@ const useEditor = canvasId => {
         const selectedObject = e.target;
         applyProperties(selectedObject);
         localStorage.setItem('design', canvas.toDataURL());
+
         afterRender();
         resetPanels();
       },
@@ -291,7 +292,6 @@ const useEditor = canvasId => {
 
     canvas.on({
       'text:editing:entered': e => {
-        console.log('Editing text');
         if (e.target.type === 'textbox') {
           // if (e.target.text === 'Sample Text') {
           //   e.target.text = '';
@@ -316,7 +316,6 @@ const useEditor = canvasId => {
         });
 
         canvas.renderAll();
-        console.log('Exited editing text', activeObject);
         document.getElementById('editing-button').hidden = true;
       },
     });
@@ -331,7 +330,12 @@ const useEditor = canvasId => {
 
   function afterRender() {
     var originalVP = canvas.viewportTransform;
-    canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
+    // place the canvas on center of the preview
+    if (isMobile) {
+      canvas.viewportTransform = [0.21, 0, 0, 0.21, 0, 0];
+    } else {
+      canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
+    }
     copy(canvas.toCanvasElement(), canvas);
     canvas.viewportTransform = originalVP;
   }
@@ -395,11 +399,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            // if (e.target.text === 'Sample Text') {
-            //   e.target.text = '';
-            //   e.target.hiddenTextarea.value = ''; // NEW
-            //   canvas.renderAll();
-            // }
+            if (e.target.text === 'Sample Text') {
+              e.target.text = '';
+              e.target.hiddenTextarea.value = ''; // NEW
+              canvas.renderAll();
+            }
           }
         },
       });
@@ -409,7 +413,9 @@ const useEditor = canvasId => {
       canvas.add(text);
       canvas.setActiveObject(text);
       canvas.centerObject(text);
+      text.setCoords();
       canvas.renderAll();
+      afterRender();
     }
     if (!isMobile) {
       const text = new fabric.Textbox('Sample Text', {
@@ -437,11 +443,11 @@ const useEditor = canvasId => {
         'text:editing:entered': e => {
           if (e.target.type === 'textbox') {
             document.getElementById('editing-button').hidden = false;
-            // if (e.target.text === 'Sample Text') {
-            //   e.target.text = 'Sample Text';
-            //   e.target.hiddenTextarea.value = 'Sample Text';
-            //   canvas.renderAll();
-            // }
+            if (e.target.text === 'Sample Text') {
+              e.target.text = '';
+              e.target.hiddenTextarea.value = '';
+              canvas.renderAll();
+            }
           }
         },
       });
@@ -450,6 +456,7 @@ const useEditor = canvasId => {
       canvas.add(text);
       canvas.setActiveObject(text);
       canvas.centerObject(text);
+      text.setCoords();
       canvas.renderAll();
       afterRender();
     }
@@ -515,6 +522,8 @@ const useEditor = canvasId => {
       image.scaleToHeight(100);
       extend(image, randomId());
       canvas.add(image);
+      canvas.centerObject(image);
+      image.setCoords();
       selectItemAfterAdded(image);
     });
   };
@@ -550,6 +559,8 @@ const useEditor = canvasId => {
         image.scaleToHeight(200);
         extend(image, randomId());
         canvas.add(image);
+        canvas.centerObject(image);
+        image.setCoords();
         selectItemAfterAdded(image);
       });
     }
@@ -560,7 +571,6 @@ const useEditor = canvasId => {
     var minX, minY, maxX, maxY;
 
     image = canvas.getActiveObject();
-    console.log('Image angle', image.angle);
 
     minX = image.oCoords.tl.x;
     maxX = image.oCoords.br.x;
@@ -1200,7 +1210,6 @@ const useEditor = canvasId => {
     canvas2.height = 1833;
 
     const backgroundColor = canvas.backgroundColor;
-    console.log('backgroundColor', backgroundColor);
     // ctx2.fillStyle = '#000080';
     ctx2.fillStyle = backgroundColor;
     ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
@@ -1249,7 +1258,6 @@ const useEditor = canvasId => {
   };
 
   const canvasReady = (canvasReady, canvasJSON, designName) => {
-    console.log('Design Name: ', designName);
     setCanvas(canvasReady);
     setCanvasName(designName);
     setCanvasJSON(canvasJSON);

@@ -22,14 +22,15 @@ const getPricing = (state, payload) => ({
   },
 });
 
-const getPricingFail = payload => ({
+const getPricingFail = (state, payload) => ({
+  ...state,
   priceCalculation: {
     taxRate: 0,
     taxAmount: 0,
     shippingRate: 0,
     shippingAmount: 0,
-    orderActualAmount: 0,
-    amountWithTaxAndShipping: 0,
+    orderActualAmount: state.priceCalculation.orderActualAmount,
+    amountWithTaxAndShipping: state.priceCalculation.orderActualAmount,
     taxError: payload,
   },
 });
@@ -39,7 +40,7 @@ const printfulReducer = (state = initialState, action) => {
     case GET_PRICING_SUCCESS:
       return getPricing(state, action.payload);
     case GET_PRICING_FAILED:
-      return getPricingFail(action.payload);
+      return getPricingFail(state, action.payload);
     default:
       return state;
   }

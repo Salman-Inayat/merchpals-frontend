@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Grid, Button } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseURL } from '../../../../configs/const';
+import { baseURL, dataURLtoFile, getJSONFromUrl } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
@@ -16,6 +16,11 @@ const EditDesign = () => {
   const childRef = useRef();
 
   const [designData, setDesignData] = useState();
+
+  useEffect(() => {
+    getDesign();
+  }, []);
+
   useEffect(() => {
     getDesign();
   }, [designId]);
@@ -28,11 +33,31 @@ const EditDesign = () => {
         },
       })
       .then(response => {
-        console.log('Design printing: ', response.data.design);
         setDesignData(response.data.design);
-        setCanvasJSON(response.data.design.designJson);
+        getJSONFromUrl(response.data.design.designJson, (err, data) => {
+          if (err !== null) {
+            alert('Something went wrong: ' + err);
+          } else {
+            setCanvasJSON(data);
+          }
+        });
       })
       .catch(error => console.log({ error }));
+  };
+
+  const postDataToURL = async (url, data) => {
+    axios
+      .put(url, data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   const finishDesignEdit = () => {
@@ -42,8 +67,7 @@ const EditDesign = () => {
       const newDesign = store.getState().design.design;
 
       let form = new FormData();
-      form.append('design', JSON.stringify(newDesign));
-      console.log(form._boundary);
+      form.append('designName', newDesign.designName);
 
       axios
         .put(`${baseURL}/store/design/${designId}`, form, {
@@ -53,11 +77,48 @@ const EditDesign = () => {
           },
         })
         .then(response => {
-          console.log(response);
-          navigate('/vendor/designs');
+          const urls = response.data.response;
+
+          const designaVariant1 = urls[0].imageUrl;
+          const designaVariant2 = urls[1].imageUrl;
+          const designaVariant3 = urls[2].imageUrl;
+          const designaVariant4 = urls[3].imageUrl;
+          const designaVariant5 = urls[4].imageUrl;
+          const designJson = urls[5].imageUrl;
+
+          const JSONBlob = new Blob([JSON.stringify(newDesign.designJson)], {
+            type: 'application/json',
+          });
+
+          postDataToURL(
+            designaVariant1,
+            dataURLtoFile(newDesign.designImages[0].data, `${newDesign.designImages[0].name}.png`),
+          );
+          postDataToURL(
+            designaVariant2,
+            dataURLtoFile(newDesign.designImages[1].data, `${newDesign.designImages[1].name}.png`),
+          );
+          postDataToURL(
+            designaVariant3,
+            dataURLtoFile(newDesign.designImages[2].data, `${newDesign.designImages[2].name}.png`),
+          );
+          postDataToURL(
+            designaVariant4,
+            dataURLtoFile(newDesign.designImages[3].data, `${newDesign.designImages[3].name}.png`),
+          );
+          postDataToURL(
+            designaVariant5,
+            dataURLtoFile(newDesign.designImages[4].data, `${newDesign.designImages[4].name}.png`),
+          );
+
+          postDataToURL(designJson, JSONBlob);
+
+          setTimeout(() => {
+            navigate('/vendor/designs');
+          }, 2000);
         })
         .catch(error => console.log({ error }));
-    }, 2000);
+    }, 100);
   };
 
   return (

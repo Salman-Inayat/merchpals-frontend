@@ -74,6 +74,10 @@ function StoreSettings() {
     coverAvatar: '',
     logo: '',
   });
+  const [showImg, setShowImg] = useState({
+    coverAvatar: '',
+    logo: '',
+  });
 
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
@@ -121,16 +125,13 @@ function StoreSettings() {
     clearTimeout(timer);
 
     if (orignalStoreName !== e.target.value) {
-      console.log('true');
       const newTimer = setTimeout(() => {
         axios
           .post(`${baseURL}/store/validate-slug`, { storeName: e.target.value.trim() })
           .then(response => {
-            console.log({ response });
             setErrorMessage('');
           })
           .catch(err => {
-            console.log({ errp: err.response.data });
             setErrorMessage(err.response.data.message);
           });
       }, 500);
@@ -152,12 +153,11 @@ function StoreSettings() {
 
   const setImage = async (name, file) => {
     setImages({ ...images, [name]: file });
+    setShowImg({ ...showImg, [name]: URL.createObjectURL(file) });
   };
 
   const checkFieldsEmpty = () => {
-    console.log('Checning');
     if (storeName !== '' || images.coverAvatar !== '' || images.logo !== '' || themeColor !== '') {
-      console.log('Can submit');
       return false;
     } else {
       return true;
@@ -165,12 +165,6 @@ function StoreSettings() {
   };
 
   const handleUpdateStore = () => {
-    console.log('Store name: ', storeName);
-    console.log('Store avatar: ', images.coverAvatar);
-    console.log('Store logo: ', images.logo);
-    console.log('Store theme color: ', themeColor);
-
-    console.log('Store Id: ', storeId);
     const store = new FormData();
     store.append('storeId', storeId);
     store.append('name', storeName);
@@ -186,7 +180,6 @@ function StoreSettings() {
         },
       })
       .then(res => {
-        console.log(res.data);
         setSnackBarToggle({
           visible: true,
           type: 'success',
@@ -238,9 +231,6 @@ function StoreSettings() {
                       helperText={errorMessage}
                     />
                   </Box>
-                  <Typography variant="body1" color="red">
-                    {errorMessage && errorMessage}
-                  </Typography>
                 </Box>
               </Grid>
               <Grid container item xs={12} md={6} sm={6} spacing={2} justifyContent="center">
@@ -267,9 +257,11 @@ function StoreSettings() {
                 >
                   <img
                     src={
-                      images.coverAvatar === ''
+                      showImg.coverAvatar
+                        ? showImg.coverAvatar
+                        : images.coverAvatar === ''
                         ? storeAvatar
-                        : URL.createObjectURL(images.coverAvatar)
+                        : images.coverAvatar
                     }
                   />
                 </Grid>
@@ -320,7 +312,7 @@ function StoreSettings() {
                   alignItems="center"
                 >
                   <img
-                    src={images.logo === '' ? storeLogo : URL.createObjectURL(images.logo)}
+                    src={showImg.logo ? showImg.logo : images.logo === '' ? storeLogo : images.logo}
                     style={{
                       width: '200px',
                       height: '200px',

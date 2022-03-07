@@ -12,13 +12,12 @@ export default function App() {
   useEffect(() => {
     // In advance versions  of browsers instead of our provided message a default message from browsers
     // will be displayed as alert saying 'Changes that you made may not be saved.'
-
-    if (process.env.REACT_APP_ENV !== 'development') {
-      window.onbeforeunload = showAlert;
-    }
+    // if (process.env.REACT_APP_ENV !== 'development') {
+    //   window.onbeforeunload = showAlert;
+    // }
   }, []);
 
-  const showAlert = () => 'Are you sure you want to leave?';
+  // const showAlert = () => 'Are you sure you want to leave?';
 
   return (
     <Provider store={store}>
