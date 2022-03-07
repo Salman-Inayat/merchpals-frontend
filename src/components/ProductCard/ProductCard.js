@@ -129,11 +129,15 @@ const useStyles = makeStyles(theme => ({
     },
   },
   colorsCheckbox: {
-    width: '30px',
-    height: '30px',
-    [theme.breakpoints.down('sm')]: {
+    height: '20px',
+    width: '20px',
+    [theme.breakpoints.down('lg')]: {
       width: '30px',
       height: '30px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '20px',
+      height: '20px',
     },
   },
   radioGroup: {
@@ -166,12 +170,6 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       padding: '3px 13px',
     },
-    // borderRadius: '50%',
-    // height: '100%',
-    // display: 'flex',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // padding: '3px',
   },
 
   radioButton: {
@@ -202,6 +200,7 @@ const ProductCard = ({
   const [iphoneDesign, setIphoneDesign] = useState('');
 
   const [radioCardColor, setRadioCardColor] = useState('');
+  const [check, setCheck] = useState('');
 
   const islargeDesktop = useMediaQuery({ minWidth: 1400 });
 
@@ -372,7 +371,7 @@ const ProductCard = ({
                         sx={{
                           border: selectedVariants[product._id]?.includes(pm.id)
                             ? '2px solid #116DFF'
-                            : pm.label === '#ffffff'
+                            : pm.label === 'white'
                             ? '1px solid #00000066'
                             : '',
                           // border: selectedVariants[product._id]?.includes(pm.id)
@@ -383,7 +382,7 @@ const ProductCard = ({
                         }}
                         className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
                       >
-                        <Radio
+                        {/* <Radio
                           style={{
                             backgroundColor:
                               pm.label === 'white'
@@ -394,10 +393,15 @@ const ProductCard = ({
                                 ? '#121616'
                                 : '',
                             border: selectedVariants[product._id]?.includes(pm.id)
-                              ? '2px solid #116dff'
-                              : pm.label === 'white'
+                              ? '2px solid #116DFF'
+                              : pm.label === '#ffffff'
                               ? '1px solid #00000066'
                               : '',
+                            // border: selectedVariants[product._id]?.includes(pm.id)
+                            //   ? pm.label === '#ffffff'
+                            //     ? ''
+                            //     : '2px solid #116dff'
+                            //   : '',
                           }}
                           value={pm.label}
                           sx={{
@@ -419,9 +423,54 @@ const ProductCard = ({
                                   : pm.label === 'black'
                                   ? '#121616'
                                   : '',
+                              border: 'none',
                               boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
                             },
                           }}
+                          className={classes.radioButton}
+                        /> */}
+                        <Radio
+                          checked={pm.label === check}
+                          onClick={e => setCheck(e.target.value)}
+                          sx={{
+                            color:
+                              pm.label === 'white'
+                                ? '#FFFFFF'
+                                : pm.label === 'navy'
+                                ? '#262D4F '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
+
+                            '&.Mui-checked': {
+                              color:
+                                pm.label === 'white'
+                                  ? '#FFFFFF'
+                                  : pm.label === 'navy'
+                                  ? '#262D4F '
+                                  : pm.label === 'black'
+                                  ? '#121616'
+                                  : '',
+                              border: 'none',
+                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                            },
+                          }}
+                          style={{
+                            backgroundColor:
+                              pm.label === 'white'
+                                ? '#fff'
+                                : pm.label === 'navy'
+                                ? '#262D4F '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
+                            border: selectedVariants[product._id]?.includes(pm.id)
+                              ? '2px solid #116DFF'
+                              : pm.label === 'white'
+                              ? '1px solid #00000066'
+                              : '',
+                          }}
+                          value={pm.label}
                           className={classes.radioButton}
                         />
                       </Box>
@@ -437,49 +486,71 @@ const ProductCard = ({
                 product.colors.label !== 'n/a' &&
                 product.colors.map((pm, i) => (
                   <Grid key={`colors-${i}`} item md={2} xs={2}>
-                    <Checkbox
-                      style={{
-                        backgroundColor:
-                          `${pm.label}` === 'transparent'
-                            ? '#fff'
-                            : pm.label === 'white'
-                            ? '#fff'
-                            : pm.label === 'navy'
-                            ? '#262d4f '
-                            : pm.label === 'black'
-                            ? '#121616'
-                            : '',
-                      }}
-                      onChange={() => onVariantClick(event.target.value)}
-                      checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
-                      value={`${product._id},${pm.id}`}
+                    <Box
                       sx={{
-                        color:
-                          `${pm.label}` === 'transparent'
-                            ? '#ffffff'
-                            : pm.label === 'white'
-                            ? '#ffffff'
-                            : pm.label === 'navy'
-                            ? '#262d4f '
-                            : pm.label === 'black'
-                            ? '#121616'
-                            : '',
-                        border: '2px solid blue',
-
-                        '&.Mui-checked': {
-                          color:
-                            pm.label === 'white'
+                        border: selectedVariants[product._id]?.includes(pm.id)
+                          ? '2px solid #116DFF'
+                          : pm.label === '#ffffff'
+                          ? '1px solid #00000066'
+                          : '',
+                        // border: selectedVariants[product._id]?.includes(pm.id)
+                        //   ? pm.label === '#ffffff'
+                        //     ? ''
+                        //     : '2px solid #116dff'
+                        //   : '',
+                      }}
+                      className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
+                    >
+                      <Checkbox
+                        style={{
+                          backgroundColor:
+                            `${pm.label}` === 'transparent'
+                              ? '#ffffff'
+                              : pm.label === 'white'
                               ? '#ffffff'
                               : pm.label === 'navy'
                               ? '#262d4f '
                               : pm.label === 'black'
                               ? '#121616'
                               : '',
-                          boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                        },
-                      }}
-                      className={classes.colorsCheckbox}
-                    />
+                          border: selectedVariants[product._id]?.includes(pm.id)
+                            ? '1px solid #116dff'
+                            : pm.label === 'white'
+                            ? '1px solid #00000066'
+                            : '',
+                        }}
+                        onChange={() => onVariantClick(event.target.value)}
+                        checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
+                        value={`${product._id},${pm.id}`}
+                        sx={{
+                          color:
+                            `${pm.label}` === 'transparent'
+                              ? '#ffffff'
+                              : pm.label === 'white'
+                              ? '#ffffff'
+                              : pm.label === 'navy'
+                              ? '#262d4f '
+                              : pm.label === 'black'
+                              ? '#121616'
+                              : '',
+
+                          '& .MuiSvgIcon-root': { fontSize: '1px !important' },
+                          // border: '2px solid blue',
+
+                          '&.Mui-checked': {
+                            color:
+                              pm.label === 'white'
+                                ? '#ffffff'
+                                : pm.label === 'navy'
+                                ? '#262d4f '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
+                          },
+                        }}
+                        className={classes.colorsCheckbox}
+                      />
+                    </Box>
                   </Grid>
                 ))}
             </Grid>

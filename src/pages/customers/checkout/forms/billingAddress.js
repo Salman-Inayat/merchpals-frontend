@@ -121,8 +121,7 @@ const BillingAddress = ({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     zip: Yup.string()
-      .required('Postal Code is required')
-      .min('5', 'Postal code should be 5 digits'),
+      .required('Postal Code is required'),
     street: Yup.string().required('Street Address is required'),
     city: Yup.string().required('City name is required'),
     state: Yup.string().required('State name is required'),
@@ -236,10 +235,10 @@ const BillingAddress = ({
         lastName,
       });
       markAddressComplete(true);
+      setDisplayContinueButton(false);
     } else {
       markAddressComplete(false);
     }
-    setDisplayContinueButton(false);
   };
   return (
     <Grid item>

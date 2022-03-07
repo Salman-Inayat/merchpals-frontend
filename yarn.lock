@@ -10433,6 +10433,11 @@ react-image-crop@^9.0.5:
   dependencies:
     clsx "^1.1.1"
 
+react-image-file-resizer@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/react-image-file-resizer/-/react-image-file-resizer-0.4.7.tgz#74b33a03832c0771c6c03b037bae9ba6baf10703"
+  integrity sha512-Dak7Ecrd6WEV5LjqoRYFI49ASn7eB1VTlrw6dri9HeIMS6aJang4nli6q5xeckEMY+7QwgqgWqAQD5tgkm4bJg==
+
 react-image-smooth-loading@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-image-smooth-loading/-/react-image-smooth-loading-2.0.0.tgz#b8b1b6075cf82ad075731041ffd189b7b9d77813"

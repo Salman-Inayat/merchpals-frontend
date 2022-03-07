@@ -20,7 +20,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
 import ImageCrop from '../../../components/imageCrop';
-import PhoneFrame from '../../../assets/images/iphone_white_mookup.png';
+import PhoneFrame from '../../../assets/images/iPhone-display.png';
 
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SelectTheme from '../../../components/themeCustomize/selectTheme';

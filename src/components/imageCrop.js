@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Grid, Button, Box } from '@mui/material';
+import Resizer from 'react-image-file-resizer';
 
 export default function ImageCrop(props) {
   const [upImg, setUpImg] = useState();
@@ -21,12 +22,27 @@ export default function ImageCrop(props) {
   const [completedCrop, setCompletedCrop] = useState(null);
   const [toggleControls, setToggleControls] = useState(false);
   const [toggleUploadButton, setToggleUploadButton] = useState(true);
-
-  const onSelectFile = e => {
+  const resizeFile = file =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file,
+        1200,
+        800,
+        'PNG',
+        100,
+        0,
+        uri => {
+          resolve(uri);
+        },
+        'file',
+      );
+    });
+  const onSelectFile = async e => {
     if (e.target.files && e.target.files.length > 0) {
+      const resizedImage = await resizeFile(e.target.files[0]);
       const reader = new FileReader();
       reader.addEventListener('load', () => setUpImg(reader.result));
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(resizedImage);
     }
     setToggleControls(true);
     setToggleUploadButton(false);
