@@ -202,46 +202,6 @@ const useEditor = mode => {
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
   };
 
-  // useEffect(() => {
-  //   if (counter == 1) {
-  //     if (canvasJSON) {
-  //       canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
-  //         canvasProperties.canvasFill = canvas.backgroundColor;
-
-  //         canvas.on({
-  //           'selection:created': function () {
-  //             let selectedObject = canvas.getActiveObject();
-  //             if (selectedObject) {
-  //               applyProperties(selectedObject);
-  //             }
-  //           },
-  //           'object:added': e => {
-  //             const selectedObject = e.target;
-  //             applyProperties(selectedObject);
-  //             localStorage.setItem('design', canvas.toDataURL());
-  //             resetPanels();
-  //           },
-  //         });
-  //       });
-  //       if (canvas.getObjects().length == 0) {
-  //         const text = new fabric.Textbox('s', {
-  //           left: 40,
-  //           top: 100,
-  //           opacity: 0.1,
-  //           fontSize: 5,
-  //           hasControls: false,
-  //           hasRotatingPoint: false,
-  //           lockMovementX: true,
-  //           lockMovementY: true,
-  //         });
-  //         canvas.add(text);
-  //       }
-  //       canvas.renderAll();
-  //       afterRender();
-  //     }
-  //   }
-  // }, [counter]);
-
   const loadJson = (canvas, json) => {
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
       canvasProperties.canvasFill = canvas.backgroundColor;
@@ -285,11 +245,11 @@ const useEditor = mode => {
       return;
     }
 
-    updateShape();
-
     if (canvasJSON) {
       loadJson(canvas, canvasJSON);
     }
+
+    updateShape();
 
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);

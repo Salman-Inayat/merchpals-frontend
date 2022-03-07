@@ -209,12 +209,10 @@ const ProductCard = ({
     setTimeout(() => {
       const design =
         store.getState().design?.design?.front?.designImages[4]?.data ||
-        store.getState().design?.design?.back?.designImages[4]?.data ||
-        '';
+        store.getState().design?.design?.back?.designImages[4]?.data;
       const iphoneDesign =
         store.getState().design?.design?.front?.designImages[3]?.data ||
-        store.getState().design?.design?.back?.designImages[3]?.data ||
-        '';
+        store.getState().design?.design?.back?.designImages[3]?.data;
       setDesign(design);
       setIphoneDesign(iphoneDesign);
     }, 1000);
@@ -248,10 +246,8 @@ const ProductCard = ({
         : event.target.value === 'black'
         ? '#121616'
         : '';
-    console.log('event color', bgColor);
     setRadioCardColor(bgColor);
   };
-  console.log('iphone call', iphoneDesign);
   return (
     <>
       <Typography
@@ -295,6 +291,26 @@ const ProductCard = ({
 
             backgroundSize: '37% 80%',
           }}
+          onMouseOver={() => {
+            if (store.getState().design?.design?.front?.designImages[4]?.data) {
+              console.log('front');
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                setDesign(
+                  store.getState().design?.design?.back?.designImages[4]?.data ||
+                    store.getState().design?.design?.front?.designImages[4]?.data,
+                );
+            }
+          }}
+          onMouseLeave={() => {
+            if (store.getState().design?.design?.front?.designImages[4]?.data) {
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                setDesign(store.getState().design?.design?.front?.designImages[4]?.data);
+            }
+          }}
         />
         {product.name !== 'Case' && (
           <Box>
@@ -311,6 +327,25 @@ const ProductCard = ({
                     : '',
                 ].join(' ')}
                 src={design}
+                onMouseOver={() => {
+                  if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      setDesign(
+                        store.getState().design?.design?.back?.designImages[4]?.data ||
+                          store.getState().design?.design?.front?.designImages[4]?.data,
+                      );
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      setDesign(store.getState().design?.design?.front?.designImages[4]?.data);
+                  }
+                }}
               />
             )}
           </Box>
