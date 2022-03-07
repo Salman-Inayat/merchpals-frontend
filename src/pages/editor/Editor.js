@@ -709,9 +709,25 @@ const Editor = forwardRef((props, ref) => {
                   top: '40%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
-                  border: '2px solid white',
+                  border: '2px dashed white',
+                  borderRadius:
+                    (canvasMode === 'front' && frontCanvasShape === 'circle') ||
+                    (canvasMode === 'back' && backCanvasShape === 'circle')
+                      ? '50%'
+                      : '0px',
                 }}
-              ></span>
+              >
+                {(canvasMode === 'front' && frontCanvasShape === 'triangle') ||
+                  (canvasMode === 'back' && backCanvasShape === 'triangle' && (
+                    <svg height="40" width="40">
+                      <polygon
+                        points="0 0, 100 0, 50 100"
+                        style="fill:transparent;stroke:purple;stroke-width:1"
+                      />
+                    </svg>
+                  ))}
+              </span>
+
               <canvas
                 hidden={canvasMode === 'front' ? false : true}
                 id="front-canvas-preview"
