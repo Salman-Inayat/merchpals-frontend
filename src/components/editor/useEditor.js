@@ -142,8 +142,8 @@ const useEditor = mode => {
     });
 
     const rect = new fabric.Rect({
-      width: CANVAS_WIDTH_DESKTOP,
-      height: CANVAS_HEIGHT_DESKTOP,
+      width: isMobile ? CANVAS_WIDTH_MOBILE : CANVAS_WIDTH_DESKTOP,
+      height: isMobile ? CANVAS_HEIGHT_MOBILE : CANVAS_HEIGHT_DESKTOP,
     });
 
     const p1 = { left: 0, top: 0 };
@@ -174,6 +174,9 @@ const useEditor = mode => {
 
     switch (canvasShape) {
       case 'circle':
+        canvas.backgroundImage.scaleX = isMobile ? 0.4 : 0.38;
+        canvas.backgroundImage.scaleY = isMobile ? 0.4 : 0.38;
+
         canvasContainer.style.removeProperty('padding');
         canvasContainer.style.removeProperty('height');
         canvasContainer.style.removeProperty('width');
@@ -184,6 +187,8 @@ const useEditor = mode => {
         canvasWrapper.style.removeProperty('position');
         canvasWrapper.style.removeProperty('top');
         canvasWrapper.style.removeProperty('left');
+
+        console.log('canvas', canvas);
 
         canvas.clipPath = circle;
         json = JSON.stringify(canvas);
@@ -952,17 +957,38 @@ const useEditor = mode => {
   const setCanvasImage = imgUrl => {
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
-      fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
-        canvas.setBackgroundImage(
-          img,
-          () => {
-            canvas.backgroundColor = '';
-            canvas.renderAll();
-            afterRender();
-          },
-          { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
-        );
-      });
+      // fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
+
+      // });
+
+      const image = new Image();
+      image.src = canvasProperties.canvasImage;
+      image.onload = function () {
+        const imgInstance = new fabric.Image(image);
+        imgInstance.set({
+          left: 0,
+          top: 0,
+          angle: 0,
+        });
+        imgInstance.scaleToWidth(canvas.width);
+        imgInstance.scaleToHeight(canvas.height);
+        canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas));
+        canvas.renderAll();
+        afterRender();
+      };
+
+      // canvas.setBackgroundImage(
+      //   imgUrl,
+      //   () => {
+      //     canvas.width = img.width;
+      //     canvas.height = img.height;
+
+      //     canvas.backgroundColor = '';
+      //     canvas.renderAll();
+      //     afterRender();
+      //   },
+      //   { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
+      // );
     }
   };
 
