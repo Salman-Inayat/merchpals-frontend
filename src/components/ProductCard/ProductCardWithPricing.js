@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -175,8 +175,10 @@ const ProductCard = ({
   const [profit, setProfit] = useState(
     calculateProfit(productDefaultPrice, shippingCost, costPrice),
   );
-  const [tempProfit, setTempProfit] = useState();
 
+  const [tempProfit, setTempProfit] = useState();
+  const [designImg, setDesignImg] = useState('');
+  const [iphoneDesign, setIphoneDesign] = useState('');
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const renderBgColor = () => {
@@ -197,7 +199,19 @@ const ProductCard = ({
     }
     return bgColor;
   };
-
+  useEffect(() => {
+    if (design) {
+      console.log('design images', design, product);
+      setIphoneDesign(
+        design?.frontDesign?.designImages[3]?.imageUrl ||
+          design?.backDesign?.designImages[1]?.imageUrl,
+      );
+      setDesignImg(
+        design?.frontDesign?.designImages[4]?.imageUrl ||
+          design?.backDesign?.designImages[1]?.imageUrl,
+      );
+    }
+  }, [design]);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -228,7 +242,7 @@ const ProductCard = ({
   const updateProfit = price => {
     setProfit(calculateProfit(price, shippingCost, costPrice));
   };
-  console.log('design images', design, product);
+
   return (
     <Grid>
       <Card sx={{ maxWidth: 345 }}>
@@ -250,15 +264,29 @@ const ProductCard = ({
             style={{
               backgroundColor: renderBgColor(),
               backgroundImage:
-                product.name === 'Case' &&
-                design &&
-                `url(${
-                  design.frontDesign?.designImages[3]?.imageUrl ||
-                  design.backDesign?.designImages[1]?.imageUrl
-                })`,
-
+                product.name === 'Case' && design && `url(${iphoneDesign && iphoneDesign})`,
               backgroundSize: '37% 80%',
             }}
+            onMouseOver={() => {
+              // if (design.backDesign?.designImages[4]?.imageUrl) {
+              console.log('front');
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                setDesignImg(
+                  design.backDesign?.designImages[1]?.imageUrl ||
+                    design.frontDesign?.designImages[4]?.imageUrl,
+                );
+              // }
+            }}
+            onMouseLeave={() => {
+              // if (design.frontDesign?.designImages[4]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                setDesignImg(design.frontDesign?.designImages[4]?.imageUrl);
+            }}
+            // }
           />
           {product.name !== 'Case' && design && (
             <Box>
@@ -273,10 +301,7 @@ const ProductCard = ({
                     ? classes.mug
                     : '',
                 ].join(' ')}
-                src={
-                  design.frontDesign?.designImages[4]?.imageUrl ||
-                  design.backDesign?.designImages[1]?.imageUrl
-                }
+                src={designImg && designImg}
               />
             </Box>
           )}
