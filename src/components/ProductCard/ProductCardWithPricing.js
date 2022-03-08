@@ -29,6 +29,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Slide from '@mui/material/Slide';
 import { useMediaQuery } from 'react-responsive';
 import { calculateProfit } from '../../configs/const';
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -178,6 +181,7 @@ const ProductCard = ({
 
   const [tempProfit, setTempProfit] = useState();
   const [designImg, setDesignImg] = useState('');
+  const [backDesignImage, setBackDesignImage] = useState();
   const [iphoneDesign, setIphoneDesign] = useState('');
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
@@ -210,6 +214,7 @@ const ProductCard = ({
         design?.frontDesign?.designImages[4]?.imageUrl ||
           design?.backDesign?.designImages[1]?.imageUrl,
       );
+      setBackDesignImage(product.image);
     }
   }, [design]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -258,7 +263,7 @@ const ProductCard = ({
         <Box className={classes.imageContainer}>
           <CardMedia
             component="img"
-            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
+            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
             alt=""
             className={classes.productImage}
             style={{
@@ -273,10 +278,15 @@ const ProductCard = ({
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
-                setDesignImg(
+                (setDesignImg(
                   design.backDesign?.designImages[1]?.imageUrl ||
                     design.frontDesign?.designImages[4]?.imageUrl,
-                );
+                ),
+                product.slug === 'hoodie'
+                  ? setBackDesignImage(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setBackDesignImage(BackLong)
+                  : setBackDesignImage(BackTee));
               // }
             }}
             onMouseLeave={() => {
@@ -284,7 +294,8 @@ const ProductCard = ({
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
-                setDesignImg(design.frontDesign?.designImages[4]?.imageUrl);
+                (setDesignImg(design.frontDesign?.designImages[4]?.imageUrl),
+                setBackDesignImage(product.image));
             }}
             // }
           />
@@ -302,6 +313,31 @@ const ProductCard = ({
                     : '',
                 ].join(' ')}
                 src={designImg && designImg}
+                onMouseOver={() => {
+                  // if (design.backDesign?.designImages[4]?.imageUrl) {
+                  console.log('front');
+                  product.name !== 'Case' &&
+                    product.name !== 'Poster' &&
+                    product.name !== 'Mug' &&
+                    (setDesignImg(
+                      design.backDesign?.designImages[1]?.imageUrl ||
+                        design.frontDesign?.designImages[4]?.imageUrl,
+                    ),
+                    product.slug === 'hoodie'
+                      ? setBackDesignImage(BackHoodie)
+                      : product.slug === 'longsleeve'
+                      ? setBackDesignImage(BackLong)
+                      : setBackDesignImage(BackTee));
+                  // }
+                }}
+                onMouseLeave={() => {
+                  // if (design.frontDesign?.designImages[4]?.imageUrl) {
+                  product.name !== 'Case' &&
+                    product.name !== 'Poster' &&
+                    product.name !== 'Mug' &&
+                    (setDesignImg(design.frontDesign?.designImages[4]?.imageUrl),
+                    setBackDesignImage(product.image));
+                }}
               />
             </Box>
           )}

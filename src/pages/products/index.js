@@ -48,6 +48,9 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -217,8 +220,9 @@ const Product = () => {
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
   const [index, setIndex] = useState(0);
-  const [designImage, setDesignImage] = useState('');
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
+  const [designImage, setDesignImage] = useState('');
+  const [backDesignImage, setBackDesignImage] = useState();
   const fetchedProduct = useSelector(state => state.product?.product);
 
   const handleDetailsChange = data => {
@@ -289,6 +293,7 @@ const Product = () => {
       setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);
       setDesignImage(formattedProduct.design);
+      setBackDesignImage(fetchedProduct.image);
     }
   }, [fetchedProduct]);
 
@@ -431,7 +436,8 @@ const Product = () => {
   const changeBackground = () => {
     console.log('changing');
   };
-  console.log('fetched prodcut', fetchedProduct);
+  console.log('fetched prodcut', backDesignImage);
+
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -496,20 +502,27 @@ const Product = () => {
                             product.slug !== 'case' &&
                               product.slug !== 'mug' &&
                               product.slug !== 'poster' &&
-                              setDesignImage(
+                              (setDesignImage(
                                 product.backDesign !== '' ? product.backDesign : product.design,
-                              );
+                              ),
+                              product.slug === 'hoodie'
+                                ? setBackDesignImage(BackHoodie)
+                                : product.slug === 'longsleeve'
+                                ? setBackDesignImage(BackLong)
+                                : setBackDesignImage(BackTee));
                           }}
                           onMouseLeave={() => {
                             product.slug !== 'case' &&
                               product.slug !== 'mug' &&
                               product.slug !== 'poster' &&
-                              setDesignImage(product.design);
+                              (setDesignImage(product.design), setBackDesignImage(product.image));
                           }}
                         >
                           <img
                             src={
-                              product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image
+                              product.name === 'Case'
+                                ? '/assets/img/FINALCASE.png'
+                                : backDesignImage
                             }
                             alt=""
                             className={classes.image}

@@ -12,6 +12,9 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
+import BackLong from '../assets/images/back-long.png';
+import BackTee from '../assets/images/back-tee.png';
+import BackHoodie from '../assets/images/Back-hoodie.png';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -83,6 +86,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
     product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
       product?.designId?.backDesign?.designImages[4]?.imageUrl,
   );
+  const [backDesignImage, setBackDesignImage] = useState();
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
       product?.designId?.backDesign?.designImages[3]?.imageUrl,
@@ -96,19 +100,16 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
         colors: [...new Map(colorsArr.map(item => [item['value'], item])).values()],
       };
       setColor(formattedProduct.colors.length);
+      setBackDesignImage(product.image);
     }
   }, [product]);
 
   return (
     <>
-      {console.log(
-        'product?.designId?.frontDesign?.designImages[4]?.imageUrl',
-        product?.designId?.backDesign,
-      )}
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
           className={classes.productImage}
           alt="green iguana"
           onMouseOver={() => {
@@ -117,10 +118,15 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
-                setDesignImage(
+                (setDesignImage(
                   product?.designId?.backDesign?.designImages[1]?.imageUrl ||
                     product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-                );
+                ),
+                product.slug === 'hoodie'
+                  ? setBackDesignImage(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setBackDesignImage(BackLong)
+                  : setBackDesignImage(BackTee));
             }
           }}
           onMouseLeave={() => {
@@ -128,7 +134,8 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
-                setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
+                (setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl),
+                setBackDesignImage(product.image));
             }
           }}
           style={{
@@ -150,19 +157,29 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
                 : '',
             ].join(' ')}
             onMouseOver={() => {
-              product.name !== 'Case' &&
-                product.name !== 'Mug' &&
-                product.name !== 'Poster' &&
-                setDesignImage(
-                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
-                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-                );
+              if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+                product.name !== 'Case' &&
+                  product.name !== 'Mug' &&
+                  product.name !== 'Poster' &&
+                  (setDesignImage(
+                    product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                      product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+                  ),
+                  product.slug === 'hoodie'
+                    ? setBackDesignImage(BackHoodie)
+                    : product.slug === 'longsleeve'
+                    ? setBackDesignImage(BackLong)
+                    : setBackDesignImage(BackTee));
+              }
             }}
             onMouseLeave={() => {
-              product.name !== 'Case' &&
-                product.name !== 'Mug' &&
-                product.name !== 'Poster' &&
-                setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl);
+              if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+                product.name !== 'Case' &&
+                  product.name !== 'Mug' &&
+                  product.name !== 'Poster' &&
+                  (setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl),
+                  setBackDesignImage(product.image));
+              }
             }}
           />
         )}

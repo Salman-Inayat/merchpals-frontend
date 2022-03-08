@@ -21,7 +21,9 @@ import store from '../../store';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useMediaQuery } from 'react-responsive';
-
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   product: {
     border: '1px solid #ccc',
@@ -198,7 +200,7 @@ const ProductCard = ({
   const classes = useStyles();
   const [design, setDesign] = useState('');
   const [iphoneDesign, setIphoneDesign] = useState('');
-
+  const [backDesignImage, setBackDesignImage] = useState();
   const [radioCardColor, setRadioCardColor] = useState('');
   const [check, setCheck] = useState('');
 
@@ -215,6 +217,7 @@ const ProductCard = ({
       console.log('desogn', { design });
       setDesign(design);
       setIphoneDesign(iphoneDesign);
+      setBackDesignImage(product.image);
     }, 1000);
   }, []);
 
@@ -282,7 +285,7 @@ const ProductCard = ({
 
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
           alt=""
           className={classes.productImage}
           style={{
@@ -297,10 +300,15 @@ const ProductCard = ({
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
-                setDesign(
+                (setDesign(
                   store.getState().design?.design?.back?.designImages[4]?.data ||
                     store.getState().design?.design?.front?.designImages[4]?.data,
-                );
+                ),
+                product.slug === 'hoodie'
+                  ? setBackDesignImage(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setBackDesignImage(BackLong)
+                  : setBackDesignImage(BackTee));
             }
           }}
           onMouseLeave={() => {
@@ -308,7 +316,8 @@ const ProductCard = ({
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
-                setDesign(store.getState().design?.design?.front?.designImages[4]?.data);
+                (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
+                setBackDesignImage(product.image));
             }
           }}
         />
@@ -329,13 +338,19 @@ const ProductCard = ({
                 src={design}
                 onMouseOver={() => {
                   if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                    console.log('front');
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&
-                      setDesign(
+                      (setDesign(
                         store.getState().design?.design?.back?.designImages[4]?.data ||
                           store.getState().design?.design?.front?.designImages[4]?.data,
-                      );
+                      ),
+                      product.slug === 'hoodie'
+                        ? setBackDesignImage(BackHoodie)
+                        : product.slug === 'longsleeve'
+                        ? setBackDesignImage(BackLong)
+                        : setBackDesignImage(BackTee));
                   }
                 }}
                 onMouseLeave={() => {
@@ -343,7 +358,8 @@ const ProductCard = ({
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&
-                      setDesign(store.getState().design?.design?.front?.designImages[4]?.data);
+                      (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
+                      setBackDesignImage(product.image));
                   }
                 }}
               />

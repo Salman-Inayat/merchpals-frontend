@@ -1338,25 +1338,31 @@ const useEditor = mode => {
     return '+1' + number;
   };
 
-  const isCanvasEmpty = canvas => {
-    const blank = document.createElement('canvas');
+  // const isCanvasEmpty = canvas => {
+  //   const blank = document.createElement('canvas');
 
-    blank.width = canvas.width;
-    blank.height = canvas.height;
+  //   blank.width = canvas.width;
+  //   blank.height = canvas.height;
 
-    console.log(mode, 'is empty: ', canvas.toDataURL() === blank.toDataURL());
-    return canvas.toDataURL() === blank.toDataURL();
-  };
+  //   console.log(mode, 'is empty: ', canvas, blank);
+  //   return canvas.toDataURL() === blank.toDataURL();
+  // };
   // function isCanvasEmpty(canvas) {
   //   const context = canvas.getContext('2d');
 
   //   const pixelBuffer = new Uint32Array(
   //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
   //   );
-
+  //   console.log('canvas', pixelBuffer);
   //   return !pixelBuffer.some(color => color !== 0);
   // }
 
+  function isCanvasEmpty(canvas) {
+    return !canvas
+      .getContext('2d')
+      .getImageData(0, 0, canvas.width, canvas.height)
+      .data.some(channel => channel !== 0);
+  }
   // function isCanvasBlank(canvas) {
   //   const context = canvas.getContext('2d');
 
