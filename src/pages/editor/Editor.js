@@ -164,10 +164,10 @@ const useStyles = makeStyles(theme => ({
     },
   },
   colorModel: {
-    height: '135px',
-    top: '19%',
+    height: '93px',
+    top: '11%',
     [theme.breakpoints.down('sm')]: {
-      height: '145px',
+      height: '98px',
     },
   },
   shapeModal: {
@@ -284,15 +284,16 @@ const Editor = forwardRef((props, ref) => {
     return () => clearInterval(interval);
   }, []);
 
-  function isCanvasBlank(canvas) {
+  const isCanvasBlank = canvas => {
+    // console.log('call canvass');
     const context = canvas.getContext('2d');
 
     const pixelBuffer = new Uint32Array(
       context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
     );
-
+    // console.log('canvas', !pixelBuffer.some(color => color !== 0));
     return !pixelBuffer.some(color => color !== 0);
-  }
+  };
 
   useEffect(() => {
     if (triggerExport > 0) {
@@ -537,18 +538,6 @@ const Editor = forwardRef((props, ref) => {
       </Grid>
       <Grid item md={12} sm={12} xs={12} className={classes.canvasContainer}>
         <Grid container spacing={{ xs: 0, sm: 0, md: 1 }}>
-          {/* <Grid
-            item
-            md={10}
-            xs={12}
-            sm={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ position: 'relative' }}
-          >
-           
-          </Grid> */}
           <Grid
             item
             md={12}

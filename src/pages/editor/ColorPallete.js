@@ -120,53 +120,10 @@ const ColorPallete = ({ setCanvasBackground, setCavasBackgroundImage, customClas
     '12.png',
     '13.png',
     '14.png',
-    '15.png',
-    '16.png',
-    '17.png',
-    '18.png',
-  ];
-  const background = [
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
-
-    '1.png',
-    '2.png',
-    '3.png',
-
-    '1.png',
-    '2.png',
-    '3.png',
-
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
-    '1.png',
-    '2.png',
-    '3.png',
   ];
 
   const [bgSolid, setBgSolid] = useState(solid[2]);
   const [bgTexture, setBgTexture] = useState('1.png');
-  const [bgBackground, setBgBackground] = useState('1.png');
 
   const handleBgSolidChange = event => {
     setBgSolid(event.target.value);
@@ -177,11 +134,6 @@ const ColorPallete = ({ setCanvasBackground, setCavasBackgroundImage, customClas
     setBgTexture(event.target.value);
     console.log(`/texture-image/${event.target.value}`);
     setCavasBackgroundImage(`/texture-image/${event.target.value}`);
-  };
-
-  const handleBgBackgroundChange = event => {
-    setBgBackground(event.target.value);
-    setCavasBackgroundImage(`/background-image/${event.target.value}`);
   };
 
   return (
@@ -228,30 +180,6 @@ const ColorPallete = ({ setCanvasBackground, setCavasBackgroundImage, customClas
             {textures.map((texture, index) => (
               <MenuItem value={texture} key={index}>
                 <img key={index} src={`/texture-image/${texture}`} className={classes.texture} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box mt={1}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Background</InputLabel>
-          <Select
-            // SelectDisplayProps={{ style: { padding: '10px 5px 5px 10px' } }}
-            SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 2 } }}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={bgBackground}
-            label="Color"
-            onChange={handleBgBackgroundChange}
-          >
-            {background.map((background, index) => (
-              <MenuItem value={background} key={index}>
-                <img
-                  key={index}
-                  src={`/background-image/${background}`}
-                  className={classes.texture}
-                />
               </MenuItem>
             ))}
           </Select>
