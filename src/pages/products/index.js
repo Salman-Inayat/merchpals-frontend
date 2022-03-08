@@ -248,7 +248,7 @@ const Product = () => {
 
       const backDesignUrl =
         fetchedProduct?.designId?.backDesign?.designImages?.length > 1
-          ? fetchedProduct.designId?.backDesign.designImages[1].imageUrl
+          ? fetchedProduct.designId?.backDesign.designImages[3].imageUrl
           : '';
 
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
@@ -482,7 +482,9 @@ const Product = () => {
                             backgroundSize: '37% 80%',
                           }}
                           onMouseOver={() => {
-                            setDesignImage(product.backDesign);
+                            setDesignImage(
+                              product.backDesign !== '' ? product.backDesign : product.design,
+                            );
                           }}
                           onMouseLeave={() => {
                             setDesignImage(product.design);
