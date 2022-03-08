@@ -162,6 +162,12 @@ const useEditor = mode => {
       'polygon(0px 0px, 450px 0px, 225px 450px)',
     ];
 
+    const mobileCanvasClipPaths = [
+      'circle(175px at center)',
+      'none',
+      'polygon(0px 0px, 350px 0px, 175px 350px)',
+    ];
+
     const previewClipPaths = ['circle(20px at center)', 'none', 'polygon(0 0, 100% 0, 50% 100%)'];
 
     let json;
@@ -185,9 +191,11 @@ const useEditor = mode => {
         canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[0];
+        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+
         canvasContainer.style.borderRadius = '50%';
 
-        canvasWrapper.style.clipPath = canvasClipPaths[0];
+        canvasWrapper.style.clipPath = isMobile ? mobileCanvasClipPaths[0] : canvasClipPaths[0];
 
         break;
       case 'square':
@@ -200,15 +208,15 @@ const useEditor = mode => {
         canvasWrapper.style.removeProperty('top');
         canvasWrapper.style.removeProperty('left');
 
-        canvasWrapper.style.clipPath = canvasClipPaths[1];
+        canvasWrapper.style.clipPath = isMobile ? mobileCanvasClipPaths[1] : canvasClipPaths[1];
         canvas.clipPath = rect;
         json = JSON.stringify(canvas);
 
         canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[1];
-        canvasContainer.style.borderRadius = '5px';
-        canvasContainer.style.border = '2px solid #000';
+        canvasContainer.style.borderRadius = isMobile ? '1px' : '5px';
+        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
         break;
       case 'triangle':
         canvasContainer.style.removeProperty('border');
@@ -221,18 +229,20 @@ const useEditor = mode => {
 
         c2.style.clipPath = previewClipPaths[2];
 
-        canvasContainer.style.clipPath = 'polygon(0px 0px, 454px 0px, 227px 454px)';
+        canvasContainer.style.clipPath = isMobile
+          ? 'polygon(0px 0px, 352px 0px, 176px 352px)'
+          : 'polygon(0px 0px, 454px 0px, 227px 454px)';
         canvasContainer.style.background = 'black';
         canvasContainer.style.padding = '0';
-        canvasContainer.style.height = '454px';
-        canvasContainer.style.width = '454px';
+        canvasContainer.style.height = isMobile ? '352px' : '454px';
+        canvasContainer.style.width = isMobile ? '352px' : '454px';
         canvasContainer.style.position = 'relative';
 
-        canvasWrapper.style.clipPath = canvasClipPaths[2];
+        canvasWrapper.style.clipPath = isMobile ? mobileCanvasClipPaths[2] : canvasClipPaths[2];
         canvasWrapper.style.background = '#fff';
         canvasWrapper.style.position = 'absolute';
-        canvasWrapper.style.top = '2px';
-        canvasWrapper.style.left = '2px';
+        canvasWrapper.style.top = isMobile ? '1px' : '2px';
+        canvasWrapper.style.left = isMobile ? '1px' : '2px';
         break;
       default:
         canvas.clipPath = rect;
