@@ -520,15 +520,12 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const toggleFrontCanvas = () => {
-    dispatch(clearDesign());
     setCanvasMode('front');
 
     dispatch(updateCanvasMode('front'));
   };
 
   const toggleBackCanvas = () => {
-    dispatch(clearDesign());
-
     setCanvasMode('back');
     dispatch(updateCanvasMode('back'));
   };

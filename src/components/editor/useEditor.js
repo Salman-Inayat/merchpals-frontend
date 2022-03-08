@@ -175,6 +175,10 @@ const useEditor = mode => {
         canvasContainer.style.removeProperty('background');
         canvasContainer.style.removeProperty('clip-path');
 
+        canvasWrapper.style.removeProperty('position');
+        canvasWrapper.style.removeProperty('top');
+        canvasWrapper.style.removeProperty('left');
+
         canvas.clipPath = circle;
         json = JSON.stringify(canvas);
 
@@ -192,6 +196,10 @@ const useEditor = mode => {
         canvasContainer.style.removeProperty('background');
         canvasContainer.style.removeProperty('clip-path');
 
+        canvasWrapper.style.removeProperty('position');
+        canvasWrapper.style.removeProperty('top');
+        canvasWrapper.style.removeProperty('left');
+
         canvasWrapper.style.clipPath = canvasClipPaths[1];
         canvas.clipPath = rect;
         json = JSON.stringify(canvas);
@@ -204,6 +212,7 @@ const useEditor = mode => {
         break;
       case 'triangle':
         canvasContainer.style.removeProperty('border');
+        canvasContainer.style.removeProperty('border-radius');
 
         canvas.clipPath = triangle;
         json = JSON.stringify(canvas);
@@ -271,15 +280,16 @@ const useEditor = mode => {
     afterRender();
   };
 
+  useEffect(() => {
+    if (canvasJSON) {
+      loadJson(canvas, canvasJSON);
+    }
+  }, [canvasJSON]);
+
   useLayoutEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
-    }
-
-    if (canvasJSON) {
-      loadJson(canvas, canvasJSON);
-      // dispatch(clearDesign());
     }
 
     updateShape();
