@@ -8,6 +8,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
 import { fill } from 'lodash';
+import { clearDesign } from '../../store/redux/actions/design';
 
 import {
   CANVAS_WIDTH_DESKTOP,
@@ -134,6 +135,7 @@ const useEditor = mode => {
 
   const updateShape = () => {
     const canvasWrapper = document.getElementById(`${mode}-canvas-wrapper`);
+    const canvasContainer = document.getElementById(`${mode}-canvas-container`);
 
     const circle = new fabric.Circle({
       radius: isMobile ? CANVAS_HEIGHT_MOBILE / 2 : CANVAS_WIDTH_DESKTOP / 2,
@@ -166,16 +168,30 @@ const useEditor = mode => {
 
     switch (canvasShape) {
       case 'circle':
-        canvasWrapper.style.clipPath = canvasClipPaths[0];
+        canvasContainer.style.removeProperty('padding');
+        canvasContainer.style.removeProperty('height');
+        canvasContainer.style.removeProperty('width');
+        canvasContainer.style.removeProperty('position');
+        canvasContainer.style.removeProperty('background');
+        canvasContainer.style.removeProperty('clip-path');
+
         canvas.clipPath = circle;
         json = JSON.stringify(canvas);
 
         canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[0];
+        canvasContainer.style.borderRadius = '50%';
+
+        canvasWrapper.style.clipPath = canvasClipPaths[0];
 
         break;
       case 'square':
+        canvasContainer.style.removeProperty('padding');
+        canvasContainer.style.removeProperty('position');
+        canvasContainer.style.removeProperty('background');
+        canvasContainer.style.removeProperty('clip-path');
+
         canvasWrapper.style.clipPath = canvasClipPaths[1];
         canvas.clipPath = rect;
         json = JSON.stringify(canvas);
@@ -183,9 +199,12 @@ const useEditor = mode => {
         canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[1];
+        canvasContainer.style.borderRadius = '5px';
+        canvasContainer.style.border = '2px solid #000';
         break;
       case 'triangle':
-        canvasWrapper.style.clipPath = canvasClipPaths[2];
+        canvasContainer.style.removeProperty('border');
+
         canvas.clipPath = triangle;
         json = JSON.stringify(canvas);
 
@@ -193,6 +212,18 @@ const useEditor = mode => {
 
         c2.style.clipPath = previewClipPaths[2];
 
+        canvasContainer.style.clipPath = 'polygon(0px 0px, 454px 0px, 227px 454px)';
+        canvasContainer.style.background = 'black';
+        canvasContainer.style.padding = '0';
+        canvasContainer.style.height = '454px';
+        canvasContainer.style.width = '454px';
+        canvasContainer.style.position = 'relative';
+
+        canvasWrapper.style.clipPath = canvasClipPaths[2];
+        canvasWrapper.style.background = '#fff';
+        canvasWrapper.style.position = 'absolute';
+        canvasWrapper.style.top = '2px';
+        canvasWrapper.style.left = '2px';
         break;
       default:
         canvas.clipPath = rect;
@@ -203,6 +234,7 @@ const useEditor = mode => {
   };
 
   const loadJson = (canvas, json) => {
+    console.log('loading json');
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
       canvasProperties.canvasFill = canvas.backgroundColor;
 
@@ -247,6 +279,7 @@ const useEditor = mode => {
 
     if (canvasJSON) {
       loadJson(canvas, canvasJSON);
+      // dispatch(clearDesign());
     }
 
     updateShape();
@@ -1291,9 +1324,20 @@ const useEditor = mode => {
     blank.width = canvas.width;
     blank.height = canvas.height;
 
+    console.log(mode, 'is empty: ', canvas.toDataURL() === blank.toDataURL());
     return canvas.toDataURL() === blank.toDataURL();
   };
   // function isCanvasEmpty(canvas) {
+  //   const context = canvas.getContext('2d');
+
+  //   const pixelBuffer = new Uint32Array(
+  //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+  //   );
+
+  //   return !pixelBuffer.some(color => color !== 0);
+  // }
+
+  // function isCanvasBlank(canvas) {
   //   const context = canvas.getContext('2d');
 
   //   const pixelBuffer = new Uint32Array(

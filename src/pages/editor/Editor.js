@@ -40,6 +40,7 @@ import {
   updateBackCanvasShape,
   updateCanvasMode,
 } from '../../store/redux/actions/canvas';
+import { clearDesign } from '../../store/redux/actions/design';
 import { useDispatch, useSelector } from 'react-redux';
 import Shapes from './Shapes';
 
@@ -519,12 +520,15 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const toggleFrontCanvas = () => {
+    dispatch(clearDesign());
     setCanvasMode('front');
 
     dispatch(updateCanvasMode('front'));
   };
 
   const toggleBackCanvas = () => {
+    dispatch(clearDesign());
+
     setCanvasMode('back');
     dispatch(updateCanvasMode('back'));
   };
@@ -548,7 +552,7 @@ const Editor = forwardRef((props, ref) => {
             alignItems="center"
             style={{ padding: '0px' }}
           >
-            <Card
+            {/* <Card
               className={`${classes.editor} fabric-canvas-wrapper`}
               style={{
                 borderRadius:
@@ -556,27 +560,27 @@ const Editor = forwardRef((props, ref) => {
                     ? '0px'
                     : '1rem',
               }}
-            >
-              <div hidden={canvasMode === 'front' ? false : true}>
-                <CanvasEditor
-                  onReady={editorJs.onReady}
-                  class="front-canvas-wrapper"
-                  canvasJSON={frontCanvasJSON}
-                  designName={designName}
-                  canvasMode={canvasMode}
-                />
-              </div>
+            > */}
+            <div hidden={canvasMode === 'front' ? false : true} id="front-canvas-container">
+              <CanvasEditor
+                onReady={editorJs.onReady}
+                class="front-canvas-wrapper"
+                canvasJSON={frontCanvasJSON}
+                designName={designName}
+                canvasMode={canvasMode}
+              />
+            </div>
 
-              <div hidden={canvasMode === 'back' ? false : true}>
-                <CanvasEditor
-                  onReady={backEditorJs.onReady}
-                  class="back-canvas-wrapper"
-                  canvasJSON={backCanvasJSON}
-                  designName={designName}
-                  canvasMode={canvasMode}
-                />
-              </div>
-            </Card>
+            <div hidden={canvasMode === 'back' ? false : true} id="back-canvas-container">
+              <CanvasEditor
+                onReady={backEditorJs.onReady}
+                class="back-canvas-wrapper"
+                canvasJSON={backCanvasJSON}
+                designName={designName}
+                canvasMode={canvasMode}
+              />
+            </div>
+            {/* </Card> */}
           </Grid>
         </Grid>
       </Grid>

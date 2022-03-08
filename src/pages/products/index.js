@@ -496,7 +496,9 @@ const Product = () => {
                             product.slug !== 'case' &&
                               product.slug !== 'mug' &&
                               product.slug !== 'poster' &&
-                              setDesignImage(product.backDesign);
+                              setDesignImage(
+                                product.backDesign !== '' ? product.backDesign : product.design,
+                              );
                           }}
                           onMouseLeave={() => {
                             product.slug !== 'case' &&
