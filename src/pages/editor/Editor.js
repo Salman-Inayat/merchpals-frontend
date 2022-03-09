@@ -27,6 +27,10 @@ import GreyXSVG from '../../assets/images/svgs/greyX.svg';
 import ImageSVG from '../../assets/images/svgs/imagea1.svg';
 import ShapeSVG from '../../assets/images/svgs/shapeA1.svg';
 import TextSVG from '../../assets/images/svgs/t5.svg';
+import CircleSVG from '../../assets/images/svgs/previewCircle.svg';
+import SquareSVG from '../../assets/images/svgs/previewSquare.svg';
+import TriangleSVG from '../../assets/images/svgs/previewTriangle.svg';
+
 import ColorPng from '../../assets/images/color.png';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {
@@ -272,8 +276,16 @@ const Editor = forwardRef((props, ref) => {
   const MINUTE_MS = 500;
 
   useEffect(() => {
+    handleBlankCanvas();
+  }, []);
+
+  useEffect(() => {
+    handleBlankCanvas();
+  }, [canvasMode]);
+
+  const handleBlankCanvas = () => {
     var canvas = document.getElementById(`${canvasMode}-canvas`);
-    var span = document.getElementById('alt-text');
+    var span = document.getElementById(`${canvasMode}-canvas-placeholder`);
     const interval = setInterval(() => {
       if (isCanvasBlank(canvas)) {
         span.hidden = false;
@@ -283,7 +295,7 @@ const Editor = forwardRef((props, ref) => {
     }, MINUTE_MS);
 
     return () => clearInterval(interval);
-  }, []);
+  };
 
   const isCanvasBlank = canvas => {
     // console.log('call canvass');
@@ -690,23 +702,49 @@ const Editor = forwardRef((props, ref) => {
                   display: canvasMode === 'front' ? 'none' : 'block',
                 }}
               />
-              <span
-                id="alt-text"
-                style={{
-                  height: '50px',
-                  width: '50px',
-                  position: 'absolute',
-                  top: '40%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  border: '2px dashed white',
-                  borderRadius:
-                    (canvasMode === 'front' && frontCanvasShape === 'circle') ||
-                    (canvasMode === 'back' && backCanvasShape === 'circle')
-                      ? '50%'
-                      : '0px',
-                }}
-              ></span>
+              {canvasMode === 'front' ? (
+                <span id="front-canvas-placeholder">
+                  <img
+                    src={
+                      canvasMode === 'front' && frontCanvasShape === 'circle'
+                        ? CircleSVG
+                        : canvasMode === 'front' && frontCanvasShape === 'triangle'
+                        ? TriangleSVG
+                        : SquareSVG
+                    }
+                    style={{
+                      height: '60px',
+                      width: '60px',
+                      position: 'absolute',
+                      top: '20%',
+                      left: '31%',
+                      zIndex: '10',
+                      color: 'white',
+                    }}
+                  />
+                </span>
+              ) : (
+                <span id="back-canvas-placeholder">
+                  <img
+                    src={
+                      canvasMode === 'back' && backCanvasShape === 'circle'
+                        ? CircleSVG
+                        : canvasMode === 'back' && backCanvasShape === 'triangle'
+                        ? TriangleSVG
+                        : SquareSVG
+                    }
+                    style={{
+                      height: '60px',
+                      width: '60px',
+                      position: 'absolute',
+                      top: '20%',
+                      left: '31%',
+                      zIndex: '10',
+                      color: 'white',
+                    }}
+                  />
+                </span>
+              )}
 
               <canvas
                 hidden={canvasMode === 'front' ? false : true}

@@ -127,7 +127,7 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
             </Grid>
             <Grid xs={10} mt={3} item>
               <Typography>
-                By clicking the &#39;Place Order&#39; button, you confirm that youu have read,
+                By clicking the &#39;Place Order&#39; button, you confirm that you have read,
                 understand and accept our{' '}
                 <Link underline="always" sx={{ color: 'text.primary' }}>
                   Terms of Use

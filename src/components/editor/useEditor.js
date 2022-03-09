@@ -172,11 +172,15 @@ const useEditor = mode => {
 
     let json;
 
+    if (canvas.backgroundImage) {
+      if (isMobile) {
+        canvas.backgroundImage.scaleX = 0.35;
+        canvas.backgroundImage.scaleY = 0.35;
+      }
+    }
+
     switch (canvasShape) {
       case 'circle':
-        canvas.backgroundImage.scaleX = isMobile ? 0.4 : 0.38;
-        canvas.backgroundImage.scaleY = isMobile ? 0.4 : 0.38;
-
         canvasContainer.style.removeProperty('padding');
         canvasContainer.style.removeProperty('height');
         canvasContainer.style.removeProperty('width');
@@ -957,38 +961,35 @@ const useEditor = mode => {
   const setCanvasImage = imgUrl => {
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
-      // fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
+      fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
+        canvas.setBackgroundImage(
+          imgUrl,
+          () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            canvas.backgroundColor = '';
+            canvas.renderAll();
+            afterRender();
+          },
+          { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
+        );
+      });
 
-      // });
-
-      const image = new Image();
-      image.src = canvasProperties.canvasImage;
-      image.onload = function () {
-        const imgInstance = new fabric.Image(image);
-        imgInstance.set({
-          left: 0,
-          top: 0,
-          angle: 0,
-        });
-        imgInstance.scaleToWidth(canvas.width);
-        imgInstance.scaleToHeight(canvas.height);
-        canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas));
-        canvas.renderAll();
-        afterRender();
-      };
-
-      // canvas.setBackgroundImage(
-      //   imgUrl,
-      //   () => {
-      //     canvas.width = img.width;
-      //     canvas.height = img.height;
-
-      //     canvas.backgroundColor = '';
-      //     canvas.renderAll();
-      //     afterRender();
-      //   },
-      //   { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
-      // );
+      // const image = new Image();
+      // image.src = canvasProperties.canvasImage;
+      // image.onload = function () {
+      //   const imgInstance = new fabric.Image(image);
+      //   imgInstance.set({
+      //     left: 0,
+      //     top: 0,
+      //     angle: 0,
+      //   });
+      //   imgInstance.scaleToWidth(canvas.width);
+      //   imgInstance.scaleToHeight(canvas.height);
+      //   canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas));
+      //   canvas.renderAll();
+      //   afterRender();
+      // };
     }
   };
 
@@ -1398,6 +1399,8 @@ const useEditor = mode => {
       console.log('canvas no empty call', mode);
       let json = JSON.stringify(canvas);
 
+      let canvasBackgroundImage;
+
       const formatOne = new Image();
       const formatTwo = new Image();
       const formatThree = new Image();
@@ -1418,12 +1421,10 @@ const useEditor = mode => {
       formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
       formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
       formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
-      formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
       formatFive.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
       formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
       formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
       formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
-      formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
       formatFive.src = changedpi.changeDpiDataUrl(formatFive.src, 300);
 
       const canvas2 = document.createElement('canvas');
@@ -1434,6 +1435,18 @@ const useEditor = mode => {
       const backgroundColor = canvas.backgroundColor;
       ctx2.fillStyle = backgroundColor;
       ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+
+      if (canvas.backgroundImage) {
+        canvasBackgroundImage = canvas.backgroundImage;
+        canvas.backgroundImage = null;
+        const backgroundImage = new Image();
+        backgroundImage.src = canvasBackgroundImage.src;
+        backgroundImage.onload = () => {
+          ctx2.drawImage(backgroundImage, 0, 0, canvas2.width, canvas2.height);
+        };
+      }
+      formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
+      formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 
       var myImage = new Image();
       myImage.src = formatFour.src;
