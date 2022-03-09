@@ -965,15 +965,21 @@ const useEditor = mode => {
         canvas.setBackgroundImage(
           imgUrl,
           () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
+            // canvas.width = img.width;
+            // canvas.height = img.height;
+            img.width = canvas.width;
+            img.height = canvas.height;
             canvas.backgroundColor = '';
             canvas.renderAll();
             afterRender();
+
+            console.log(canvas.toDataURL());
           },
           { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
         );
       });
+
+      console.log('Baxckground image added, ', canvas);
 
       // const image = new Image();
       // image.src = canvasProperties.canvasImage;
@@ -1365,25 +1371,31 @@ const useEditor = mode => {
     return '+1' + number;
   };
 
-  const isCanvasEmpty = canvas => {
-    const blank = document.createElement('canvas');
+  // const isCanvasEmpty = canvas => {
+  //   const blank = document.createElement('canvas');
 
-    blank.width = canvas.width;
-    blank.height = canvas.height;
+  //   blank.width = canvas.width;
+  //   blank.height = canvas.height;
 
-    console.log(mode, 'is empty: ', canvas.toDataURL() === blank.toDataURL());
-    return canvas.toDataURL() === blank.toDataURL();
-  };
+  //   console.log(mode, 'is empty: ', canvas, blank);
+  //   return canvas.toDataURL() === blank.toDataURL();
+  // };
   // function isCanvasEmpty(canvas) {
   //   const context = canvas.getContext('2d');
 
   //   const pixelBuffer = new Uint32Array(
   //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
   //   );
-
+  //   console.log('canvas', pixelBuffer);
   //   return !pixelBuffer.some(color => color !== 0);
   // }
 
+  function isCanvasEmpty(canvas) {
+    return !canvas
+      .getContext('2d')
+      .getImageData(0, 0, canvas.width, canvas.height)
+      .data.some(channel => channel !== 0);
+  }
   // function isCanvasBlank(canvas) {
   //   const context = canvas.getContext('2d');
 
@@ -1437,6 +1449,7 @@ const useEditor = mode => {
       ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
 
       if (canvas.backgroundImage) {
+        console.log('canvas has background image', canvas);
         canvasBackgroundImage = canvas.backgroundImage;
         canvas.backgroundImage = null;
         const backgroundImage = new Image();

@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
 import { clearDesign } from '../../store/redux/actions/design';
+import { clearCanvas } from '../../store/redux/actions/canvas';
 import Tick from '../../assets/images/tick.png';
 
 const useStyle = makeStyles(theme => ({
@@ -314,6 +315,7 @@ const Home = () => {
         nextStep();
         setShowWelcomeMessage(true);
         dispatch(clearDesign());
+        dispatch(clearCanvas());
       })
       .catch(err => {
         setCreateStoreError(true);

@@ -18,7 +18,9 @@ import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { calculateOrderProfit } from '../../configs/const';
-
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   design: {
     position: 'absolute',
@@ -77,6 +79,7 @@ function VendorOrderDetails() {
   const [totalProfit, setTotalProfit] = useState(0);
 
   const [order, setOrder] = useState();
+  const [designChange, setDesignChange] = useState(false);
   const { orderId } = useParams();
   const classes = useStyles();
 
@@ -89,7 +92,7 @@ function VendorOrderDetails() {
       })
       .then(res => {
         const orderData = res.data.order;
-
+        console.log(res);
         setOrder(orderData);
 
         const profit = calculateOrderProfit(orderData);
@@ -120,7 +123,19 @@ function VendorOrderDetails() {
                     </Typography>
                     <Card>
                       <CardMedia
-                        src={product.vendorProduct.productId.image}
+                        src={
+                          product.vendorProduct.productId.name === 'Case'
+                            ? '/assets/img/FINALCASE.png'
+                            : designChange
+                            ? product.vendorProduct.productId.name === 'Hoodie'
+                              ? BackHoodie
+                              : product.vendorProduct.productId.name === 'Long Sleeve'
+                              ? BackLong
+                              : product.vendorProduct.productId.name === 'Tee'
+                              ? BackTee
+                              : product.vendorProduct.productId.image
+                            : product.vendorProduct.productId.image
+                        }
                         style={{
                           backgroundColor:
                             product.productMapping.color.label === 'white'
@@ -130,31 +145,109 @@ function VendorOrderDetails() {
                               : product.productMapping.color.label === 'black'
                               ? '#121616'
                               : '',
+                          backgroundImage:
+                            product.vendorProduct.productId.name === 'Case' &&
+                            `url(${
+                              product.vendorProduct.designId.frontDesign.designImages[3].imageUrl ||
+                              product.vendorProduct.designId.backDesign.designImages[1].imageUrl
+                            })`,
+                          backgroundSize:
+                            product.vendorProduct.productId.name === 'Case' && '37% 80%',
                         }}
                         height="100%"
                         component="img"
+                        onMouseOver={() => {
+                          console.log('call');
+                          if (
+                            product?.vendorProduct?.designId?.backDesign?.designImages[1]?.imageUrl
+                          ) {
+                            product.vendorProduct.productId.name !== 'Case' &&
+                              product.vendorProduct.productId.name !== 'Mug' &&
+                              product.vendorProduct.productId.name !== 'Poster' &&
+                              setDesignChange(true);
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          if (product.vendorProduct.designId.frontDesign.designImages[4].imageUrl) {
+                            product.vendorProduct.productId.name !== 'Case' &&
+                              product.vendorProduct.productId.name !== 'Mug' &&
+                              product.vendorProduct.productId.name !== 'Poster' &&
+                              setDesignChange(false);
+                          }
+                        }}
                       />
-                      {product?.vendorProduct?.designId && (
-                        <img
-                          src={product.vendorProduct.designId.frontDesign.designImages[4].imageUrl}
-                          className={[
-                            classes.design,
-                            product.vendorProduct.productId.name === 'Poster'
-                              ? classes.poster
-                              : product.vendorProduct.productId.name === 'Case'
-                              ? classes.phoneCase
-                              : product.vendorProduct.productId.name === 'Mug'
-                              ? classes.mug
-                              : '',
-                          ].join(' ')}
-                        />
-                      )}
+                      {product?.vendorProduct?.designId &&
+                        product.vendorProduct.productId.name !== 'Case' && (
+                          <>
+                            <img
+                              src={
+                                designChange
+                                  ? product.vendorProduct.productId.name === 'Hoodie'
+                                    ? product.vendorProduct.designId.backDesign.designImages[1]
+                                        .imageUrl
+                                    : product.vendorProduct.productId.name === 'Long Sleeve'
+                                    ? product.vendorProduct.designId.backDesign.designImages[1]
+                                        .imageUrl
+                                    : product.vendorProduct.productId.name === 'Tee'
+                                    ? product.vendorProduct.designId.backDesign.designImages[1]
+                                        .imageUrl
+                                    : product.vendorProduct.designId.frontDesign.designImages[4]
+                                        .imageUrl
+                                  : product.vendorProduct.designId.frontDesign.designImages[4]
+                                      .imageUrl
+                              }
+                              className={[
+                                classes.design,
+                                product.vendorProduct.productId.name === 'Poster'
+                                  ? classes.poster
+                                  : product.vendorProduct.productId.name === 'Case'
+                                  ? classes.phoneCase
+                                  : product.vendorProduct.productId.name === 'Mug'
+                                  ? classes.mug
+                                  : '',
+                              ].join(' ')}
+                              onMouseOver={() => {
+                                console.log('call');
+                                if (
+                                  product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                                    ?.imageUrl
+                                ) {
+                                  product.vendorProduct.productId.name !== 'Case' &&
+                                    product.vendorProduct.productId.name !== 'Mug' &&
+                                    product.vendorProduct.productId.name !== 'Poster' &&
+                                    setDesignChange(true);
+                                }
+                              }}
+                              onMouseLeave={() => {
+                                if (
+                                  product.vendorProduct.designId.frontDesign.designImages[4]
+                                    .imageUrl
+                                ) {
+                                  product.vendorProduct.productId.name !== 'Case' &&
+                                    product.vendorProduct.productId.name !== 'Mug' &&
+                                    product.vendorProduct.productId.name !== 'Poster' &&
+                                    setDesignChange(false);
+                                }
+                              }}
+                            />
+                            <div hidden>
+                              <img
+                                src={
+                                  product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                                    ?.imageUrl
+                                }
+                              />
+                              <img src={BackLong} />
+                              <img src={BackTee} />
+                              <img src={BackHoodie} />
+                            </div>
+                          </>
+                        )}
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="bosy1"
+                          variant="body1"
                           fontWeight="light"
-                          component="body1"
                           textAlign="center"
                         >
                           {`Total quantity: ${product.quantity}`}

@@ -93,14 +93,14 @@ const useStyles = makeStyles(theme => ({
   buttonContainer: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     padding: '0 4%',
-
+    margin: '0px !important',
     [theme.breakpoints.down('md')]: {
-      justifyContent: 'space-between',
+      // justifyContent: 'space-between',
     },
     [theme.breakpoints.down('sm')]: {
-      justifyContent: 'space-between',
+      // justifyContent: 'space-between',
       padding: '0px',
     },
   },
@@ -123,7 +123,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#e7e9eb',
     color: '#000',
     boxShadow: '0px 5px 5px rgba(0,0,0,0.2)',
-
+    // margin: '0px !important',
     [theme.breakpoints.down('sm')]: {
       // padding: '6px',
     },
@@ -132,7 +132,7 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block',
     textAlign: 'center',
     position: 'relative',
-    margin: '20px 0px',
+    margin: '0px !important',
   },
   shirtImage: {
     width: '150px',
@@ -176,7 +176,10 @@ const useStyles = makeStyles(theme => ({
     },
   },
   shapeModal: {
-    height: '70px',
+    height: '46px',
+    width: '70px',
+    top: '7%',
+    left: '50%',
   },
   SmileyModal: {
     height: '108px',
@@ -543,7 +546,7 @@ const Editor = forwardRef((props, ref) => {
   };
 
   return (
-    <Grid container spacing={2} alignItems="center">
+    <Grid container alignItems="center">
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           {title}
@@ -594,12 +597,12 @@ const Editor = forwardRef((props, ref) => {
         </Grid>
       </Grid>
 
-      <Grid item md={12} sm={12} xs={12}>
+      <Grid item md={12} sm={12} xs={12} sx={{ marginTop: '5px' }}>
         <Grid container className={classes.controlsContainer}>
           {/* <Stack direction="row" alignItems="center" className={classes.buttonContainer}></Stack> */}
           <Stack
             direction="column"
-            spacing={3}
+            spacing={2}
             // justifyContent="center"
             alignItems="center"
             // alignContent="center"
@@ -647,8 +650,9 @@ const Editor = forwardRef((props, ref) => {
           </Stack>
           <Stack
             direction="column"
-            spacing={3}
+            // justifyContent="center"
             alignItems="center"
+            // alignContent="center"
             className={classes.buttonContainer}
           >
             {/* <Grid item md={12} sm={12} xs={12}> */}
@@ -766,7 +770,7 @@ const Editor = forwardRef((props, ref) => {
 
           <Stack
             direction="column"
-            spacing={3}
+            spacing={2}
             alignItems="center"
             className={classes.buttonContainer}
             sx={{ position: 'relative' }}

@@ -21,7 +21,9 @@ import store from '../../store';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useMediaQuery } from 'react-responsive';
-
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   product: {
     border: '1px solid #ccc',
@@ -198,7 +200,7 @@ const ProductCard = ({
   const classes = useStyles();
   const [design, setDesign] = useState('');
   const [iphoneDesign, setIphoneDesign] = useState('');
-
+  const [productDesign, setProductDesign] = useState();
   const [radioCardColor, setRadioCardColor] = useState('');
   const [check, setCheck] = useState('');
 
@@ -215,6 +217,7 @@ const ProductCard = ({
       console.log('desogn', { design });
       setDesign(design);
       setIphoneDesign(iphoneDesign);
+      setProductDesign(product.image);
     }, 1000);
   }, []);
 
@@ -258,7 +261,7 @@ const ProductCard = ({
           color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
         }}
       >
-        {designName ? designName : ''} {product.name}
+        {designName ? designName : ''} {product.slug === 'longsleeve' ? 'Long' : product.name}
       </Typography>
       <Card
         className={classes.productCard}
@@ -282,7 +285,7 @@ const ProductCard = ({
 
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
           alt=""
           className={classes.productImage}
           style={{
@@ -297,10 +300,15 @@ const ProductCard = ({
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
-                setDesign(
+                (setDesign(
                   store.getState().design?.design?.back?.designImages[4]?.data ||
                     store.getState().design?.design?.front?.designImages[4]?.data,
-                );
+                ),
+                product.slug === 'hoodie'
+                  ? setProductDesign(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setProductDesign(BackLong)
+                  : setProductDesign(BackTee));
             }
           }}
           onMouseLeave={() => {
@@ -308,7 +316,8 @@ const ProductCard = ({
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
-                setDesign(store.getState().design?.design?.front?.designImages[4]?.data);
+                (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
+                setProductDesign(product.image));
             }
           }}
         />
@@ -329,13 +338,19 @@ const ProductCard = ({
                 src={design}
                 onMouseOver={() => {
                   if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                    console.log('front');
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&
-                      setDesign(
+                      (setDesign(
                         store.getState().design?.design?.back?.designImages[4]?.data ||
                           store.getState().design?.design?.front?.designImages[4]?.data,
-                      );
+                      ),
+                      product.slug === 'hoodie'
+                        ? setProductDesign(BackHoodie)
+                        : product.slug === 'longsleeve'
+                        ? setProductDesign(BackLong)
+                        : setProductDesign(BackTee));
                   }
                 }}
                 onMouseLeave={() => {
@@ -343,7 +358,8 @@ const ProductCard = ({
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&
-                      setDesign(store.getState().design?.design?.front?.designImages[4]?.data);
+                      (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
+                      setProductDesign(product.image));
                   }
                 }}
               />
@@ -558,6 +574,11 @@ const ProductCard = ({
           </Grid>
         )}
       </Grid>
+      <div hidden>
+        <img src={BackHoodie} />
+        <img src={BackTee} />
+        <img src={BackLong} />
+      </div>
     </>
   );
 };
