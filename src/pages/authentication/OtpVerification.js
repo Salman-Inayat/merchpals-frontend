@@ -14,6 +14,7 @@ import {
   Typography,
   useTheme,
   Stack,
+  CircularProgress,
 } from '@mui/material';
 import { OtpVerifyInput } from '../../components/authentication/otp-verify-input';
 import { LockOutlined } from '@mui/icons-material';
@@ -76,6 +77,7 @@ const OtpVerification = ({
   const [oldPhoneNo, setOldPhoneNo] = useState(`+${phoneNo}  `);
   const [phoneNumber, setPhoneNumber] = useState();
   const [phoneError, setPhoneError] = useState();
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -119,6 +121,7 @@ const OtpVerification = ({
   }, [otp]);
 
   const handleSubmit = () => {
+    setLoading(true);
     const phoneNo = localStorage.getItem('phoneNoForOTP');
     verifyOTP(phoneNo, otp);
   };
@@ -243,7 +246,7 @@ const OtpVerification = ({
                     color="primary"
                     className={classes.submit}
                   >
-                    Verify
+                    {loading ? <CircularProgress color="inherit" /> : 'Verify'}
                   </Button>
                 </Grid>
                 <Grid xs={12} item>

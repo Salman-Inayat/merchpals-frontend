@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Stack, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { color } from '@mui/system';
+import { Box, color } from '@mui/system';
 
 const useStyles = makeStyles(theme => ({
   colorPallete: {
@@ -29,12 +29,29 @@ const useStyles = makeStyles(theme => ({
       width: '65px',
     },
   },
+  rootFirstSelect: {
+    padding: '0px',
+  },
+  texture: {
+    width: '5rem',
+    height: '1.1em',
+    overflow: 'auto',
+    [theme.breakpoints.down('md')]: {
+      width: '60px',
+      display: 'inline-block',
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '5rem',
+      height: '1.4rem',
+      display: 'inline-block',
+    },
+  },
 }));
 
-const ColorPallete = ({ setCanvasBackground, customClass }) => {
+const ColorPallete = ({ setCanvasBackground, setCavasBackgroundImage, customClass }) => {
   const classes = useStyles();
 
-  const colors = [
+  const solid = [
     '#ffffff00',
     '#000000',
     '#FFFFFF',
@@ -88,56 +105,87 @@ const ColorPallete = ({ setCanvasBackground, customClass }) => {
     '#FDC0B3',
     '#8c8c88',
   ];
+  const textures = [
+    '1.png',
+    '2.png',
+    '3.png',
+    '4.png',
+    '5.png',
+    '6.png',
+    '7.png',
+    '8.png',
+    '9.png',
+    '10.png',
+    '11.png',
+    '12.png',
+    '13.png',
+    '14.png',
+  ];
 
-  const [bgColor, setBgColor] = useState(colors[2]);
+  const [bgSolid, setBgSolid] = useState(solid[2]);
+  const [bgTexture, setBgTexture] = useState('1.png');
 
-  const handleBgColorChange = event => {
-    setBgColor(event.target.value);
+  const handleBgSolidChange = event => {
+    setBgSolid(event.target.value);
     setCanvasBackground(event.target.value);
   };
 
-  // return (
-  //   <Stack className={classes.colorPallete}>
-  //     {colors.map((bgColor, index) => (
-  //       <div
-  //         key={index}
-  //         style={{
-  //           backgroundColor: bgColor,
-  //         }}
-  //         className={classes.color}
-  //         onClick={() => setCanvasBackground(bgColor)}
-  //       />
-  //     ))}
-  //   </Stack>
-  // );
+  const handleBgTextureChange = event => {
+    setBgTexture(event.target.value);
+    console.log(`/texture-image/${event.target.value}`);
+    setCavasBackgroundImage(`/texture-image/${event.target.value}`);
+  };
 
   return (
-    <FormControl fullWidth>
-      <InputLabel id="demo-simple-select-label">Color</InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={bgColor}
-        label="Color"
-        onChange={handleBgColorChange}
-        autoWidth
-      >
-        {colors.map((bgColor, index) => (
-          <MenuItem value={bgColor} key={index}>
-            <Grid container>
-              <Grid item xs={12}>
-                <div
-                  style={{
-                    backgroundColor: bgColor,
-                  }}
-                  className={classes.bgColors}
-                />
-              </Grid>
-            </Grid>
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Box>
+      <Box>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Solid</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={bgSolid}
+            label="Color"
+            onChange={handleBgSolidChange}
+            SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 6 } }}
+          >
+            {solid.map((bgSolid, index) => (
+              <MenuItem value={bgSolid} key={index}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <div
+                      style={{
+                        backgroundColor: bgSolid,
+                      }}
+                      className={classes.bgColors}
+                    />
+                  </Grid>
+                </Grid>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box mt={1}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Texture</InputLabel>
+          <Select
+            SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 2 } }}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={bgTexture}
+            label="Color"
+            onChange={handleBgTextureChange}
+          >
+            {textures.map((texture, index) => (
+              <MenuItem value={texture} key={index}>
+                <img key={index} src={`/texture-image/${texture}`} className={classes.texture} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+    </Box>
   );
 };
 

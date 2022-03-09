@@ -167,6 +167,7 @@ const Dashboard = () => {
           <ContactSupport
             handleModalAndSnackbar={handleModalAndSnackbar}
             toggleContactModal={toggleContactModal}
+            email_from={process.env.REACT_APP_CREATER_EMAIL}
           />
         </Card>
       </Modal>

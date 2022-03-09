@@ -6,13 +6,29 @@ import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
-import { SAVE_DESIGN } from '../../store/redux/types';
+import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
+import { fill } from 'lodash';
+import { clearDesign } from '../../store/redux/actions/design';
 
-const useEditor = canvasId => {
+import {
+  CANVAS_WIDTH_DESKTOP,
+  CANVAS_HEIGHT_DESKTOP,
+  CANVAS_WIDTH_MOBILE,
+  CANVAS_HEIGHT_MOBILE,
+  CANVAS_WIDTH_TABLET,
+  CANVAS_HEIGHT_TABLET,
+} from '../../configs/const';
+
+const useEditor = mode => {
+  const canvasShape = useSelector(state =>
+    mode === 'front' ? state.canvas.frontShape : state.canvas.backShape,
+  );
+  const canvasMode = useSelector(state => state.canvas.mode);
+
   let [canvas, setCanvas] = useState();
   let [canvasJSON, setCanvasJSON] = useState();
   let [canvasName, setCanvasName] = useState();
-  let [miniature, setMiniature] = useState();
+  const [counter, setCounter] = useState(0);
   const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
@@ -20,17 +36,17 @@ const useEditor = canvasId => {
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const size = {
-    width: 450,
-    height: 450,
+    width: CANVAS_WIDTH_DESKTOP,
+    height: CANVAS_HEIGHT_DESKTOP,
   };
   const sizeMobile = {
-    width: 225,
-    height: 225,
+    width: CANVAS_WIDTH_MOBILE,
+    height: CANVAS_HEIGHT_MOBILE,
   };
 
   const sizeTablet = {
-    width: 340,
-    height: 340,
+    width: CANVAS_WIDTH_TABLET,
+    height: CANVAS_HEIGHT_TABLET,
   };
 
   let canvasProperties = {
@@ -111,9 +127,180 @@ const useEditor = canvasId => {
   };
 
   useEffect(() => {
-    setC2(document.getElementById('static'));
-    setCtx2(document.getElementById('static').getContext('2d'));
+    setC2(document.getElementById(`${mode}-canvas-preview`));
+    var ctx = document.getElementById(`${mode}-canvas-preview`).getContext('2d');
+    setCtx2(ctx);
+    setCounter(counter + 1);
   }, []);
+
+  const updateShape = () => {
+    const canvasWrapper = document.getElementById(`${mode}-canvas-wrapper`);
+    const canvasContainer = document.getElementById(`${mode}-canvas-container`);
+
+    const circle = new fabric.Circle({
+      radius: isMobile ? CANVAS_HEIGHT_MOBILE / 2 : CANVAS_WIDTH_DESKTOP / 2,
+    });
+
+    const rect = new fabric.Rect({
+      width: isMobile ? CANVAS_WIDTH_MOBILE : CANVAS_WIDTH_DESKTOP,
+      height: isMobile ? CANVAS_HEIGHT_MOBILE : CANVAS_HEIGHT_DESKTOP,
+    });
+
+    const p1 = { left: 0, top: 0 };
+    const p2 = { left: canvas.width, top: 0 };
+    const p3 = { left: canvas.width / 2, top: canvas.height };
+
+    const triangle = new fabric.Polygon([
+      { x: p1.left, y: p1.top },
+      { x: p2.left, y: p2.top },
+      { x: p3.left, y: p3.top },
+    ]);
+
+    const canvasClipPaths = [
+      'circle(225px at center)',
+      'none',
+      'polygon(0px 0px, 450px 0px, 225px 450px)',
+    ];
+
+    const mobileCanvasClipPaths = [
+      'circle(175px at center)',
+      'none',
+      'polygon(0px 0px, 350px 0px, 175px 350px)',
+    ];
+
+    const previewClipPaths = ['circle(20px at center)', 'none', 'polygon(0 0, 100% 0, 50% 100%)'];
+
+    let json;
+
+    switch (canvasShape) {
+      case 'circle':
+        if (canvas.backgroundImage) {
+          canvas.backgroundImage.scaleX = isMobile ? 0.4 : 0.38;
+          canvas.backgroundImage.scaleY = isMobile ? 0.4 : 0.38;
+        }
+        canvasContainer.style.removeProperty('padding');
+        canvasContainer.style.removeProperty('height');
+        canvasContainer.style.removeProperty('width');
+        canvasContainer.style.removeProperty('position');
+        canvasContainer.style.removeProperty('background');
+        canvasContainer.style.removeProperty('clip-path');
+
+        canvasWrapper.style.removeProperty('position');
+        canvasWrapper.style.removeProperty('top');
+        canvasWrapper.style.removeProperty('left');
+
+        console.log('canvas', canvas);
+
+        canvas.clipPath = circle;
+        json = JSON.stringify(canvas);
+
+        canvas.renderAll();
+
+        c2.style.clipPath = previewClipPaths[0];
+        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+
+        canvasContainer.style.borderRadius = '50%';
+
+        canvasWrapper.style.clipPath = isMobile ? mobileCanvasClipPaths[0] : canvasClipPaths[0];
+
+        break;
+      case 'square':
+        canvasContainer.style.removeProperty('padding');
+        canvasContainer.style.removeProperty('position');
+        canvasContainer.style.removeProperty('background');
+        canvasContainer.style.removeProperty('clip-path');
+
+        canvasWrapper.style.removeProperty('position');
+        canvasWrapper.style.removeProperty('top');
+        canvasWrapper.style.removeProperty('left');
+
+        canvasWrapper.style.clipPath = isMobile ? mobileCanvasClipPaths[1] : canvasClipPaths[1];
+        canvas.clipPath = rect;
+        json = JSON.stringify(canvas);
+
+        canvas.renderAll();
+
+        c2.style.clipPath = previewClipPaths[1];
+        canvasContainer.style.borderRadius = isMobile ? '1px' : '5px';
+        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+        break;
+      case 'triangle':
+        canvasContainer.style.removeProperty('border');
+        canvasContainer.style.removeProperty('border-radius');
+
+        canvas.clipPath = triangle;
+        json = JSON.stringify(canvas);
+
+        canvas.renderAll();
+
+        c2.style.clipPath = previewClipPaths[2];
+
+        canvasContainer.style.clipPath = isMobile
+          ? 'polygon(0px 0px, 352px 0px, 176px 352px)'
+          : 'polygon(0px 0px, 454px 0px, 227px 454px)';
+        canvasContainer.style.background = 'black';
+        canvasContainer.style.padding = '0';
+        canvasContainer.style.height = isMobile ? '352px' : '454px';
+        canvasContainer.style.width = isMobile ? '352px' : '454px';
+        canvasContainer.style.position = 'relative';
+
+        canvasWrapper.style.clipPath = isMobile ? mobileCanvasClipPaths[2] : canvasClipPaths[2];
+        canvasWrapper.style.background = '#fff';
+        canvasWrapper.style.position = 'absolute';
+        canvasWrapper.style.top = isMobile ? '1px' : '2px';
+        canvasWrapper.style.left = isMobile ? '1px' : '2px';
+        break;
+      default:
+        canvas.clipPath = rect;
+        break;
+    }
+
+    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+  };
+
+  const loadJson = (canvas, json) => {
+    console.log('loading json');
+    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
+      canvasProperties.canvasFill = canvas.backgroundColor;
+
+      canvas.on({
+        'selection:created': function () {
+          let selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            applyProperties(selectedObject);
+          }
+        },
+        'object:added': e => {
+          const selectedObject = e.target;
+          applyProperties(selectedObject);
+          localStorage.setItem('design', canvas.toDataURL());
+          resetPanels();
+        },
+      });
+    });
+    if (canvas.getObjects().length == 0) {
+      const text = new fabric.Textbox('s', {
+        left: 40,
+        top: 100,
+        opacity: 0.1,
+        fontSize: 5,
+        hasControls: false,
+        hasRotatingPoint: false,
+        lockMovementX: true,
+        lockMovementY: true,
+      });
+      canvas.add(text);
+    }
+    canvas.renderAll();
+
+    afterRender();
+  };
+
+  useEffect(() => {
+    if (canvasJSON) {
+      loadJson(canvas, canvasJSON);
+    }
+  }, [canvasJSON]);
 
   useLayoutEffect(() => {
     if (firstUpdate.current) {
@@ -121,27 +308,7 @@ const useEditor = canvasId => {
       return;
     }
 
-    if (canvasJSON) {
-      canvas.loadFromJSON(canvasJSON, canvas.renderAll.bind(canvas), function (o, object) {
-        canvasProperties.canvasFill = canvas.backgroundColor;
-
-        canvas.on({
-          'selection:created': function () {
-            let selectedObject = canvas.getActiveObject();
-            if (selectedObject) {
-              applyProperties(selectedObject);
-            }
-          },
-          'object:added': e => {
-            const selectedObject = e.target;
-            applyProperties(selectedObject);
-            localStorage.setItem('design', canvas.toDataURL());
-            resetPanels();
-          },
-        });
-      });
-      afterRender();
-    }
+    updateShape();
 
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
@@ -332,10 +499,11 @@ const useEditor = canvasId => {
     var originalVP = canvas.viewportTransform;
     // place the canvas on center of the preview
     if (isMobile) {
-      canvas.viewportTransform = [0.21, 0, 0, 0.21, 0, 0];
+      canvas.viewportTransform = [0.14, 0, 0, 0.14, 0, 0];
     } else {
       canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
     }
+
     copy(canvas.toCanvasElement(), canvas);
     canvas.viewportTransform = originalVP;
   }
@@ -767,12 +935,14 @@ const useEditor = canvasId => {
 
   const setCanvasFill = bgcolor => {
     canvasProperties.canvasFill = bgcolor;
+    if (canvasProperties.canvasImage) canvasProperties.canvasImage = '';
     if (!canvasProperties.canvasImage) {
+      canvas.setBackgroundImage(null);
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
+      afterRender();
     }
     //setMiniature(canvas.toDataURL());
-    afterRender();
   };
 
   const extend = (obj, id) => {
@@ -785,19 +955,41 @@ const useEditor = canvasId => {
     })(obj.toObject);
   };
 
-  const setCanvasImage = () => {
-    const self = this;
+  const setCanvasImage = imgUrl => {
+    canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
-      canvas.setBackgroundColor(
-        new fabric.Pattern({
-          source: canvasProperties.canvasImage,
-          repeat: 'repeat',
-        }),
-        () => {
-          self.canvasProperties.canvasFill = '';
-          self.canvas.renderAll();
-        },
-      );
+      // fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
+
+      // });
+
+      const image = new Image();
+      image.src = canvasProperties.canvasImage;
+      image.onload = function () {
+        const imgInstance = new fabric.Image(image);
+        imgInstance.set({
+          left: 0,
+          top: 0,
+          angle: 0,
+        });
+        imgInstance.scaleToWidth(canvas.width);
+        imgInstance.scaleToHeight(canvas.height);
+        canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas));
+        canvas.renderAll();
+        afterRender();
+      };
+
+      // canvas.setBackgroundImage(
+      //   imgUrl,
+      //   () => {
+      //     canvas.width = img.width;
+      //     canvas.height = img.height;
+
+      //     canvas.backgroundColor = '';
+      //     canvas.renderAll();
+      //     afterRender();
+      //   },
+      //   { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
+      // );
     }
   };
 
@@ -1173,98 +1365,152 @@ const useEditor = canvasId => {
     return '+1' + number;
   };
 
-  const exportCanvas = () => {
-    let design;
-    let json = JSON.stringify(canvas);
-    const formatOne = new Image();
-    const formatTwo = new Image();
-    const formatThree = new Image();
-    const formatFour = new Image();
-    const formatFive = new Image();
-    if (isMobile) {
-      var mult1 = 3600 / 225;
-      var mult2 = 2700 / 225;
-      var mult3 = 1050 / 225;
-      var mult4 = 879 / 225;
-    }
-    if (!isMobile) {
-      var mult1 = 3600 / 450;
-      var mult2 = 2700 / 450;
-      var mult3 = 1050 / 450;
-      var mult4 = 879 / 450;
-    }
-    formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
-    formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
-    formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
-    formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
-    formatFive.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
-    formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
-    formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
-    formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
-    formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
-    formatFive.src = changedpi.changeDpiDataUrl(formatFive.src, 300);
+  // const isCanvasEmpty = canvas => {
+  //   const blank = document.createElement('canvas');
 
-    const canvas2 = document.createElement('canvas');
-    const ctx2 = canvas2.getContext('2d');
-    canvas2.width = 879;
-    canvas2.height = 1833;
+  //   blank.width = canvas.width;
+  //   blank.height = canvas.height;
 
-    const backgroundColor = canvas.backgroundColor;
-    // ctx2.fillStyle = '#000080';
-    ctx2.fillStyle = backgroundColor;
-    ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+  //   console.log(mode, 'is empty: ', canvas, blank);
+  //   return canvas.toDataURL() === blank.toDataURL();
+  // };
+  // function isCanvasEmpty(canvas) {
+  //   const context = canvas.getContext('2d');
 
-    var myImage = new Image();
-    myImage.src = formatFour.src;
+  //   const pixelBuffer = new Uint32Array(
+  //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+  //   );
+  //   console.log('canvas', pixelBuffer);
+  //   return !pixelBuffer.some(color => color !== 0);
+  // }
 
-    myImage.onload = function () {
-      ctx2.drawImage(
-        myImage,
-        canvas2.width / 2 - myImage.width / 2,
-        canvas2.height / 2 - myImage.height / 2,
-      );
-      formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
+  function isCanvasEmpty(canvas) {
+    return !canvas
+      .getContext('2d')
+      .getImageData(0, 0, canvas.width, canvas.height)
+      .data.some(channel => channel !== 0);
+  }
+  // function isCanvasBlank(canvas) {
+  //   const context = canvas.getContext('2d');
+
+  //   const pixelBuffer = new Uint32Array(
+  //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+  //   );
+
+  //   return !pixelBuffer.some(color => color !== 0);
+  // }
+
+  const exportCanvas = mode => {
+    if (!isCanvasEmpty(canvas)) {
+      console.log('canvas no empty call', mode);
+      let json = JSON.stringify(canvas);
+
+      const formatOne = new Image();
+      const formatTwo = new Image();
+      const formatThree = new Image();
+      const formatFour = new Image();
+      const formatFive = new Image();
+      if (isMobile) {
+        var mult1 = 3600 / CANVAS_WIDTH_MOBILE;
+        var mult2 = 2700 / CANVAS_WIDTH_MOBILE;
+        var mult3 = 1050 / CANVAS_WIDTH_MOBILE;
+        var mult4 = 879 / CANVAS_WIDTH_MOBILE;
+      }
+      if (!isMobile) {
+        var mult1 = 3600 / CANVAS_WIDTH_DESKTOP;
+        var mult2 = 2700 / CANVAS_WIDTH_DESKTOP;
+        var mult3 = 1050 / CANVAS_WIDTH_DESKTOP;
+        var mult4 = 879 / CANVAS_WIDTH_DESKTOP;
+      }
+      formatOne.src = canvas.toDataURL({ format: 'png', multiplier: mult1 });
+      formatTwo.src = canvas.toDataURL({ format: 'png', multiplier: mult2 });
+      formatThree.src = canvas.toDataURL({ format: 'png', multiplier: mult3 });
+      formatFour.src = canvas.toDataURL({ format: 'png', multiplier: mult4 });
+      formatFive.src = canvas.toDataURL({ format: 'png', multiplier: 1 });
+      formatOne.src = changedpi.changeDpiDataUrl(formatOne.src, 300);
+      formatTwo.src = changedpi.changeDpiDataUrl(formatTwo.src, 300);
+      formatThree.src = changedpi.changeDpiDataUrl(formatThree.src, 300);
       formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
+      formatFive.src = changedpi.changeDpiDataUrl(formatFive.src, 300);
 
-      design = {
-        designName: canvasName === undefined ? 'default' : canvasName,
-        designJson: json,
-        designImages: [
-          {
-            name: '3600x3600',
-            data: formatOne.src,
-          },
-          {
-            name: '2700x2700',
-            data: formatTwo.src,
-          },
+      const canvas2 = document.createElement('canvas');
+      const ctx2 = canvas2.getContext('2d');
+      canvas2.width = 879;
+      canvas2.height = 1833;
 
-          {
-            name: '1050x1050',
-            data: formatThree.src,
-          },
-          {
-            name: '879x1833',
-            data: formatFour.src,
-          },
-          {
-            name: 'thumbnail',
-            data: formatFive.src,
-          },
-        ],
+      const backgroundColor = canvas.backgroundColor;
+      ctx2.fillStyle = backgroundColor;
+      ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+
+      var myImage = new Image();
+      myImage.src = formatFour.src;
+
+      myImage.onload = function () {
+        ctx2.drawImage(
+          myImage,
+          canvas2.width / 2 - myImage.width / 2,
+          canvas2.height / 2 - myImage.height / 2,
+        );
+        formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
+        formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
+
+        const design = {
+          designName: canvasName === undefined ? 'default' : canvasName,
+          designJson: json,
+          designImages: [
+            {
+              name: '3600x3600',
+              data: formatOne.src,
+            },
+            {
+              name: '2700x2700',
+              data: formatTwo.src,
+            },
+
+            {
+              name: '1050x1050',
+              data: formatThree.src,
+            },
+            {
+              name: '879x1833',
+              data: formatFour.src,
+            },
+            {
+              name: 'thumbnail',
+              data: formatFive.src,
+            },
+          ],
+        };
+
+        switch (mode) {
+          case 'front':
+            dispatch({ type: SAVE_FRONT_DESIGN, payload: design });
+            break;
+          case 'back':
+            dispatch({ type: SAVE_BACK_DESIGN, payload: design });
+            break;
+          default:
+            break;
+        }
       };
-      dispatch({ type: SAVE_DESIGN, payload: design });
-    };
+    } else {
+      switch (mode) {
+        case 'front':
+          dispatch({ type: SAVE_FRONT_DESIGN, payload: null });
+          break;
+        case 'back':
+          dispatch({ type: SAVE_BACK_DESIGN, payload: null });
+          break;
+        default:
+          break;
+      }
+    }
   };
 
-  const canvasReady = (canvasReady, canvasJSON, designName) => {
-    setCanvas(canvasReady);
+  const canvasReady = (canvas, canvasJSON, designName) => {
+    setCanvas(canvas);
     setCanvasName(designName);
     setCanvasJSON(canvasJSON);
-  };
-
-  const getMiniature = () => {
-    return miniature;
   };
 
   return {
@@ -1285,7 +1531,7 @@ const useEditor = canvasId => {
     setCanvasFill,
     cropImage,
     cropImageDone,
-    getMiniature,
+
     exportCanvas,
     saveCanvasToJSON,
     finishTextEditing,

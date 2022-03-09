@@ -1,6 +1,12 @@
 export const baseURL = `${process.env.REACT_APP_SERVER_URL}/api/v1`;
 export const VENDOR_PROFIT_MARGIN = 0.7;
 export const MERCHPALS_PROFIT_MARGIN = 0.3;
+export const CANVAS_WIDTH_DESKTOP = 450;
+export const CANVAS_HEIGHT_DESKTOP = 450;
+export const CANVAS_WIDTH_MOBILE = 350;
+export const CANVAS_HEIGHT_MOBILE = 350;
+export const CANVAS_WIDTH_TABLET = 340;
+export const CANVAS_HEIGHT_TABLET = 340;
 
 export const calculateProfit = (price, shippingCost, costPrice) => {
   return (price - shippingCost - costPrice - (0.029 * price + 0.3)) * 0.7;
@@ -18,6 +24,9 @@ export const calculateOrderProfit = order => {
 };
 
 export const dataURLtoFile = (dataurl, filename) => {
+  if (!dataurl) {
+    return null;
+  }
   var arr = dataurl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
@@ -38,8 +47,13 @@ export const getJSONFromUrl = function (url, callback) {
   xhr.onload = function () {
     var status = xhr.status;
     if (status === 200) {
-      callback(null, xhr.response);
+      if (xhr.response === '') {
+        callback(null, 'empty response');
+      } else {
+        callback(null, xhr.response);
+      }
     } else {
+      console.log('Request failed.  Returned status of ' + status);
       callback(status, xhr.response);
     }
   };

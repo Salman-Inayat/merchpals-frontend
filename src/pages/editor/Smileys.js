@@ -25,6 +25,22 @@ const useStyles = makeStyles(theme => ({
       display: 'inline-block',
     },
   },
+  // smiliesPaper: {
+  //   position: 'absolute',
+  //   top: '280px',
+  //   left: '62%',
+  //   transform: 'translate(-50%, -50%)',
+  //   width: '150px',
+  //   height: '170px',
+  //   padding: '8px 8px',
+  //   backgroundColor: '#fff',
+  //   [theme.breakpoints.down('sm')]: {
+  //     width: '120px',
+
+  //     top: '230px',
+  //     left: '85%',
+  //   },
+  // },
 }));
 
 const Smileys = ({ addPng, className }) => {
@@ -144,27 +160,22 @@ const Smileys = ({ addPng, className }) => {
   };
 
   return (
-    <div id="smileyContainer" hidden>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">
-          Smiley
-        </InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={smiley}
-          label="Color"
-          onChange={handleSmileyChange}
-          autoWidth
-        >
-          {images.map((image, index) => (
-            <MenuItem value={image} key={index}>
-              <img key={index} src={`/svg-icons/${image}`} className={classes.smileys} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+    <FormControl fullWidth>
+      <InputLabel id="demo-simple-select-label">Smiley</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={smiley}
+        label="Color"
+        onChange={handleSmileyChange}
+      >
+        {images.map((image, index) => (
+          <MenuItem value={image} key={index}>
+            <img key={index} src={`/svg-icons/${image}`} className={classes.smileys} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };
 

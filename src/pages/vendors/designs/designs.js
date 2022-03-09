@@ -17,11 +17,9 @@ import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import BackButton from '../../../components/backButton';
 import { useMediaQuery } from 'react-responsive';
-
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-
 const useStyle = makeStyles(theme => ({
   designContainer: {
     padding: '1rem 3rem',
@@ -29,7 +27,6 @@ const useStyle = makeStyles(theme => ({
       padding: '0rem',
     },
   },
-
   card: {
     borderRadius: '10px',
   },
@@ -44,7 +41,6 @@ const useStyle = makeStyles(theme => ({
     alignItems: 'center',
   },
 }));
-
 const VendorDesigns = () => {
   const navigate = useNavigate();
   const [designs, setDesigns] = useState([]);
@@ -54,14 +50,12 @@ const VendorDesigns = () => {
     type: 'success',
     message: 'Design added successfully',
   });
-
   const classes = useStyle();
   const [designImage, setDesignImage] = useState([]);
   let isMobile = useMediaQuery({ maxWidth: 767 });
   useEffect(() => {
     getDesigns();
   }, []);
-
   const getDesigns = async () => {
     axios
       .get(`${baseURL}/store/designs`, {
@@ -74,7 +68,7 @@ const VendorDesigns = () => {
         designs.map(design => {
           setDesignImage(prevState => [
             ...prevState,
-            { id: design._id, url: design.designImages[4].imageUrl },
+            { id: design._id, url: design.frontDesign.designImages[4].imageUrl },
           ]);
         });
         setFetched(true);
@@ -82,20 +76,17 @@ const VendorDesigns = () => {
       })
       .catch(error => console.log({ error }));
   };
-
   const navigateToCreate = () => {
-    if (designs.length === 5) {
+    if (designs.length == 5) {
       setSnackBarToggle({
         visible: true,
         type: 'error',
         message: 'Designs limit reached',
       });
-
       return;
     }
     navigate('/vendor/create-design');
   };
-
   const handleSnackBarClose = () =>
     setSnackBarToggle({
       ...snackBarToggle,
@@ -114,9 +105,13 @@ const VendorDesigns = () => {
           alignItems="center"
         >
           <BackButton />
-          {fetched && (
+          {fetched ? (
             <Button onClick={navigateToCreate} variant="contained" size="medium">
               Add new Design
+            </Button>
+          ) : (
+            <Button onClick={() => navigate('/vendor/store')} variant="contained" size="medium">
+              Create a Store
             </Button>
           )}
         </Grid>
@@ -159,12 +154,10 @@ const VendorDesigns = () => {
           </Grid>
         </Grid>
       </Grid>
-
       <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </LoggedInVendor>
   );
 };
-
 export default VendorDesigns;

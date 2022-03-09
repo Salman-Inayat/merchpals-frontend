@@ -21,7 +21,9 @@ import store from '../../store';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useMediaQuery } from 'react-responsive';
-
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   product: {
     border: '1px solid #ccc',
@@ -197,7 +199,8 @@ const ProductCard = ({
 }) => {
   const classes = useStyles();
   const [design, setDesign] = useState('');
-
+  const [iphoneDesign, setIphoneDesign] = useState('');
+  const [backDesignImage, setBackDesignImage] = useState();
   const [radioCardColor, setRadioCardColor] = useState('');
   const [check, setCheck] = useState('');
 
@@ -205,12 +208,21 @@ const ProductCard = ({
 
   useEffect(() => {
     setTimeout(() => {
-      setDesign(store.getState().design.design.designImages[4].data);
+      const design =
+        store.getState().design?.design?.front?.designImages[4]?.data ||
+        store.getState().design?.design?.back?.designImages[4]?.data;
+      const iphoneDesign =
+        store.getState().design?.design?.front?.designImages[3]?.data ||
+        store.getState().design?.design?.back?.designImages[3]?.data;
+      console.log('desogn', { design });
+      setDesign(design);
+      setIphoneDesign(iphoneDesign);
+      setBackDesignImage(product.image);
     }, 1000);
   }, []);
 
   const renderBgColor = () => {
-    let bgColor = '#ffffff';
+    let bgColor = '#fff';
 
     if (selectedVariants[product._id]) {
       const productSelectedVariants = selectedVariants[product._id];
@@ -218,7 +230,7 @@ const ProductCard = ({
       bgColor = product.colors.find(c => c.id === lastSelectedColor)?.label;
       bgColor =
         bgColor === 'white'
-          ? '#ffffff'
+          ? '#fff'
           : bgColor === 'navy'
           ? '#262d4f '
           : bgColor === 'black'
@@ -239,7 +251,6 @@ const ProductCard = ({
         : '';
     setRadioCardColor(bgColor);
   };
-
   return (
     <>
       <Typography
@@ -274,28 +285,87 @@ const ProductCard = ({
 
         <CardMedia
           component="img"
-          image={`${product.image}`}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
           alt=""
           className={classes.productImage}
           style={{
             border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
+            backgroundImage: product.name === 'Case' && `url(${iphoneDesign})`,
+
+            backgroundSize: '37% 80%',
+          }}
+          onMouseOver={() => {
+            if (store.getState().design?.design?.front?.designImages[4]?.data) {
+              console.log('front');
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                (setDesign(
+                  store.getState().design?.design?.back?.designImages[4]?.data ||
+                    store.getState().design?.design?.front?.designImages[4]?.data,
+                ),
+                product.slug === 'hoodie'
+                  ? setBackDesignImage(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setBackDesignImage(BackLong)
+                  : setBackDesignImage(BackTee));
+            }
+          }}
+          onMouseLeave={() => {
+            if (store.getState().design?.design?.front?.designImages[4]?.data) {
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
+                setBackDesignImage(product.image));
+            }
           }}
         />
-        <Box>
-          <img
-            className={[
-              classes.design,
-              product.name === 'Poster'
-                ? classes.poster
-                : product.name === 'Case'
-                ? classes.phoneCase
-                : product.name === 'Mug'
-                ? classes.mug
-                : '',
-            ].join(' ')}
-            src={design}
-          />
-        </Box>
+        {product.name !== 'Case' && (
+          <Box>
+            {design && (
+              <img
+                className={[
+                  classes.design,
+                  product.name === 'Poster'
+                    ? classes.poster
+                    : product.name === 'Case'
+                    ? classes.phoneCase
+                    : product.name === 'Mug'
+                    ? classes.mug
+                    : '',
+                ].join(' ')}
+                src={design}
+                onMouseOver={() => {
+                  if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                    console.log('front');
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      (setDesign(
+                        store.getState().design?.design?.back?.designImages[4]?.data ||
+                          store.getState().design?.design?.front?.designImages[4]?.data,
+                      ),
+                      product.slug === 'hoodie'
+                        ? setBackDesignImage(BackHoodie)
+                        : product.slug === 'longsleeve'
+                        ? setBackDesignImage(BackLong)
+                        : setBackDesignImage(BackTee));
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
+                      setBackDesignImage(product.image));
+                  }
+                }}
+              />
+            )}
+          </Box>
+        )}
       </Card>
 
       <Grid justifyContent="center" spacing={3} className={classes.colorGrid} container>
@@ -313,11 +383,32 @@ const ProductCard = ({
                 {product.colors.length !== 1 &&
                   product.colors.label !== 'n/a' &&
                   product.colors.map((pm, i) => (
-                    <>
-                      {/* {console.log('radio label', pm.label, i)} */}
-                      <Grid key={`colors-${i}`} item md={2} xs={2}>
-                        <Box
-                          sx={{
+                    <Grid key={`colors-${i}`} item md={2} xs={2}>
+                      <Box
+                        sx={{
+                          border: selectedVariants[product._id]?.includes(pm.id)
+                            ? '2px solid #116DFF'
+                            : pm.label === 'white'
+                            ? '1px solid #00000066'
+                            : '',
+                          // border: selectedVariants[product._id]?.includes(pm.id)
+                          //   ? pm.label === '#ffffff'
+                          //     ? ''
+                          //     : '2px solid #116dff'
+                          //   : '',
+                        }}
+                        className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
+                      >
+                        {/* <Radio
+                          style={{
+                            backgroundColor:
+                              pm.label === 'white'
+                                ? '#fff'
+                                : pm.label === 'navy'
+                                ? '#262d4f '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
                             border: selectedVariants[product._id]?.includes(pm.id)
                               ? '2px solid #116DFF'
                               : pm.label === '#ffffff'
@@ -329,12 +420,18 @@ const ProductCard = ({
                             //     : '2px solid #116dff'
                             //   : '',
                           }}
-                          className={islargeDesktop ? classes.largeRadioBox : classes.radioBox}
-                        >
-                          <Radio
-                            checked={pm.label === check}
-                            onClick={e => setCheck(e.target.value)}
-                            sx={{
+                          value={pm.label}
+                          sx={{
+                            color:
+                              pm.label === 'white'
+                                ? '#ffffff'
+                                : pm.label === 'navy'
+                                ? '#262d4f '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
+
+                            '&.Mui-checked': {
                               color:
                                 pm.label === 'white'
                                   ? '#ffffff'
@@ -343,41 +440,58 @@ const ProductCard = ({
                                   : pm.label === 'black'
                                   ? '#121616'
                                   : '',
+                              border: 'none',
+                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                            },
+                          }}
+                          className={classes.radioButton}
+                        /> */}
+                        <Radio
+                          checked={pm.label === check}
+                          onClick={e => setCheck(e.target.value)}
+                          sx={{
+                            color:
+                              pm.label === 'white'
+                                ? '#FFFFFF'
+                                : pm.label === 'navy'
+                                ? '#262D4F '
+                                : pm.label === 'black'
+                                ? '#121616'
+                                : '',
 
-                              '&.Mui-checked': {
-                                color:
-                                  pm.label === 'white'
-                                    ? '#ffffff'
-                                    : pm.label === 'navy'
-                                    ? '#262d4f '
-                                    : pm.label === 'black'
-                                    ? '#121616'
-                                    : '',
-                                border: 'none',
-                                boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                              },
-                            }}
-                            style={{
-                              backgroundColor:
+                            '&.Mui-checked': {
+                              color:
                                 pm.label === 'white'
-                                  ? '#fff'
+                                  ? '#FFFFFF'
                                   : pm.label === 'navy'
-                                  ? '#262d4f '
+                                  ? '#262D4F '
                                   : pm.label === 'black'
                                   ? '#121616'
                                   : '',
-                              border: selectedVariants[product._id]?.includes(pm.id)
-                                ? '2px solid #116dff'
-                                : pm.label === 'white'
-                                ? '1px solid #00000066'
+                              border: 'none',
+                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                            },
+                          }}
+                          style={{
+                            backgroundColor:
+                              pm.label === 'white'
+                                ? '#fff'
+                                : pm.label === 'navy'
+                                ? '#262D4F '
+                                : pm.label === 'black'
+                                ? '#121616'
                                 : '',
-                            }}
-                            value={pm.label}
-                            className={classes.radioButton}
-                          />
-                        </Box>
-                      </Grid>
-                    </>
+                            border: selectedVariants[product._id]?.includes(pm.id)
+                              ? '2px solid #116DFF'
+                              : pm.label === 'white'
+                              ? '1px solid #00000066'
+                              : '',
+                          }}
+                          value={pm.label}
+                          className={classes.radioButton}
+                        />
+                      </Box>
+                    </Grid>
                   ))}
               </Grid>
             </RadioGroup>

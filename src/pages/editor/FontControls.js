@@ -7,8 +7,27 @@ import {
   InputLabel,
   Select,
   Button,
+  Paper,
 } from '@mui/material';
-
+import { makeStyles } from '@mui/styles';
+const useStyles = makeStyles(theme => ({
+  fontModal: {
+    position: 'absolute',
+    top: '180px',
+    left: '115%',
+    transform: 'translate(-50%, -50%)',
+    width: '150px',
+    height: '170px',
+    padding: '8px 8px',
+    backgroundColor: '#fff',
+    zIndex: '1',
+    [theme.breakpoints.down('sm')]: {
+      width: '155px',
+      top: '110px',
+      left: '80%',
+    },
+  },
+}));
 const FontColor = props => {
   const [fontColor, setFontColor] = useState('#000000');
 
@@ -152,10 +171,7 @@ const FontFamily = props => {
                     padding: '2px',
                   }}
                 >
-                  <p
-                    id={`style${index + 1}`}
-                    style={{ fontFamily: `${fontFamily}` }}
-                  >
+                  <p id={`style${index + 1}`} style={{ fontFamily: `${fontFamily}` }}>
                     {fontFamily}
                   </p>
                 </div>
@@ -170,33 +186,24 @@ const FontFamily = props => {
 
 const FontControls = props => {
   const { setFontFamily, setFontColor } = props;
-
+  const classes = useStyles();
   const handleTextEditingFinished = () => {
     props.handleTextEditingFinished();
   };
 
   return (
-    <div id="textControls" hidden>
-      <Stack
-        direction="column"
-        spacing={2}
-        alignItems="center"
-        alignContent="center"
-      >
+    <Paper elevation={5}>
+      <Stack direction="column" spacing={2} alignItems="center" alignContent="center">
         <FontFamily setFontFamily={setFontFamily} />
         <FontColor setFontColor={setFontColor} />
         <div id="editing-button" hidden>
-          <Button
-            onClick={handleTextEditingFinished}
-            variant="contained"
-            color="primary"
-          >
+          <Button onClick={handleTextEditingFinished} variant="contained" color="primary">
             {' '}
             Done
           </Button>
         </div>
       </Stack>
-    </div>
+    </Paper>
   );
 };
 

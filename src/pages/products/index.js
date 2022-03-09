@@ -48,6 +48,9 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -205,7 +208,7 @@ const Product = () => {
 
   const [color, setColor] = useState({ id: '', label: '' });
   const [size, setSize] = useState({ id: '', label: '' });
-
+  const [productColor, setProductColor] = useState('');
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -217,8 +220,9 @@ const Product = () => {
   const [shipping, setShipping] = useState(false);
   const [details, setDetails] = useState(false);
   const [index, setIndex] = useState(0);
-
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
+  const [designImage, setDesignImage] = useState('');
+  const [backDesignImage, setBackDesignImage] = useState();
   const fetchedProduct = useSelector(state => state.product?.product);
 
   const handleDetailsChange = data => {
@@ -240,10 +244,28 @@ const Product = () => {
 
   useEffect(() => {
     if (fetchedProduct) {
-      const designUrl =
-        fetchedProduct?.designId?.designImages?.length > 3
-          ? fetchedProduct.designId?.designImages[4].imageUrl
-          : '';
+      let designUrl;
+
+      fetchedProduct.name === 'Case'
+        ? (designUrl =
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+              ? fetchedProduct.designId?.frontDesign.designImages[3].imageUrl
+              : '')
+        : (designUrl =
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+              ? fetchedProduct.designId?.frontDesign.designImages[4].imageUrl
+              : '');
+      let backDesignUrl;
+      fetchedProduct.name === 'Case'
+        ? (backDesignUrl =
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+              ? fetchedProduct.designId?.frontDesign.designImages[3].imageUrl
+              : '')
+        : (backDesignUrl =
+            fetchedProduct?.designId?.backDesign?.designImages?.length > 1
+              ? fetchedProduct.designId?.backDesign.designImages[1].imageUrl
+              : fetchedProduct.designId?.frontDesign.designImages[4].imageUrl);
+
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
       const formattedProduct = {
@@ -262,19 +284,22 @@ const Product = () => {
         sizes: [...new Map(variantArr.map(item => [item['id'], item])).values()],
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
         design: designUrl,
+        backDesign: backDesignUrl,
       };
       formattedProduct.colors = formattedProduct.colors.sort(function (a, b) {
         return a.id - b.id || a.label.localeCompare(b.label);
       });
-      setSize(formattedProduct.sizes[0]);
       setProduct(formattedProduct);
+      setSize(formattedProduct.sizes[0]);
       setColor(formattedProduct.colors[0]);
+      setDesignImage(formattedProduct.design);
+      setBackDesignImage(fetchedProduct.image);
     }
   }, [fetchedProduct]);
 
   const handleColorChange = event => {
     const selectedColor = product.colors.find(c => c.id === Number(event.target.value));
-    console.log('select coor', selectedColor, event.target.value);
+
     if ((product.colors[0].label === 'white', product.colors[1].label === 'navy')) {
       switch (selectedColor.label) {
         case 'white':
@@ -406,7 +431,13 @@ const Product = () => {
       visible: false,
     });
   };
-  console.log('soret', product, color);
+  let opacity;
+
+  const changeBackground = () => {
+    console.log('changing');
+  };
+  console.log('fetched prodcut', backDesignImage);
+
   return (
     <>
       <Grid container spacing={1} justifyContent="center" alignItems="center">
@@ -450,62 +481,59 @@ const Product = () => {
                   {product.colors?.map(({ id, label }) => {
                     return (
                       <>
-                        {console.log('image color', { id, label })}
+                        {console.log('image color', product.slug, { id, label })}
                         <div
                           className={classes.imageContainer}
                           style={{
                             // backgroundColor: '#121616',
+
                             backgroundColor:
-                              label === 'white'
+                              product.name !== 'Case' && label === 'white'
                                 ? '#ffffff'
                                 : label === 'navy'
                                 ? '#262d4f '
                                 : label === 'black'
                                 ? '#121616'
                                 : '',
+                            backgroundImage: product.name === 'Case' && `url(${designImage})`,
+                            backgroundSize: product.name === 'Case' && '33% 100%',
+                          }}
+                          onMouseOver={() => {
+                            product.slug !== 'case' &&
+                              product.slug !== 'mug' &&
+                              product.slug !== 'poster' &&
+                              (setDesignImage(
+                                product.backDesign !== '' ? product.backDesign : product.design,
+                              ),
+                              product.slug === 'hoodie'
+                                ? setBackDesignImage(BackHoodie)
+                                : product.slug === 'longsleeve'
+                                ? setBackDesignImage(BackLong)
+                                : setBackDesignImage(BackTee));
+                          }}
+                          onMouseLeave={() => {
+                            product.slug !== 'case' &&
+                              product.slug !== 'mug' &&
+                              product.slug !== 'poster' &&
+                              (setDesignImage(product.design), setBackDesignImage(product.image));
                           }}
                         >
-                          <img src={`${product.image}`} alt="" className={classes.image} />
-                          <img src={product.design} alt="design" className={classes.design} />
+                          <img
+                            src={
+                              product.name === 'Case'
+                                ? '/assets/img/FINALCASE.png'
+                                : backDesignImage
+                            }
+                            alt=""
+                            className={classes.image}
+                          />
+                          {product.name !== 'Case' && (
+                            <img src={designImage} alt="design" className={classes.design} />
+                          )}
                         </div>
                       </>
                     );
                   })}
-
-                  {/* <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor: '#ffffff',
-                      // backgroundColor:
-                      //   color.label === 'white'
-                      //     ? '#ffffff'
-                      //     : color.label === 'navy'
-                      //     ? '#262d4f '
-                      //     : color.label === 'black'
-                      //     ? '#121616'
-                      //     : '',
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
-                  </div>
-                  <div
-                    className={classes.imageContainer}
-                    style={{
-                      backgroundColor: '#262d4f',
-                      // backgroundColor:
-                      //   color.label === 'white'
-                      //     ? '#ffffff'
-                      //     : color.label === 'navy'
-                      //     ? '#262d4f '
-                      //     : color.label === 'black'
-                      //     ? '#121616'
-                      //     : '',
-                    }}
-                  >
-                    <img src={`${product.image}`} alt="" className={classes.image} />
-                    <img src={product.design} alt="design" className={classes.design} />
-                  </div> */}
                 </Carousel>
               </Grid>
               <Grid
@@ -520,7 +548,7 @@ const Product = () => {
               >
                 <Stack direction="column" spacing={2} className={classes.stack}>
                   <Typography gutterBottom variant="h3" component="div" align="center">
-                    {product.name}
+                    {`${product.name === 'Case' ? 'Iphone Case' : product.name}`}
                   </Typography>
 
                   <Typography
@@ -544,61 +572,58 @@ const Product = () => {
                     >
                       {product.colors.map(({ id, label }) => {
                         return (
-                          <>
-                            {console.log('radio button color', { id, label })}
-                            <FormControlLabel
-                              style={{ marginLeft: '0px' }}
-                              key={`colors-${id}`}
-                              value={id}
-                              control={
-                                <Radio
-                                  className={classes.radio}
-                                  sx={{
-                                    '&.Mui-checked': {
-                                      '& + .MuiFormControlLabel-label > div': {
-                                        border: '1px solid gray',
-                                      },
+                          <FormControlLabel
+                            style={{ marginLeft: '0px' }}
+                            key={`colors-${id}`}
+                            value={id}
+                            control={
+                              <Radio
+                                className={classes.radio}
+                                sx={{
+                                  '&.Mui-checked': {
+                                    '& + .MuiFormControlLabel-label > div': {
+                                      border: '1px solid gray',
                                     },
+                                  },
+                                }}
+                              />
+                            }
+                            label={
+                              <div
+                                className={classes.color}
+                                style={{
+                                  backgroundColor:
+                                    label === 'white'
+                                      ? '#ffffff'
+                                      : label === 'navy'
+                                      ? '#262d4f '
+                                      : label === 'black'
+                                      ? '#121616'
+                                      : '',
+                                  backgroundImage: `url(${product.image})`,
+                                  backgroundSize: '100% 100%',
+                                  backgroundRepeat: 'no-repeat',
+                                  width: '50px',
+                                  height: '50px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                {' '}
+                                {/* <Typography>Rehman</Typography> */}
+                                {/* <img src={`${product.image}`} height="50" width="50" /> */}
+                                <img
+                                  src={product.design}
+                                  width="15px"
+                                  height="15px"
+                                  style={{
+                                    position: 'absolute',
                                   }}
                                 />
-                              }
-                              label={
-                                <div
-                                  className={classes.color}
-                                  style={{
-                                    backgroundColor:
-                                      label === 'white'
-                                        ? '#ffffff'
-                                        : label === 'navy'
-                                        ? '#262d4f '
-                                        : '#121616',
-
-                                    transition: 'opacity 300ms ease-in',
-                                    backgroundImage: `url(${product.image})`,
-                                    backgroundSize: '100% 100%',
-                                    backgroundRepeat: 'no-repeat',
-                                    width: '50px',
-                                    height: '50px',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  {' '}
-                                  {/* <Typography>Rehman</Typography> */}
-                                  {/* <img src={`${product.image}`} height="50" width="50" /> */}
-                                  <img
-                                    src={product.design}
-                                    width="15px"
-                                    height="15px"
-                                    style={{
-                                      position: 'absolute',
-                                    }}
-                                  />
-                                </div>
-                              }
-                            />
-                          </>
+                              </div>
+                            }
+                          />
                         );
                       })}
                     </RadioGroup>
@@ -634,13 +659,13 @@ const Product = () => {
                             label={
                               <div
                                 className={
-                                  product.slug === 'case' ? classes.caseSize : classes.selectSize
+                                  product.slug === 'Case' ? classes.caseSize : classes.selectSize
                                 }
                               >
                                 <Typography
                                   component="h4"
                                   className={
-                                    product.slug === 'case' ? classes.caseSizeHeading : null
+                                    product.slug === 'Case' ? classes.caseSizeHeading : null
                                   }
                                 >
                                   {label.toUpperCase()}

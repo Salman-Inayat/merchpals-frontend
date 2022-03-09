@@ -5,6 +5,7 @@ import { baseURL, dataURLtoFile } from '../../../../configs/const';
 import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
 import { Products } from '../../../home/steps';
 import { fetchProducts } from '../../../../store/redux/actions/product';
+import { clearDesign } from '../../../../store/redux/actions/design';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../../../store';
 
@@ -16,7 +17,6 @@ const ProductSelection = ({ designName }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  // const [products, setProducts] = useState([]);
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -33,7 +33,7 @@ const ProductSelection = ({ designName }) => {
   }, []);
 
   const postDataToURL = async (url, data) => {
-    axios
+    await axios
       .put(url, data, {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -51,16 +51,20 @@ const ProductSelection = ({ designName }) => {
     let design = store.getState().design.design;
     design.designName = location.state.name;
 
-    const form = new FormData();
-    form.append('designName', design.designName);
-
-    form.append('products', JSON.stringify([...selectedProducts]));
+    let data = {
+      designName: design?.front?.designName,
+      products: JSON.stringify([...selectedProducts]),
+      canvasModes: {
+        front: design?.front != null ? true : false,
+        back: design?.back != null ? true : false,
+      },
+    };
 
     axios
-      .post(`${baseURL}/store/add-design`, form, {
+      .post(`${baseURL}/store/add-design`, data, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       })
       .then(response => {
@@ -68,43 +72,87 @@ const ProductSelection = ({ designName }) => {
 
         const urls = response.data.response;
 
-        const designaVariant1 = urls[0].imageUrl;
-        const designaVariant2 = urls[1].imageUrl;
-        const designaVariant3 = urls[2].imageUrl;
-        const designaVariant4 = urls[3].imageUrl;
-        const designaVariant5 = urls[4].imageUrl;
-        const designJson = urls[5].imageUrl;
+        const frontDesignVariant1 = urls[0].imageUrl;
+        const frontDesignVariant2 = urls[1].imageUrl;
+        const frontDesignVariant3 = urls[2].imageUrl;
+        const frontDesignVariant4 = urls[3].imageUrl;
+        const frontDesignVariant5 = urls[4].imageUrl;
+        const frontDesignJson = urls[5].imageUrl;
 
-        const JSONBlob = new Blob([JSON.stringify(design.designJson)], {
+        const frontJSONBlob = new Blob([JSON.stringify(design?.front?.designJson || '')], {
+          type: 'application/json',
+        });
+
+        const backJSONBlob = new Blob([JSON.stringify(design?.back?.designJson || '')], {
           type: 'application/json',
         });
 
         postDataToURL(
-          designaVariant1,
-          dataURLtoFile(design.designImages[0].data, `${design.designImages[0].name}.png`),
+          frontDesignVariant1,
+          dataURLtoFile(
+            design?.front?.designImages[0]?.data || design?.back?.designImages[0]?.data,
+            `${design?.front?.designImages[0]?.name || design?.back?.designImages[0]?.name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant2,
-          dataURLtoFile(design.designImages[1].data, `${design.designImages[1].name}.png`),
+          frontDesignVariant2,
+          dataURLtoFile(
+            design?.front?.designImages[1]?.data || design?.back?.designImages[1]?.data,
+            `${design?.front?.designImages[1]?.name || design?.back?.designImages[1]?.name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant3,
-          dataURLtoFile(design.designImages[2].data, `${design.designImages[2].name}.png`),
+          frontDesignVariant3,
+          dataURLtoFile(
+            design?.front?.designImages[2]?.data || design?.back?.designImages[2]?.data,
+            `${design?.front?.designImages[2]?.name || design?.back?.designImages[2]?.name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant4,
-          dataURLtoFile(design.designImages[3].data, `${design.designImages[3].name}.png`),
+          frontDesignVariant4,
+          dataURLtoFile(
+            design?.front?.designImages[3]?.data || design?.back?.designImages[3]?.data,
+            `${design?.front?.designImages[3]?.name || design?.back?.designImages[3]?.name}.png`,
+          ),
         );
         postDataToURL(
-          designaVariant5,
-          dataURLtoFile(design.designImages[4].data, `${design.designImages[4].name}.png`),
+          frontDesignVariant5,
+          dataURLtoFile(
+            design?.front?.designImages[4]?.data || design?.back?.designImages[4]?.data,
+            `${design?.front?.designImages[4]?.name || design?.back?.designImages[4]?.name}.png`,
+          ),
         );
 
-        postDataToURL(designJson, JSONBlob);
+        postDataToURL(frontDesignJson, frontJSONBlob);
+
+        if (design?.back != null) {
+          const backDesignVariant1 = urls[6].imageUrl;
+          const backDesignVariant2 = urls[7].imageUrl;
+          const backDesignJson = urls[8].imageUrl;
+
+          postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              design?.back?.designImages[1]?.data || '',
+              `${design?.back?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              design?.back?.designImages[4]?.data || '',
+              `${design?.back?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(backDesignJson, backJSONBlob);
+        }
 
         localStorage.removeItem('design');
         localStorage.removeItem('selectedVariants');
         localStorage.removeItem('designJSON');
+
+        dispatch(clearDesign());
 
         setSnackBarToggle({
           visible: true,

@@ -40,6 +40,7 @@ const EditDesign = () => {
         },
       })
       .then(response => {
+        console.log({ response });
         setDesign(response.data.design);
       })
       .catch(error => console.log({ error: error.response.data.message }));

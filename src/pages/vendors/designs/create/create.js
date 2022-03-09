@@ -41,20 +41,11 @@ const CreateDesign = () => {
   return (
     <LoggedInVendor>
       <BackButton />
-      <Grid mt={5} container mb={3}>
-        <Grid item md={2} xs={12}></Grid>
-        <Grid item md={8} xs={12}>
+      <Grid mt={5} container mb={3} display="flex" justifyContent="center">
+        <Grid item md={12} xs={12}>
           <Editor triggerExport={triggerExport} />
         </Grid>
-        <Grid item md={2} xs={12}></Grid>
-        <Grid
-          mt={4}
-          item
-          md={12}
-          display="flex"
-          justifyContent="center"
-          alignItems=" center"
-        >
+        <Grid mt={4} item md={12} display="flex" justifyContent="center" alignItems=" center">
           <Button variant="contained" onClick={exportAndTriggerSave}>
             Save Design
           </Button>

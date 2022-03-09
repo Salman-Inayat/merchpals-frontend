@@ -127,7 +127,7 @@ function VendorOrderDetails() {
                               ? '#ffffff'
                               : product.productMapping.color.label === 'navy'
                               ? '#262d4f '
-                              : color.label === 'black'
+                              : product.productMapping.color.label === 'black'
                               ? '#121616'
                               : '',
                         }}
@@ -136,7 +136,7 @@ function VendorOrderDetails() {
                       />
                       {product?.vendorProduct?.designId && (
                         <img
-                          src={product.vendorProduct.designId.designImages[4].imageUrl}
+                          src={product.vendorProduct.designId.frontDesign.designImages[4].imageUrl}
                           className={[
                             classes.design,
                             product.vendorProduct.productId.name === 'Poster'

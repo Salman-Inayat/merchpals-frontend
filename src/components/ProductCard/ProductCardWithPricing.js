@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -29,6 +29,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Slide from '@mui/material/Slide';
 import { useMediaQuery } from 'react-responsive';
 import { calculateProfit } from '../../configs/const';
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -175,8 +178,11 @@ const ProductCard = ({
   const [profit, setProfit] = useState(
     calculateProfit(productDefaultPrice, shippingCost, costPrice),
   );
-  const [tempProfit, setTempProfit] = useState();
 
+  const [tempProfit, setTempProfit] = useState();
+  const [designImg, setDesignImg] = useState('');
+  const [backDesignImage, setBackDesignImage] = useState();
+  const [iphoneDesign, setIphoneDesign] = useState('');
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const renderBgColor = () => {
@@ -197,7 +203,20 @@ const ProductCard = ({
     }
     return bgColor;
   };
-
+  useEffect(() => {
+    if (design) {
+      console.log('design images', design, product);
+      setIphoneDesign(
+        design?.frontDesign?.designImages[3]?.imageUrl ||
+          design?.backDesign?.designImages[1]?.imageUrl,
+      );
+      setDesignImg(
+        design?.frontDesign?.designImages[4]?.imageUrl ||
+          design?.backDesign?.designImages[1]?.imageUrl,
+      );
+      setBackDesignImage(product.image);
+    }
+  }, [design]);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -234,7 +253,7 @@ const ProductCard = ({
       <Card sx={{ maxWidth: 345 }}>
         <Box className={classes.checkboxContainer}>
           <Checkbox
-            checked={selectedVariants[product._id] ? true : false}
+            checked={!!selectedVariants[product._id]}
             onChange={() => onProductClick(event.target.value)}
             value={product._id}
             icon={<RadioButtonUncheckedIcon />}
@@ -244,13 +263,43 @@ const ProductCard = ({
         <Box className={classes.imageContainer}>
           <CardMedia
             component="img"
-            image={`${product.image}`}
+            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
             alt=""
             className={classes.productImage}
-            style={{ backgroundColor: renderBgColor() }}
+            style={{
+              backgroundColor: renderBgColor(),
+              backgroundImage:
+                product.name === 'Case' && design && `url(${iphoneDesign && iphoneDesign})`,
+              backgroundSize: '37% 80%',
+            }}
+            onMouseOver={() => {
+              // if (design.backDesign?.designImages[4]?.imageUrl) {
+              console.log('front');
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                (setDesignImg(
+                  design.backDesign?.designImages[1]?.imageUrl ||
+                    design.frontDesign?.designImages[4]?.imageUrl,
+                ),
+                product.slug === 'hoodie'
+                  ? setBackDesignImage(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setBackDesignImage(BackLong)
+                  : setBackDesignImage(BackTee));
+              // }
+            }}
+            onMouseLeave={() => {
+              // if (design.frontDesign?.designImages[4]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                (setDesignImg(design.frontDesign?.designImages[4]?.imageUrl),
+                setBackDesignImage(product.image));
+            }}
+            // }
           />
-
-          {design && (
+          {product.name !== 'Case' && design && (
             <Box>
               <img
                 className={[
@@ -263,14 +312,39 @@ const ProductCard = ({
                     ? classes.mug
                     : '',
                 ].join(' ')}
-                src={design.designImages[4].imageUrl}
+                src={designImg && designImg}
+                onMouseOver={() => {
+                  // if (design.backDesign?.designImages[4]?.imageUrl) {
+                  console.log('front');
+                  product.name !== 'Case' &&
+                    product.name !== 'Poster' &&
+                    product.name !== 'Mug' &&
+                    (setDesignImg(
+                      design.backDesign?.designImages[1]?.imageUrl ||
+                        design.frontDesign?.designImages[4]?.imageUrl,
+                    ),
+                    product.slug === 'hoodie'
+                      ? setBackDesignImage(BackHoodie)
+                      : product.slug === 'longsleeve'
+                      ? setBackDesignImage(BackLong)
+                      : setBackDesignImage(BackTee));
+                  // }
+                }}
+                onMouseLeave={() => {
+                  // if (design.frontDesign?.designImages[4]?.imageUrl) {
+                  product.name !== 'Case' &&
+                    product.name !== 'Poster' &&
+                    product.name !== 'Mug' &&
+                    (setDesignImg(design.frontDesign?.designImages[4]?.imageUrl),
+                    setBackDesignImage(product.image));
+                }}
               />
             </Box>
           )}
         </Box>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {design?.name} {product.name}
+            {product.name}
           </Typography>
           <Typography
             variant="body2"
@@ -305,7 +379,7 @@ const ProductCard = ({
                           : '',
                     }}
                     onChange={() => onVariantClick(event.target.value)}
-                    checked={selectedVariants[product._id]?.includes(pm.id) ? true : false}
+                    checked={!!selectedVariants[product._id]?.includes(pm.id)}
                     value={`${product._id},${pm.id}`}
                     sx={{
                       border: '1px solid #000',
@@ -320,7 +394,7 @@ const ProductCard = ({
                           ? '#121616'
                           : '',
                       '&.Mui-checked': {
-                        color: `${pm.label}` == 'white' ? '#000000' : '#ffffff',
+                        color: `${pm.label}` === 'white' ? '#000000' : '#ffffff',
                       },
                     }}
                     checkedIcon={<DoneIcon style={{ fontSize: `${isMobile ? '20px' : '25px'}` }} />}

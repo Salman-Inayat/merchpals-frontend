@@ -12,6 +12,9 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
+import BackLong from '../assets/images/back-long.png';
+import BackTee from '../assets/images/back-tee.png';
+import BackHoodie from '../assets/images/Back-hoodie.png';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -20,7 +23,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '0px',
-    backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
   },
   productName: {
@@ -80,14 +82,25 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [color, setColor] = useState();
+  const [designImage, setDesignImage] = useState(
+    product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
+      product?.designId?.backDesign?.designImages[4]?.imageUrl,
+  );
+  const [backDesignImage, setBackDesignImage] = useState();
+  const [iphoneDesignImage, setIphoneDesignImage] = useState(
+    product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
+      product?.designId?.backDesign?.designImages[3]?.imageUrl,
+  );
 
   useEffect(() => {
     if (product) {
+      console.log('Product: ', product);
       const colorsArr = product.productMappings.map(c => c.color);
       const formattedProduct = {
         colors: [...new Map(colorsArr.map(item => [item['value'], item])).values()],
       };
       setColor(formattedProduct.colors.length);
+      setBackDesignImage(product.image);
     }
   }, [product]);
 
@@ -96,13 +109,43 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
-          image={`${product.image}`}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
           className={classes.productImage}
           alt="green iguana"
+          onMouseOver={() => {
+            console.log('call');
+            if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                (setDesignImage(
+                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+                ),
+                product.slug === 'hoodie'
+                  ? setBackDesignImage(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setBackDesignImage(BackLong)
+                  : setBackDesignImage(BackTee));
+            }
+          }}
+          onMouseLeave={() => {
+            if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Mug' &&
+                product.name !== 'Poster' &&
+                (setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl),
+                setBackDesignImage(product.image));
+            }
+          }}
+          style={{
+            backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
+            backgroundSize: product.name === 'Case' && '37% 80%',
+          }}
         />
-        {product?.designId && (
+        {product?.designId && product.name !== 'Case' && (
           <img
-            src={product.designId.designImages[4].imageUrl}
+            src={designImage}
             className={[
               classes.design,
               product.name === 'Poster'
@@ -113,6 +156,31 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
                 ? classes.mug
                 : '',
             ].join(' ')}
+            onMouseOver={() => {
+              if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+                product.name !== 'Case' &&
+                  product.name !== 'Mug' &&
+                  product.name !== 'Poster' &&
+                  (setDesignImage(
+                    product?.designId?.backDesign?.designImages[1]?.imageUrl ||
+                      product?.designId?.frontDesign?.designImages[4]?.imageUrl,
+                  ),
+                  product.slug === 'hoodie'
+                    ? setBackDesignImage(BackHoodie)
+                    : product.slug === 'longsleeve'
+                    ? setBackDesignImage(BackLong)
+                    : setBackDesignImage(BackTee));
+              }
+            }}
+            onMouseLeave={() => {
+              if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+                product.name !== 'Case' &&
+                  product.name !== 'Mug' &&
+                  product.name !== 'Poster' &&
+                  (setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl),
+                  setBackDesignImage(product.image));
+              }
+            }}
           />
         )}
       </Card>
@@ -124,7 +192,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${product.name} // ${vendorName}`}
+          {`${product.slug === 'longsleeve' ? 'Long' : product.name} // ${vendorName}`}
         </Typography>
         <Typography
           gutterBottom
