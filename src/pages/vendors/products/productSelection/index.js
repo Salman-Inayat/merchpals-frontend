@@ -6,6 +6,7 @@ import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
 import { Products } from '../../../home/steps';
 import { fetchProducts } from '../../../../store/redux/actions/product';
 import { clearDesign } from '../../../../store/redux/actions/design';
+import { clearCanvas } from '../../../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../../../store';
 
@@ -153,6 +154,7 @@ const ProductSelection = ({ designName }) => {
         localStorage.removeItem('designJSON');
 
         dispatch(clearDesign());
+        dispatch(clearCanvas());
 
         setSnackBarToggle({
           visible: true,

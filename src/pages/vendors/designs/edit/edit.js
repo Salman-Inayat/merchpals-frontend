@@ -8,6 +8,7 @@ import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
 import store from '../../../../store';
 import { clearDesign } from '../../../../store/redux/actions/design';
+import { clearCanvas } from '../../../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -209,6 +210,7 @@ const EditDesign = () => {
           }
 
           dispatch(clearDesign());
+          dispatch(clearCanvas());
 
           setOpen(false);
           setTimeout(() => {

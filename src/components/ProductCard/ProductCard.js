@@ -200,7 +200,7 @@ const ProductCard = ({
   const classes = useStyles();
   const [design, setDesign] = useState('');
   const [iphoneDesign, setIphoneDesign] = useState('');
-  const [backDesignImage, setBackDesignImage] = useState();
+  const [productDesign, setProductDesign] = useState();
   const [radioCardColor, setRadioCardColor] = useState('');
   const [check, setCheck] = useState('');
 
@@ -217,7 +217,7 @@ const ProductCard = ({
       console.log('desogn', { design });
       setDesign(design);
       setIphoneDesign(iphoneDesign);
-      setBackDesignImage(product.image);
+      setProductDesign(product.image);
     }, 1000);
   }, []);
 
@@ -261,7 +261,7 @@ const ProductCard = ({
           color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
         }}
       >
-        {designName ? designName : ''} {product.name}
+        {designName ? designName : ''} {product.slug === 'longsleeve' ? 'Long' : product.name}
       </Typography>
       <Card
         className={classes.productCard}
@@ -285,7 +285,7 @@ const ProductCard = ({
 
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
           alt=""
           className={classes.productImage}
           style={{
@@ -305,10 +305,10 @@ const ProductCard = ({
                     store.getState().design?.design?.front?.designImages[4]?.data,
                 ),
                 product.slug === 'hoodie'
-                  ? setBackDesignImage(BackHoodie)
+                  ? setProductDesign(BackHoodie)
                   : product.slug === 'longsleeve'
-                  ? setBackDesignImage(BackLong)
-                  : setBackDesignImage(BackTee));
+                  ? setProductDesign(BackLong)
+                  : setProductDesign(BackTee));
             }
           }}
           onMouseLeave={() => {
@@ -317,7 +317,7 @@ const ProductCard = ({
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
                 (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
-                setBackDesignImage(product.image));
+                setProductDesign(product.image));
             }
           }}
         />
@@ -347,10 +347,10 @@ const ProductCard = ({
                           store.getState().design?.design?.front?.designImages[4]?.data,
                       ),
                       product.slug === 'hoodie'
-                        ? setBackDesignImage(BackHoodie)
+                        ? setProductDesign(BackHoodie)
                         : product.slug === 'longsleeve'
-                        ? setBackDesignImage(BackLong)
-                        : setBackDesignImage(BackTee));
+                        ? setProductDesign(BackLong)
+                        : setProductDesign(BackTee));
                   }
                 }}
                 onMouseLeave={() => {
@@ -359,7 +359,7 @@ const ProductCard = ({
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&
                       (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
-                      setBackDesignImage(product.image));
+                      setProductDesign(product.image));
                   }
                 }}
               />
@@ -574,6 +574,11 @@ const ProductCard = ({
           </Grid>
         )}
       </Grid>
+      <div hidden>
+        <img src={BackHoodie} />
+        <img src={BackTee} />
+        <img src={BackLong} />
+      </div>
     </>
   );
 };

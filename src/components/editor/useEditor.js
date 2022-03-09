@@ -175,8 +175,8 @@ const useEditor = mode => {
     switch (canvasShape) {
       case 'circle':
         if (canvas.backgroundImage) {
-          canvas.backgroundImage.scaleX = isMobile ? 0.4 : 0.38;
-          canvas.backgroundImage.scaleY = isMobile ? 0.4 : 0.38;
+          canvas.backgroundImage.scaleX = canvas.width / canvas.backgroundImage.width;
+          canvas.backgroundImage.scaleY = canvas.height / canvas.backgroundImage.height;
         }
         canvasContainer.style.removeProperty('padding');
         canvasContainer.style.removeProperty('height');

@@ -90,11 +90,13 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [color, setColor] = useState();
-  const [designImage, setDesignImage] = useState(
+  const frontDesign =
     product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[4]?.imageUrl,
-  );
-  const [backDesignImage, setBackDesignImage] = useState(product.image);
+    product?.designId?.backDesign?.designImages[1]?.imageUrl;
+  const backDesign = product?.designId?.backDesign?.designImages[1]?.imageUrl;
+  const [designImage, setDesignImage] = useState(frontDesign);
+  const [productDesign, setProductDesign] = useState(product.image);
+  const [designChange, setDesignChange] = useState(false);
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
       product?.designId?.backDesign?.designImages[3]?.imageUrl,
@@ -123,7 +125,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
+          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
           alt="green iguana"
           className={classes.productImage}
           style={{
@@ -132,19 +134,16 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           }}
           onMouseOver={() => {
             console.log('call');
-            if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+            if (product?.designId?.backDesign?.designImages[1]?.imageUrl) {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
-                (setDesignImage(
-                  product?.designId?.backDesign?.designImages[1]?.imageUrl ||
-                    product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-                ),
+                (setDesignChange(true),
                 product.slug === 'hoodie'
-                  ? setBackDesignImage(BackHoodie)
+                  ? setProductDesign(BackHoodie)
                   : product.slug === 'longsleeve'
-                  ? setBackDesignImage(BackLong)
-                  : setBackDesignImage(BackTee));
+                  ? setProductDesign(BackLong)
+                  : setProductDesign(BackTee));
             }
           }}
           onMouseLeave={() => {
@@ -152,14 +151,13 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
-                (setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl),
-                setBackDesignImage(product.image));
+                (setDesignChange(false), setProductDesign(product.image));
             }
           }}
         />
         {product.name !== 'Case' && product?.designId && (
           <img
-            src={designImage}
+            src={designChange ? (backDesign ? backDesign : designImage) : designImage}
             className={[
               classes.design,
               product.name === 'Poster'
@@ -171,19 +169,17 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
                 : '',
             ].join(' ')}
             onMouseOver={() => {
-              if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+              console.log('call');
+              if (product?.designId?.backDesign?.designImages[1]?.imageUrl) {
                 product.name !== 'Case' &&
                   product.name !== 'Mug' &&
                   product.name !== 'Poster' &&
-                  (setDesignImage(
-                    product?.designId?.backDesign?.designImages[1]?.imageUrl ||
-                      product?.designId?.frontDesign?.designImages[4]?.imageUrl,
-                  ),
+                  (setDesignChange(true),
                   product.slug === 'hoodie'
-                    ? setBackDesignImage(BackHoodie)
+                    ? setProductDesign(BackHoodie)
                     : product.slug === 'longsleeve'
-                    ? setBackDesignImage(BackLong)
-                    : setBackDesignImage(BackTee));
+                    ? setProductDesign(BackLong)
+                    : setProductDesign(BackTee));
               }
             }}
             onMouseLeave={() => {
@@ -191,8 +187,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
                 product.name !== 'Case' &&
                   product.name !== 'Mug' &&
                   product.name !== 'Poster' &&
-                  (setDesignImage(product?.designId?.frontDesign?.designImages[4]?.imageUrl),
-                  setBackDesignImage(product.image));
+                  (setDesignChange(false), setProductDesign(product.image));
               }
             }}
           />
@@ -229,6 +224,12 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       >
         Explore
       </Button> */}
+      <div hidden>
+        <img src={backDesign} />
+        <img src={BackLong} />
+        <img src={BackTee} />
+        <img src={BackHoodie} />
+      </div>
     </Box>
   );
 };
