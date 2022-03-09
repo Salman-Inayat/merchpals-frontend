@@ -158,20 +158,22 @@ function VendorOrderDetails() {
                         component="img"
                         onMouseOver={() => {
                           console.log('call');
-                          // if (variant.backDesign) {
-                          product.vendorProduct.productId.name !== 'Case' &&
-                            product.vendorProduct.productId.name !== 'Mug' &&
-                            product.vendorProduct.productId.name !== 'Poster' &&
-                            setDesignChange(true);
-                          // }
+                          if (
+                            product?.vendorProduct?.designId?.backDesign?.designImages[1]?.imageUrl
+                          ) {
+                            product.vendorProduct.productId.name !== 'Case' &&
+                              product.vendorProduct.productId.name !== 'Mug' &&
+                              product.vendorProduct.productId.name !== 'Poster' &&
+                              setDesignChange(true);
+                          }
                         }}
                         onMouseLeave={() => {
-                          // if (variant.design) {
-                          product.vendorProduct.productId.name !== 'Case' &&
-                            product.vendorProduct.productId.name !== 'Mug' &&
-                            product.vendorProduct.productId.name !== 'Poster' &&
-                            setDesignChange(false);
-                          // }
+                          if (product.vendorProduct.designId.frontDesign.designImages[4].imageUrl) {
+                            product.vendorProduct.productId.name !== 'Case' &&
+                              product.vendorProduct.productId.name !== 'Mug' &&
+                              product.vendorProduct.productId.name !== 'Poster' &&
+                              setDesignChange(false);
+                          }
                         }}
                       />
                       {product?.vendorProduct?.designId &&
@@ -204,11 +206,35 @@ function VendorOrderDetails() {
                                   ? classes.mug
                                   : '',
                               ].join(' ')}
+                              onMouseOver={() => {
+                                console.log('call');
+                                if (
+                                  product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                                    ?.imageUrl
+                                ) {
+                                  product.vendorProduct.productId.name !== 'Case' &&
+                                    product.vendorProduct.productId.name !== 'Mug' &&
+                                    product.vendorProduct.productId.name !== 'Poster' &&
+                                    setDesignChange(true);
+                                }
+                              }}
+                              onMouseLeave={() => {
+                                if (
+                                  product.vendorProduct.designId.frontDesign.designImages[4]
+                                    .imageUrl
+                                ) {
+                                  product.vendorProduct.productId.name !== 'Case' &&
+                                    product.vendorProduct.productId.name !== 'Mug' &&
+                                    product.vendorProduct.productId.name !== 'Poster' &&
+                                    setDesignChange(false);
+                                }
+                              }}
                             />
                             <div hidden>
                               <img
                                 src={
-                                  product.vendorProduct.designId.backDesign.designImages[1].imageUrl
+                                  product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                                    ?.imageUrl
                                 }
                               />
                               <img src={BackLong} />
@@ -220,9 +246,8 @@ function VendorOrderDetails() {
                       <CardContent style={{ padding: '5px' }}>
                         <Typography
                           gutterBottom
-                          variant="bosy1"
+                          variant="body1"
                           fontWeight="light"
-                          component="body1"
                           textAlign="center"
                         >
                           {`Total quantity: ${product.quantity}`}
