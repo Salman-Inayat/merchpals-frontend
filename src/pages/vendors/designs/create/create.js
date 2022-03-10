@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Grid, Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
@@ -10,23 +10,28 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import BackButton from '../../../../components/backButton';
-
+import { connect } from 'react-redux';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const CreateDesign = () => {
+const CreateDesign = ({ design }) => {
   const navigate = useNavigate();
   const [triggerExport, setTriggerExport] = useState(0);
   const [displaySave, setDisplaySave] = useState(false);
   const [nameError, setNameError] = useState('');
   const [name, setName] = useState('');
-
+  const childRef = useRef();
   const exportAndTriggerSave = () => {
     setTriggerExport(triggerExport + 1);
+    saveDesignToStore();
     setDisplaySave(true);
   };
+  const saveDesignToStore = () => {
+    childRef.current.saveDesign();
 
+    console.log('Ath the end');
+  };
   const handleSaveNameAndMove = () => {
     if (!name.trim()) {
       setNameError('Please enter a valid name');
@@ -43,7 +48,19 @@ const CreateDesign = () => {
       <BackButton />
       <Grid mt={5} container mb={3} display="flex" justifyContent="center">
         <Grid item md={12} xs={12}>
-          <Editor triggerExport={triggerExport} />
+          <Editor
+            // exportBase64={exportBase64}
+            triggerExport={triggerExport}
+            ref={childRef}
+            // canvasJSON={design.design.designJson === '' ? undefined : design.design.designJson}
+            frontCanvasJSON={
+              design.design?.front?.designJson === '' ? undefined : design.design?.front?.designJson
+            }
+            backCanvasJSON={
+              design.design?.back?.designJson === '' ? undefined : design.design?.back?.designJson
+            }
+            title="Create your design"
+          />
         </Grid>
         <Grid mt={4} item md={12} display="flex" justifyContent="center" alignItems=" center">
           <Button variant="contained" onClick={exportAndTriggerSave}>
@@ -85,5 +102,9 @@ const CreateDesign = () => {
     </LoggedInVendor>
   );
 };
+const mapState = state => {
+  const design = state.design;
+  return { design };
+};
 
-export default CreateDesign;
+export default connect(mapState)(CreateDesign);

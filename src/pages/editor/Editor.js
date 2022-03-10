@@ -243,6 +243,8 @@ const Editor = forwardRef((props, ref) => {
   const backEditorJs = useEditor('back');
 
   useEffect(() => {
+    // console.log('Editor call');
+
     var style1 = document.getElementById('style1');
     var style2 = document.getElementById('style2');
     var style3 = document.getElementById('style3');
@@ -279,13 +281,18 @@ const Editor = forwardRef((props, ref) => {
   const MINUTE_MS = 500;
 
   useEffect(() => {
+    console.log('Editor call 2');
+
     handleBlankCanvas();
   }, []);
 
   useEffect(() => {
+    // console.log('Editor call 3');
+
     handleBlankCanvas();
   }, [canvasMode]);
 
+  //:TODO: Why setInterval set?
   const handleBlankCanvas = () => {
     var canvas = document.getElementById(`${canvasMode}-canvas`);
     var span = document.getElementById(`${canvasMode}-canvas-placeholder`);
@@ -297,17 +304,28 @@ const Editor = forwardRef((props, ref) => {
       }
     }, MINUTE_MS);
 
-    return () => clearInterval(interval);
+    setTimeout(() => {
+      clearInterval(interval);
+    }, 500);
   };
 
   const isCanvasBlank = canvas => {
     // console.log('call canvass');
+    // return !canvas
+    //   .getContext('2d')
+    //   .getImageData(0, 0, canvas.width, canvas.height)
+    //   .data.some(channel => channel !== 0);
     const context = canvas.getContext('2d');
 
     const pixelBuffer = new Uint32Array(
       context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
     );
-    // console.log('canvas', !pixelBuffer.some(color => color !== 0));
+    // console.log(
+    //   'canvas mode',
+    //   pixelBuffer,
+    //   pixelBuffer.some,
+    //   !pixelBuffer.some(color => color !== 0),
+    // );
     return !pixelBuffer.some(color => color !== 0);
   };
 

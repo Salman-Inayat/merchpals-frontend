@@ -113,7 +113,10 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
     estimate: false,
     subTotal: false,
   });
-  const [designChange, setDesignChange] = useState(false);
+  const [designChange, setDesignChange] = useState({
+    status: false,
+    id: '',
+  });
 
   const updateQuantity = (vendorProduct, variantId, op) => {
     let updatedCart = [...products];
@@ -188,24 +191,31 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
         {products.map(product =>
           product.productMappings.map((variant, i) => (
             <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
+              {console.log('variant', variant, i)}
               <Grid item xs={9} container>
                 <Stack
                   className={classes.imageCard}
                   onMouseOver={() => {
                     console.log('call');
-                    if (variant.backDesign) {
+                    if (variant.backDesign && variant.design) {
                       product.name !== 'Case' &&
                         product.name !== 'Mug' &&
                         product.name !== 'Poster' &&
-                        setDesignChange(true);
+                        setDesignChange({
+                          status: true,
+                          id: variant.id,
+                        });
                     }
                   }}
                   onMouseLeave={() => {
-                    if (variant.design) {
+                    if (variant.backDesign && variant.design) {
                       product.name !== 'Case' &&
                         product.name !== 'Mug' &&
                         product.name !== 'Poster' &&
-                        setDesignChange(false);
+                        setDesignChange({
+                          status: false,
+                          id: variant.id,
+                        });
                     }
                   }}
                 >
@@ -228,7 +238,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     src={
                       product.name === 'Case'
                         ? '/assets/img/FINALCASE.png'
-                        : designChange
+                        : designChange.status && designChange.id == variant.id
                         ? product.name === 'Hoodie'
                           ? BackHoodie
                           : product.name === 'Long Sleeve'
@@ -243,7 +253,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                   <Avatar
                     className={classes.design}
                     src={
-                      designChange
+                      designChange.status && designChange.id == variant.id
                         ? product.name === 'Hoodie'
                           ? variant.backDesign
                           : product.name === 'Long Sleeve'

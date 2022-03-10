@@ -495,7 +495,7 @@ const Product = () => {
                             backgroundSize: product.name === 'Case' && '33% 100%',
                           }}
                           onMouseOver={() => {
-                            if (product.backDesign) {
+                            if (product.design && product.backDesign) {
                               product.slug !== 'Case' &&
                                 product.slug !== 'mug' &&
                                 product.slug !== 'poster' &&
@@ -511,7 +511,7 @@ const Product = () => {
                             }
                           }}
                           onMouseLeave={() => {
-                            if (product.design) {
+                            if (product.design && product.backDesign) {
                               product.slug !== 'Case' &&
                                 product.slug !== 'mug' &&
                                 product.slug !== 'poster' &&
@@ -527,6 +527,31 @@ const Product = () => {
                             }
                             alt=""
                             className={classes.image}
+                            onMouseOver={() => {
+                              if (product.design && product.backDesign) {
+                                product.slug !== 'Case' &&
+                                  product.slug !== 'mug' &&
+                                  product.slug !== 'poster' &&
+                                  (console.log('call ', product.slug),
+                                  setDesignImage(
+                                    product.backDesign !== '' ? product.backDesign : product.design,
+                                  ),
+                                  product.slug === 'hoodie'
+                                    ? setBackDesignImage(BackHoodie)
+                                    : product.slug === 'longsleeve'
+                                    ? setBackDesignImage(BackLong)
+                                    : setBackDesignImage(BackTee));
+                              }
+                            }}
+                            onMouseLeave={() => {
+                              if (product.design && product.backDesign) {
+                                product.slug !== 'Case' &&
+                                  product.slug !== 'mug' &&
+                                  product.slug !== 'poster' &&
+                                  (setDesignImage(product.design),
+                                  setBackDesignImage(product.image));
+                              }
+                            }}
                           />
                           {product.name !== 'Case' && (
                             <img src={designImage} alt="design" className={classes.design} />

@@ -134,7 +134,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           }}
           onMouseOver={() => {
             console.log('call');
-            if (product?.designId?.backDesign?.designImages[1]?.imageUrl) {
+            if (
+              product?.designId?.backDesign?.designImages[1]?.imageUrl &&
+              product?.designId?.frontDesign?.designImages[4]?.imageUrl
+            ) {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
@@ -147,7 +150,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
             }
           }}
           onMouseLeave={() => {
-            if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+            if (
+              product?.designId?.frontDesign?.designImages[4]?.imageUrl &&
+              product?.designId?.backDesign?.designImages[1]?.imageUrl
+            ) {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
@@ -170,7 +176,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
             ].join(' ')}
             onMouseOver={() => {
               console.log('call');
-              if (product?.designId?.backDesign?.designImages[1]?.imageUrl) {
+              if (
+                product?.designId?.backDesign?.designImages[1]?.imageUrl &&
+                product?.designId?.frontDesign?.designImages[4]?.imageUrl
+              ) {
                 product.name !== 'Case' &&
                   product.name !== 'Mug' &&
                   product.name !== 'Poster' &&
@@ -183,7 +192,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
               }
             }}
             onMouseLeave={() => {
-              if (product?.designId?.frontDesign?.designImages[4]?.imageUrl) {
+              if (
+                product?.designId?.backDesign?.designImages[1]?.imageUrl &&
+                product?.designId?.frontDesign?.designImages[4]?.imageUrl
+              ) {
                 product.name !== 'Case' &&
                   product.name !== 'Mug' &&
                   product.name !== 'Poster' &&

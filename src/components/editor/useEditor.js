@@ -127,6 +127,7 @@ const useEditor = mode => {
   };
 
   useEffect(() => {
+    console.log('use editor call');
     setC2(document.getElementById(`${mode}-canvas-preview`));
     var ctx = document.getElementById(`${mode}-canvas-preview`).getContext('2d');
     setCtx2(ctx);
@@ -173,7 +174,16 @@ const useEditor = mode => {
     let json;
 
     if (canvas.backgroundImage) {
+      console.log('background imaeg');
+
       if (isMobile) {
+        console.log(
+          'background mobile',
+          canvas.backgroundImage.width,
+          canvas.backgroundImage.height,
+        );
+        // canvas.backgroundImage.scaleX = canvas.width / canvas.backgroundImage.width;
+        // canvas.backgroundImage.scaleY = canvas.height / canvas.backgroundImage.height;
         canvas.backgroundImage.scaleX = 0.35;
         canvas.backgroundImage.scaleY = 0.35;
       }
@@ -192,7 +202,7 @@ const useEditor = mode => {
         canvasWrapper.style.removeProperty('top');
         canvasWrapper.style.removeProperty('left');
 
-        console.log('canvas', canvas);
+        // console.log('canvas', canvas);
 
         canvas.clipPath = circle;
         json = JSON.stringify(canvas);
@@ -262,7 +272,7 @@ const useEditor = mode => {
   };
 
   const loadJson = (canvas, json) => {
-    console.log('loading json');
+    console.log('loading json', canvas);
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
       canvasProperties.canvasFill = canvas.backgroundColor;
 
@@ -300,6 +310,8 @@ const useEditor = mode => {
   };
 
   useEffect(() => {
+    // console.log('use editor call');
+
     if (canvasJSON) {
       loadJson(canvas, canvasJSON);
     }
@@ -973,13 +985,13 @@ const useEditor = mode => {
             canvas.renderAll();
             afterRender();
 
-            console.log(canvas.toDataURL());
+            // console.log(canvas.toDataURL());
           },
           { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
         );
       });
 
-      console.log('Baxckground image added, ', canvas);
+      // console.log('Baxckground image added, ', canvas);
 
       // const image = new Image();
       // image.src = canvasProperties.canvasImage;
@@ -1390,25 +1402,26 @@ const useEditor = mode => {
   //   return !pixelBuffer.some(color => color !== 0);
   // }
 
-  function isCanvasEmpty(canvas) {
-    return !canvas
-      .getContext('2d')
-      .getImageData(0, 0, canvas.width, canvas.height)
-      .data.some(channel => channel !== 0);
-  }
-  // function isCanvasBlank(canvas) {
-  //   const context = canvas.getContext('2d');
-
-  //   const pixelBuffer = new Uint32Array(
-  //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
-  //   );
-
-  //   return !pixelBuffer.some(color => color !== 0);
+  // function isCanvasEmpty(canvas) {
+  //   return !canvas
+  //     .getContext('2d')
+  //     .getImageData(0, 0, canvas.width, canvas.height)
+  //     .data.some(channel => channel !== 0);
   // }
+  function isCanvasEmpty(canvas) {
+    const context = canvas.getContext('2d');
+
+    const pixelBuffer = new Uint32Array(
+      context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+    );
+    // console.log('buffer', pixelBuffer, !pixelBuffer.some(color => color !== 0));
+
+    return !pixelBuffer.some(color => color !== 0);
+  }
 
   const exportCanvas = mode => {
     if (!isCanvasEmpty(canvas)) {
-      console.log('canvas no empty call', mode);
+      console.log('canvas no empty call', mode, { canvas });
       let json = JSON.stringify(canvas);
 
       let canvasBackgroundImage;
@@ -1447,13 +1460,13 @@ const useEditor = mode => {
       const backgroundColor = canvas.backgroundColor;
       ctx2.fillStyle = backgroundColor;
       ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
-
+      // console.log('canvas before  background image', { canvas }, canvas.backgroundImage.src);
       if (canvas.backgroundImage) {
-        console.log('canvas has background image', canvas);
         canvasBackgroundImage = canvas.backgroundImage;
         canvas.backgroundImage = null;
         const backgroundImage = new Image();
         backgroundImage.src = canvasBackgroundImage.src;
+        // console.log('canvas has background image', backgroundImage.src);
         backgroundImage.onload = () => {
           ctx2.drawImage(backgroundImage, 0, 0, canvas2.width, canvas2.height);
         };

@@ -79,7 +79,10 @@ function VendorOrderDetails() {
   const [totalProfit, setTotalProfit] = useState(0);
 
   const [order, setOrder] = useState();
-  const [designChange, setDesignChange] = useState(false);
+  const [designChange, setDesignChange] = useState({
+    status: false,
+    id: '',
+  });
   const { orderId } = useParams();
   const classes = useStyles();
 
@@ -116,7 +119,7 @@ function VendorOrderDetails() {
           <Grid container>
             <Grid item md={6} xs={12}>
               <Grid container spacing={4} p={4}>
-                {order.products.map(product => (
+                {order?.products?.map(product => (
                   <Grid key={product._id} item xs={12} sm={6} md={6} lg={4}>
                     <Typography sx={{ textAlign: 'center' }} variant="h5">
                       {product.vendorProduct.productId.name}
@@ -126,7 +129,7 @@ function VendorOrderDetails() {
                         src={
                           product.vendorProduct.productId.name === 'Case'
                             ? '/assets/img/FINALCASE.png'
-                            : designChange
+                            : designChange.status && designChange.id == product._id
                             ? product.vendorProduct.productId.name === 'Hoodie'
                               ? BackHoodie
                               : product.vendorProduct.productId.name === 'Long Sleeve'
@@ -159,20 +162,32 @@ function VendorOrderDetails() {
                         onMouseOver={() => {
                           console.log('call');
                           if (
-                            product?.vendorProduct?.designId?.backDesign?.designImages[1]?.imageUrl
+                            product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                              ?.imageUrl &&
+                            product.vendorProduct.designId.frontDesign.designImages[4].imageUrl
                           ) {
                             product.vendorProduct.productId.name !== 'Case' &&
                               product.vendorProduct.productId.name !== 'Mug' &&
                               product.vendorProduct.productId.name !== 'Poster' &&
-                              setDesignChange(true);
+                              setDesignChange({
+                                status: true,
+                                id: product._id,
+                              });
                           }
                         }}
                         onMouseLeave={() => {
-                          if (product.vendorProduct.designId.frontDesign.designImages[4].imageUrl) {
+                          if (
+                            product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                              ?.imageUrl &&
+                            product.vendorProduct.designId.frontDesign.designImages[4].imageUrl
+                          ) {
                             product.vendorProduct.productId.name !== 'Case' &&
                               product.vendorProduct.productId.name !== 'Mug' &&
                               product.vendorProduct.productId.name !== 'Poster' &&
-                              setDesignChange(false);
+                              setDesignChange({
+                                status: false,
+                                id: product._id,
+                              });
                           }
                         }}
                       />
@@ -181,7 +196,7 @@ function VendorOrderDetails() {
                           <>
                             <img
                               src={
-                                designChange
+                                designChange.status && designChange.id == product._id
                                   ? product.vendorProduct.productId.name === 'Hoodie'
                                     ? product.vendorProduct.designId.backDesign.designImages[1]
                                         .imageUrl
@@ -210,23 +225,33 @@ function VendorOrderDetails() {
                                 console.log('call');
                                 if (
                                   product?.vendorProduct?.designId?.backDesign?.designImages[1]
-                                    ?.imageUrl
-                                ) {
-                                  product.vendorProduct.productId.name !== 'Case' &&
-                                    product.vendorProduct.productId.name !== 'Mug' &&
-                                    product.vendorProduct.productId.name !== 'Poster' &&
-                                    setDesignChange(true);
-                                }
-                              }}
-                              onMouseLeave={() => {
-                                if (
+                                    ?.imageUrl &&
                                   product.vendorProduct.designId.frontDesign.designImages[4]
                                     .imageUrl
                                 ) {
                                   product.vendorProduct.productId.name !== 'Case' &&
                                     product.vendorProduct.productId.name !== 'Mug' &&
                                     product.vendorProduct.productId.name !== 'Poster' &&
-                                    setDesignChange(false);
+                                    setDesignChange({
+                                      status: true,
+                                      id: product._id,
+                                    });
+                                }
+                              }}
+                              onMouseLeave={() => {
+                                if (
+                                  product?.vendorProduct?.designId?.backDesign?.designImages[1]
+                                    ?.imageUrl &&
+                                  product.vendorProduct.designId.frontDesign.designImages[4]
+                                    .imageUrl
+                                ) {
+                                  product.vendorProduct.productId.name !== 'Case' &&
+                                    product.vendorProduct.productId.name !== 'Mug' &&
+                                    product.vendorProduct.productId.name !== 'Poster' &&
+                                    setDesignChange({
+                                      status: false,
+                                      id: product._id,
+                                    });
                                 }
                               }}
                             />

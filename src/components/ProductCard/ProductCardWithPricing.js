@@ -276,7 +276,10 @@ const ProductCard = ({
               backgroundSize: '37% 80%',
             }}
             onMouseOver={() => {
-              if (design.backDesign?.designImages[1]?.imageUrl) {
+              if (
+                design.backDesign?.designImages[1]?.imageUrl &&
+                design.frontDesign?.designImages[4]?.imageUrl
+              ) {
                 console.log('front');
                 product.name !== 'Case' &&
                   product.name !== 'Poster' &&
@@ -290,7 +293,10 @@ const ProductCard = ({
               }
             }}
             onMouseLeave={() => {
-              if (design.frontDesign?.designImages[4]?.imageUrl) {
+              if (
+                design.backDesign?.designImages[1]?.imageUrl &&
+                design.frontDesign?.designImages[4]?.imageUrl
+              ) {
                 product.name !== 'Case' &&
                   product.name !== 'Poster' &&
                   product.name !== 'Mug' &&
@@ -313,7 +319,10 @@ const ProductCard = ({
                 ].join(' ')}
                 src={designChange ? (backDesignImg ? backDesignImg : designImg) : designImg}
                 onMouseOver={() => {
-                  if (design.backDesign?.designImages[1]?.imageUrl) {
+                  if (
+                    design.backDesign?.designImages[1]?.imageUrl &&
+                    design.frontDesign?.designImages[4]?.imageUrl
+                  ) {
                     console.log('front');
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
@@ -327,7 +336,10 @@ const ProductCard = ({
                   }
                 }}
                 onMouseLeave={() => {
-                  if (design.frontDesign?.designImages[4]?.imageUrl) {
+                  if (
+                    design.backDesign?.designImages[1]?.imageUrl &&
+                    design.frontDesign?.designImages[4]?.imageUrl
+                  ) {
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&

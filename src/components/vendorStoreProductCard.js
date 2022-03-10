@@ -119,7 +119,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           alt="green iguana"
           onMouseEnter={() => {
             console.log('call');
-            if (backDesign) {
+            if (backDesign && frontDesign) {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
@@ -132,7 +132,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
             }
           }}
           onMouseLeave={() => {
-            if (frontDesign) {
+            if (backDesign && frontDesign) {
               product.name !== 'Case' &&
                 product.name !== 'Mug' &&
                 product.name !== 'Poster' &&
@@ -159,7 +159,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
             ].join(' ')}
             onMouseEnter={() => {
               console.log('call');
-              if (backDesign) {
+              if (backDesign && frontDesign) {
                 product.name !== 'Case' &&
                   product.name !== 'Mug' &&
                   product.name !== 'Poster' &&
@@ -172,7 +172,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
               }
             }}
             onMouseLeave={() => {
-              if (frontDesign) {
+              if (backDesign && frontDesign) {
                 product.name !== 'Case' &&
                   product.name !== 'Mug' &&
                   product.name !== 'Poster' &&

@@ -291,11 +291,14 @@ const ProductCard = ({
           style={{
             border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
             backgroundImage: product.name === 'Case' && `url(${iphoneDesign})`,
-
+            // backgroundColor: 'red',
             backgroundSize: '37% 80%',
           }}
           onMouseOver={() => {
-            if (store.getState().design?.design?.front?.designImages[4]?.data) {
+            if (
+              store.getState().design?.design?.back?.designImages[4]?.data &&
+              store.getState().design?.design?.front?.designImages[4]?.data
+            ) {
               console.log('front');
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
@@ -312,7 +315,10 @@ const ProductCard = ({
             }
           }}
           onMouseLeave={() => {
-            if (store.getState().design?.design?.front?.designImages[4]?.data) {
+            if (
+              store.getState().design?.design?.back?.designImages[4]?.data &&
+              store.getState().design?.design?.front?.designImages[4]?.data
+            ) {
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
@@ -337,7 +343,10 @@ const ProductCard = ({
                 ].join(' ')}
                 src={design}
                 onMouseOver={() => {
-                  if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                  if (
+                    store.getState().design?.design?.back?.designImages[4]?.data &&
+                    store.getState().design?.design?.front?.designImages[4]?.data
+                  ) {
                     console.log('front');
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
@@ -354,7 +363,10 @@ const ProductCard = ({
                   }
                 }}
                 onMouseLeave={() => {
-                  if (store.getState().design?.design?.front?.designImages[4]?.data) {
+                  if (
+                    store.getState().design?.design?.back?.designImages[4]?.data &&
+                    store.getState().design?.design?.front?.designImages[4]?.data
+                  ) {
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&
