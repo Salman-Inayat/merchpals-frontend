@@ -337,8 +337,11 @@ const Editor = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     saveDesign() {
-      console.log('save design child in the editor');
-      exportCanvas();
+      const promise = new Promise((resolve, reject) => {
+        exportCanvas();
+        resolve();
+      });
+      return promise;
     },
   }));
 

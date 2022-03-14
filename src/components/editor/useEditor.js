@@ -128,7 +128,6 @@ const useEditor = mode => {
   };
 
   useEffect(() => {
-    console.log('use editor call');
     setC2(document.getElementById(`${mode}-canvas-preview`));
     var ctx = document.getElementById(`${mode}-canvas-preview`).getContext('2d');
     setCtx2(ctx);
@@ -175,8 +174,6 @@ const useEditor = mode => {
     let json;
 
     if (canvas.backgroundImage) {
-      console.log('background imaeg');
-
       if (isMobile) {
         console.log(
           'background mobile',
@@ -308,21 +305,23 @@ const useEditor = mode => {
       afterRender();
       resolve();
     });
+
+    // setTimeout(() => {
+    //   console.log('canvas', canvas);
+    //   if (typeof canvas.backgroundColor === 'string') {
+    //     setBackground('color');
+    //   }
+    //   if (typeof canvas.backgroundColor === 'object') {
+    //     setBackground('image');
+    //   }
+    // }, 1000);
+
     return promise;
   };
 
   useEffect(async () => {
     if (canvasJSON) {
       await loadJson(canvas, canvasJSON);
-      console.log('canvas background: ', canvas.backgroundColor);
-      // if (typeof canvas.backgroundColor === 'string') {
-      //   setBackground('color');
-      //   console.log('background color');
-      // }
-      // if (typeof canvas.backgroundImage === 'object') {
-      //   setBackground('image');
-      //   console.log('background image');
-      // }
     }
   }, [canvasJSON]);
 
@@ -1441,7 +1440,6 @@ const useEditor = mode => {
 
   const exportCanvas = async () => {
     if (!isCanvasEmpty(canvas)) {
-      console.log('canvas is not empty: ', mode);
       let json = JSON.stringify(canvas);
 
       const formatOne = new Image();
@@ -1609,7 +1607,6 @@ const useEditor = mode => {
         }
       };
     } else {
-      console.log('Canvas empty: ', mode);
       switch (mode) {
         case 'front':
           dispatch({ type: SAVE_FRONT_DESIGN, payload: null });

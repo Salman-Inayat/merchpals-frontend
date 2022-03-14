@@ -104,7 +104,7 @@ const EditDesign = () => {
   };
 
   const finishDesignEdit = async () => {
-    childRef.current.saveDesign();
+    await childRef.current.saveDesign();
     setOpen(true);
 
     setTimeout(() => {
@@ -147,6 +147,7 @@ const EditDesign = () => {
             type: 'application/json',
           });
 
+          console.log(newDesign?.front?.designImages[1]?.data);
           await postDataToURL(
             frontDesignVariant1,
             dataURLtoFile(
@@ -195,28 +196,36 @@ const EditDesign = () => {
 
           await postDataToURL(frontDesignJson, frontJSONBlob);
 
-          if (newDesign?.back != null) {
-            const backDesignVariant1 = urls[6].imageUrl;
-            const backDesignVariant2 = urls[7].imageUrl;
-            const backDesignJson = urls[8].imageUrl;
+          const uploadbackDesignFiles = () => {
+            const promise = new Promise((resolve, reject) => {
+              if (newDesign?.back != null) {
+                const backDesignVariant1 = urls[6].imageUrl;
+                const backDesignVariant2 = urls[7].imageUrl;
+                const backDesignJson = urls[8].imageUrl;
 
-            await postDataToURL(
-              backDesignVariant1,
-              dataURLtoFile(
-                newDesign?.back?.designImages[1]?.data || '',
-                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
-              ),
-            );
-            await postDataToURL(
-              backDesignVariant2,
-              dataURLtoFile(
-                newDesign?.back?.designImages[1]?.data || '',
-                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
-              ),
-            );
+                postDataToURL(
+                  backDesignVariant1,
+                  dataURLtoFile(
+                    newDesign?.back?.designImages[1]?.data || '',
+                    `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+                  ),
+                );
+                postDataToURL(
+                  backDesignVariant2,
+                  dataURLtoFile(
+                    newDesign?.back?.designImages[1]?.data || '',
+                    `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+                  ),
+                );
 
-            await postDataToURL(backDesignJson, backJSONBlob);
-          }
+                postDataToURL(backDesignJson, backJSONBlob);
+              }
+              resolve();
+            });
+            return promise;
+          };
+
+          await uploadbackDesignFiles();
 
           dispatch(clearDesign());
           dispatch(clearCanvas());
