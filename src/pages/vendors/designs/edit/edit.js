@@ -98,9 +98,8 @@ const EditDesign = () => {
   };
 
   const finishDesignEdit = async () => {
-    setOpen(true);
-
     childRef.current.saveDesign();
+    setOpen(true);
 
     setTimeout(() => {
       const newDesign = store.getState().design.design;

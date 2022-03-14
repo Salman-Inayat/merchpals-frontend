@@ -280,7 +280,6 @@ const ProductCard = ({
                 design.backDesign?.designImages[1]?.imageUrl &&
                 design.frontDesign?.designImages[4]?.imageUrl
               ) {
-                console.log('front');
                 product.name !== 'Case' &&
                   product.name !== 'Poster' &&
                   product.name !== 'Mug' &&
@@ -323,7 +322,6 @@ const ProductCard = ({
                     design.backDesign?.designImages[1]?.imageUrl &&
                     design.frontDesign?.designImages[4]?.imageUrl
                   ) {
-                    console.log('front');
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&

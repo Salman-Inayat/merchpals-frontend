@@ -299,7 +299,6 @@ const ProductCard = ({
               store.getState().design?.design?.back?.designImages[4]?.data &&
               store.getState().design?.design?.front?.designImages[4]?.data
             ) {
-              console.log('front');
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
@@ -347,7 +346,6 @@ const ProductCard = ({
                     store.getState().design?.design?.back?.designImages[4]?.data &&
                     store.getState().design?.design?.front?.designImages[4]?.data
                   ) {
-                    console.log('front');
                     product.name !== 'Case' &&
                       product.name !== 'Poster' &&
                       product.name !== 'Mug' &&

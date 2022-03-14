@@ -337,6 +337,7 @@ const Editor = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     saveDesign() {
+      console.log('save design child in the editor');
       exportCanvas();
     },
   }));
@@ -399,8 +400,8 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const exportCanvas = () => {
-    editorJs.exportCanvas('front');
-    backEditorJs.exportCanvas('back');
+    editorJs.exportCanvas();
+    backEditorJs.exportCanvas();
   };
 
   const addImage = e => {
