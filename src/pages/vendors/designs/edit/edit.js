@@ -8,7 +8,11 @@ import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
 import store from '../../../../store';
 import { clearDesign } from '../../../../store/redux/actions/design';
-import { clearCanvas } from '../../../../store/redux/actions/canvas';
+import {
+  clearCanvas,
+  updateFrontCanvasShape,
+  updateBackCanvasShape,
+} from '../../../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -44,7 +48,9 @@ const EditDesign = () => {
       .then(response => {
         setDesignData(response.data.design);
         setDesignName(response.data.design.name);
-        console.log(response.data.design);
+
+        dispatch(updateFrontCanvasShape(response.data.design.frontDesign?.shape));
+        dispatch(updateBackCanvasShape(response.data.design.backDesign?.shape));
 
         if (response.data?.design?.backDesign?.designJson === '') {
           setBackCanvasJSON('');
@@ -109,6 +115,10 @@ const EditDesign = () => {
         canvasModes: {
           front: newDesign?.front != null ? true : false,
           back: newDesign?.back != null ? true : false,
+        },
+        shapes: {
+          front: store.getState().canvas.frontShape,
+          back: store.getState().canvas.backShape,
         },
       };
 

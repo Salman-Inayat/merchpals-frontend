@@ -59,6 +59,10 @@ const ProductSelection = ({ designName }) => {
         front: design?.front != null ? true : false,
         back: design?.back != null ? true : false,
       },
+      shapes: {
+        front: store.getState().canvas.frontShape,
+        back: store.getState().canvas.backShape,
+      },
     };
 
     axios

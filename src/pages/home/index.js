@@ -204,6 +204,10 @@ const Home = () => {
         front: designData?.front != null ? true : false,
         back: designData?.back != null ? true : false,
       },
+      shapes: {
+        front: store.getState().canvas.frontShape,
+        back: store.getState().canvas.backShape,
+      },
     };
 
     const frontJSONBlob = new Blob([JSON.stringify(designData?.front?.designJson || '')], {
