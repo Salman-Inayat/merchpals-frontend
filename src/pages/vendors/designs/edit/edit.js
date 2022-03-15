@@ -104,8 +104,8 @@ const EditDesign = () => {
   };
 
   const finishDesignEdit = async () => {
-    await childRef.current.saveDesign();
     setOpen(true);
+    await childRef.current.saveDesign();
 
     setTimeout(() => {
       const newDesign = store.getState().design.design;
@@ -231,12 +231,11 @@ const EditDesign = () => {
           dispatch(clearCanvas());
 
           setOpen(false);
-          setTimeout(() => {
-            navigate('/vendor/designs');
-          }, 500);
+
+          navigate('/vendor/designs');
         })
         .catch(error => console.log({ error }));
-    }, 1000);
+    }, 4000);
   };
 
   return (

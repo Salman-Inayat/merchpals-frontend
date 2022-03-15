@@ -66,6 +66,8 @@ const useEditor = mode => {
     TextDecoration: '',
   };
 
+  let initialBackgroundState;
+
   let json;
   let globalEditor = false;
   let textEditor = false;
@@ -306,15 +308,14 @@ const useEditor = mode => {
       resolve();
     });
 
-    // setTimeout(() => {
-    //   console.log('canvas', canvas);
-    //   if (typeof canvas.backgroundColor === 'string') {
-    //     setBackground('color');
-    //   }
-    //   if (typeof canvas.backgroundColor === 'object') {
-    //     setBackground('image');
-    //   }
-    // }, 1000);
+    if (typeof canvas.backgroundColor === 'string') {
+      // setBackground('color');
+      initialBackgroundState = 'color';
+    }
+    if (typeof canvas.backgroundColor === 'object') {
+      // setBackground('image');
+      initialBackgroundState = 'image';
+    }
 
     return promise;
   };
@@ -515,6 +516,7 @@ const useEditor = mode => {
     if (canvas.backgroundColor === '#ffffff00' || canvas.backgroundColor === '') {
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
     }
+
     ctx2.drawImage(copiedCanvas, 0, 0);
   }
 
@@ -981,27 +983,50 @@ const useEditor = mode => {
   const setCanvasImage = imgUrl => {
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
-      fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
-        // canvas.setBackgroundImage(
-        //   imgUrl,
-        //   () => {
-        //     // canvas.width = img.width;
-        //     // canvas.height = img.height;
-        //     img.width = canvas.width;
-        //     img.height = canvas.height;
-        //     canvas.backgroundColor = '';
-        //     canvas.renderAll();
-        //     afterRender();
-        //   },
-        //   { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
-        // );
+      fabric.Image.fromURL(canvasProperties.canvasImage, function (image) {
+        image.set({
+          left: 0,
+          top: 0,
+          width: canvas.width,
+          height: canvas.height,
+        });
 
+        var patternSourceCanvas = new fabric.StaticCanvas();
+        patternSourceCanvas.add(image);
+
+        // patternSourceCanvas.add(image);
+        // const pattern = new fabric.Pattern({
+        //   source: function () {
+        //     patternSourceCanvas.setDimensions({
+        //       width: image.getWidth() + 0,
+        //       height: image.getHeight() + 0,
+        //     });
+        //     return patternSourceCanvas.getElement();
+        //   },
+        //   repeat: 'no-repeat',
+        // });
+
+        //   canvas.backgroundColor = new fabric.Pattern({
+        //     source: function () {
+        //       patternSourceCanvas.setDimensions({
+        //         width: image.getWidth() + 0,
+        //         height: image.getHeight() + 0,
+        //       });
+        //       return patternSourceCanvas.getElement();
+        //     },
+        //     repeat: 'no-repeat',
+        //   });
+
+        //   canvas.set('dirty', true);
+        //   console.log(canvas);
+        //   canvas.renderAll.bind(canvas)();
+        //   afterRender();
+        //   setBackground('image');
+        // });
         canvas.setBackgroundColor(
           {
             source: canvasProperties.canvasImage,
             repeat: 'repeat',
-            scaleX: canvas.width / img.width,
-            scaleY: canvas.height / img.height,
           },
 
           function () {
@@ -1011,22 +1036,6 @@ const useEditor = mode => {
           },
         );
       });
-
-      // const image = new Image();
-      // image.src = canvasProperties.canvasImage;
-      // image.onload = function () {
-      //   const imgInstance = new fabric.Image(image);
-      //   imgInstance.set({
-      //     left: 0,
-      //     top: 0,
-      //     angle: 0,
-      //   });
-      //   imgInstance.scaleToWidth(canvas.width);
-      //   imgInstance.scaleToHeight(canvas.height);
-      //   canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas));
-      //   canvas.renderAll();
-      //   afterRender();
-      // };
     }
   };
 
@@ -1480,13 +1489,13 @@ const useEditor = mode => {
 
       const handleCanvasBackground = () => {
         const promise = new Promise((resolve, reject) => {
-          if (background === 'color') {
+          if (background === 'color' || initialBackgroundState === 'color') {
             backgroundColor = canvas.backgroundColor;
             ctx2.fillStyle = backgroundColor;
             ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
             resolve();
           }
-          if (background === 'image') {
+          if (background === 'image' || initialBackgroundState === 'image') {
             backgroundColor = canvas.backgroundColor.source.currentSrc;
             offScreenCanvas = document.createElement('canvas');
             offScreenCanvas.width = canvas2.width;
