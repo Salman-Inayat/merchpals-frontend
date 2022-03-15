@@ -8,6 +8,11 @@ import Editor from '../../../editor/Editor';
 import BackButton from '../../../../components/backButton';
 import store from '../../../../store';
 import { clearDesign } from '../../../../store/redux/actions/design';
+import {
+  clearCanvas,
+  updateFrontCanvasShape,
+  updateBackCanvasShape,
+} from '../../../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -43,7 +48,9 @@ const EditDesign = () => {
       .then(response => {
         setDesignData(response.data.design);
         setDesignName(response.data.design.name);
-        console.log(response.data.design);
+
+        dispatch(updateFrontCanvasShape(response.data.design.frontDesign?.shape));
+        dispatch(updateBackCanvasShape(response.data.design.backDesign?.shape));
 
         if (response.data?.design?.backDesign?.designJson === '') {
           setBackCanvasJSON('');
@@ -98,8 +105,7 @@ const EditDesign = () => {
 
   const finishDesignEdit = async () => {
     setOpen(true);
-
-    childRef.current.saveDesign();
+    await childRef.current.saveDesign();
 
     setTimeout(() => {
       const newDesign = store.getState().design.design;
@@ -109,6 +115,10 @@ const EditDesign = () => {
         canvasModes: {
           front: newDesign?.front != null ? true : false,
           back: newDesign?.back != null ? true : false,
+        },
+        shapes: {
+          front: store.getState().canvas.frontShape,
+          back: store.getState().canvas.backShape,
         },
       };
 
@@ -137,6 +147,7 @@ const EditDesign = () => {
             type: 'application/json',
           });
 
+          console.log(newDesign?.front?.designImages[1]?.data);
           await postDataToURL(
             frontDesignVariant1,
             dataURLtoFile(
@@ -185,38 +196,46 @@ const EditDesign = () => {
 
           await postDataToURL(frontDesignJson, frontJSONBlob);
 
-          if (newDesign?.back != null) {
-            const backDesignVariant1 = urls[6].imageUrl;
-            const backDesignVariant2 = urls[7].imageUrl;
-            const backDesignJson = urls[8].imageUrl;
+          const uploadbackDesignFiles = () => {
+            const promise = new Promise((resolve, reject) => {
+              if (newDesign?.back != null) {
+                const backDesignVariant1 = urls[6].imageUrl;
+                const backDesignVariant2 = urls[7].imageUrl;
+                const backDesignJson = urls[8].imageUrl;
 
-            await postDataToURL(
-              backDesignVariant1,
-              dataURLtoFile(
-                newDesign?.back?.designImages[1]?.data || '',
-                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
-              ),
-            );
-            await postDataToURL(
-              backDesignVariant2,
-              dataURLtoFile(
-                newDesign?.back?.designImages[1]?.data || '',
-                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
-              ),
-            );
+                postDataToURL(
+                  backDesignVariant1,
+                  dataURLtoFile(
+                    newDesign?.back?.designImages[1]?.data || '',
+                    `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+                  ),
+                );
+                postDataToURL(
+                  backDesignVariant2,
+                  dataURLtoFile(
+                    newDesign?.back?.designImages[1]?.data || '',
+                    `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+                  ),
+                );
 
-            await postDataToURL(backDesignJson, backJSONBlob);
-          }
+                postDataToURL(backDesignJson, backJSONBlob);
+              }
+              resolve();
+            });
+            return promise;
+          };
+
+          await uploadbackDesignFiles();
 
           dispatch(clearDesign());
+          dispatch(clearCanvas());
 
           setOpen(false);
-          setTimeout(() => {
-            navigate('/vendor/designs');
-          }, 500);
+
+          navigate('/vendor/designs');
         })
         .catch(error => console.log({ error }));
-    }, 1000);
+    }, 4000);
   };
 
   return (

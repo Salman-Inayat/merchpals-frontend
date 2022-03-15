@@ -27,6 +27,10 @@ import GreyXSVG from '../../assets/images/svgs/greyX.svg';
 import ImageSVG from '../../assets/images/svgs/imagea1.svg';
 import ShapeSVG from '../../assets/images/svgs/shapeA1.svg';
 import TextSVG from '../../assets/images/svgs/t5.svg';
+import CircleSVG from '../../assets/images/svgs/previewCircle.svg';
+import SquareSVG from '../../assets/images/svgs/previewSquare.svg';
+import TriangleSVG from '../../assets/images/svgs/previewTriangle.svg';
+
 import ColorPng from '../../assets/images/color.png';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {
@@ -89,14 +93,14 @@ const useStyles = makeStyles(theme => ({
   buttonContainer: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     padding: '0 4%',
-
+    margin: '0px !important',
     [theme.breakpoints.down('md')]: {
-      justifyContent: 'space-between',
+      // justifyContent: 'space-between',
     },
     [theme.breakpoints.down('sm')]: {
-      justifyContent: 'space-between',
+      // justifyContent: 'space-between',
       padding: '0px',
     },
   },
@@ -119,7 +123,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#e7e9eb',
     color: '#000',
     boxShadow: '0px 5px 5px rgba(0,0,0,0.2)',
-
+    // margin: '0px !important',
     [theme.breakpoints.down('sm')]: {
       // padding: '6px',
     },
@@ -128,7 +132,7 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block',
     textAlign: 'center',
     position: 'relative',
-    margin: '20px 0px',
+    margin: '0px !important',
   },
   shirtImage: {
     width: '150px',
@@ -172,7 +176,10 @@ const useStyles = makeStyles(theme => ({
     },
   },
   shapeModal: {
-    height: '70px',
+    height: '46px',
+    width: '70px',
+    top: '7%',
+    left: '50%',
   },
   SmileyModal: {
     height: '108px',
@@ -236,6 +243,8 @@ const Editor = forwardRef((props, ref) => {
   const backEditorJs = useEditor('back');
 
   useEffect(() => {
+    // console.log('Editor call');
+
     var style1 = document.getElementById('style1');
     var style2 = document.getElementById('style2');
     var style3 = document.getElementById('style3');
@@ -272,8 +281,21 @@ const Editor = forwardRef((props, ref) => {
   const MINUTE_MS = 500;
 
   useEffect(() => {
+    console.log('Editor call 2');
+
+    handleBlankCanvas();
+  }, []);
+
+  useEffect(() => {
+    // console.log('Editor call 3');
+
+    handleBlankCanvas();
+  }, [canvasMode]);
+
+  //:TODO: Why setInterval set?
+  const handleBlankCanvas = () => {
     var canvas = document.getElementById(`${canvasMode}-canvas`);
-    var span = document.getElementById('alt-text');
+    var span = document.getElementById(`${canvasMode}-canvas-placeholder`);
     const interval = setInterval(() => {
       if (isCanvasBlank(canvas)) {
         span.hidden = false;
@@ -282,17 +304,28 @@ const Editor = forwardRef((props, ref) => {
       }
     }, MINUTE_MS);
 
-    return () => clearInterval(interval);
-  }, []);
+    setTimeout(() => {
+      clearInterval(interval);
+    }, 500);
+  };
 
   const isCanvasBlank = canvas => {
     // console.log('call canvass');
+    // return !canvas
+    //   .getContext('2d')
+    //   .getImageData(0, 0, canvas.width, canvas.height)
+    //   .data.some(channel => channel !== 0);
     const context = canvas.getContext('2d');
 
     const pixelBuffer = new Uint32Array(
       context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
     );
-    // console.log('canvas', !pixelBuffer.some(color => color !== 0));
+    // console.log(
+    //   'canvas mode',
+    //   pixelBuffer,
+    //   pixelBuffer.some,
+    //   !pixelBuffer.some(color => color !== 0),
+    // );
     return !pixelBuffer.some(color => color !== 0);
   };
 
@@ -304,7 +337,11 @@ const Editor = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     saveDesign() {
-      exportCanvas();
+      const promise = new Promise((resolve, reject) => {
+        exportCanvas();
+        resolve();
+      });
+      return promise;
     },
   }));
 
@@ -366,8 +403,8 @@ const Editor = forwardRef((props, ref) => {
   };
 
   const exportCanvas = () => {
-    editorJs.exportCanvas('front');
-    backEditorJs.exportCanvas('back');
+    editorJs.exportCanvas();
+    backEditorJs.exportCanvas();
   };
 
   const addImage = e => {
@@ -531,7 +568,7 @@ const Editor = forwardRef((props, ref) => {
   };
 
   return (
-    <Grid container spacing={2} alignItems="center">
+    <Grid container alignItems="center">
       <Grid item md={12} sm={12} xs={12}>
         <Typography variant="h3" align="center">
           {title}
@@ -582,12 +619,12 @@ const Editor = forwardRef((props, ref) => {
         </Grid>
       </Grid>
 
-      <Grid item md={12} sm={12} xs={12}>
+      <Grid item md={12} sm={12} xs={12} sx={{ marginTop: '5px' }}>
         <Grid container className={classes.controlsContainer}>
           {/* <Stack direction="row" alignItems="center" className={classes.buttonContainer}></Stack> */}
           <Stack
             direction="column"
-            spacing={3}
+            spacing={2}
             // justifyContent="center"
             alignItems="center"
             // alignContent="center"
@@ -635,8 +672,9 @@ const Editor = forwardRef((props, ref) => {
           </Stack>
           <Stack
             direction="column"
-            spacing={3}
+            // justifyContent="center"
             alignItems="center"
+            // alignContent="center"
             className={classes.buttonContainer}
           >
             {/* <Grid item md={12} sm={12} xs={12}> */}
@@ -690,23 +728,49 @@ const Editor = forwardRef((props, ref) => {
                   display: canvasMode === 'front' ? 'none' : 'block',
                 }}
               />
-              <span
-                id="alt-text"
-                style={{
-                  height: '50px',
-                  width: '50px',
-                  position: 'absolute',
-                  top: '40%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  border: '2px dashed white',
-                  borderRadius:
-                    (canvasMode === 'front' && frontCanvasShape === 'circle') ||
-                    (canvasMode === 'back' && backCanvasShape === 'circle')
-                      ? '50%'
-                      : '0px',
-                }}
-              ></span>
+              {canvasMode === 'front' ? (
+                <span id="front-canvas-placeholder">
+                  <img
+                    src={
+                      canvasMode === 'front' && frontCanvasShape === 'circle'
+                        ? CircleSVG
+                        : canvasMode === 'front' && frontCanvasShape === 'triangle'
+                        ? TriangleSVG
+                        : SquareSVG
+                    }
+                    style={{
+                      height: '60px',
+                      width: '60px',
+                      position: 'absolute',
+                      top: '20%',
+                      left: '31%',
+                      zIndex: '10',
+                      color: 'white',
+                    }}
+                  />
+                </span>
+              ) : (
+                <span id="back-canvas-placeholder">
+                  <img
+                    src={
+                      canvasMode === 'back' && backCanvasShape === 'circle'
+                        ? CircleSVG
+                        : canvasMode === 'back' && backCanvasShape === 'triangle'
+                        ? TriangleSVG
+                        : SquareSVG
+                    }
+                    style={{
+                      height: '60px',
+                      width: '60px',
+                      position: 'absolute',
+                      top: '20%',
+                      left: '31%',
+                      zIndex: '10',
+                      color: 'white',
+                    }}
+                  />
+                </span>
+              )}
 
               <canvas
                 hidden={canvasMode === 'front' ? false : true}
@@ -728,7 +792,7 @@ const Editor = forwardRef((props, ref) => {
 
           <Stack
             direction="column"
-            spacing={3}
+            spacing={2}
             alignItems="center"
             className={classes.buttonContainer}
             sx={{ position: 'relative' }}

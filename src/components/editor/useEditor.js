@@ -29,6 +29,7 @@ const useEditor = mode => {
   let [canvasJSON, setCanvasJSON] = useState();
   let [canvasName, setCanvasName] = useState();
   const [counter, setCounter] = useState(0);
+  const [background, setBackground] = useState('');
   const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
@@ -64,6 +65,8 @@ const useEditor = mode => {
     fontFamily: 'Alpha-Slab',
     TextDecoration: '',
   };
+
+  let initialBackgroundState;
 
   let json;
   let globalEditor = false;
@@ -172,12 +175,22 @@ const useEditor = mode => {
 
     let json;
 
+    if (canvas.backgroundImage) {
+      if (isMobile) {
+        console.log(
+          'background mobile',
+          canvas.backgroundImage.width,
+          canvas.backgroundImage.height,
+        );
+        // canvas.backgroundImage.scaleX = canvas.width / canvas.backgroundImage.width;
+        // canvas.backgroundImage.scaleY = canvas.height / canvas.backgroundImage.height;
+        canvas.backgroundImage.scaleX = 0.35;
+        canvas.backgroundImage.scaleY = 0.35;
+      }
+    }
+
     switch (canvasShape) {
       case 'circle':
-        if (canvas.backgroundImage) {
-          canvas.backgroundImage.scaleX = isMobile ? 0.4 : 0.38;
-          canvas.backgroundImage.scaleY = isMobile ? 0.4 : 0.38;
-        }
         canvasContainer.style.removeProperty('padding');
         canvasContainer.style.removeProperty('height');
         canvasContainer.style.removeProperty('width');
@@ -189,7 +202,7 @@ const useEditor = mode => {
         canvasWrapper.style.removeProperty('top');
         canvasWrapper.style.removeProperty('left');
 
-        console.log('canvas', canvas);
+        // console.log('canvas', canvas);
 
         canvas.clipPath = circle;
         json = JSON.stringify(canvas);
@@ -259,46 +272,57 @@ const useEditor = mode => {
   };
 
   const loadJson = (canvas, json) => {
-    console.log('loading json');
-    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
-      canvasProperties.canvasFill = canvas.backgroundColor;
-
-      canvas.on({
-        'selection:created': function () {
-          let selectedObject = canvas.getActiveObject();
-          if (selectedObject) {
+    const promise = new Promise((resolve, reject) => {
+      canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
+        canvas.on({
+          'selection:created': function () {
+            let selectedObject = canvas.getActiveObject();
+            if (selectedObject) {
+              applyProperties(selectedObject);
+            }
+          },
+          'object:added': e => {
+            const selectedObject = e.target;
             applyProperties(selectedObject);
-          }
-        },
-        'object:added': e => {
-          const selectedObject = e.target;
-          applyProperties(selectedObject);
-          localStorage.setItem('design', canvas.toDataURL());
-          resetPanels();
-        },
+            localStorage.setItem('design', canvas.toDataURL());
+            resetPanels();
+          },
+        });
       });
-    });
-    if (canvas.getObjects().length == 0) {
-      const text = new fabric.Textbox('s', {
-        left: 40,
-        top: 100,
-        opacity: 0.1,
-        fontSize: 5,
-        hasControls: false,
-        hasRotatingPoint: false,
-        lockMovementX: true,
-        lockMovementY: true,
-      });
-      canvas.add(text);
-    }
-    canvas.renderAll();
+      if (canvas.getObjects().length == 0) {
+        const text = new fabric.Textbox('s', {
+          left: 40,
+          top: 100,
+          opacity: 0.1,
+          fontSize: 5,
+          hasControls: false,
+          hasRotatingPoint: false,
+          lockMovementX: true,
+          lockMovementY: true,
+        });
+        canvas.add(text);
+      }
+      canvas.renderAll();
 
-    afterRender();
+      afterRender();
+      resolve();
+    });
+
+    if (typeof canvas.backgroundColor === 'string') {
+      // setBackground('color');
+      initialBackgroundState = 'color';
+    }
+    if (typeof canvas.backgroundColor === 'object') {
+      // setBackground('image');
+      initialBackgroundState = 'image';
+    }
+
+    return promise;
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (canvasJSON) {
-      loadJson(canvas, canvasJSON);
+      await loadJson(canvas, canvasJSON);
     }
   }, [canvasJSON]);
 
@@ -492,6 +516,7 @@ const useEditor = mode => {
     if (canvas.backgroundColor === '#ffffff00' || canvas.backgroundColor === '') {
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
     }
+
     ctx2.drawImage(copiedCanvas, 0, 0);
   }
 
@@ -938,11 +963,11 @@ const useEditor = mode => {
     if (canvasProperties.canvasImage) canvasProperties.canvasImage = '';
     if (!canvasProperties.canvasImage) {
       canvas.setBackgroundImage(null);
+      setBackground('color');
       canvas.backgroundColor = canvasProperties.canvasFill;
       canvas.renderAll();
       afterRender();
     }
-    //setMiniature(canvas.toDataURL());
   };
 
   const extend = (obj, id) => {
@@ -958,38 +983,59 @@ const useEditor = mode => {
   const setCanvasImage = imgUrl => {
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
-      // fabric.Image.fromURL(canvasProperties.canvasImage, function (img, isError) {
-
-      // });
-
-      const image = new Image();
-      image.src = canvasProperties.canvasImage;
-      image.onload = function () {
-        const imgInstance = new fabric.Image(image);
-        imgInstance.set({
+      fabric.Image.fromURL(canvasProperties.canvasImage, function (image) {
+        image.set({
           left: 0,
           top: 0,
-          angle: 0,
+          width: canvas.width,
+          height: canvas.height,
         });
-        imgInstance.scaleToWidth(canvas.width);
-        imgInstance.scaleToHeight(canvas.height);
-        canvas.setBackgroundImage(imgInstance, canvas.renderAll.bind(canvas));
-        canvas.renderAll();
-        afterRender();
-      };
 
-      // canvas.setBackgroundImage(
-      //   imgUrl,
-      //   () => {
-      //     canvas.width = img.width;
-      //     canvas.height = img.height;
+        var patternSourceCanvas = new fabric.StaticCanvas();
+        patternSourceCanvas.add(image);
 
-      //     canvas.backgroundColor = '';
-      //     canvas.renderAll();
-      //     afterRender();
-      //   },
-      //   { scaleX: canvas.width / img.width, scaleY: canvas.height / img.height },
-      // );
+        // patternSourceCanvas.add(image);
+        // const pattern = new fabric.Pattern({
+        //   source: function () {
+        //     patternSourceCanvas.setDimensions({
+        //       width: image.getWidth() + 0,
+        //       height: image.getHeight() + 0,
+        //     });
+        //     return patternSourceCanvas.getElement();
+        //   },
+        //   repeat: 'no-repeat',
+        // });
+
+        //   canvas.backgroundColor = new fabric.Pattern({
+        //     source: function () {
+        //       patternSourceCanvas.setDimensions({
+        //         width: image.getWidth() + 0,
+        //         height: image.getHeight() + 0,
+        //       });
+        //       return patternSourceCanvas.getElement();
+        //     },
+        //     repeat: 'no-repeat',
+        //   });
+
+        //   canvas.set('dirty', true);
+        //   console.log(canvas);
+        //   canvas.renderAll.bind(canvas)();
+        //   afterRender();
+        //   setBackground('image');
+        // });
+        canvas.setBackgroundColor(
+          {
+            source: canvasProperties.canvasImage,
+            repeat: 'repeat',
+          },
+
+          function () {
+            canvas.renderAll();
+            afterRender();
+            setBackground('image');
+          },
+        );
+      });
     }
   };
 
@@ -1384,25 +1430,25 @@ const useEditor = mode => {
   //   return !pixelBuffer.some(color => color !== 0);
   // }
 
-  function isCanvasEmpty(canvas) {
-    return !canvas
-      .getContext('2d')
-      .getImageData(0, 0, canvas.width, canvas.height)
-      .data.some(channel => channel !== 0);
-  }
-  // function isCanvasBlank(canvas) {
-  //   const context = canvas.getContext('2d');
-
-  //   const pixelBuffer = new Uint32Array(
-  //     context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
-  //   );
-
-  //   return !pixelBuffer.some(color => color !== 0);
+  // function isCanvasEmpty(canvas) {
+  //   return !canvas
+  //     .getContext('2d')
+  //     .getImageData(0, 0, canvas.width, canvas.height)
+  //     .data.some(channel => channel !== 0);
   // }
+  function isCanvasEmpty(canvas) {
+    const context = canvas.getContext('2d');
 
-  const exportCanvas = mode => {
+    const pixelBuffer = new Uint32Array(
+      context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
+    );
+    // console.log('buffer', pixelBuffer, !pixelBuffer.some(color => color !== 0));
+
+    return !pixelBuffer.some(color => color !== 0);
+  }
+
+  const exportCanvas = async () => {
     if (!isCanvasEmpty(canvas)) {
-      console.log('canvas no empty call', mode);
       let json = JSON.stringify(canvas);
 
       const formatOne = new Image();
@@ -1438,19 +1484,101 @@ const useEditor = mode => {
       canvas2.width = 879;
       canvas2.height = 1833;
 
-      const backgroundColor = canvas.backgroundColor;
-      ctx2.fillStyle = backgroundColor;
-      ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+      let backgroundColor;
+      let offScreenCanvas;
+
+      const handleCanvasBackground = () => {
+        const promise = new Promise((resolve, reject) => {
+          if (background === 'color' || initialBackgroundState === 'color') {
+            backgroundColor = canvas.backgroundColor;
+            ctx2.fillStyle = backgroundColor;
+            ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+            resolve();
+          }
+          if (background === 'image' || initialBackgroundState === 'image') {
+            backgroundColor = canvas.backgroundColor.source.currentSrc;
+            offScreenCanvas = document.createElement('canvas');
+            offScreenCanvas.width = canvas2.width;
+            offScreenCanvas.height = canvas2.height;
+            const offScreenCtx = offScreenCanvas.getContext('2d');
+
+            const backgroundImage = new Image();
+            const canvasContentImage = new Image();
+            let canvasContent;
+
+            backgroundImage.onload = () => {
+              offScreenCtx.drawImage(backgroundImage, 0, 0, canvas2.width, canvas2.height);
+              canvasContentImage.src = canvasContent;
+              canvasContentImage.width = canvas2.width;
+              canvasContentImage.height = canvas2.width;
+            };
+
+            backgroundImage.src = backgroundColor;
+            canvas.backgroundColor = null;
+            canvasContent = canvas.toDataURL({ format: 'png' }, { multiplier: mult4 });
+
+            canvasContentImage.onload = () => {
+              offScreenCtx.drawImage(
+                canvasContentImage,
+                0,
+                canvas2.height / 2 - canvasContentImage.height / 2,
+                canvasContentImage.width,
+                canvasContentImage.height,
+              );
+              formatFour.src = offScreenCanvas.toDataURL({ format: 'png', multiplier: mult4 });
+              formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
+              resolve();
+            };
+          }
+        });
+
+        return promise;
+      };
+
+      // canvasBackgroundImage = canvas.backgroundColor;
+      // // canvas.backgroundColor = '';
+      // const backgroundImage = new Image();
+      // backgroundImage.src = canvas.backgroundColor.source.currentSrc;
+      // backgroundImage.height = canvas2.height;
+      // backgroundImage.width = canvas2.width;
+      // backgroundImage.onload = () => {
+      //   // var pattern = ctx2.createPattern(backgroundImage, 'no-repeat');
+      //   // ctx2.fillStyle = pattern;
+      //   // ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+      // };
+
+      // if (canvas.backgroundImage) {
+      //   canvasBackgroundImage = canvas.backgroundImage;
+      //   canvas.backgroundImage = null;
+      //   const backgroundImage = new Image();
+      //   backgroundImage.src = canvasBackgroundImage.src;
+      // console.log('canvas: ', canvasBackgroundImage.src);
+      //   backgroundImage.onload = () => {
+      //     ctx2.drawImage(backgroundImage, 0, 0, canvas2.width, canvas2.height);
+      //   };
+      // }z
 
       var myImage = new Image();
+
+      if (
+        background === 'color' ||
+        background === 'image' ||
+        initialBackgroundState === 'color' ||
+        initialBackgroundState === 'image'
+      ) {
+        console.log('can run the code now');
+        await handleCanvasBackground();
+      }
+
       myImage.src = formatFour.src;
 
-      myImage.onload = function () {
+      myImage.onload = () => {
         ctx2.drawImage(
           myImage,
           canvas2.width / 2 - myImage.width / 2,
           canvas2.height / 2 - myImage.height / 2,
         );
+
         formatFour.src = canvas2.toDataURL({ format: 'png', multiplier: 1 });
         formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
 

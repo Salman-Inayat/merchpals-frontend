@@ -181,7 +181,9 @@ const ProductCard = ({
 
   const [tempProfit, setTempProfit] = useState();
   const [designImg, setDesignImg] = useState('');
-  const [backDesignImage, setBackDesignImage] = useState();
+  const [backDesignImg, setBackDesignImg] = useState('');
+  const [productDesign, setProductDesign] = useState();
+  const [designChange, setDesignChange] = useState(false);
   const [iphoneDesign, setIphoneDesign] = useState('');
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
@@ -214,7 +216,8 @@ const ProductCard = ({
         design?.frontDesign?.designImages[4]?.imageUrl ||
           design?.backDesign?.designImages[1]?.imageUrl,
       );
-      setBackDesignImage(product.image);
+      setBackDesignImg(design?.backDesign?.designImages[1]?.imageUrl);
+      setProductDesign(product.image);
     }
   }, [design]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -263,7 +266,7 @@ const ProductCard = ({
         <Box className={classes.imageContainer}>
           <CardMedia
             component="img"
-            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage}
+            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
             alt=""
             className={classes.productImage}
             style={{
@@ -273,31 +276,32 @@ const ProductCard = ({
               backgroundSize: '37% 80%',
             }}
             onMouseOver={() => {
-              // if (design.backDesign?.designImages[4]?.imageUrl) {
-              console.log('front');
-              product.name !== 'Case' &&
-                product.name !== 'Poster' &&
-                product.name !== 'Mug' &&
-                (setDesignImg(
-                  design.backDesign?.designImages[1]?.imageUrl ||
-                    design.frontDesign?.designImages[4]?.imageUrl,
-                ),
-                product.slug === 'hoodie'
-                  ? setBackDesignImage(BackHoodie)
-                  : product.slug === 'longsleeve'
-                  ? setBackDesignImage(BackLong)
-                  : setBackDesignImage(BackTee));
-              // }
+              if (
+                design.backDesign?.designImages[1]?.imageUrl &&
+                design.frontDesign?.designImages[4]?.imageUrl
+              ) {
+                product.name !== 'Case' &&
+                  product.name !== 'Poster' &&
+                  product.name !== 'Mug' &&
+                  (setDesignChange(true),
+                  product.slug === 'hoodie'
+                    ? setProductDesign(BackHoodie)
+                    : product.slug === 'longsleeve'
+                    ? setProductDesign(BackLong)
+                    : setProductDesign(BackTee));
+              }
             }}
             onMouseLeave={() => {
-              // if (design.frontDesign?.designImages[4]?.imageUrl) {
-              product.name !== 'Case' &&
-                product.name !== 'Poster' &&
-                product.name !== 'Mug' &&
-                (setDesignImg(design.frontDesign?.designImages[4]?.imageUrl),
-                setBackDesignImage(product.image));
+              if (
+                design.backDesign?.designImages[1]?.imageUrl &&
+                design.frontDesign?.designImages[4]?.imageUrl
+              ) {
+                product.name !== 'Case' &&
+                  product.name !== 'Poster' &&
+                  product.name !== 'Mug' &&
+                  (setDesignChange(false), setProductDesign(product.image));
+              }
             }}
-            // }
           />
           {product.name !== 'Case' && design && (
             <Box>
@@ -312,31 +316,33 @@ const ProductCard = ({
                     ? classes.mug
                     : '',
                 ].join(' ')}
-                src={designImg && designImg}
+                src={designChange ? (backDesignImg ? backDesignImg : designImg) : designImg}
                 onMouseOver={() => {
-                  // if (design.backDesign?.designImages[4]?.imageUrl) {
-                  console.log('front');
-                  product.name !== 'Case' &&
-                    product.name !== 'Poster' &&
-                    product.name !== 'Mug' &&
-                    (setDesignImg(
-                      design.backDesign?.designImages[1]?.imageUrl ||
-                        design.frontDesign?.designImages[4]?.imageUrl,
-                    ),
-                    product.slug === 'hoodie'
-                      ? setBackDesignImage(BackHoodie)
-                      : product.slug === 'longsleeve'
-                      ? setBackDesignImage(BackLong)
-                      : setBackDesignImage(BackTee));
-                  // }
+                  if (
+                    design.backDesign?.designImages[1]?.imageUrl &&
+                    design.frontDesign?.designImages[4]?.imageUrl
+                  ) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      (setDesignChange(true),
+                      product.slug === 'hoodie'
+                        ? setProductDesign(BackHoodie)
+                        : product.slug === 'longsleeve'
+                        ? setProductDesign(BackLong)
+                        : setProductDesign(BackTee));
+                  }
                 }}
                 onMouseLeave={() => {
-                  // if (design.frontDesign?.designImages[4]?.imageUrl) {
-                  product.name !== 'Case' &&
-                    product.name !== 'Poster' &&
-                    product.name !== 'Mug' &&
-                    (setDesignImg(design.frontDesign?.designImages[4]?.imageUrl),
-                    setBackDesignImage(product.image));
+                  if (
+                    design.backDesign?.designImages[1]?.imageUrl &&
+                    design.frontDesign?.designImages[4]?.imageUrl
+                  ) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      (setDesignChange(false), setProductDesign(product.image));
+                  }
                 }}
               />
             </Box>
@@ -460,6 +466,12 @@ const ProductCard = ({
           </Dialog>
         </Grid>
       )}
+      <div hidden>
+        <img src={backDesignImg} />
+        <img src={BackLong} />
+        <img src={BackTee} />
+        <img src={BackHoodie} />
+      </div>
     </Grid>
   );
 };

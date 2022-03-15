@@ -18,7 +18,9 @@ import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
 import { addToCart, getCart } from '../../../../store/redux/actions/cart';
 import { useState } from 'react';
-
+import BackLong from '../../../../assets/images/back-long.png';
+import BackTee from '../../../../assets/images/back-tee.png';
+import BackHoodie from '../../../../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   accordian: {
     backgroundColor: '#0A0A0A',
@@ -111,6 +113,11 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
     estimate: false,
     subTotal: false,
   });
+  const [designChange, setDesignChange] = useState({
+    status: false,
+    id: '',
+  });
+
   const updateQuantity = (vendorProduct, variantId, op) => {
     let updatedCart = [...products];
     let updatedVariant = {};
@@ -171,7 +178,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
     setProducts(updatedCartList);
     addToCart(storeUrl, updatedCartList);
   };
-
+  console.log('product', products);
   return (
     <Accordion defaultExpanded>
       <AccordionSummary
@@ -184,8 +191,34 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
         {products.map(product =>
           product.productMappings.map((variant, i) => (
             <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
+              {console.log('variant', variant, i)}
               <Grid item xs={9} container>
-                <Stack className={classes.imageCard}>
+                <Stack
+                  className={classes.imageCard}
+                  onMouseOver={() => {
+                    console.log('call');
+                    if (variant.backDesign && variant.design) {
+                      product.name !== 'Case' &&
+                        product.name !== 'Mug' &&
+                        product.name !== 'Poster' &&
+                        setDesignChange({
+                          status: true,
+                          id: variant.id,
+                        });
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (variant.backDesign && variant.design) {
+                      product.name !== 'Case' &&
+                        product.name !== 'Mug' &&
+                        product.name !== 'Poster' &&
+                        setDesignChange({
+                          status: false,
+                          id: variant.id,
+                        });
+                    }
+                  }}
+                >
                   <Avatar
                     className={classes.avatar}
                     style={{
@@ -202,10 +235,36 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                       backgroundImage: product.name === 'Case' && `url(${variant.design})`,
                       backgroundSize: '37% 80%',
                     }}
-                    src={product.name === 'Case' ? '/assets/img/FINALCASE.png' : product.image}
+                    src={
+                      product.name === 'Case'
+                        ? '/assets/img/FINALCASE.png'
+                        : designChange.status && designChange.id == variant.id
+                        ? product.name === 'Hoodie'
+                          ? BackHoodie
+                          : product.name === 'Long Sleeve'
+                          ? BackLong
+                          : product.name === 'Tee'
+                          ? BackTee
+                          : product.image
+                        : product.image
+                    }
                     variant="square"
                   />
-                  <Avatar className={classes.design} src={variant.design} variant="square" />
+                  <Avatar
+                    className={classes.design}
+                    src={
+                      designChange.status && designChange.id == variant.id
+                        ? product.name === 'Hoodie'
+                          ? variant.backDesign
+                          : product.name === 'Long Sleeve'
+                          ? variant.backDesign
+                          : product.name === 'Tee'
+                          ? variant.backDesign
+                          : variant.design
+                        : variant.design
+                    }
+                    variant="square"
+                  />
                 </Stack>
                 <Stack direction="column" ml={{ md: 2, xs: 1 }}>
                   <Typography className={classes.text}> Style: {product.name}</Typography>

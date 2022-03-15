@@ -242,29 +242,22 @@ const Product = () => {
     }
   }, [reduxCartProducts]);
 
+  let designUrl, backDesignUrl;
   useEffect(() => {
     if (fetchedProduct) {
-      let designUrl;
-
       fetchedProduct.name === 'Case'
         ? (designUrl =
             fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-              ? fetchedProduct.designId?.frontDesign.designImages[3].imageUrl
-              : '')
+              ? fetchedProduct.designId?.frontDesign?.designImages[3].imageUrl
+              : fetchedProduct.designId?.backDesign?.designImages[1].imageUrl)
         : (designUrl =
             fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
               ? fetchedProduct.designId?.frontDesign.designImages[4].imageUrl
-              : '');
-      let backDesignUrl;
-      fetchedProduct.name === 'Case'
-        ? (backDesignUrl =
-            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-              ? fetchedProduct.designId?.frontDesign.designImages[3].imageUrl
-              : '')
-        : (backDesignUrl =
-            fetchedProduct?.designId?.backDesign?.designImages?.length > 1
-              ? fetchedProduct.designId?.backDesign.designImages[1].imageUrl
-              : fetchedProduct.designId?.frontDesign.designImages[4].imageUrl);
+              : fetchedProduct.designId?.backDesign?.designImages[1].imageUrl);
+
+      backDesignUrl =
+        fetchedProduct?.designId?.backDesign?.designImages?.length > 1 &&
+        fetchedProduct.designId?.backDesign.designImages[1].imageUrl;
 
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
@@ -370,6 +363,7 @@ const Product = () => {
             variant: selectedVariant.variant.label,
             variantId: selectedVariant.variantId,
             design: product.design,
+            backDesign: product.backDesign,
           },
         ],
       };
@@ -383,6 +377,7 @@ const Product = () => {
             color: selectedVariant.color.label,
             variant: selectedVariant.variant.label,
             design: product.design,
+            backDesign: product.backDesign,
             variantId: selectedVariant.variantId,
           },
         ],
@@ -390,6 +385,7 @@ const Product = () => {
         basePrice: product.basePrice,
         name: product.name,
         image: product.image,
+        slug: product.slug,
       };
     }
 
@@ -436,7 +432,7 @@ const Product = () => {
   const changeBackground = () => {
     console.log('changing');
   };
-  console.log('fetched prodcut', backDesignImage);
+  console.log('fetched prodcut', backDesignUrl);
 
   return (
     <>
@@ -499,23 +495,28 @@ const Product = () => {
                             backgroundSize: product.name === 'Case' && '33% 100%',
                           }}
                           onMouseOver={() => {
-                            product.slug !== 'case' &&
-                              product.slug !== 'mug' &&
-                              product.slug !== 'poster' &&
-                              (setDesignImage(
-                                product.backDesign !== '' ? product.backDesign : product.design,
-                              ),
-                              product.slug === 'hoodie'
-                                ? setBackDesignImage(BackHoodie)
-                                : product.slug === 'longsleeve'
-                                ? setBackDesignImage(BackLong)
-                                : setBackDesignImage(BackTee));
+                            if (product.design && product.backDesign) {
+                              product.slug !== 'Case' &&
+                                product.slug !== 'mug' &&
+                                product.slug !== 'poster' &&
+                                (console.log('call ', product.slug),
+                                setDesignImage(
+                                  product.backDesign !== '' ? product.backDesign : product.design,
+                                ),
+                                product.slug === 'hoodie'
+                                  ? setBackDesignImage(BackHoodie)
+                                  : product.slug === 'longsleeve'
+                                  ? setBackDesignImage(BackLong)
+                                  : setBackDesignImage(BackTee));
+                            }
                           }}
                           onMouseLeave={() => {
-                            product.slug !== 'case' &&
-                              product.slug !== 'mug' &&
-                              product.slug !== 'poster' &&
-                              (setDesignImage(product.design), setBackDesignImage(product.image));
+                            if (product.design && product.backDesign) {
+                              product.slug !== 'Case' &&
+                                product.slug !== 'mug' &&
+                                product.slug !== 'poster' &&
+                                (setDesignImage(product.design), setBackDesignImage(product.image));
+                            }
                           }}
                         >
                           <img
@@ -526,6 +527,31 @@ const Product = () => {
                             }
                             alt=""
                             className={classes.image}
+                            onMouseOver={() => {
+                              if (product.design && product.backDesign) {
+                                product.slug !== 'Case' &&
+                                  product.slug !== 'mug' &&
+                                  product.slug !== 'poster' &&
+                                  (console.log('call ', product.slug),
+                                  setDesignImage(
+                                    product.backDesign !== '' ? product.backDesign : product.design,
+                                  ),
+                                  product.slug === 'hoodie'
+                                    ? setBackDesignImage(BackHoodie)
+                                    : product.slug === 'longsleeve'
+                                    ? setBackDesignImage(BackLong)
+                                    : setBackDesignImage(BackTee));
+                              }
+                            }}
+                            onMouseLeave={() => {
+                              if (product.design && product.backDesign) {
+                                product.slug !== 'Case' &&
+                                  product.slug !== 'mug' &&
+                                  product.slug !== 'poster' &&
+                                  (setDesignImage(product.design),
+                                  setBackDesignImage(product.image));
+                              }
+                            }}
                           />
                           {product.name !== 'Case' && (
                             <img src={designImage} alt="design" className={classes.design} />
@@ -770,6 +796,14 @@ const Product = () => {
           <Footer />
         </Grid>
       </Grid>
+      {product.backDesign !== '' && (
+        <div hidden>
+          <img src={product.backDesign} />
+          <img src={BackLong} />
+          <img src={BackTee} />
+          <img src={BackHoodie} />
+        </div>
+      )}
     </>
   );
 };

@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { Grid, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import Circle from '../../assets/images/svgs/Circle.svg';
+import Triangle from '../../assets/images/svgs/Triangle.svg';
+import Square from '../../assets/images/svgs/Square.svg';
 const useStyles = makeStyles(theme => ({
   smileys: {
     width: '1rem',
     height: '1.1em',
     overflow: 'auto',
     [theme.breakpoints.down('md')]: {
-      width: '60px',
+      // width: '60px',
       display: 'inline-block',
     },
     [theme.breakpoints.down('sm')]: {
-      width: '5rem',
-      height: '1.4rem',
+      // width: '5rem',
+      // height: '1.4rem',
       display: 'inline-block',
     },
   },
@@ -22,10 +25,10 @@ const Shapes = ({ addShape }) => {
   const shapes = [
     {
       value: 'square',
-      image: '2.png',
+      image: Square,
     },
-    { value: 'triangle', image: '3.png' },
-    { value: 'circle', image: '1.png' },
+    { value: 'triangle', image: Triangle },
+    { value: 'circle', image: Circle },
   ];
 
   const [shape, setShape] = useState('square');
@@ -44,11 +47,11 @@ const Shapes = ({ addShape }) => {
         value={shape}
         label="Shape"
         onChange={handleShapeChange}
-        // SelectDisplayProps={{ style: { paddingTop: 8, paddingBottom: 2 } }}
+        SelectDisplayProps={{ style: { paddingTop: 5, paddingBottom: 5 } }}
       >
         {shapes.map((shape, index) => (
           <MenuItem value={shape.value} key={index}>
-            <img key={index} src={`/shapes-image/${shape.image}`} className={classes.smileys} />
+            <img key={index} src={shape.image} className={classes.smileys} />
           </MenuItem>
         ))}
       </Select>

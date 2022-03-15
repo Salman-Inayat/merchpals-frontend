@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../store/redux/actions/product';
 import { registerVendor } from '../../store/redux/actions/auth';
 import { clearDesign } from '../../store/redux/actions/design';
+import { clearCanvas } from '../../store/redux/actions/canvas';
 import Tick from '../../assets/images/tick.png';
 
 const useStyle = makeStyles(theme => ({
@@ -203,6 +204,10 @@ const Home = () => {
         front: designData?.front != null ? true : false,
         back: designData?.back != null ? true : false,
       },
+      shapes: {
+        front: store.getState().canvas.frontShape,
+        back: store.getState().canvas.backShape,
+      },
     };
 
     const frontJSONBlob = new Blob([JSON.stringify(designData?.front?.designJson || '')], {
@@ -314,6 +319,7 @@ const Home = () => {
         nextStep();
         setShowWelcomeMessage(true);
         dispatch(clearDesign());
+        dispatch(clearCanvas());
       })
       .catch(err => {
         setCreateStoreError(true);
