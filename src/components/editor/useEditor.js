@@ -1560,7 +1560,13 @@ const useEditor = mode => {
 
       var myImage = new Image();
 
-      if (background === 'color' || background === 'image') {
+      if (
+        background === 'color' ||
+        background === 'image' ||
+        initialBackgroundState === 'color' ||
+        initialBackgroundState === 'image'
+      ) {
+        console.log('can run the code now');
         await handleCanvasBackground();
       }
 
