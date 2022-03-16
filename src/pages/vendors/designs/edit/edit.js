@@ -56,27 +56,27 @@ const EditDesign = () => {
           setBackCanvasJSON('');
         } else {
           getJSONFromUrl(response.data?.design?.backDesign?.designJson, (err, data) => {
-            if (err !== null) {
-              alert('Something went wrong: ' + err);
-            } else {
-              if (data !== 'empty response') {
-                setBackCanvasJSON(data);
-              } else {
-                setBackCanvasJSON('');
-              }
-            }
-          });
-        }
-
-        getJSONFromUrl(response.data?.design?.frontDesign?.designJson, (err, data) => {
           if (err !== null) {
             alert('Something went wrong: ' + err);
           } else {
             if (data !== 'empty response') {
-              setFrontCanvasJSON(data);
+              setBackCanvasJSON(data);
             } else {
-              setFrontCanvasJSON('');
+              setBackCanvasJSON('');
             }
+          }
+        });
+      }
+
+      getJSONFromUrl(response.data?.design?.frontDesign?.designJson, (err, data) => {
+        if (err !== null) {
+          alert('Something went wrong: ' + err);
+        } else {
+          if (data !== 'empty response') {
+            setFrontCanvasJSON(data);
+          } else {
+            setFrontCanvasJSON('');
+          }
           }
         });
       })
@@ -85,19 +85,19 @@ const EditDesign = () => {
 
   const postDataToURL = async (url, data) => {
     const promise = new Promise((resolve, reject) => {
-      axios
-        .put(url, data, {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-          },
-        })
-        .then(response => {
-          console.log(response);
-          resolve(response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    axios
+      .put(url, data, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then(response => {
+        console.log(response);
+        resolve(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
     });
 
     return promise;
@@ -123,7 +123,7 @@ const EditDesign = () => {
       };
 
       axios
-        .put(`${baseURL}/store/design/${designId}`, data, {
+      .put(`${baseURL}/store/design/${designId}`, data, {
           headers: {
             Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
             'Content-Type': 'application/json',
@@ -193,7 +193,6 @@ const EditDesign = () => {
               }.png`,
             ),
           );
-
           await postDataToURL(frontDesignJson, frontJSONBlob);
 
           const uploadbackDesignFiles = () => {
@@ -230,6 +229,7 @@ const EditDesign = () => {
           dispatch(clearDesign());
           dispatch(clearCanvas());
 
+        dispatch(clearDesign());
           setOpen(false);
 
           navigate('/vendor/designs');
@@ -241,14 +241,13 @@ const EditDesign = () => {
   return (
     <LoggedInVendor>
       <Grid mt={5} container>
-        <BackButton />
         <Grid justifyContent="center" container>
           <Grid item md={2} xs={12}></Grid>
           <Grid item md={8} xs={12}>
-            {frontCanvasJSON !== undefined && backCanvasJSON !== undefined && (
-              <Editor
-                frontCanvasJSON={frontCanvasJSON}
-                backCanvasJSON={backCanvasJSON}
+          {frontCanvasJSON !== undefined && backCanvasJSON !== undefined && (
+          <Editor
+              frontCanvasJSON={frontCanvasJSON}
+              backCanvasJSON={backCanvasJSON}
                 saveEditDesign={saveEditDesign}
                 ref={childRef}
                 designName={designName}

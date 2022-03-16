@@ -38,11 +38,14 @@ import StripeOnboardingReturn from './pages/vendors/payment/return';
 import FlowComplete from './pages/home/steps/FlowComplete';
 import TrackOrder from './pages/static/trackOrder';
 import { StoreForm, WelcomeMessage } from './pages/home/steps';
+import Homepage from './pages/static/homepage';
+import DesignPrices from './pages/vendors/designprices';
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
-    { path: '/', element: <Home /> },
+    { path: '/', element: <Homepage /> },
+    { path: '/home', element: <Home /> },
     { path: '/login', element: <Login /> },
     { path: '/register', element: <Register /> },
     { path: '/otp-verification', element: <OtpVerification /> },
@@ -54,7 +57,7 @@ export default function Router() {
     { path: '/store/:storeUrl/products/:productId', element: <Product /> },
     { path: '/vendor', element: <VendorDashboard /> },
     { path: '/vendor/store', element: <VendorStore /> },
-    { path: '/vendor/designs', element: <VendorDesigns /> },
+    { path: '/vendor/designs', element: <DesignPrices /> },
     { path: '/vendor/create-design', element: <VendorCreateDesigns /> },
     { path: '/vendor/edit-design/:designId', element: <VendorEditDesigns /> },
     { path: '/vendor/orders', element: <VendorOrders /> },
@@ -72,7 +75,7 @@ export default function Router() {
     { path: '/vendor/settings', element: <Settings /> },
     { path: '/vendor/profile-settings', element: <ProfileSettings /> },
     { path: '/vendor/store-settings', element: <StoreSettings /> },
-    // { path: '/contact-support', element: <ContactSupport /> },
+    { path: '/contact-support', element: <h1>Maintenance break</h1> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },
@@ -87,7 +90,6 @@ export default function Router() {
       path: '/welcome',
       element: <WelcomeMessage />,
     },
-
     {
       path: '/flow-complete',
       element: <FlowComplete />,

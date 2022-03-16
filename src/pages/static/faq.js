@@ -42,12 +42,14 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
   },
   button: {
-    backgroundColor: '#000',
-    color: '#fff',
-    padding: '10px',
+    backgroundColor: '#D1CFCF',
+    color: 'black',
+    padding: '16.5px 14px',
+    lineHeight: '1.4375em',
+    height: '56px',
     '&:hover': {
-      background: '#fff',
-      color: '#000',
+      background: '#D1CFCF',
+      color: 'black',
       border: '1px solid #000',
     },
   },
@@ -181,6 +183,13 @@ const CustomizedAccordions = () => {
       open: false,
     },
     {
+      question: 'What is order cost?',
+      answer: `<div style="margin-left:30px;">
+      <p style="font-size:16px;">
+      Order cost is a fee used to cover the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your applicable state or local government for more information.</p></div>`,
+      open: false,
+    },
+    {
       question: 'Where do you ship?',
       answer: `<div style="margin-left:30px;">
       <p style="font-size:16px;">
@@ -245,45 +254,51 @@ const CustomizedAccordions = () => {
   return (
     <Box className={classes.mainBox}>
       <Stack
-        direction={{ xs: 'column', md: 'row', sm: 'row' }}
+        direction={{ xs: 'row', md: 'row', sm: 'row' }}
         spacing={{ xs: 1, sm: 2, md: 2 }}
         justifyContent="center"
         alignItems="center"
         mt={4}
         className={classes.container}
       >
-        <Typography variant="h5" diplay="flex">
-          TRACKER ORDER:
+        
+        <Grid item md container display="flex" alignItems="center" justifyContent='space-between' sx={{p:'8px'}}>
+          <Grid xs={12} md={5}>
+          <Typography variant="h3" diplay="flex">
+          TRACK ORDER:
         </Typography>
-        <Grid item md container display="flex" alignItems="center" justifyContent="center">
-          <Typography variant="h5" mr={2}>
-            ORDER#
-          </Typography>
-          <Grid item md={6}>
-            <TextField
-              fullWidth
-              placeholder="ORDER NUMBER (DO NOT INCLUDE '#'"
-              className={classes.order_number}
-              type="number"
-              // {...register('firstName')}
-              // error={Boolean(errors.firstName?.message)}
-              // helperText={errors.firstName?.message}
-              onChange={e => {
-                setOrderNumber(e.target.value);
-                setHelperText('');
-              }}
-              helperText={helperText}
-            />
+          </Grid>
+
+          <Grid display='flex' alignItems='center' md={7} justifyContent='flex-end'>
+            <Typography variant="h5" mr={2}>
+              ORDER#
+            </Typography>
+
+            <Grid dislay='flex' justifyContent='center' alignItems='center'>
+              <TextField
+                sx={{marginRight: '10px'}}
+                placeholder="Order number"
+                // {...register('firstName')}
+                // error={Boolean(errors.firstName?.message)}
+                // helperText={errors.firstName?.message}
+                onChange={e => {
+                  setOrderNumber(e.target.value);
+                  setHelperText('');
+                }}
+                helperText={helperText}
+              />
+              <Button
+                className={classes.button}
+                onClick={handleTrackOrder}
+                disabled={orderNumber === '' ? true : false}
+              >
+                TRACK
+              </Button>
+            </Grid>
+
           </Grid>
         </Grid>
-        <Button
-          className={classes.button}
-          diplay="flex"
-          onClick={handleTrackOrder}
-          disabled={orderNumber === '' ? true : false}
-        >
-          TRACK ORDER
-        </Button>
+        
       </Stack>
       <Divider />
       <Grid className={classes.container}>
@@ -294,7 +309,7 @@ const CustomizedAccordions = () => {
       <Divider />
       <Grid className={classes.container}>
         <Typography variant="h3" p={1}>
-          ORDERS & PAYMETNT
+          ORDERS & PAYMENT
         </Typography>
       </Grid>
       <Divider />

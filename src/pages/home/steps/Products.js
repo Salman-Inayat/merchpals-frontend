@@ -14,7 +14,6 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       position: 'fixed',
       bottom: '0',
-      backgroundColor: '#ccc',
       opacity: 1,
     },
   },
@@ -156,6 +155,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
           [],
         );
         productMappingsIds.push(...productMappings.map(rp => rp._id));
+        console.log({ productMappingsIds });
       });
 
       return { productId, productMappings: productMappingsIds };
@@ -168,55 +168,60 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
     setUnselectProducts(!unselectProducts);
   };
 
+  console.log({ selectedVariants });
   return (
     <>
       <Grid container className={classes.smallScreen}>
-        {/* <Grid container justifyContent="center" alignItems="center"> */}
-        <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start">
-          <Grid item md={12} sm={12} xs={12}>
-            <Typography align="center" variant="h3" style={{ color: '#000' }}>
-              Save Your Merch
-            </Typography>
+        <Grid container justifyContent="center" alignItems="center">
+          <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start" spacing={3}>
+            <Grid item md={12} sm={12} xs={12}>
+              <Typography
+                align="center"
+                variant="h3"
+                style={{ color: '#000', fontFamily: 'Roboto' }}
+              >
+                Save Your Merch
+              </Typography>
+            </Grid>
+            <Grid item md={12} container className={classes.productsContainer}>
+              {products.map((product, i) => (
+                <Grid item md={4} xs={6} key={`product-${i}`} className={classes.ProductCard}>
+                  <ProductCard
+                    product={product}
+                    designName={designName}
+                    onVariantClick={onVariantClick}
+                    onProductClick={onProductClick}
+                    selectedVariants={selectedVariants}
+                    unselectProducts={unselectProducts}
+                    unselectProductId={unselectProductId}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
-          <Grid item md={12} container className={classes.productsContainer}>
-            {products.map((product, i) => (
-              <Grid item md={4} xs={6} key={`product-${i}`} className={classes.ProductCard}>
-                <ProductCard
-                  product={product}
-                  designName={designName}
-                  onVariantClick={onVariantClick}
-                  onProductClick={onProductClick}
-                  selectedVariants={selectedVariants}
-                  unselectProducts={unselectProducts}
-                  unselectProductId={unselectProductId}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          {/* </Grid> */}
         </Grid>
       </Grid>
-      <Grid container className={classes.footer}>
-        <Grid item md={12} xs={12} display="flex" justifyContent="center" alignItems="center">
-          <Button
-            onClick={handleUnselectProducts}
-            className={[classes.btn, classes.unselectBtn].join(' ')}
-            size="large"
-            color="primary"
-            variant="outlined"
-          >
-            {unselectProducts ? 'Done' : 'Unselect'}
-          </Button>
-          <Button
-            onClick={formatAndContinue}
-            className={classes.btn}
-            size="large"
-            color="primary"
-            variant="contained"
-          >
-            Save &#38; Continue
-          </Button>
-        </Grid>
+      <Grid container justifyContent="center" alignItems="center" className={classes.footer}>
+        <Button
+          onClick={handleUnselectProducts}
+          className={[classes.btn, classes.unselectBtn].join(' ')}
+          size="large"
+          color="primary"
+          variant="outlined"
+          style={{height: '70px'}}
+        >
+          {unselectProducts ? 'Done' : 'Unselect'}
+        </Button>
+        <Button
+          onClick={formatAndContinue}
+          className={classes.btn}
+          size="large"
+          color="primary"
+          variant="contained"
+          style={{height: '70px'}}
+        >
+          Save &#38; Continue
+        </Button>
       </Grid>
     </>
   );

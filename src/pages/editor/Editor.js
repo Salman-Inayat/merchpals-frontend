@@ -120,7 +120,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     minWidth: '80px',
-    backgroundColor: '#e7e9eb',
+    backgroundColor: '#d1cfcf',
     color: '#000',
     boxShadow: '0px 5px 5px rgba(0,0,0,0.2)',
     // margin: '0px !important',
@@ -210,7 +210,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   frontBack: {
-    backgroundColor: '#E7E9EB',
+    backgroundColor: '#d1cfcf',
     padding: '2px 3px',
     // margin: '24px 10px 0px 10px',
     borderRadius: '10px',
@@ -294,6 +294,8 @@ const Editor = forwardRef((props, ref) => {
 
   //:TODO: Why setInterval set?
   const handleBlankCanvas = () => {
+    // var canvas = document.getElementById(`${canvasMode}-canvas-preview`);
+    // var span = document.getElementById('alt-text');
     var canvas = document.getElementById(`${canvasMode}-canvas`);
     var span = document.getElementById(`${canvasMode}-canvas-placeholder`);
     const interval = setInterval(() => {

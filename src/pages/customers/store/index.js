@@ -34,18 +34,27 @@ const useStyle = makeStyles(theme => ({
     height: '100%',
     objectFit: 'cover',
   },
+  header: {
+    position: 'absolute',
+    width: '50%',
+    left: '25%',
+    textAlign: 'center'
+  },
   logo: {
     position: 'absolute',
+    width: '150px',
+    borderRadius: '100px',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '120px',
-    height: '120px',
-    borderRadius: '100px',
+    [theme.breakpoints.up('sm')]: {
+      margin: 'auto',
+      width: '300px',
+      borderRadius: '50%'
+    }
   },
   storeName: {
-    fontSize: '2rem',
-    fontWeight: '500',
+    fontSize: '1.5rem',
     textTransform: 'uppercase',
     textDecoration: 'underline',
     textAlign: 'center',
@@ -62,6 +71,8 @@ const useStyle = makeStyles(theme => ({
   },
   topBar: {
     padding: '0px 5%',
+    display: 'flex',
+    flexDirection: 'row-reverse'
   },
   shoppingCart: {
     cursor: 'pointer',
@@ -89,6 +100,8 @@ const Store = ({ fetchStore, store }) => {
 
   useEffect(() => {
     if (store) {
+      console.log('from use effect');
+      console.log('from setting theme');
       themeColor = store.themeColor;
       const tmpthemeClass = ThemeCustomise(themeClasses, themeColor);
       const tmpthemeColorClass = ThemeColorCustomise(themeClasses, themeColor);
@@ -106,23 +119,31 @@ const Store = ({ fetchStore, store }) => {
     },
   }));
   const handleCartButton = () => {
-    navigate(`/cart/${storeUrl}`);
+    const cart = JSON.parse(localStorage.getItem('MERCHPALS_CART'))
+    if(cart) {
+      if(cart.products.length === 0) {
+        navigate(`/cart/${storeUrl}`);
+      }
+      else {
+        navigate(`/checkout/${storeUrl}`);
+      }
+      return
+    } 
   };
-
   return store ? (
     <Grid container spacing={3} className={themeClass}>
       <Grid item container md={12} xs={12} alignItems="center" className={classes.topBar}>
-        <Grid item md={7} sm={7} xs={8} display="flex" justifyContent="flex-end">
+        <Grid className={classes.header}>
           <Typography variant="h4">Official Store</Typography>
         </Grid>
-        <Grid item md={5} sm={5} xs={4} display="flex" justifyContent="flex-end">
+        <Grid display="flex" justifyContent="flex-end" style={{position: 'relative', right: '0', top: '0'}}>
           <IconButton
             aria-label="cart"
             onClick={handleCartButton}
             size="large"
-            style={{ height: '50px', width: '50px' }}
+            style={{ height: '50px', width: '50px'}}
           >
-            <StyledBadge badgeContent={totalNumberOfVariants} color="secondary">
+            <StyledBadge badgeContent={totalNumberOfVariants}>
               <ShoppingCartOutlinedIcon className={themeColorClass} sx={{ fontSize: '2rem' }} />
             </StyledBadge>
           </IconButton>
@@ -134,7 +155,7 @@ const Store = ({ fetchStore, store }) => {
       </Grid>
       <Grid item md={12} sm={12} xs={12}>
         <Grid item md={12} display="flex" justifyContent="center">
-          <Typography variant="h1" className={classes.storeName}>
+          <Typography variant="h4" className={classes.storeName}>
             {store.name}&#39;S MERCH STORE
           </Typography>
         </Grid>

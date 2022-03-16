@@ -73,6 +73,17 @@ const useStyles = makeStyles(theme => ({
       margin: '5px',
     },
   },
+  // selectedCard: {
+  //   position: 'relative',
+  //   borderRadius: '0px',
+  //   backgroundColor: '#116dff!important',
+  //   padding: '.4rem!important',
+  //   boxShadow:
+  //     '0px 0px 0px 0px rgba(0,0,0,0.2), 0px 0px 0px 0px rgba(0,0,0,0.14), 0px 0px 0px 0px rgba(0,0,0,0.12)',
+  //   [theme.breakpoints.down('sm')]: {
+  //     margin: '5px',
+  //   },
+  // },
   image: {
     height: '100%',
     width: '100%',
@@ -207,6 +218,7 @@ const ProductCard = ({
   const islargeDesktop = useMediaQuery({ minWidth: 1400 });
 
   useEffect(() => {
+    console.log(design)
     setTimeout(() => {
       const design =
         store.getState().design?.design?.front?.designImages[4]?.data ||
@@ -251,6 +263,7 @@ const ProductCard = ({
         : '';
     setRadioCardColor(bgColor);
   };
+
   return (
     <>
       <Typography
@@ -263,6 +276,10 @@ const ProductCard = ({
       >
         {designName ? designName : ''} {product.slug === 'longsleeve' ? 'Long' : product.name}
       </Typography>
+      <Grid style={{
+              backgroundColor: selectedVariants[product._id] ? '#116dff' : ' #ccc',
+              padding: selectedVariants[product._id] ? '.4rem' : ' 0',
+            }}>
       <Card
         className={classes.productCard}
         style={{
@@ -377,6 +394,7 @@ const ProductCard = ({
           </Box>
         )}
       </Card>
+      </Grid>
 
       <Grid justifyContent="center" spacing={3} className={classes.colorGrid} container>
         {!unselectProducts ? (
@@ -431,17 +449,7 @@ const ProductCard = ({
                             //   : '',
                           }}
                           value={pm.label}
-                          sx={{
-                            color:
-                              pm.label === 'white'
-                                ? '#ffffff'
-                                : pm.label === 'navy'
-                                ? '#262d4f '
-                                : pm.label === 'black'
-                                ? '#121616'
-                                : '',
-
-                            '&.Mui-checked': {
+                            sx={{
                               color:
                                 pm.label === 'white'
                                   ? '#ffffff'
@@ -450,11 +458,21 @@ const ProductCard = ({
                                   : pm.label === 'black'
                                   ? '#121616'
                                   : '',
-                              border: 'none',
-                              boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
-                            },
-                          }}
-                          className={classes.radioButton}
+
+                              '&.Mui-checked': {
+                                color:
+                                  pm.label === 'white'
+                                    ? '#ffffff'
+                                    : pm.label === 'navy'
+                                    ? '#262d4f '
+                                    : pm.label === 'black'
+                                    ? '#121616'
+                                    : '',
+                                border: 'none',
+                                boxShadow: '0px 5px 5px 2px rgba(0,0,0,0.4)',
+                              },
+                            }}
+                            className={classes.radioButton}
                         /> */}
                         <Radio
                           checked={pm.label === check}
@@ -487,12 +505,12 @@ const ProductCard = ({
                               pm.label === 'white'
                                 ? '#fff'
                                 : pm.label === 'navy'
-                                ? '#262D4F '
+                                ? '#262d4f '
                                 : pm.label === 'black'
                                 ? '#121616'
                                 : '',
                             border: selectedVariants[product._id]?.includes(pm.id)
-                              ? '2px solid #116DFF'
+                              ? '2px solid #116dff'
                               : pm.label === 'white'
                               ? '1px solid #00000066'
                               : '',

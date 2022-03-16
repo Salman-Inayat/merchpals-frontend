@@ -16,6 +16,7 @@ import {
   Input,
   InputLabel,
   IconButton,
+  TextField,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
@@ -29,10 +30,21 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     padding: '8px 10px',
     marginTop: '5px',
-    borderRadius: '4px',
+    borderRadius: '5px',
     '&:after': {
       border: '1px solid #ddd',
     },
+  },
+  imgUpload: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  uploadButton: {
+    backgroundColor: '#d1cfcf',
+    borderRadius: '50px',
+    color: 'black',
+    marginRight: '1rem'
   },
   label: {
     marginLeft: '3px',
@@ -83,6 +95,8 @@ const ContactSupport = props => {
   });
   const [phoneNo, setPhoneNo] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(true);
+  const [orderNumber, setOrderNumber] = useState('');
+  const [imageUrl, setImageUrl] = useState('')
 
   const ContactSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Invalid email address'),
@@ -130,7 +144,6 @@ const ContactSupport = props => {
 
   const handleSubmit = () => {
     props.handleModalAndSnackbar();
-
     axios
       .post(`${baseURL}/contact`, contactDetails)
       .then(res => {
@@ -139,6 +152,17 @@ const ContactSupport = props => {
       .catch(err => {
         console.log(err);
       });
+  };
+
+  const addImage = e => {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (f) {
+      var data = f.target.result;
+      setImageUrl(file.name)
+      // create functionality for sending image to db
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -173,6 +197,9 @@ const ContactSupport = props => {
         <span className={classes.fieldError}>{errors?.name?.message}</span>
       </Grid>
       <Grid item md={12} xs={12}>
+      <InputLabel className={classes.label}>
+          Phone Number<span className={classes.required}>*</span>
+        </InputLabel>
         <PhoneNumberInput
           phoneNo={contactDetails.phoneNo}
           setPhoneNo={value => {
@@ -181,6 +208,21 @@ const ContactSupport = props => {
         />
         <span className={classes.fieldError}>{errors?.phoneNo?.message}</span>
       </Grid>
+      { props.isCustomer && (
+        <Grid item md={12} xs={12}>
+          <InputLabel className={classes.label}>
+          Order #
+        </InputLabel>
+        <Input
+          className={classes.textField}
+                placeholder="Your order number"
+                onChange={e => {
+                  setOrderNumber(e.target.value);
+                }}
+              />
+          <span className={classes.fieldError}>{errors?.phoneNo?.message}</span>
+        </Grid>
+      )}
       <Grid item md={12} xs={12}>
         <InputLabel className={classes.label}>
           Your Email <span className={classes.required}>*</span>
@@ -223,12 +265,36 @@ const ContactSupport = props => {
           rows={4}
         />
         <span className={classes.fieldError}>{errors?.message?.message}</span>
-      </Grid>
-      <Grid item md={12} display="flex" justifyContent="flex-end">
-        <Button variant="contained" onClick={handleSubmit} disabled={toggleSubmit}>
+        <Grid style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem'}}>
+        <Grid className={classes.imgUpload}>
+        <Button
+          component='label'
+          className={classes.uploadButton}>
+            Choose File
+            <input
+              type='file'
+              hidden
+              onChange={e => addImage(e)}
+                onClick={event => {
+                  event.target.value = null;
+                }}
+                accept='image/png, image/jpeg'>
+            </input>
+        </Button>
+        <p>{imageUrl}</p>
+        </Grid>
+        <Grid>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={toggleSubmit}
+        >
           Submit
         </Button>
       </Grid>
+        </Grid>
+      </Grid>
+      
     </Grid>
   );
 };

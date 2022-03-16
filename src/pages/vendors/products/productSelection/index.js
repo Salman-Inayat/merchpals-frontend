@@ -18,6 +18,7 @@ const ProductSelection = ({ designName }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  // const [products, setProducts] = useState([]);
   const [snackBarToggle, setSnackBarToggle] = useState({
     visible: false,
     type: 'success',
@@ -66,7 +67,7 @@ const ProductSelection = ({ designName }) => {
     };
 
     axios
-      .post(`${baseURL}/store/add-design`, data, {
+    .post(`${baseURL}/store/add-design`, data, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
           'Content-Type': 'application/json',

@@ -5,15 +5,47 @@ import { Grid, Button, Typography } from '@mui/material';
 import CartProductCard from '../../../components/cartProductCard';
 import { makeStyles } from '@mui/styles';
 import { useNavigate, useParams } from 'react-router-dom';
+import Footer from '../../../layouts/static/footer';
+import PulsingButton from '../../../components/pulsingButton/pulsingButton';
+import {ArrowForward} from '@mui/icons-material';
 
 const useStyle = makeStyles(theme => ({
+  cartWrapper: {
+
+  },
   productsContainer: {
     padding: '2rem 8rem',
+    paddingBottom: '0',
     [theme.breakpoints.down('sm')]: {
       padding: '1rem',
+      paddingBottom: '0',
       spacing: '5',
     },
   },
+  emptyCart: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    height: '100vh',
+    width: '100%'
+  },
+  cartButton: {
+    backgroundColor: 'black',
+    borderRadius: '50px',
+    color: 'white',
+    width: '100%',
+    maxWidth: '50%',
+    padding: '1.2rem 1.6rem',
+    marginBottom: '2rem',
+    [theme.breakpoints.up('md')]: {
+      maxWidth: '300px',
+      padding: '1.6rem 1rem',
+      borderRadius: '50px',
+      marginBottom: '5rem',
+      marginTop: '4rem'
+    }
+  }
 }));
 
 const Cart = ({ cartProducts }) => {
@@ -23,6 +55,7 @@ const Cart = ({ cartProducts }) => {
   const [store, setStore] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const { storeUrl } = useParams();
+  console.log(storeUrl)
 
   useEffect(() => {
     const storedCart = localStorage.getItem('MERCHPALS_CART');
@@ -151,14 +184,27 @@ const Cart = ({ cartProducts }) => {
           </Grid>
         </Grid>
       ) : (
-        <Grid item xs={12}>
-          <Typography variant="h4" align="center">
-            Cart is empty
-          </Typography>
-        </Grid>
+        <EmptyCart/>
       )}
     </Grid>
   );
 };
 
 export default Cart;
+const EmptyCart = () => {
+  const navigate = useNavigate();
+  const classes = useStyle();
+  return (
+    <Grid className={classes.emptyCart}>
+      <Typography gutterBottom variant='h2'>Your Cart</Typography>
+      <Typography gutterBottom variant='p' sx={{mb: 10}}>Your cart is currently empty</Typography>
+      <PulsingButton
+                onClick={() => navigate(-1)}
+                text='Back to Store'
+                bg='#000000'
+                icon={<ArrowForward style={{marginLeft: '10px'}}/>}>
+            </PulsingButton>
+      <Footer/>
+    </Grid>
+  )
+}

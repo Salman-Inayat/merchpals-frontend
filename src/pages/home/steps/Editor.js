@@ -16,7 +16,6 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
   const saveDesignToStore = () => {
     childRef.current.saveDesign();
 
-    console.log('Ath the end');
   };
 
   return (
@@ -47,7 +46,7 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
           variant="contained"
           onClick={exportAndMove}
           size="large"
-          style={{ backgroungColor: '#116dff ', color: 'white' }}
+          style={{ backgroundColor: '#116dff ', color: 'white' }}
         >
           Save &#38; Continue
         </Button>

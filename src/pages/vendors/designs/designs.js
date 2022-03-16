@@ -10,6 +10,7 @@ import {
   Card,
   CardMedia,
   CardActions,
+  Typography,
 } from '@mui/material';
 import axios from 'axios';
 import LoggedInVendor from '../../../layouts/LoggedInVendor';
@@ -17,23 +18,61 @@ import { baseURL } from '../../../configs/const';
 import { makeStyles } from '@mui/styles';
 import BackButton from '../../../components/backButton';
 import { useMediaQuery } from 'react-responsive';
+import EditDesign from './edit/products';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
 const useStyle = makeStyles(theme => ({
   designContainer: {
     padding: '1rem 3rem',
+    maxWidth: '800px',
+    margin: 'auto',
     [theme.breakpoints.down('sm')]: {
       padding: '0rem',
     },
   },
+  dContainer: {
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '70px'
+    }
+  },
+
   card: {
     borderRadius: '10px',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '100px'
+    }
   },
   designImage: {
     height: '100%',
     width: '100%',
     objectFit: 'cover',
+  },
+  selected: {
+    height: '100%',
+    width: '100%',
+    objectFit: 'cover',
+    padding: '.4rem',
+    backgroundColor: '#116dff'
+  },
+  selectedButton: {
+    position: 'absolute',
+    bottom: '.4rem',
+    left: '.4rem',
+    right: '.4rem',
+    zIndex: '500',
+    paddingTop: '.4rem',
+    paddingBottom: '.4rem',
+    backgroundColor:'black',
+    color: 'white',
+    fontWeight: '600'
+  },
+  addButton: {
+    height: '50px',
+    with: '50px',
+    fontSize: '24px'
   },
   buttonsContainer: {
     display: 'flex',
@@ -41,7 +80,8 @@ const useStyle = makeStyles(theme => ({
     alignItems: 'center',
   },
 }));
-const VendorDesigns = () => {
+
+const VendorDesigns = ({ndesigns, designImage, activeDesign, setDesign = () => {}}) => {
   const navigate = useNavigate();
   const [designs, setDesigns] = useState([]);
   const [fetched, setFetched] = useState(false);
@@ -51,7 +91,7 @@ const VendorDesigns = () => {
     message: 'Design added successfully',
   });
   const classes = useStyle();
-  const [designImage, setDesignImage] = useState([]);
+  // const [designImage, setDesignImage] = useState([]);
   let isMobile = useMediaQuery({ maxWidth: 767 });
   useEffect(() => {
     getDesigns();
@@ -77,21 +117,25 @@ const VendorDesigns = () => {
       .catch(error => console.log({ error }));
   };
   const navigateToCreate = () => {
-    if (designs.length == 5) {
+    if (designs.length === 5) {
       setSnackBarToggle({
         visible: true,
         type: 'error',
         message: 'Designs limit reached',
       });
+
       return;
     }
     navigate('/vendor/create-design');
   };
+
   const handleSnackBarClose = () =>
     setSnackBarToggle({
       ...snackBarToggle,
       visible: false,
     });
+
+    // console.log(fetched)
   return (
     <LoggedInVendor>
       <Grid mt={5} container className={classes.designContainer}>
@@ -104,22 +148,22 @@ const VendorDesigns = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <BackButton />
-          {fetched ? (
-            <Button onClick={navigateToCreate} variant="contained" size="medium">
-              Add new Design
-            </Button>
-          ) : (
-            <Button onClick={() => navigate('/vendor/store')} variant="contained" size="medium">
-              Create a Store
-            </Button>
-          )}
+    
         </Grid>
         <Grid item md={12}>
+        <Typography marginBottom={2} align="center" variant="h3">
+              Designs & Prices
+            </Typography>
           <Grid container spacing={isMobile ? 2 : 4}>
-            {designs.map((design, index) => (
+            {ndesigns.map((design, index) => (
               <Grid item md={3} xs={6} key={index}>
-                <Card className={classes.card}>
+                <Button
+                      className={classes.btn}
+                      // onClick={() => navigate(`/vendor/edit-design/${design._id}`)}
+                      // () => setDesign(design)
+                      onClick={activeDesign === design._id ? () => navigate(`/vendor/edit-design/${design._id}`) : () => setDesign(design)}
+                      size="small"
+                    >
                   {designImage.length > 0 && (
                     <CardMedia
                       component="img"
@@ -127,32 +171,27 @@ const VendorDesigns = () => {
                       height="80%"
                       key={design._id}
                       variant="square"
-                      className={classes.designImage}
+                      className={activeDesign === design._id ? classes.selected : classes.designImage}
                     />
                   )}
-                  <CardActions className={classes.buttonsContainer}>
-                    <Button
-                      variant="outlined"
-                      className={classes.btn}
-                      onClick={() => navigate(`/vendor/edit-design/${design._id}`)}
-                      size="small"
-                    >
-                      Edit Design
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      className={classes.btn}
-                      onClick={() => navigate(`/vendor/edit-design/products/${design._id}`)}
-                      size="small"
-                    >
-                      Edit Products
-                    </Button>
-                  </CardActions>
-                </Card>
+                  {activeDesign === design._id && <Typography className={classes.selectedButton}>Edit</Typography>}
+
+                </Button>
               </Grid>
             ))}
+                  {ndesigns && (
+                    // <Grid  item md={3} xs={6}>
+                       <Card className={classes.card} style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5rem'}}>
+              <Button className={classes.addButton} onClick={navigateToCreate} variant="contained" size="medium">
+              +
+            </Button>
+            </Card>
+                      // </Grid>
+           
+          )}
           </Grid>
         </Grid>
+        
       </Grid>
       <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
@@ -160,4 +199,5 @@ const VendorDesigns = () => {
     </LoggedInVendor>
   );
 };
+
 export default VendorDesigns;

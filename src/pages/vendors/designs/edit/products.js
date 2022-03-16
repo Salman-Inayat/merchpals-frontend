@@ -6,11 +6,18 @@ import { baseURL } from '../../../../configs/const';
 import LoggedInVendor from '../../../../layouts/LoggedInVendor';
 import { ProductCardWithPricing } from '../../../../components/ProductCard';
 import BackButton from '../../../../components/backButton';
+import { ClassNames } from '@emotion/react';
+import { makeStyles } from '@mui/styles';
 
-const EditDesign = () => {
+const useStyles = makeStyles(theme => ({
+  selected: {
+    border: '3px solid #116dff',
+    borderRadius: '16px'
+  }
+}))
+const EditDesign = ({designId}) => {
+  const classes = useStyles()
   const navigate = useNavigate();
-  const { designId } = useParams();
-
   const [selectedVariants, setSelectedVariants] = useState({});
   const [products, setProducts] = useState([]);
   const [design, setDesign] = useState();
@@ -40,7 +47,7 @@ const EditDesign = () => {
         },
       })
       .then(response => {
-        console.log({ response });
+        console.log({ response })
         setDesign(response.data.design);
       })
       .catch(error => console.log({ error: error.response.data.message }));
@@ -212,31 +219,24 @@ const EditDesign = () => {
 
     return cost_price;
   };
+  console.log(selectedVariants)
+  console.log(products)
 
   return (
-    <LoggedInVendor>
-      <Grid mt={5} container>
-        <BackButton />
-        <Grid item xs={12} justifyContent="flex-start" alignItems="flex-start" spacing={3}>
-          <Grid item md={12} sm={12} xs={12}>
-            <Typography align="center" variant="h3" style={{ color: '#0097a7' }}>
-              Product Selection
-            </Typography>
-            <Typography align="center" variant="h5" style={{ fontWeight: 'normal' }}>
-              Please select products for your design
-            </Typography>
-          </Grid>
-          <Grid justifyContent="center" container spacing={2}>
+    // <LoggedInVendor >
+      <Grid mt={5} style={{margin: 'auto', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Grid justifyContent="center" container style={{maxWidth: '800px', margin: 'auto'}}>
             {products?.map((product, i) => (
               <Grid
+                style={{paddingLeft: '10px', paddingRight: '10px'}}
                 justifyContent="center"
                 container
-                item
                 md={4}
                 mt={5}
                 xs={6}
                 key={`product-${i}`}
               >
+                <div className={selectedVariants[product._id] ? classes.selected : null}>
                 <ProductCardWithPricing
                   design={design}
                   product={product}
@@ -248,6 +248,7 @@ const EditDesign = () => {
                   selectedVariants={selectedVariants}
                   updatePrice={updatePrice}
                 />
+                </div>
               </Grid>
             ))}
 
@@ -258,8 +259,7 @@ const EditDesign = () => {
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </LoggedInVendor>
+    // </LoggedInVendor>
   );
 };
 

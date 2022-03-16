@@ -21,11 +21,18 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { clearLogoutFlag, logout, getLoggedInUserInfo } from '../../store/redux/actions/auth';
-import { useNavigate } from 'react-router-dom';
+import {
+  clearLogoutFlag,
+  logout,
+  getLoggedInUserInfo,
+} from '../../store/redux/actions/auth';
+import { useNavigate, Link as RouterLink, useLocation } from 'react-router-dom';
 import ContactSupport from '../../pages/vendors/contactSupport';
 import { makeStyles } from '@mui/styles';
 import { useMediaQuery } from 'react-responsive';
+import { logo } from '../../assets/img';
+import { gear } from '../../assets/images/icons';
+import BackButton from '../../components/backButton';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -55,6 +62,7 @@ const LoggedInVendor = ({
   isLoggedOut = false,
   user = null,
   children,
+  hide
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -66,6 +74,8 @@ const LoggedInVendor = ({
     message: 'Message sent successfully',
   });
   let isMobile = useMediaQuery({ maxWidth: 767 });
+
+  const location = useLocation();
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -113,32 +123,20 @@ const LoggedInVendor = ({
       ...snackBarToggle,
       visible: false,
     });
-
   return (
-    <Grid container>
+    <Grid direction="column" container>
       <Grid xs={12} item>
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1, cursor: 'pointer' }}
-                onClick={() => navigate('/vendor')}
-              >
-                Merchpals
-              </Typography>
+        {hide === true ? null : (
+          <Box>
+          <AppBar position="static" sx={{backgroundColor: 'white'}} display="flex">
+            <Toolbar sx={{width: '100%'}}>
+            {location.pathname === '/vendor' ? <RouterLink to='/vendor' style={{marginRight: 'auto'}}>
+            <img src={logo} alt='' style={{maxHeight:'70px', marginRight: 'auto'}}/>
+            </RouterLink> : <BackButton/>}
               <Box
                 sx={{
+                  marginLeft: 'auto',
+                  float: 'right',
                   display: 'flex',
                   alignItems: 'center',
                   textAlign: 'center',
@@ -153,7 +151,7 @@ const LoggedInVendor = ({
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                   >
-                    <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                    <Avatar sx={{ width: 32, height: 32 }} src={gear}/>
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -220,6 +218,7 @@ const LoggedInVendor = ({
             </Toolbar>
           </AppBar>
         </Box>
+        )}
       </Grid>
       {/* TODO: padding issue  p={isMobile ? 1 : 4}*/}
       <Grid xs={12} container item>
@@ -239,7 +238,11 @@ const LoggedInVendor = ({
           />
         </Card>
       </Modal>
-      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
+      <Snackbar
+        open={snackBarToggle.visible}
+        autoHideDuration={2000}
+        onClose={handleSnackBarClose}
+      >
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Grid>

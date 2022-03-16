@@ -61,7 +61,7 @@ const useStyle = makeStyles(theme => ({
   },
   storeName: {
     fontSize: '2rem',
-    fontWeight: '500',
+    fontWeight: '600',
     textTransform: 'uppercase',
     textDecoration: 'underline',
     textAlign: 'center',
@@ -115,7 +115,6 @@ const VendorStore = () => {
   });
 
   useEffect(() => {
-    console.log('fetched call');
     fetchStore();
   }, []);
 
@@ -128,10 +127,8 @@ const VendorStore = () => {
         },
       })
       .then(response => {
-        console.log('open response', open);
         handleClose();
         const store = response.data.store;
-        console.log('Store: ', store);
         if (store.name) {
           setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
           setStore(store);
@@ -143,7 +140,7 @@ const VendorStore = () => {
         console.log({ err });
       });
   };
-  console.log('open call', open);
+
   const copyToClipboard = storeURL => {
     const el = document.createElement('textarea');
     el.value = storeURL;

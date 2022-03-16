@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@mui/styles';
-import PhoneInput from 'react-phone-input-2';
-import { Typography, Grid } from '@mui/material';
-import 'react-phone-input-2/lib/material.css';
+import React from "react";
+import { makeStyles } from "@mui/styles";
+import PhoneInput from "react-phone-input-2";
+import { Typography,Grid } from "@mui/material";
+import "react-phone-input-2/lib/material.css";
 
 const useStyles = makeStyles({
   phoneNo: {
-    width: '100% !important',
+    width: "100% !important",
+    padding: '12px 10px 13px!important',
+    paddingLeft: '50px!important',
   },
   error: {
     marginTop: '5px',
     color: '#FF4842',
     marginLeft: '14px',
-    fontSize: '0.75rem',
-  },
+    fontSize: '0.75rem'
+  }
 });
 
 const PhoneNumberInput = ({ phoneNo, setPhoneNo, error, inputStyle = {} }) => {
@@ -24,7 +26,7 @@ const PhoneNumberInput = ({ phoneNo, setPhoneNo, error, inputStyle = {} }) => {
     setPhoneNumber(phoneNumber);
     setPhoneNo(phoneNumber);
   };
-
+  
   return (
     <Grid>
       <PhoneInput

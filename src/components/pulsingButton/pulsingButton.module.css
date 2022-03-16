@@ -1,0 +1,25 @@
+.pulsingButton {
+    background-color: #116dff;
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    max-width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: 'center';
+    padding: 1rem 1rem;
+    border: none;
+}
+.buttonText {
+    color: white;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 16px;
+}
+@media (min-width: 756px) {
+    .pulsingButton {
+        width: 100%;
+        max-width: 250px;
+        padding: 1.8rem 1.8rem;
+    }
+}

@@ -9,7 +9,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import ReactCrop from 'react-image-crop';
-import ImageCrop from '../../../components/imageCrop';
+import ImageCrop from '../../../components/imageCrop/imageCrop';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
@@ -242,7 +242,8 @@ function StoreSettings() {
           setShowWelcomeMessage(true);
         })
         .catch(err => {
-          setCreateStoreError(true);
+          // setCreateStoreError(true);
+          console.log(err)
         });
     }
   };
@@ -255,7 +256,6 @@ function StoreSettings() {
 
   return (
     <LoggedInVendor>
-      <BackButton />
       <Grid container spacing={2}>
         <Grid item md={2} xs={12}></Grid>
         <Grid item md={8} xs={12}>
