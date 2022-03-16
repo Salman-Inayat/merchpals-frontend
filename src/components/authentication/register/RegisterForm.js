@@ -169,7 +169,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)} tabIndex='-1'>
-                  <Icon icon={showPassword ? eyeFill : eyeOffFill}/>
+                  <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                 </IconButton>
               </InputAdornment>
             ),
@@ -190,7 +190,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
               endAdornment: (
                 <InputAdornment position="end" tabIndex='-1'>
                   <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)} tabindex='-1'>
-                    <Icon icon={showPassword ? eyeFill : eyeOffFill}/>
+                    <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                   </IconButton>
                 </InputAdornment>
               ),

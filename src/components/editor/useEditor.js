@@ -21,7 +21,6 @@ import {
 } from '../../configs/const';
 
 const useEditor = mode => {
-  console.log(mode)
   const canvasShape = useSelector(state =>
     mode === 'front' ? state.canvas.frontShape : state.canvas.backShape,
   );
