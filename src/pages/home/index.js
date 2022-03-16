@@ -13,6 +13,7 @@ import { registerVendor } from '../../store/redux/actions/auth';
 import { clearDesign } from '../../store/redux/actions/design';
 import { clearCanvas } from '../../store/redux/actions/canvas';
 import Tick from '../../assets/images/tick.png';
+import store from '../../store';
 
 const useStyle = makeStyles(theme => ({
   fluid: {
@@ -217,7 +218,7 @@ const Home = () => {
     const backJSONBlob = new Blob([JSON.stringify(designData?.back?.designJson || '')], {
       type: 'application/json',
     });
-
+    console.log('store data', storeData);
     axios
       .post(`${baseURL}/store`, storeData, {
         headers: {
