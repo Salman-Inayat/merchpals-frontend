@@ -76,7 +76,7 @@ const useStyle = makeStyles(theme => ({
     boxShadow: 24,
     p: 0,
     [theme.breakpoints.down('sm')]: {
-      width: '90%',
+      width: '90%'
     },
   },
   picsContainer: {
@@ -511,7 +511,16 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                       </Grid>
                     </Box>
                   </Grid>
-                  <Grid item md={12} xs={12}>
+                  {/* <Grid item md={12} xs={12}>
+                    <Grid container justifyContent="center" alignItems="center">
+                    </Grid>
+                  </Grid> */}
+                </Grid>
+              </Grid>
+
+              <Grid item md={6} xs={12}>
+                <Grid container justifyContent="center" alignItems="center" spacing={4}>
+                <Grid item md={12} xs={12}>
                     <Stack
                       direction="column"
                       justifyContent="center"
@@ -532,15 +541,6 @@ const StoreForm = ({ createStore, createStoreError = false }) => {
                       <SelectTheme setThemeColor={setThemeColor} />
                     </Stack>
                   </Grid>
-                  {/* <Grid item md={12} xs={12}>
-                    <Grid container justifyContent="center" alignItems="center">
-                    </Grid>
-                  </Grid> */}
-                </Grid>
-              </Grid>
-
-              <Grid item md={6} xs={12}>
-                <Grid container justifyContent="center" alignItems="center" spacing={4}>
                   <Grid item md={12} xs={12}>
                     <Grid container spacing={2}>
                       <Grid item md={12} xs={12}>
