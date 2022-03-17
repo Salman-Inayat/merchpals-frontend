@@ -222,7 +222,7 @@ const Home = () => {
     const backJSONBlob = new Blob([JSON.stringify(designData?.back?.designJson || '')], {
       type: 'application/json',
     });
-
+    console.log('store data', storeData);
     axios
       .post(`${baseURL}/store`, storeData, {
         headers: {

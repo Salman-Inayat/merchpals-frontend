@@ -117,7 +117,7 @@ const VendorDesigns = ({ndesigns, designImage, activeDesign, setDesign = () => {
       .catch(error => console.log({ error }));
   };
   const navigateToCreate = () => {
-    if (designs.length === 5) {
+    if (designs.length == 10) {
       setSnackBarToggle({
         visible: true,
         type: 'error',

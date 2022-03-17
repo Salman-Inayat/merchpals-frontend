@@ -321,22 +321,7 @@ const useEditor = mode => {
 
   const loadJson = (canvas, json) => {
     const promise = new Promise((resolve, reject) => {
-      canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
-        canvas.on({
-          'selection:created': function () {
-            let selectedObject = canvas.getActiveObject();
-            if (selectedObject) {
-              applyProperties(selectedObject);
-            }
-          },
-          'object:added': e => {
-            const selectedObject = e.target;
-            applyProperties(selectedObject);
-            localStorage.setItem('design', canvas.toDataURL());
-            resetPanels();
-          },
-        });
-      });
+      canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
       if (canvas.getObjects().length == 0) {
         const text = new fabric.Textbox('s', {
           left: 40,
@@ -807,24 +792,130 @@ const useEditor = mode => {
     }
   };
 
+  // TODO: need to modify this method
+  // const cropImage = () => {
+  //   var image;
+  //   var minX, minY, maxX, maxY;
+
+  //   image = canvas.getActiveObject();
+  //   image.selectable = false;
+
+  //   minX = image.oCoords.tl.x;
+  //   maxX = image.oCoords.br.x;
+  //   minY = image.oCoords.tl.y;
+  //   maxY = image.oCoords.br.y;
+
+  //   const tl = image.aCoords.tl;
+  //   const tr = image.aCoords.tr;
+  //   const bl = image.aCoords.bl;
+  //   const br = image.aCoords.br;
+
+  //   var maxScaleX = 1;
+  //   var maxScaleY = 1;
+
+  //   var maskHeight = new fabric.Point(tl.x, tl.y).distanceFrom(bl);
+  //   var maskWidth = new fabric.Point(tl.x, tl.y).distanceFrom(tr);
+
+  //   var mask = new fabric.Rect({
+  //     fill: 'rgba(0,0,0,0.2)',
+  //     originX: 'left',
+  //     originY: 'top',
+  //     stroke: 'black',
+  //     opacity: 1,
+  //     left: image.aCoords.tl.x,
+  //     top: image.aCoords.tl.y,
+  //     width: maskWidth,
+  //     height: maskHeight,
+  //     angle: image.angle,
+  //     hasRotatingPoint: false,
+  //     transparentCorners: false,
+  //     borderColor: 'black',
+  //     padding: 0,
+  //     cornerStyle: 'circle',
+  //     borderDashArray: [5, 5],
+  //     borderScaleFactor: 1.3,
+  //     maxWidth: new fabric.Point(tl.x, tl.y).distanceFrom(tr),
+  //     maxHeight: new fabric.Point(tl.x, tl.y).distanceFrom(bl),
+  //   });
+
+  //   mask.on('scaling', function () {
+  //     console.log('Before scaling: ', mask);
+
+  //     if (this.scaleX > maxScaleX) {
+  //       this.scaleX = maxScaleX;
+  //     }
+  //     if (this.scaleY > maxScaleY) {
+  //       this.scaleY = maxScaleY;
+  //     }
+  //     mask.width = this.scaleX * this.width;
+  //     mask.height = this.scaleY * this.height;
+
+  //     console.log('After scaling: ', mask);
+  //   });
+
+  //   mask.on('moving', function () {
+  //     // var top = mask.top;
+  //     // var bottom = top + mask.height;
+  //     // var left = mask.left;
+  //     // var right = left + mask.width;
+
+  //     // var topBound = image.top;
+  //     // var bottomBound = topBound + image.height;
+  //     // var leftBound = image.left;
+  //     // var rightBound = leftBound + image.width;
+
+  //     // mask.set({
+  //     //   left: Math.min(Math.max(left, leftBound), rightBound),
+  //     //   top: Math.min(Math.max(top, topBound), bottomBound),
+  //     // });
+
+  //     var obj = mask;
+
+  //     var bounds = {
+  //       tl: { x: image.aCoords.tl.x, y: image.aCoords.tl.y },
+  //       br: { x: image.aCoords.br.x, y: image.aCoords.br.y },
+  //       bl: { x: image.aCoords.bl.x, y: image.aCoords.bl.y },
+  //       tr: { x: image.aCoords.tr.x, y: image.aCoords.tr.y },
+  //     };
+
+  //     // top-left  corner
+  //     if (obj.top < bounds.tl.y || obj.left < bounds.tl.x) {
+  //       obj.set({
+  //         top: Math.max(obj.top, bounds.tl.y),
+  //         left: Math.max(obj.left, bounds.tl.x),
+  //       });
+  //     }
+
+  //     // bottom right corner
+  //     if (obj.top + obj.height > bounds.br.y || obj.left + obj.width > bounds.br.x) {
+  //       obj.set({
+  //         top: Math.min(obj.top, bounds.br.y - obj.height),
+  //         left: Math.min(obj.left, bounds.br.x - obj.width),
+  //       });
+  //     }
+  //   });
+
+  //   canvas.add(mask);
+  //   canvas.bringToFront(mask);
+  //   canvas.setActiveObject(mask);
+  //   canvas.renderAll();
+  //   afterRender();
+  //   document.getElementById('crop-image-done-button').hidden = false;
+  // };
+
   const cropImage = () => {
     var image;
     var minX, minY, maxX, maxY;
-
     image = canvas.getActiveObject();
-
     minX = image.oCoords.tl.x;
     maxX = image.oCoords.br.x;
     minY = image.oCoords.tl.y;
     maxY = image.oCoords.br.y;
-
     const tl = image.aCoords.tl;
     const tr = image.aCoords.tr;
     const bl = image.aCoords.bl;
-
     var maxScaleX = 1;
     var maxScaleY = 1;
-
     var mask = new fabric.Rect({
       fill: 'rgba(0,0,0,0.2)',
       originX: 'left',
@@ -848,7 +939,6 @@ const useEditor = mode => {
       // lockMovementX: true,
       // lockMovementY: true,
     });
-
     mask.on('scaling', function () {
       if (this.scaleX > maxScaleX) {
         this.scaleX = maxScaleX;
@@ -857,24 +947,20 @@ const useEditor = mode => {
         this.scaleY = maxScaleY;
       }
     });
-
     // mask.on('moving', function () {
     //   var top = mask.top;
     //   var bottom = top + mask.height;
     //   var left = mask.left;
     //   var right = left + mask.width;
-
     //   var topBound = image.top;
     //   var bottomBound = topBound + image.height;
     //   var leftBound = image.left;
     //   var rightBound = leftBound + image.width;
-
     //   mask.set({
     //     left: Math.min(Math.max(left, leftBound), rightBound - mask.width),
     //     top: Math.min(Math.max(top, topBound), bottomBound - mask.height),
     //   });
     // });
-
     canvas.add(mask);
     canvas.bringToFront(mask);
     canvas.setActiveObject(mask);
@@ -1028,6 +1114,26 @@ const useEditor = mode => {
     })(obj.toObject);
   };
 
+  const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  };
+
   const setCanvasImage = imgUrl => {
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
@@ -1035,52 +1141,36 @@ const useEditor = mode => {
         image.set({
           left: 0,
           top: 0,
-          width: canvas.width,
-          height: canvas.height,
+          scaleX: canvas.width / image.width,
+          scaleY: canvas.height / image.height,
         });
 
         var patternSourceCanvas = new fabric.StaticCanvas();
-        patternSourceCanvas.add(image);
+        patternSourceCanvas.setDimensions({
+          width: image.getScaledWidth(),
+          height: image.getScaledHeight(),
+        });
+        patternSourceCanvas.setBackgroundImage(
+          image,
+          patternSourceCanvas.renderAll.bind(patternSourceCanvas),
+        );
 
-        // patternSourceCanvas.add(image);
-        // const pattern = new fabric.Pattern({
-        //   source: function () {
-        //     patternSourceCanvas.setDimensions({
-        //       width: image.getWidth() + 0,
-        //       height: image.getHeight() + 0,
-        //     });
-        //     return patternSourceCanvas.getElement();
-        //   },
-        //   repeat: 'no-repeat',
-        // });
+        const contentType = 'image/png';
+        const b64Data = patternSourceCanvas.toDataURL(contentType).split(',')[1];
 
-        //   canvas.backgroundColor = new fabric.Pattern({
-        //     source: function () {
-        //       patternSourceCanvas.setDimensions({
-        //         width: image.getWidth() + 0,
-        //         height: image.getHeight() + 0,
-        //       });
-        //       return patternSourceCanvas.getElement();
-        //     },
-        //     repeat: 'no-repeat',
-        //   });
+        const blob = b64toBlob(b64Data, contentType);
+        const blobUrl = URL.createObjectURL(blob);
 
-        //   canvas.set('dirty', true);
-        //   console.log(canvas);
-        //   canvas.renderAll.bind(canvas)();
-        //   afterRender();
-        //   setBackground('image');
-        // });
         canvas.setBackgroundColor(
           {
-            source: canvasProperties.canvasImage,
-            repeat: 'repeat',
+            source: blobUrl,
+            repeat: 'no-repeat',
           },
-
-          function () {
+          () => {
             canvas.renderAll();
             afterRender();
             setBackground('image');
+            patternSourceCanvas.dispose();
           },
         );
       });
@@ -1544,6 +1634,7 @@ const useEditor = mode => {
             resolve();
           }
           if (background === 'image' || initialBackgroundState === 'image') {
+            console.log('Canvas: ', canvas);
             backgroundColor = canvas.backgroundColor.source.currentSrc;
             offScreenCanvas = document.createElement('canvas');
             offScreenCanvas.width = canvas2.width;
@@ -1604,7 +1695,7 @@ const useEditor = mode => {
       //   backgroundImage.onload = () => {
       //     ctx2.drawImage(backgroundImage, 0, 0, canvas2.width, canvas2.height);
       //   };
-      // }z
+      // }
 
       var myImage = new Image();
 
