@@ -16,14 +16,12 @@ import {
   CANVAS_WIDTH_DESKTOP,
   CANVAS_WIDTH_MOBILE,
 } from '../../configs/const';
-
 const CanvasEditor = _ref => {
   var className = _ref.class,
     onReady = _ref.onReady,
     canvasJSON = _ref.canvasJSON,
     designName = _ref.designName,
     canvasMode = _ref.canvasMode;
-
   var canvasElParent = useRef(null);
   var frontCanvasEl = useRef(null);
   var backCanvasEl = useRef(null);
@@ -31,6 +29,7 @@ const CanvasEditor = _ref => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
+
   useEffect(function () {
     const canvas = new fabric.Canvas(
       canvasMode === 'front' ? frontCanvasEl.current : backCanvasEl.current,
@@ -50,9 +49,38 @@ const CanvasEditor = _ref => {
     if (isMobile) {
       canvas.setDimensions({ width: CANVAS_WIDTH_MOBILE, height: CANVAS_HEIGHT_MOBILE });
     }
+    // if (isDesktop){
 
+    // }
     initAligningGuidelines(canvas);
     initCenteringGuidelines(canvas, isMobile);
+    // initCenteringGuidelines(canvas, false);
+
+    // var setCurrentDimensions = function setCurrentDimensions() {
+    //   var _canvasElParent$curre, _canvasElParent$curre2;
+    //   const outerCanvasContainer = document.getElementsByClassName(className)[0];
+
+    //   const ratio = canvas.getWidth() / canvas.getHeight();
+    //   const containerWidth = outerCanvasContainer.clientWidth;
+    //   const containerHeight = outerCanvasContainer.clientHeight;
+
+      // const scale = containerWidth / canvas.getWidth();
+      // const zoom = canvas.getZoom() * scale;
+      // canvas.setDimensions({
+      //   width: containerWidth,
+      //   height: containerWidth / ratio,
+      // });
+      // canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
+
+    //   canvas.renderAll();
+    // };
+
+    // var resizeCanvas = function resizeCanvas() {
+    //   setCurrentDimensions();
+    // };
+
+    // setCurrentDimensions();
+    // window.addEventListener('resize', resizeCanvas, false);
 
     if (onReady) {
       onReady(canvas, canvasJSON, designName);
@@ -60,9 +88,9 @@ const CanvasEditor = _ref => {
 
     return function () {
       canvas.dispose();
+      // window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
-
   return React__default.createElement(
     'div',
     {

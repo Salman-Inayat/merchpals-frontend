@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
 import { fill } from 'lodash';
 import { clearDesign } from '../../store/redux/actions/design';
+import { rotate, expand, slider } from '../../assets/images/icons';
 
 import {
   CANVAS_WIDTH_DESKTOP,
@@ -84,6 +85,12 @@ const useEditor = mode => {
   const firstUpdate = useRef(true);
 
   const applyProperties = selectedObject => {
+    var rotateIcon = document.createElement('img');
+    var expandIcon = document.createElement('img');
+    var sliderIcon = document.createElement('img')
+    rotateIcon.src = rotate;
+    expandIcon.src = expand;
+    sliderIcon.src = slider;
     selectedObject.hasRotatingPoint = true;
     selectedObject.transparentCorners = false;
     selectedObject.cornerColor = 'white';
@@ -93,21 +100,52 @@ const useEditor = mode => {
     selectedObject.padding = 5;
     selectedObject.cornerSize = 30;
     selectedObject.rotatingPointOffset = 30;
+    selectedObject.controls.mtr.offsetY = -10;
+    selectedObject.controls.mtr.withConnection = false;
+    selectedObject.controls.rotateControl = new fabric.Control({
+      ...selectedObject.controls.mtr,
+      x: 0,
+      y: -.5,
+      offsetY: -10,
+      cursorStyle: 'pointer',
+      render: renderIcon,
+      cornerSize: 30,
+      rotatingPointOffset: 30,
+      img: rotateIcon
+    })
+    selectedObject.controls.expandControl = new fabric.Control({
+      ...selectedObject.controls.br,
+      x: .5,
+      y: .5,
+      render: renderIcon,
+      cornerSize: 30,
+      img: expandIcon
+    })
+    if(selectedObject.text) {
+      selectedObject.controls.sliderControl = new fabric.Control({
+        ...selectedObject.controls.mr,
+        x: .5,
+        y: 0,
+        render: renderIcon,
+        cornerSize: 30,
+        img: sliderIcon,
+      })
+    }
     selectedObject.setControlsVisibility({
       mt: false,
       mb: false,
       ml: false,
       mr: false,
       bl: false,
-      br: true,
+      br: false,
       tl: false,
       tr: false,
-      mtr: true,
+      mtr: false,
     });
 
     if (selectedObject.type === 'textbox') {
       selectedObject.setControlsVisibility({
-        mr: true,
+        mr: false,
       });
     }
 
@@ -128,6 +166,15 @@ const useEditor = mode => {
         });
     }
   };
+  function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+    var size = this.cornerSize;
+    ctx.save();
+    ctx.translate(left,top);
+    ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+    ctx.drawImage(this.img, -size/2, -size/2, size, size);
+    ctx.style = styleOverride;
+    ctx.restore()
+  }
 
   useEffect(() => {
     setC2(document.getElementById(`${mode}-canvas-preview`));
@@ -139,6 +186,7 @@ const useEditor = mode => {
   const updateShape = () => {
     const canvasWrapper = document.getElementById(`${mode}-canvas-wrapper`);
     const canvasContainer = document.getElementById(`${mode}-canvas-container`);
+    canvasWrapper.style.backgroundColor = 'white'
 
     const circle = new fabric.Circle({
       radius: isMobile ? CANVAS_HEIGHT_MOBILE / 2 : CANVAS_WIDTH_DESKTOP / 2,
@@ -210,7 +258,7 @@ const useEditor = mode => {
         canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[0];
-        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+        canvasContainer.style.border = isMobile ? '3px dashed #EEEEEE' : '4px dashed #EEEEEE';
 
         canvasContainer.style.borderRadius = '50%';
 
@@ -235,7 +283,7 @@ const useEditor = mode => {
 
         c2.style.clipPath = previewClipPaths[1];
         canvasContainer.style.borderRadius = isMobile ? '1px' : '5px';
-        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+        canvasContainer.style.border = isMobile ? '3px dashed whitesmoke' : '4px dashed whitesmoke';
         break;
       case 'triangle':
         canvasContainer.style.removeProperty('border');
@@ -326,7 +374,7 @@ const useEditor = mode => {
       'object:moving': e => {},
       'object:modified': e => {
         const selectedObject = e.target;
-
+        
         applyProperties(selectedObject);
 
         localStorage.setItem('design', canvas.toDataURL());

@@ -7,60 +7,47 @@ import { saveThemeColor } from '../../store/redux/actions/design';
 // ----------------------------------------------------------------------
 const useStyle = makeStyles(theme => ({
   WHITE: {
-    backgroundColor: '#ECE5E5',
-    padding: '20px',
+    backgroundColor: 'white',
+    padding: '30px 20px',
     cursor: 'pointer',
     '&:hover': {
-      boxShadow: '3px 3px 3px #000',
+      boxShadow: '0px 0px 6px 8px rgba(17, 109, 255, .15)',
     },
   },
   TONIGHT: {
-    padding: '20px',
-    backgroundColor: '#4F68DC',
+    padding: '30px 20px',
+    backgroundColor: '#1E1E1E',
     cursor: 'pointer',
     '&:hover': {
-      boxShadow: '3px 3px 3px #000',
-    },
-  },
-  BOURBON: {
-    padding: '20px',
-    backgroundColor: '#EC6F66',
-    cursor: 'pointer',
-    '&:hover': {
-      boxShadow: '3px 3px 3px #000',
+      boxShadow: '0px 0px 6px 8px rgba(17, 109, 255, .15)',
     },
   },
   BANG: {
-    padding: '20px',
-    backgroundColor: '#007991',
+    padding: '30px 20px',
+    backgroundColor: '#BEC3C8',
     cursor: 'pointer',
     '&:hover': {
-      boxShadow: '3px 3px 3px #000',
+      boxShadow: '0px 0px 6px 8px rgba(17, 109, 255, .15)',
     },
   },
   WHITE_click: {
-    backgroundColor: '#ECE5E5',
-    padding: '20px',
-    boxShadow: '3px 3px 3px #000',
+    backgroundColor: 'white',
+    padding: '30px 20px',
+    boxShadow: '0px 0px 6px 8px rgba(17, 109, 255, .65)',
   },
   TONIGHT_click: {
-    padding: '20px',
-    backgroundColor: '#4F68DC',
-    boxShadow: '3px 3px 3px #000',
-  },
-  BOURBON_click: {
-    padding: '20px',
-    backgroundColor: '#EC6F66',
-    boxShadow: '3px 3px 3px #000',
+    padding: '30px 20px',
+    backgroundColor: '#1E1E1E',
+    boxShadow: '0px 0px 6px 8px rgba(17, 109, 255, .65)',
   },
   BANG_click: {
-    padding: '20px',
-    backgroundColor: '#007991',
-    boxShadow: '3px 3px 3px #000',
+    padding: '30px 20px',
+    backgroundColor: '#BEC3C8',
+    boxShadow: '0px 0px 6px 8px rgba(17, 109, 255, .65)',
   },
 
   colorsContainer: {
-    width: '80%',
+    width: '150%',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
       margin: '10px 0px 30px 0px !important',
@@ -110,7 +97,16 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
         ></Paper>
       </Grid>
       <Grid item md={2}>
-        <Paper
+      <Paper
+          elevation={4}
+          className={
+            color === 'BANG' ? classes.BANG_click : style.BANG ? classes.BANG_click : classes.BANG
+          }
+          onClick={() => handleThemeChange('BANG')}
+        ></Paper>
+      </Grid>
+      <Grid item md={2}>
+      <Paper
           elevation={4}
           className={
             color === 'TONIGHT'
@@ -122,8 +118,8 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
           onClick={() => handleThemeChange('TONIGHT')}
         ></Paper>
       </Grid>
-      <Grid item md={2}>
-        <Paper
+      {/* <Grid item md={2}>
+      <Paper
           elevation={4}
           className={
             color === 'BOURBON'
@@ -134,16 +130,7 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
           }
           onClick={() => handleThemeChange('BOURBON')}
         ></Paper>
-      </Grid>
-      <Grid item md={2}>
-        <Paper
-          elevation={4}
-          className={
-            color === 'BANG' ? classes.BANG_click : style.BANG ? classes.BANG_click : classes.BANG
-          }
-          onClick={() => handleThemeChange('BANG')}
-        ></Paper>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }

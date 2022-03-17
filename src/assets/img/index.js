@@ -1,0 +1,11 @@
+export { default as blur } from './blur.png';
+export { default as check } from './check.png';
+export { default as half } from './half.png';
+export { default as half1 } from './half1.png';
+export { default as logo } from './logo1.png';
+export { default as pay } from './pay.png';
+export { default as phone } from './phone.png';
+export { default as possible } from './possible.png';
+export { default as satin } from './satin.png';
+export { default as twophones } from './twophones.png';
+export { default as yellow } from './yellow.jpg';

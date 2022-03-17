@@ -115,6 +115,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
       <Stack spacing={3}>
         <Stack direction={{ xs: 'row', sm: 'row' }} spacing={2}>
           <TextField
+            sx={{backgroundColor: 'white', borderRadius: '8px'}}
             fullWidth
             label="First name"
             autoComplete="firstName"
@@ -124,6 +125,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           />
 
           <TextField
+          sx={{backgroundColor: 'white', borderRadius: '8px'}}
             fullWidth
             label="Last name"
             autoComplete="lastName"
@@ -142,8 +144,9 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           error={formErrors.phoneNo}
         />
 
-        {phoneNo?.length > 2 && (
+        {phoneNo?.length > 6 && (
           <TextField
+            sx={{backgroundColor: 'white', borderRadius: '8px'}}
             fullWidth
             autoComplete="email"
             type="email"
@@ -156,6 +159,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
         )}
 
         <TextField
+        sx={{backgroundColor: 'white', borderRadius: '8px'}}
           fullWidth
           autoComplete="new-password"
           type={showPassword ? 'text' : 'password'}
@@ -164,7 +168,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)}>
+                <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)} tabIndex='-1'>
                   <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                 </IconButton>
               </InputAdornment>
@@ -176,6 +180,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
 
         {password?.length > 5 && (
           <TextField
+            sx={{backgroundColor: 'white', borderRadius: '8px'}}
             fullWidth
             autoComplete={+new Date()}
             type={showPassword ? 'text' : 'password'}
@@ -183,8 +188,8 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
             {...register('confirmPassword')}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)}>
+                <InputAdornment position="end" tabIndex='-1'>
+                  <IconButton edge="end" onClick={() => setShowPassword(prev => !prev)} tabindex='-1'>
                     <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                   </IconButton>
                 </InputAdornment>
@@ -210,11 +215,11 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           />
           <Typography variant="body2" color="textSecondary">
             I agree to{' '}
-            <span className={classes.termsSpan} onClick={() => navigate('/vendor/store')}>
+            <span style={{textDecoration: 'underline'}}>
               Terms
             </span>
             ,{' '}
-            <span className={classes.termsSpan} onClick={() => navigate('/vendor/store')}>
+            <span style={{textDecoration: 'underline'}}>
               Privacy
             </span>
             , receiving SMS and email marketing communications{' '}
@@ -227,7 +232,7 @@ export default function RegisterForm({ registerVendor = () => {}, registrationEr
           </Grid>
         )}
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={false}>
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={false} style={{height: '70px'}}>
           Continue
         </LoadingButton>
       </Stack>

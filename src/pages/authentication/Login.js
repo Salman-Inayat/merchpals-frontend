@@ -8,13 +8,15 @@ import AuthLayout from '../../layouts/AuthLayout';
 import Page from '../../components/Page';
 import { MHidden } from '../../components/@material-extend';
 import LoginForm from '../../components/authentication/login';
+import { logo } from '../../assets/img';
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
+  paddingTop: '70px',
   [theme.breakpoints.up('md')]: {
-    display: 'flex',
-  },
+    display: 'flex'
+  }
 }));
 
 const SectionStyle = styled(Card)(({ theme }) => ({
@@ -23,7 +25,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  margin: theme.spacing(2, 0, 2, 2),
+  margin: theme.spacing(2, 0, 2, 2)
 }));
 
 const ContentStyle = styled('div')(({ theme }) => ({
@@ -33,7 +35,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
   minHeight: '100vh',
   flexDirection: 'column',
   justifyContent: 'center',
-  padding: theme.spacing(12, 0),
+  padding: theme.spacing(12, 0)
 }));
 
 // ----------------------------------------------------------------------
@@ -43,14 +45,14 @@ export default function Login() {
     <RootStyle title="Login">
       <AuthLayout>
         Don’t have an account? &nbsp;
-        <Link underline="none" variant="subtitle2" component={RouterLink} to="/">
+        <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
           Get started
         </Link>
       </AuthLayout>
 
       <MHidden width="mdDown">
         <SectionStyle>
-          <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+          <Typography variant="h3" sx={{ px: 5, mb: 5 }}>
             Hi, Welcome Back
           </Typography>
           <img src="/static/illustrations/illustration_login.png" alt="login" />
@@ -71,7 +73,7 @@ export default function Login() {
           <MHidden width="smUp">
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
               Don’t have an account?&nbsp;
-              <Link variant="subtitle2" component={RouterLink} to="register">
+              <Link variant="subtitle2" component={RouterLink} to="/register">
                 Get started
               </Link>
             </Typography>

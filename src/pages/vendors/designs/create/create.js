@@ -9,7 +9,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
-import BackButton from '../../../../components/backButton';
 import { connect } from 'react-redux';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -45,7 +44,6 @@ const CreateDesign = ({ design }) => {
 
   return (
     <LoggedInVendor>
-      <BackButton />
       <Grid mt={5} container mb={3} display="flex" justifyContent="center">
         <Grid item md={12} xs={12}>
           <Editor
@@ -62,7 +60,15 @@ const CreateDesign = ({ design }) => {
             title="Create your design"
           />
         </Grid>
-        <Grid mt={4} item md={12} display="flex" justifyContent="center" alignItems=" center">
+        <Grid item md={2} xs={12}></Grid>
+        <Grid
+          mt={4}
+          item
+          md={12}
+          display="flex"
+          justifyContent="center"
+          alignItems=" center"
+        >
           <Button variant="contained" onClick={exportAndTriggerSave}>
             Save Design
           </Button>

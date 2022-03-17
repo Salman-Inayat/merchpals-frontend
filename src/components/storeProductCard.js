@@ -17,22 +17,26 @@ import BackTee from '../assets/images/back-tee.png';
 import BackHoodie from '../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   productImage: {
-    height: '100%',
+    height: '100%'
   },
   container: {
-    padding: '30px',
+    // padding: '30px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     cursor: 'pointer',
     alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
-      padding: '10px',
+      padding: '4px',
     },
   },
   card: {
     borderRadius: '0px',
+    backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
+  },
+  borderR: {
+    borderRadius: '5px!important'
   },
   button: {
     backgroundColor: '#116DFF',
@@ -40,7 +44,8 @@ const useStyles = makeStyles(theme => ({
   },
   productName: {
     // color: '#0097a7',
-    margin: '7px auto 0 auto',
+    alignSelf: 'flex-start',
+    marginTop: '1rem'
   },
 
   design: {
@@ -55,6 +60,18 @@ const useStyles = makeStyles(theme => ({
       width: '60px',
     },
   },
+  productTextColor: {
+    color: '#555352',
+    fontWeight: '300',
+    fontSize: '14px!important',
+    textTransform: 'uppercase'
+  },
+  priceText: {
+    color: 'black',
+    fontWeight: '600',
+    fontSize: '14px',
+    textTransform: 'uppercase'
+  },
   poster: {
     height: '140px',
     width: '140px',
@@ -67,7 +84,6 @@ const useStyles = makeStyles(theme => ({
   phoneCase: {
     height: '80px',
     width: '80px',
-    top: '53%',
     [theme.breakpoints.down('sm')]: {
       height: '50px',
       width: '50px',
@@ -80,8 +96,8 @@ const useStyles = makeStyles(theme => ({
     top: '55%',
     left: '52%',
     [theme.breakpoints.down('sm')]: {
-      height: '45px',
-      width: '45px',
+      height: '60px',
+      width: '60px',
     },
   },
 }));
@@ -165,6 +181,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           <img
             src={designChange ? (backDesign ? backDesign : designImage) : designImage}
             className={[
+              classes.borderR,
               classes.design,
               product.name === 'Poster'
                 ? classes.poster
@@ -208,7 +225,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       <Grid className={classes.productName}>
         <Typography
           gutterBottom
-          align="center"
+          align="left"
           variant="h5"
           component="div"
           className={classes.productTextcolor}
@@ -217,15 +234,17 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
         </Typography>
         <Typography
           gutterBottom
-          align="center"
+          align="left"
           variant="h5"
           component="div"
-          className={classes.productTextcolor}
+          className={classes.productTextColor}
         >
           {`${color} Colors`}
         </Typography>
-        <Typography gutterBottom align="center" variant="h5" component="div">
-          {`$${product.price}`}
+        <Typography
+        className={classes.priceText}
+         gutterBottom align="left" variant="h5" component="div">
+          {`$${product.price} USD`}
         </Typography>
       </Grid>
       {/* <Button

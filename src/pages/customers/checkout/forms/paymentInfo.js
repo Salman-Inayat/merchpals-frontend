@@ -34,14 +34,15 @@ const useStyles = makeStyles(theme => ({
     padding: '30px 20px',
   },
   continueBtn: {
+    color: 'white',
     width: '80%',
-    color: 'black',
-    backgroundColor: 'yellow',
-    borderRadius: '20px',
-    '&:hover': {
-      color: 'black',
-      backgroundColor: 'yellow',
-    },
+    border: 'none',
+    margin: '10px',
+    padding: '2rem',
+    maxHeight: '60px',
+    fontWeight: '400',
+    borderRadius: '100px',
+    backgroundColor: 'black'
   },
   banner: {
     width: '500px',
@@ -85,7 +86,9 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
     const cardElement = elements.getElement(CardElement);
     const { error, token } = await stripe.createToken(cardElement);
     placeOrder(token);
-    if (error) {
+    if (!error) {
+      setLoading(false);
+    } else {
       setLoading(false);
     }
   };
@@ -107,16 +110,16 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
       </Grid>
       {completedAddress && (
         <Grid direction="row" justifyContent="center" className={classes.box} container>
-          <Grid item xs={12} mt={3} display="flex" justifyContent="center">
-            <img src={CardsLogos} className={classes.banner} />
+          <Grid item xs={12} mt={3}>
+            <Avatar src={CardsLogos} className={classes.banner} />
           </Grid>
           <Grid item container justifyContent="center" xs={10} mt={3}>
             <Grid item xs={12} mt={3}>
               <CardElement options={cardOptions} />
             </Grid>
           </Grid>
-          <Grid mt={3} container justifyContent="center">
-            <Grid item xs={10} display="flex" justifyContent="center">
+          <Grid justifyContent="center" xs={10} mt={3} container>
+          <Grid item xs={10} display="flex" justifyContent="center">
               <Button
                 disabled={!completedAddress}
                 onClick={createToken}
@@ -128,22 +131,7 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
             <Grid xs={10} mt={3} item>
               <Typography>
                 By clicking the &#39;Place Order&#39; button, you confirm that you have read,
-                understand and accept our{' '}
-                <Link underline="always" sx={{ color: 'text.primary' }}>
-                  Terms of Use
-                </Link>
-                ,{' '}
-                <Link underline="always" sx={{ color: 'text.primary' }}>
-                  Terms of Sale
-                </Link>
-                ,{' '}
-                <Link underline="always" sx={{ color: 'text.primary' }}>
-                  Privacy Policy
-                </Link>{' '}
-                and{' '}
-                <Link underline="always" sx={{ color: 'text.primary' }}>
-                  Return Policy
-                </Link>
+                understand and accept our Terms of Service, Terms of Sale, Privacy Policy and Return Policy
               </Typography>
             </Grid>
           </Grid>

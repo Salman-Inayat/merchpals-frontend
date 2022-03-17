@@ -125,6 +125,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
 
     const prevProductIndex = products.findIndex(v => v.vendorProduct === vendorProduct);
     const prevProduct = products[prevProductIndex];
+
     const variantIndex = prevProduct.productMappings.findIndex(prv => prv.id === variantId);
     const variant = { ...prevProduct.productMappings[variantIndex] };
     let mappings = [...prevProduct.productMappings];
@@ -180,11 +181,11 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
   };
   console.log('product', products);
   return (
-    <Accordion defaultExpanded>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
-        className={classes.accordian}
-      >
+    <Accordion defaultExpanded >
+      <AccordionSummary 
+        style={{backgroundColor: '#d1cfcf'}} 
+        expandIcon={<ExpandMoreIcon 
+        style={{ color: '#212B36' }} />}>
         <Typography className={classes.heading}>In your bag</Typography>
       </AccordionSummary>
       <AccordionDetails>
@@ -294,18 +295,20 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                       </ButtonGroup>
                     </Box>
                   </Grid>
-                </Stack>
-              </Grid>
-              <Grid xs={3} item display="flex" justifyContent="flex-end">
-                <Button
+                  <Button
                   classes={{
                     root: classes.removeBtn,
                   }}
                   onClick={() => removeFromCart(product.vendorProduct, variant.id)}
+                  style={{fontSize: '10px', position: 'absolute', right: '0', marginTop: '.3rem'}}
                 >
                   Remove
                 </Button>
+                </Stack>
               </Grid>
+              {/* <Grid xs={3} item display="flex" justifyContent="flex-end">
+                
+              </Grid> */}
             </Grid>
           )),
         )}
@@ -324,20 +327,20 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
 taxes"
               >
                 <IconButton className={classes.infoBtn}>
-                  <QuestionMark
-                    className={classes.infoIcon}
+                  <QuestionMark 
+                    className={classes.infoIcon} 
                     onClick={() =>
                       setShowToolTip({
                         subTotal: !showTooltip.subTotal,
                       })
                     }
-                  />
+                  /> 
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid xs={6} item>
               <Typography className={classes.summaryText} align="right">
-                $
+              $
                 {priceCalculation.orderActualAmount
                   ? priceCalculation.orderActualAmount.toFixed(2)
                   : 0}
@@ -354,8 +357,8 @@ taxes"
                 {priceCalculation.shippingAmount === 'FREE'
                   ? 'FREE'
                   : `$${
-                      priceCalculation.shippingAmount ? priceCalculation.shippingAmount : 'FREE'
-                    }`}
+                    priceCalculation.shippingAmount ? priceCalculation.shippingAmount : 'FREE'
+                  }`}
               </Typography>
             </Grid>
           </Grid>
@@ -371,7 +374,7 @@ taxes"
                 title="This covers the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your 
 applicable state or local government for more information"
               >
-                <IconButton
+               <IconButton
                   className={classes.infoBtn}
                   onClick={() =>
                     setShowToolTip({
@@ -385,14 +388,14 @@ applicable state or local government for more information"
             </Grid>
             <Grid xs={2} item>
               <Typography className={classes.summaryText} align="right">
-                ${priceCalculation.taxAmount ? priceCalculation.taxAmount.toFixed(2) : 0}
+              ${priceCalculation.taxAmount ? priceCalculation.taxAmount.toFixed(2) : 0}
               </Typography>
             </Grid>
           </Grid>
           <Grid justifyContent="space-between" item container>
             <Typography className={classes.summaryText}>Total</Typography>
             <Typography className={classes.totalText} align="right">
-              $
+            $
               {priceCalculation.amountWithTaxAndShipping
                 ? priceCalculation.amountWithTaxAndShipping.toFixed(2)
                 : 0}

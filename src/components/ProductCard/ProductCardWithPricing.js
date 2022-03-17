@@ -178,7 +178,6 @@ const ProductCard = ({
   const [profit, setProfit] = useState(
     calculateProfit(productDefaultPrice, shippingCost, costPrice),
   );
-
   const [tempProfit, setTempProfit] = useState();
   const [designImg, setDesignImg] = useState('');
   const [backDesignImg, setBackDesignImg] = useState('');
@@ -350,7 +349,7 @@ const ProductCard = ({
         </Box>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {product.name}
+            {design?.name} {product.name}
           </Typography>
           <Typography
             variant="body2"
@@ -400,7 +399,7 @@ const ProductCard = ({
                           ? '#121616'
                           : '',
                       '&.Mui-checked': {
-                        color: `${pm.label}` === 'white' ? '#000000' : '#ffffff',
+                        color: `${pm.label}` == 'white' ? '#000000' : '#ffffff',
                       },
                     }}
                     checkedIcon={<DoneIcon style={{ fontSize: `${isMobile ? '20px' : '25px'}` }} />}

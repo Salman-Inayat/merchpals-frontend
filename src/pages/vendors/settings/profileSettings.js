@@ -156,7 +156,6 @@ function ProfileSettings() {
         <Grid item md={2} xs={12}></Grid>
         <Grid item md={8} xs={12}>
           <Grid container>
-            <BackButton />
             <Grid item md={12} xs={12} mb={4}>
               <Typography variant="h4" align="center">
                 Profile Settings

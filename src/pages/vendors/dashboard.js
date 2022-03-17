@@ -48,6 +48,42 @@ const useStyles = makeStyles(theme => ({
       width: '80%',
     },
   },
+  buttons: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: '2rem',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      padding: '4.8rem 3.8rem',
+      margin: '1rem',
+  }
+  },
+  button: {
+    backgroundColor: '#116dff',
+      color: 'white',
+      fontSize: '20px',
+      width: '280px',
+      height: '80px',
+      fontWeight: '600',
+      textDecoration: 'none',
+      borderRadius: '100px',
+      border: 'none',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: '3rem',
+      padding: '1rem 1rem',
+      boxShadow: '1px 2px 2px 1px rgba(0,0,0,.6)',
+      [theme.breakpoints.up('md')]: {
+          width: '30%',
+          padding: '2.8rem 2.8rem',
+          margin: '1rem',
+          fontSize: '28px'
+      }
+  }
 }));
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -77,6 +113,7 @@ const Dashboard = () => {
         },
       })
       .then(response => {
+        console.log({ store: response.data.store });
         const store = response.data.store;
         setStoreURL(`${process.env.REACT_APP_URL}/${store.slug}`);
         // setStore(store);
@@ -120,21 +157,18 @@ const Dashboard = () => {
   };
 
   return (
-    <Grid container>
+    <Grid container style={{backgroundColor: '#e7e9eb'}}>
       <Grid
-        item
+        className={classes.buttons}
         md={12}
         xs={12}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
+
       >
-        <Button onClick={() => navigate('/vendor/store')}>My Store</Button>
-        <Button onClick={() => navigate('/vendor/designs')}>Store Designs</Button>
-        <Button onClick={() => navigate('/vendor/orders')}>Store Orders</Button>
-        <Button onClick={() => navigate('/vendor/payment/onboarding')}>Transaction History</Button>
-        <Button onClick={toggleContactModal}>Contact Support</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/store')}>My Store</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/designs')}>Design & Prices</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/orders')}>Orders</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/payment/onboarding')}>My Profit</Button>
+        {/* <Button onClick={toggleContactModal}>Contact Support</Button> */}
       </Grid>
 
       <Grid item md={12} sm={12} xs={12} m={10} className={classes.copyContent}>

@@ -13,6 +13,7 @@ import RegisterForm from "../../components/authentication/register/RegisterForm"
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
+  paddingTop: '70px',
   [theme.breakpoints.up("md")]: {
     display: "flex",
   },
@@ -50,7 +51,7 @@ export default function Register() {
           component={RouterLink}
           to="/login"
         >
-          Login
+          Log in
         </Link>
       </AuthLayout>
 

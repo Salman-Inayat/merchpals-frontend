@@ -23,10 +23,7 @@ import { login, clearError } from '../../../store/redux/actions/auth';
 import { makeStyles } from '@mui/styles';
 
 const useStyle = makeStyles(() => ({
-  root: {
-    color: '#FF4842',
-  },
-  errorMessage: {
+  error: {
     marginTop: '5px',
     color: '#FF4842',
     marginLeft: '14px',
@@ -53,7 +50,6 @@ const LoginForm = ({
     if (isLoggedIn || localStorage.getItem('MERCHPAL_AUTH_TOKEN')) {
       navigate('/vendor', { replace: true });
     }
-    console.log('loginError', loginError);
   }, [loginError, isLoggedIn]);
 
   const handleSubmit = () => {
@@ -111,7 +107,7 @@ const LoginForm = ({
       </Stack>
 
       <Stack
-        className={classes.errorMessage}
+        className={classes.error}
         alignItems="center"
         justifyContent="space-between"
         sx={{ my: 2 }}
@@ -119,8 +115,16 @@ const LoginForm = ({
         <Typography>{loginError}</Typography>
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <FormControlLabel control={<Checkbox checked={false} />} label="Remember me" />
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ my: 2 }}
+      >
+        <FormControlLabel
+          control={<Checkbox />}
+          label="Remember me"
+        />
 
         <Link component={RouterLink} variant="subtitle2" to="/forgot-password">
           Forgot password?

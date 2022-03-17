@@ -45,7 +45,7 @@ export default function ThemeTemplateCustomise({ children, colors }) {
               secondary: '#fff',
               disabled: '#fff',
             },
-            background: { paper: '#fff', default: '#fff', neutral: '#fff' },
+            background: { paper: 'white', default: '#fff', neutral: '#fff' },
           },
           shape,
           typography,
@@ -61,7 +61,7 @@ export default function ThemeTemplateCustomise({ children, colors }) {
               disabled: '#000',
             },
             background: {
-              paper: '#4f68dc',
+              paper: '#252525',
               default: '#fff',
               neutral: '#b06ab',
             },
@@ -71,25 +71,25 @@ export default function ThemeTemplateCustomise({ children, colors }) {
           shadows,
           customShadows,
         };
-      case 'BOURBON':
-        return {
-          palette: {
-            text: {
-              primary: '#fff',
-              secondary: '#fff',
-              disabled: '#fff',
-            },
-            background: {
-              paper: '#ec6f66',
-              default: '#fff',
-              neutral: '#f3a183',
-            },
-          },
-          shape,
-          typography,
-          shadows,
-          customShadows,
-        };
+      // case 'BOURBON':
+      //   return {
+      //     palette: {
+      //       text: {
+      //         primary: '#fff',
+      //         secondary: '#fff',
+      //         disabled: '#fff',
+      //       },
+      //       background: {
+      //         paper: '#ec6f66',
+      //         default: '#fff',
+      //         neutral: '#f3a183',
+      //       },
+      //     },
+      //     shape,
+      //     typography,
+      //     shadows,
+      //     customShadows,
+      //   };
       case 'BANG':
         return {
           palette: {
@@ -99,7 +99,7 @@ export default function ThemeTemplateCustomise({ children, colors }) {
               disabled: '#000',
             },
             background: {
-              paper: '#007991',
+              paper: '#BEC3C8',
               default: '#fff',
               neutral: '#78ffd6',
             },

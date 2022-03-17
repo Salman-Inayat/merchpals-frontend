@@ -18,6 +18,7 @@ import store from '../../store';
 const useStyle = makeStyles(theme => ({
   fluid: {
     maxWidth: '100%',
+    backgroundColor: '#e7e9eb',
     paddingLeft: '0px',
     paddingRight: '0px',
   },
@@ -31,6 +32,9 @@ const useStyle = makeStyles(theme => ({
     height: '50px',
   },
   content: {
+    backgroundColor: '#e7e9eb',
+    minHeight: '95vh',
+    paddingBottom: '2rem'
     // marginTop: '16px',
   },
   root: {

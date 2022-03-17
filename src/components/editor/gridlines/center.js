@@ -26,7 +26,7 @@ export const initCenteringGuidelines = (canvas, mobile) => {
 
   var canvasWidthCenterMap = {},
     canvasHeightCenterMap = {},
-    centerLineMargin = 2,
+    centerLineMargin = 20,
     centerLineColor = '#007bff',
     centerLineWidth = 2,
     ctx = canvas.getSelectionContext(),
