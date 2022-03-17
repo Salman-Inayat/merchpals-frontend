@@ -178,7 +178,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
               <Typography
                 align="center"
                 variant="h3"
-                style={{ color: '#000', fontFamily: 'Roboto' }}
+                style={{ color: '#000', fontFamily: 'Public Sans, sans-serif' }}
               >
                 Save Your Merch
               </Typography>

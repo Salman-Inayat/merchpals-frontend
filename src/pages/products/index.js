@@ -810,6 +810,13 @@ const Product = () => {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
+                  <Typography
+                        key={index}
+                        variant="body1"
+                        sx={{ fontWeight: '400 !important' }}
+                        mb={4}>
+                        FREE Shipping to US
+                      </Typography>
                     {product.shippingText?.map((shippingText, index) => (
                       <Typography
                         key={index}

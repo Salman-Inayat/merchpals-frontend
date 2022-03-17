@@ -40,6 +40,7 @@ import TrackOrder from './pages/static/trackOrder';
 import { StoreForm, WelcomeMessage } from './pages/home/steps';
 import Homepage from './pages/static/homepage';
 import DesignPrices from './pages/vendors/designprices';
+import Contact from './pages/static/contact';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -75,7 +76,7 @@ export default function Router() {
     { path: '/vendor/settings', element: <Settings /> },
     { path: '/vendor/profile-settings', element: <ProfileSettings /> },
     { path: '/vendor/store-settings', element: <StoreSettings /> },
-    { path: '/contact-support', element: <h1>Maintenance break</h1> },
+    { path: '/contact', element: <Contact/> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },

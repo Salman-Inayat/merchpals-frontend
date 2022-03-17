@@ -3,6 +3,7 @@ import { makeStyles } from "@mui/styles";
 import PhoneInput from "react-phone-input-2";
 import { Typography,Grid } from "@mui/material";
 import "react-phone-input-2/lib/material.css";
+import './phoneInput.css';
 
 const useStyles = makeStyles({
   phoneNo: {
