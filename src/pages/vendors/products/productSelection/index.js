@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL, dataURLtoFile } from '../../../../configs/const';
-import { Grid, Button, Alert as MuiAlert, Snackbar } from '@mui/material';
+import { Grid, Button, Alert as MuiAlert, Snackbar, Backdrop } from '@mui/material';
 import { Products } from '../../../home/steps';
 import { fetchProducts } from '../../../../store/redux/actions/product';
 import { clearDesign } from '../../../../store/redux/actions/design';
 import { clearCanvas } from '../../../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 import store from '../../../../store';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -23,6 +24,7 @@ const ProductSelection = ({ designName }) => {
     type: 'success',
     message: 'Design added successfully',
   });
+  const [open, setOpen] = useState(false);
 
   const products = useSelector(state => state.product.products);
   useEffect(() => {
@@ -33,27 +35,32 @@ const ProductSelection = ({ designName }) => {
     }
   }, []);
 
-  const postDataToURL = async (url, data) => {
-    await axios
-      .put(url, data, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  const postDataToURL = (url, data) => {
+    const promise = new Promise((resolve, reject) => {
+      axios
+        .put(url, data, {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+          },
+        })
+        .then(response => {
+          console.log(response);
+          resolve(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
+    return promise;
   };
 
   const productSelectionCompleted = selectedProducts => {
+    setOpen(true);
     let design = store.getState().design.design;
     design.designName = location.state.name;
 
     let data = {
-      designName: design?.front?.designName,
+      designName: design.designName,
       products: JSON.stringify([...selectedProducts]),
       canvasModes: {
         front: design?.front != null ? true : false,
@@ -72,7 +79,7 @@ const ProductSelection = ({ designName }) => {
           'Content-Type': 'application/json',
         },
       })
-      .then(response => {
+      .then(async response => {
         console.log(response);
 
         const urls = response.data.response;
@@ -92,35 +99,35 @@ const ProductSelection = ({ designName }) => {
           type: 'application/json',
         });
 
-        postDataToURL(
+        await postDataToURL(
           frontDesignVariant1,
           dataURLtoFile(
             design?.front?.designImages[0]?.data || design?.back?.designImages[0]?.data,
             `${design?.front?.designImages[0]?.name || design?.back?.designImages[0]?.name}.png`,
           ),
         );
-        postDataToURL(
+        await postDataToURL(
           frontDesignVariant2,
           dataURLtoFile(
             design?.front?.designImages[1]?.data || design?.back?.designImages[1]?.data,
             `${design?.front?.designImages[1]?.name || design?.back?.designImages[1]?.name}.png`,
           ),
         );
-        postDataToURL(
+        await postDataToURL(
           frontDesignVariant3,
           dataURLtoFile(
             design?.front?.designImages[2]?.data || design?.back?.designImages[2]?.data,
             `${design?.front?.designImages[2]?.name || design?.back?.designImages[2]?.name}.png`,
           ),
         );
-        postDataToURL(
+        await postDataToURL(
           frontDesignVariant4,
           dataURLtoFile(
             design?.front?.designImages[3]?.data || design?.back?.designImages[3]?.data,
             `${design?.front?.designImages[3]?.name || design?.back?.designImages[3]?.name}.png`,
           ),
         );
-        postDataToURL(
+        await postDataToURL(
           frontDesignVariant5,
           dataURLtoFile(
             design?.front?.designImages[4]?.data || design?.back?.designImages[4]?.data,
@@ -128,29 +135,31 @@ const ProductSelection = ({ designName }) => {
           ),
         );
 
-        postDataToURL(frontDesignJson, frontJSONBlob);
+        await postDataToURL(frontDesignJson, frontJSONBlob);
 
         if (design?.back != null) {
-          const backDesignVariant1 = urls[6].imageUrl;
-          const backDesignVariant2 = urls[7].imageUrl;
-          const backDesignJson = urls[8].imageUrl;
+          if (urls.length != 6) {
+            const backDesignVariant1 = urls[6].imageUrl;
+            const backDesignVariant2 = urls[7].imageUrl;
+            const backDesignJson = urls[8].imageUrl;
 
-          postDataToURL(
-            backDesignVariant1,
-            dataURLtoFile(
-              design?.back?.designImages[1]?.data || '',
-              `${design?.back?.designImages[1]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            backDesignVariant2,
-            dataURLtoFile(
-              design?.back?.designImages[4]?.data || '',
-              `${design?.back?.designImages[4]?.name || ''}.png`,
-            ),
-          );
+            await postDataToURL(
+              backDesignVariant1,
+              dataURLtoFile(
+                design?.back?.designImages[1]?.data || '',
+                `${design?.back?.designImages[1]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              backDesignVariant2,
+              dataURLtoFile(
+                design?.back?.designImages[4]?.data || '',
+                `${design?.back?.designImages[4]?.name || ''}.png`,
+              ),
+            );
 
-          postDataToURL(backDesignJson, backJSONBlob);
+            await postDataToURL(backDesignJson, backJSONBlob);
+          }
         }
 
         localStorage.removeItem('design');
@@ -159,6 +168,7 @@ const ProductSelection = ({ designName }) => {
 
         dispatch(clearDesign());
         dispatch(clearCanvas());
+        setOpen(false);
 
         setSnackBarToggle({
           visible: true,
@@ -166,11 +176,10 @@ const ProductSelection = ({ designName }) => {
           message: 'Design created successfully',
         });
 
-        setTimeout(() => {
-          navigate('/vendor/designs');
-        }, 2000);
+        navigate('/vendor/designs');
       })
       .catch(error => {
+        console.log(error.message);
         setSnackBarToggle({
           visible: true,
           type: 'success',
@@ -196,6 +205,9 @@ const ProductSelection = ({ designName }) => {
       <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
+      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Grid>
   );
 };
