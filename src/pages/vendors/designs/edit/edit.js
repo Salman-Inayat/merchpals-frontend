@@ -55,6 +55,7 @@ const EditDesign = () => {
         if (response.data?.design?.backDesign?.designJson === '') {
           setBackCanvasJSON('');
         } else {
+          console.log('JSON URL: ', response.data?.design?.backDesign?.designJson);
           getJSONFromUrl(response.data?.design?.backDesign?.designJson, (err, data) => {
             if (err !== null) {
               alert('Something went wrong: ' + err);
