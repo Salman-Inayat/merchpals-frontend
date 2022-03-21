@@ -3,14 +3,16 @@ import {
   UPDATE_BACK_CANVAS_SHAPE,
   UPDATE_CANVAS_MODE,
   CLEAR_CANVAS,
-  SAVE_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE,
+  SAVE_FRONT_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE,
+  SAVE_BACK_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE,
 } from '../types';
 
 const initialState = {
   frontShape: 'square',
   backShape: 'square',
   mode: 'front',
-  mobileBackgroundImage: null,
+  frontMobileBackgroundImage: null,
+  backMobileBackgroundImage: null,
 };
 
 const updateFrontShape = (state, payload) => {
@@ -28,8 +30,12 @@ const clearCanvas = state => {
   return { ...state, mode: 'front', frontShape: 'square', backShape: 'square' };
 };
 
-const saveCanvasBackgroundImageForMobile = (state, payload) => {
-  return { ...state, mobileBackgroundImage: payload };
+const saveFrontCanvasBackgroundImageForMobile = (state, payload) => {
+  return { ...state, frontMobileBackgroundImage: payload };
+};
+
+const saveBackCanvasBackgroundImageForMobile = (state, payload) => {
+  return { ...state, backMobileBackgroundImage: payload };
 };
 
 const canvasReducer = (state = initialState, action) => {
@@ -49,8 +55,12 @@ const canvasReducer = (state = initialState, action) => {
       return clearCanvas(state);
     }
 
-    case SAVE_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE: {
-      return saveCanvasBackgroundImageForMobile(state, action.payload);
+    case SAVE_FRONT_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE: {
+      return saveFrontCanvasBackgroundImageForMobile(state, action.payload);
+    }
+
+    case SAVE_BACK_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE: {
+      return saveBackCanvasBackgroundImageForMobile(state, action.payload);
     }
 
     default:
