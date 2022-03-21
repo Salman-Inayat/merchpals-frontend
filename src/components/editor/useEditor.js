@@ -6,14 +6,13 @@ import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  SAVE_FRONT_DESIGN,
-  SAVE_BACK_DESIGN,
-  SAVE_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE,
-} from '../../store/redux/types';
+import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
 import { fill } from 'lodash';
 import { clearDesign } from '../../store/redux/actions/design';
-import { saveCanvasBackgroundImageForMobile } from '../../store/redux/actions/canvas';
+import {
+  saveFrontCanvasBackgroundImageForMobile,
+  saveBackCanvasBackgroundImageForMobile,
+} from '../../store/redux/actions/canvas';
 import store from '../../store';
 
 import {
@@ -1088,9 +1087,20 @@ const useEditor = mode => {
   const setCanvasImage = imgUrl => {
     setPhonebackgroundImage(imgUrl.replace('texture-image', 'mobile-texture-image'));
 
-    dispatch(
-      saveCanvasBackgroundImageForMobile(imgUrl.replace('texture-image', 'mobile-texture-image')),
-    );
+    if (mode === 'front') {
+      dispatch(
+        saveFrontCanvasBackgroundImageForMobile(
+          imgUrl.replace('texture-image', 'mobile-texture-image'),
+        ),
+      );
+    }
+    if (mode === 'back') {
+      dispatch(
+        saveBackCanvasBackgroundImageForMobile(
+          imgUrl.replace('texture-image', 'mobile-texture-image'),
+        ),
+      );
+    }
 
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
@@ -1591,7 +1601,10 @@ const useEditor = mode => {
             resolve();
           }
           if (background === 'image' || initialBackgroundState === 'image') {
-            backgroundColor = store.getState().canvas.mobileBackgroundImage;
+            backgroundColor =
+              mode === 'front'
+                ? store.getState().canvas.frontMobileBackgroundImage
+                : store.getState().canvas.backMobileBackgroundImage;
 
             offScreenCanvas = document.createElement('canvas');
             offScreenCanvas.width = canvas2.width;
