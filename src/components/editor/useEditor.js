@@ -7,7 +7,7 @@ import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
-import { fill } from 'lodash';
+import { fill, initial } from 'lodash';
 import { clearDesign } from '../../store/redux/actions/design';
 import {
   saveFrontCanvasBackgroundImageForMobile,
@@ -279,8 +279,14 @@ const useEditor = mode => {
 
   const loadJson = (canvas, json) => {
     const promise = new Promise((resolve, reject) => {
-      canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
-      console.log('canvas', canvas);
+      // parse the json
+      const parsedJson = JSON.parse(json);
+      console.log('json', parsedJson);
+      parsedJson.background.source =
+        mode === 'front'
+          ? store.getState().canvas.frontMobileBackgroundImage
+          : store.getState().canvas.backMobileBackgroundImage;
+      canvas.loadFromJSON(parsedJson, canvas.renderAll.bind(canvas));
       if (canvas.getObjects().length == 0) {
         const text = new fabric.Textbox('s', {
           left: 40,
@@ -300,6 +306,12 @@ const useEditor = mode => {
       resolve();
     });
 
+    if (typeof canvas.backgroundColor === 'string') {
+      initialBackgroundState = 'color';
+    }
+    if (typeof canvas.backgroundImage === 'object') {
+      initialBackgroundState = 'image';
+    }
     return promise;
   };
 

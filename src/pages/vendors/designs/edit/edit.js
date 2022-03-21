@@ -12,6 +12,8 @@ import {
   clearCanvas,
   updateFrontCanvasShape,
   updateBackCanvasShape,
+  saveBackCanvasBackgroundImageForMobile,
+  saveFrontCanvasBackgroundImageForMobile,
 } from '../../../../store/redux/actions/canvas';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -51,6 +53,17 @@ const EditDesign = () => {
 
         dispatch(updateFrontCanvasShape(response.data.design.frontDesign?.shape));
         dispatch(updateBackCanvasShape(response.data.design.backDesign?.shape));
+        dispatch(
+          saveFrontCanvasBackgroundImageForMobile(
+            response.data.design.frontDesign?.mobileBackgroundImage,
+          ),
+        );
+
+        dispatch(
+          saveBackCanvasBackgroundImageForMobile(
+            response.data.design.backDesign?.mobileBackgroundImage,
+          ),
+        );
 
         if (response.data?.design?.backDesign?.designJson === '') {
           setBackCanvasJSON('');
@@ -120,6 +133,10 @@ const EditDesign = () => {
         shapes: {
           front: store.getState().canvas.frontShape,
           back: store.getState().canvas.backShape,
+        },
+        mobileBackgroundImage: {
+          front: store.getState().canvas.frontMobileBackgroundImage,
+          back: store.getState().canvas.backMobileBackgroundImage,
         },
       };
 
