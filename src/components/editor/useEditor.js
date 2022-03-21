@@ -30,6 +30,7 @@ const useEditor = mode => {
   let [canvasName, setCanvasName] = useState();
   const [counter, setCounter] = useState(0);
   const [background, setBackground] = useState('');
+  const [phonebackgroundImage, setPhonebackgroundImage] = useState('');
   const dispatch = useDispatch();
 
   let isDesktop = useMediaQuery({ minWidth: 992 });
@@ -1087,6 +1088,11 @@ const useEditor = mode => {
   };
 
   const setCanvasImage = imgUrl => {
+    console.log(imgUrl);
+    setPhonebackgroundImage(
+      imgUrl.replace('texture-image', 'mobile-texture-image').replace('png', 'jpg'),
+    );
+
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
       fabric.Image.fromURL(canvasProperties.canvasImage, function (image) {
@@ -1586,8 +1592,8 @@ const useEditor = mode => {
             resolve();
           }
           if (background === 'image' || initialBackgroundState === 'image') {
-            console.log('Canvas: ', canvas);
-            backgroundColor = canvas.backgroundColor.source.currentSrc;
+            backgroundColor = phonebackgroundImage;
+
             offScreenCanvas = document.createElement('canvas');
             offScreenCanvas.width = canvas2.width;
             offScreenCanvas.height = canvas2.height;
@@ -1626,29 +1632,6 @@ const useEditor = mode => {
         return promise;
       };
 
-      // canvasBackgroundImage = canvas.backgroundColor;
-      // // canvas.backgroundColor = '';
-      // const backgroundImage = new Image();
-      // backgroundImage.src = canvas.backgroundColor.source.currentSrc;
-      // backgroundImage.height = canvas2.height;
-      // backgroundImage.width = canvas2.width;
-      // backgroundImage.onload = () => {
-      //   // var pattern = ctx2.createPattern(backgroundImage, 'no-repeat');
-      //   // ctx2.fillStyle = pattern;
-      //   // ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
-      // };
-
-      // if (canvas.backgroundImage) {
-      //   canvasBackgroundImage = canvas.backgroundImage;
-      //   canvas.backgroundImage = null;
-      //   const backgroundImage = new Image();
-      //   backgroundImage.src = canvasBackgroundImage.src;
-      // console.log('canvas: ', canvasBackgroundImage.src);
-      //   backgroundImage.onload = () => {
-      //     ctx2.drawImage(backgroundImage, 0, 0, canvas2.width, canvas2.height);
-      //   };
-      // }
-
       var myImage = new Image();
 
       if (
@@ -1657,7 +1640,6 @@ const useEditor = mode => {
         initialBackgroundState === 'color' ||
         initialBackgroundState === 'image'
       ) {
-        console.log('can run the code now');
         await handleCanvasBackground();
       }
 
