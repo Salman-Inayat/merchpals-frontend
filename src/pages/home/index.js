@@ -13,12 +13,10 @@ import { registerVendor } from '../../store/redux/actions/auth';
 import { clearDesign } from '../../store/redux/actions/design';
 import { clearCanvas } from '../../store/redux/actions/canvas';
 import Tick from '../../assets/images/tick.png';
-import store from '../../store';
 
 const useStyle = makeStyles(theme => ({
   fluid: {
     maxWidth: '100%',
-    backgroundColor: '#e7e9eb',
     paddingLeft: '0px',
     paddingRight: '0px',
   },
@@ -32,9 +30,6 @@ const useStyle = makeStyles(theme => ({
     height: '50px',
   },
   content: {
-    backgroundColor: '#e7e9eb',
-    minHeight: '95vh',
-    paddingBottom: '2rem',
     // marginTop: '16px',
   },
   root: {
@@ -213,6 +208,10 @@ const Home = () => {
         front: store.getState().canvas.frontShape,
         back: store.getState().canvas.backShape,
       },
+      mobileBackgroundImage: {
+        front: store.getState().canvas.frontMobileBackgroundImage,
+        back: store.getState().canvas.backMobileBackgroundImage,
+      },
     };
 
     const frontJSONBlob = new Blob([JSON.stringify(designData?.front?.designJson || '')], {
@@ -222,7 +221,7 @@ const Home = () => {
     const backJSONBlob = new Blob([JSON.stringify(designData?.back?.designJson || '')], {
       type: 'application/json',
     });
-    console.log('store data', storeData);
+
     axios
       .post(`${baseURL}/store`, storeData, {
         headers: {
@@ -240,79 +239,68 @@ const Home = () => {
 
         const storeLogo = urls[0].imageUrl;
         const storeCoverAvatar = urls[1].imageUrl;
+        const frontDesignVariant1 = urls[2].imageUrl;
+        const frontDesignVariant2 = urls[3].imageUrl;
+        const frontDesignVariant3 = urls[4].imageUrl;
+        const frontDesignVariant4 = urls[5].imageUrl;
+        const frontDesignVariant5 = urls[6].imageUrl;
+        const frontDesignJson = urls[7].imageUrl;
+
         postDataToURL(storeLogo, data.logo);
         postDataToURL(storeCoverAvatar, data.coverAvatar);
-        console.log('mode', designData.front, designData);
-        if (designData?.front != null && designData?.back != null) {
-          console.log('front call');
-          const frontDesignVariant1 = urls[2].imageUrl;
-          const frontDesignVariant2 = urls[3].imageUrl;
-          const frontDesignVariant3 = urls[4].imageUrl;
-          const frontDesignVariant4 = urls[5].imageUrl;
-          const frontDesignVariant5 = urls[6].imageUrl;
-          const frontDesignJson = urls[7].imageUrl;
+        postDataToURL(
+          frontDesignVariant1,
+          dataURLtoFile(
+            designData?.front?.designImages[0]?.data || designData?.back?.designImages[0]?.data,
+            `${
+              designData?.front?.designImages[0]?.name || designData?.back?.designImages[0]?.name
+            }.png`,
+          ),
+        );
+        postDataToURL(
+          frontDesignVariant2,
+          dataURLtoFile(
+            designData?.front?.designImages[1]?.data || designData?.back?.designImages[1]?.data,
+            `${
+              designData?.front?.designImages[1]?.name || designData?.back?.designImages[1]?.name
+            }.png`,
+          ),
+        );
+        postDataToURL(
+          frontDesignVariant3,
+          dataURLtoFile(
+            designData?.front?.designImages[2]?.data || designData?.back?.designImages[2]?.data,
+            `${
+              designData?.front?.designImages[2]?.name || designData?.back?.designImages[2]?.name
+            }.png`,
+          ),
+        );
+        postDataToURL(
+          frontDesignVariant4,
+          dataURLtoFile(
+            designData?.front?.designImages[3]?.data || designData?.back?.designImages[3]?.data,
+            `${
+              designData?.front?.designImages[3]?.name || designData?.back?.designImages[3]?.name
+            }.png`,
+          ),
+        );
+        postDataToURL(
+          frontDesignVariant5,
+          dataURLtoFile(
+            designData?.front?.designImages[4]?.data || designData?.back?.designImages[4]?.data,
+            `${
+              designData?.front?.designImages[4]?.name || designData?.back?.designImages[4]?.name
+            }.png`,
+          ),
+        );
+
+        postDataToURL(frontDesignJson, frontJSONBlob);
+
+        if (designData?.back != null) {
           const backDesignVariant1 = urls[8].imageUrl;
           const backDesignVariant2 = urls[9].imageUrl;
           const backDesignJson = urls[10].imageUrl;
-          postDataToURL(
-            frontDesignVariant1,
-            dataURLtoFile(
-              designData?.front?.designImages[0]?.data || '',
-              `${designData?.front?.designImages[0]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant2,
-            dataURLtoFile(
-              designData?.front?.designImages[1]?.data || '',
-              `${designData?.front?.designImages[1]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant3,
-            dataURLtoFile(
-              designData?.front?.designImages[2]?.data || '',
-              `${designData?.front?.designImages[2]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant4,
-            dataURLtoFile(
-              designData?.front?.designImages[3]?.data || '',
-              `${designData?.front?.designImages[3]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant5,
-            dataURLtoFile(
-              designData?.front?.designImages[4]?.data || '',
-              `${designData?.front?.designImages[4]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            backDesignVariant1,
-            dataURLtoFile(
-              designData?.back?.designImages[1]?.data || '',
-              `${designData?.back?.designImages[1]?.name || ''}.png`,
-            ),
-          );
 
-          postDataToURL(
-            backDesignVariant2,
-            dataURLtoFile(
-              designData?.back?.designImages[4]?.data || '',
-              `${designData?.back?.designImages[4]?.name || ''}.png`,
-            ),
-          );
-
-          postDataToURL(frontDesignJson, frontJSONBlob);
-          postDataToURL(backDesignJson, backJSONBlob);
-        } else if (designData?.back != null && designData?.front == null) {
-          console.log('back call', urls);
-          const backDesignVariant1 = urls[2].imageUrl;
-          const backDesignVariant2 = urls[3].imageUrl;
-          const backDesignJson = urls[4].imageUrl;
-          console.log('back images', designData?.back);
           postDataToURL(
             backDesignVariant1,
             dataURLtoFile(
@@ -330,50 +318,6 @@ const Home = () => {
           );
 
           postDataToURL(backDesignJson, backJSONBlob);
-        } else {
-          const frontDesignVariant1 = urls[2].imageUrl;
-          const frontDesignVariant2 = urls[3].imageUrl;
-          const frontDesignVariant3 = urls[4].imageUrl;
-          const frontDesignVariant4 = urls[5].imageUrl;
-          const frontDesignVariant5 = urls[6].imageUrl;
-          const frontDesignJson = urls[7].imageUrl;
-
-          postDataToURL(
-            frontDesignVariant1,
-            dataURLtoFile(
-              designData?.front?.designImages[0]?.data || '',
-              `${designData?.front?.designImages[0]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant2,
-            dataURLtoFile(
-              designData?.front?.designImages[1]?.data || '',
-              `${designData?.front?.designImages[1]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant3,
-            dataURLtoFile(
-              designData?.front?.designImages[2]?.data || '',
-              `${designData?.front?.designImages[2]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant4,
-            dataURLtoFile(
-              designData?.front?.designImages[3]?.data || '',
-              `${designData?.front?.designImages[3]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(
-            frontDesignVariant5,
-            dataURLtoFile(
-              designData?.front?.designImages[4]?.data || '',
-              `${designData?.front?.designImages[4]?.name || ''}.png`,
-            ),
-          );
-          postDataToURL(frontDesignJson, frontJSONBlob);
         }
 
         nextStep();
