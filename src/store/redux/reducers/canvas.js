@@ -3,12 +3,14 @@ import {
   UPDATE_BACK_CANVAS_SHAPE,
   UPDATE_CANVAS_MODE,
   CLEAR_CANVAS,
+  SAVE_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE,
 } from '../types';
 
 const initialState = {
   frontShape: 'square',
   backShape: 'square',
   mode: 'front',
+  mobileBackgroundImage: null,
 };
 
 const updateFrontShape = (state, payload) => {
@@ -26,6 +28,10 @@ const clearCanvas = state => {
   return { ...state, mode: 'front', frontShape: 'square', backShape: 'square' };
 };
 
+const saveCanvasBackgroundImageForMobile = (state, payload) => {
+  return { ...state, mobileBackgroundImage: payload };
+};
+
 const canvasReducer = (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_FRONT_CANVAS_SHAPE: {
@@ -41,6 +47,10 @@ const canvasReducer = (state = initialState, action) => {
     }
     case CLEAR_CANVAS: {
       return clearCanvas(state);
+    }
+
+    case SAVE_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE: {
+      return saveCanvasBackgroundImageForMobile(state, action.payload);
     }
 
     default:
