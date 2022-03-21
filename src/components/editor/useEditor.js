@@ -6,9 +6,15 @@ import { initCenteringGuidelines } from './gridlines/center';
 import { useState, useLayoutEffect, useRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
-import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
+import {
+  SAVE_FRONT_DESIGN,
+  SAVE_BACK_DESIGN,
+  SAVE_CANVAS_BACKGROUNDIMAGE_FOR_MOBILE,
+} from '../../store/redux/types';
 import { fill } from 'lodash';
 import { clearDesign } from '../../store/redux/actions/design';
+import { saveCanvasBackgroundImageForMobile } from '../../store/redux/actions/canvas';
+import store from '../../store';
 
 import {
   CANVAS_WIDTH_DESKTOP,
@@ -275,6 +281,7 @@ const useEditor = mode => {
   const loadJson = (canvas, json) => {
     const promise = new Promise((resolve, reject) => {
       canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+      console.log('canvas', canvas);
       if (canvas.getObjects().length == 0) {
         const text = new fabric.Textbox('s', {
           left: 40,
@@ -293,15 +300,6 @@ const useEditor = mode => {
       afterRender();
       resolve();
     });
-
-    if (typeof canvas.backgroundColor === 'string') {
-      // setBackground('color');
-      initialBackgroundState = 'color';
-    }
-    if (typeof canvas.backgroundColor === 'object') {
-      // setBackground('image');
-      initialBackgroundState = 'image';
-    }
 
     return promise;
   };
@@ -1088,9 +1086,10 @@ const useEditor = mode => {
   };
 
   const setCanvasImage = imgUrl => {
-    console.log(imgUrl);
-    setPhonebackgroundImage(
-      imgUrl.replace('texture-image', 'mobile-texture-image').replace('png', 'jpg'),
+    setPhonebackgroundImage(imgUrl.replace('texture-image', 'mobile-texture-image'));
+
+    dispatch(
+      saveCanvasBackgroundImageForMobile(imgUrl.replace('texture-image', 'mobile-texture-image')),
     );
 
     canvasProperties.canvasImage = imgUrl;
@@ -1592,7 +1591,7 @@ const useEditor = mode => {
             resolve();
           }
           if (background === 'image' || initialBackgroundState === 'image') {
-            backgroundColor = phonebackgroundImage;
+            backgroundColor = store.getState().canvas.mobileBackgroundImage;
 
             offScreenCanvas = document.createElement('canvas');
             offScreenCanvas.width = canvas2.width;
@@ -1624,6 +1623,7 @@ const useEditor = mode => {
               );
               formatFour.src = offScreenCanvas.toDataURL({ format: 'png', multiplier: mult4 });
               formatFour.src = changedpi.changeDpiDataUrl(formatFour.src, 300);
+
               resolve();
             };
           }
@@ -1633,6 +1633,13 @@ const useEditor = mode => {
       };
 
       var myImage = new Image();
+
+      if (typeof canvas.backgroundColor === 'string') {
+        initialBackgroundState = 'color';
+      }
+      if (typeof canvas.backgroundColor === 'object') {
+        initialBackgroundState = 'image';
+      }
 
       if (
         background === 'color' ||
