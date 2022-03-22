@@ -347,7 +347,7 @@ const ProductCard = ({
               border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
               backgroundImage: product.name === 'Case' && `url(${iphoneDesign})`,
               // backgroundColor: 'red',
-              backgroundSize: '37% 80%',
+              backgroundSize: product.name === 'Case' && '37% 80%',
             }}
           />
           {product.name !== 'Case' && (
