@@ -209,8 +209,8 @@ const Home = () => {
         back: store.getState().canvas.backShape,
       },
       mobileBackgroundImage: {
-        front: store.getState().canvas.frontMobileBackgroundImage,
-        back: store.getState().canvas.backMobileBackgroundImage,
+        front: store.getState().canvas?.frontMobileBackgroundImage,
+        back: store.getState().canvas?.backMobileBackgroundImage,
       },
     };
 
@@ -239,67 +239,104 @@ const Home = () => {
 
         const storeLogo = urls[0].imageUrl;
         const storeCoverAvatar = urls[1].imageUrl;
-        const frontDesignVariant1 = urls[2].imageUrl;
-        const frontDesignVariant2 = urls[3].imageUrl;
-        const frontDesignVariant3 = urls[4].imageUrl;
-        const frontDesignVariant4 = urls[5].imageUrl;
-        const frontDesignVariant5 = urls[6].imageUrl;
-        const frontDesignJson = urls[7].imageUrl;
-
         postDataToURL(storeLogo, data.logo);
         postDataToURL(storeCoverAvatar, data.coverAvatar);
-        postDataToURL(
-          frontDesignVariant1,
-          dataURLtoFile(
-            designData?.front?.designImages[0]?.data || designData?.back?.designImages[0]?.data,
-            `${
-              designData?.front?.designImages[0]?.name || designData?.back?.designImages[0]?.name
-            }.png`,
-          ),
-        );
-        postDataToURL(
-          frontDesignVariant2,
-          dataURLtoFile(
-            designData?.front?.designImages[1]?.data || designData?.back?.designImages[1]?.data,
-            `${
-              designData?.front?.designImages[1]?.name || designData?.back?.designImages[1]?.name
-            }.png`,
-          ),
-        );
-        postDataToURL(
-          frontDesignVariant3,
-          dataURLtoFile(
-            designData?.front?.designImages[2]?.data || designData?.back?.designImages[2]?.data,
-            `${
-              designData?.front?.designImages[2]?.name || designData?.back?.designImages[2]?.name
-            }.png`,
-          ),
-        );
-        postDataToURL(
-          frontDesignVariant4,
-          dataURLtoFile(
-            designData?.front?.designImages[3]?.data || designData?.back?.designImages[3]?.data,
-            `${
-              designData?.front?.designImages[3]?.name || designData?.back?.designImages[3]?.name
-            }.png`,
-          ),
-        );
-        postDataToURL(
-          frontDesignVariant5,
-          dataURLtoFile(
-            designData?.front?.designImages[4]?.data || designData?.back?.designImages[4]?.data,
-            `${
-              designData?.front?.designImages[4]?.name || designData?.back?.designImages[4]?.name
-            }.png`,
-          ),
-        );
-
-        postDataToURL(frontDesignJson, frontJSONBlob);
-
-        if (designData?.back != null) {
+        console.log('mode', designData.front, designData);
+        if (designData?.front != null && designData?.back != null) {
+          console.log('front call');
+          const frontDesignVariant1 = urls[2].imageUrl;
+          const frontDesignVariant2 = urls[3].imageUrl;
+          const frontDesignVariant3 = urls[4].imageUrl;
+          const frontDesignVariant4 = urls[5].imageUrl;
+          const frontDesignVariant5 = urls[6].imageUrl;
+          const frontDesignJson = urls[7].imageUrl;
           const backDesignVariant1 = urls[8].imageUrl;
           const backDesignVariant2 = urls[9].imageUrl;
           const backDesignJson = urls[10].imageUrl;
+          postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              designData?.front?.designImages[0]?.data || '',
+              `${designData?.front?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              designData?.front?.designImages[1]?.data || '',
+              `${designData?.front?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              designData?.front?.designImages[2]?.data || '',
+              `${designData?.front?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant4,
+            dataURLtoFile(
+              designData?.front?.designImages[3]?.data || '',
+              `${designData?.front?.designImages[3]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant5,
+            dataURLtoFile(
+              designData?.front?.designImages[4]?.data || '',
+              `${designData?.front?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              designData?.back?.designImages[1]?.data || '',
+              `${designData?.back?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              designData?.back?.designImages[4]?.data || '',
+              `${designData?.back?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(frontDesignJson, frontJSONBlob);
+          postDataToURL(backDesignJson, backJSONBlob);
+        } else if (designData?.back != null && designData?.front == null) {
+          const frontDesignVariant1 = urls[2].imageUrl;
+          const frontDesignVariant2 = urls[3].imageUrl;
+          const frontDesignVariant3 = urls[4].imageUrl;
+
+          const backDesignVariant1 = urls[5].imageUrl;
+          const backDesignVariant2 = urls[6].imageUrl;
+          const backDesignJson = urls[7].imageUrl;
+
+          postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              designData?.back?.designImages[0]?.data || '',
+              `${designData?.back?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              designData?.back?.designImages[2]?.data || '',
+              `${designData?.back?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              designData?.back?.designImages[3]?.data || '',
+              `${designData?.back?.designImages[3]?.name || ''}.png`,
+            ),
+          );
 
           postDataToURL(
             backDesignVariant1,
@@ -318,10 +355,55 @@ const Home = () => {
           );
 
           postDataToURL(backDesignJson, backJSONBlob);
+        } else {
+          const frontDesignVariant1 = urls[2].imageUrl;
+          const frontDesignVariant2 = urls[3].imageUrl;
+          const frontDesignVariant3 = urls[4].imageUrl;
+          const frontDesignVariant4 = urls[5].imageUrl;
+          const frontDesignVariant5 = urls[6].imageUrl;
+          const frontDesignJson = urls[7].imageUrl;
+
+          postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              designData?.front?.designImages[0]?.data || '',
+              `${designData?.front?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              designData?.front?.designImages[1]?.data || '',
+              `${designData?.front?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              designData?.front?.designImages[2]?.data || '',
+              `${designData?.front?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant4,
+            dataURLtoFile(
+              designData?.front?.designImages[3]?.data || '',
+              `${designData?.front?.designImages[3]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant5,
+            dataURLtoFile(
+              designData?.front?.designImages[4]?.data || '',
+              `${designData?.front?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(frontDesignJson, frontJSONBlob);
         }
 
-        nextStep();
         setShowWelcomeMessage(true);
+
+        nextStep();
         dispatch(clearDesign());
         dispatch(clearCanvas());
       })
