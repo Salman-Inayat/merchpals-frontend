@@ -264,7 +264,30 @@ const ProductCard = ({
             checkedIcon={<CheckCircleIcon />}
           />
         </Box>
-        <Box className={classes.imageContainer}>
+        <Box
+          className={classes.imageContainer}
+          onMouseOver={() => {
+            if (design.backDesign?.designImages[1]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                (setDesignChange(true),
+                product.slug === 'hoodie'
+                  ? setProductDesign(BackHoodie)
+                  : product.slug === 'longsleeve'
+                  ? setProductDesign(BackLong)
+                  : setProductDesign(BackTee));
+            }
+          }}
+          onMouseLeave={() => {
+            if (design.backDesign?.designImages[1]?.imageUrl) {
+              product.name !== 'Case' &&
+                product.name !== 'Poster' &&
+                product.name !== 'Mug' &&
+                (setDesignChange(false), setProductDesign(product.image));
+            }
+          }}
+        >
           <CardMedia
             component="img"
             image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
@@ -275,27 +298,6 @@ const ProductCard = ({
               backgroundImage:
                 product.name === 'Case' && design && `url(${iphoneDesign && iphoneDesign})`,
               backgroundSize: '37% 80%',
-            }}
-            onMouseOver={() => {
-              if (design.backDesign?.designImages[1]?.imageUrl) {
-                product.name !== 'Case' &&
-                  product.name !== 'Poster' &&
-                  product.name !== 'Mug' &&
-                  (setDesignChange(true),
-                  product.slug === 'hoodie'
-                    ? setProductDesign(BackHoodie)
-                    : product.slug === 'longsleeve'
-                    ? setProductDesign(BackLong)
-                    : setProductDesign(BackTee));
-              }
-            }}
-            onMouseLeave={() => {
-              if (design.backDesign?.designImages[1]?.imageUrl) {
-                product.name !== 'Case' &&
-                  product.name !== 'Poster' &&
-                  product.name !== 'Mug' &&
-                  (setDesignChange(false), setProductDesign(product.image));
-              }
             }}
           />
           {product.name !== 'Case' && (
