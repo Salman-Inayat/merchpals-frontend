@@ -327,42 +327,63 @@ const useEditor = mode => {
   const loadJson = (canvas, json) => {
     const promise = new Promise((resolve, reject) => {
       const parsedJson = JSON.parse(json);
-      parsedJson.background.source =
-        mode === 'front'
-          ? store
-              .getState()
-              .canvas.frontMobileBackgroundImage.replace('mobile-texture-image', 'texture-image')
-          : store
-              .getState()
-              .canvas.backMobileBackgroundImage.replace('mobile-texture-image', 'texture-image');
+      if (typeof parsedJson.background === 'object') {
+        parsedJson.background.source =
+          mode === 'front'
+            ? store
+                .getState()
+                .canvas.frontMobileBackgroundImage.replace('mobile-texture-image', 'texture-image')
+            : store
+                .getState()
+                .canvas.backMobileBackgroundImage.replace('mobile-texture-image', 'texture-image');
 
-      fabric.Image.fromURL(parsedJson.background.source, function (image) {
-        image.set({
-          left: 0,
-          top: 0,
-          scaleX: canvas.width / image.width,
-          scaleY: canvas.height / image.height,
+        fabric.Image.fromURL(parsedJson.background.source, function (image) {
+          image.set({
+            left: 0,
+            top: 0,
+            scaleX: canvas.width / image.width,
+            scaleY: canvas.height / image.height,
+          });
+
+          var patternSourceCanvas = new fabric.StaticCanvas();
+          patternSourceCanvas.setDimensions({
+            width: image.getScaledWidth(),
+            height: image.getScaledHeight(),
+          });
+          patternSourceCanvas.setBackgroundImage(
+            image,
+            patternSourceCanvas.renderAll.bind(patternSourceCanvas),
+          );
+
+          const contentType = 'image/png';
+          const b64Data = patternSourceCanvas.toDataURL(contentType).split(',')[1];
+
+          const blob = b64toBlob(b64Data, contentType);
+          const blobUrl = URL.createObjectURL(blob);
+
+          parsedJson.background.source = blobUrl;
+          canvas.loadFromJSON(parsedJson, canvas.renderAll.bind(canvas));
+
+          if (canvas.getObjects().length == 0) {
+            const text = new fabric.Textbox('s', {
+              left: 40,
+              top: 100,
+              opacity: 0.1,
+              fontSize: 5,
+              hasControls: false,
+              hasRotatingPoint: false,
+              lockMovementX: true,
+              lockMovementY: true,
+            });
+            canvas.add(text);
+          }
+          canvas.renderAll();
+
+          afterRender();
+          resolve();
         });
-
-        var patternSourceCanvas = new fabric.StaticCanvas();
-        patternSourceCanvas.setDimensions({
-          width: image.getScaledWidth(),
-          height: image.getScaledHeight(),
-        });
-        patternSourceCanvas.setBackgroundImage(
-          image,
-          patternSourceCanvas.renderAll.bind(patternSourceCanvas),
-        );
-
-        console.log(patternSourceCanvas.toDataURL());
-
-        const contentType = 'image/png';
-        const b64Data = patternSourceCanvas.toDataURL(contentType).split(',')[1];
-
-        const blob = b64toBlob(b64Data, contentType);
-        const blobUrl = URL.createObjectURL(blob);
-
-        parsedJson.background.source = blobUrl;
+      }
+      if (typeof parsedJson.background === 'string') {
         canvas.loadFromJSON(parsedJson, canvas.renderAll.bind(canvas));
 
         if (canvas.getObjects().length == 0) {
@@ -382,7 +403,7 @@ const useEditor = mode => {
 
         afterRender();
         resolve();
-      });
+      }
     });
 
     if (typeof canvas.backgroundColor === 'string') {

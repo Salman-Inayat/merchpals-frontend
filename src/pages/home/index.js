@@ -214,8 +214,8 @@ const Home = () => {
         back: store.getState().canvas.backShape,
       },
       mobileBackgroundImage: {
-        front: store.getState().canvas.frontMobileBackgroundImage,
-        back: store.getState().canvas.backMobileBackgroundImage,
+        front: store.getState().canvas?.frontMobileBackgroundImage,
+        back: store.getState().canvas?.backMobileBackgroundImage,
       },
     };
 
@@ -312,11 +312,9 @@ const Home = () => {
           postDataToURL(frontDesignJson, frontJSONBlob);
           postDataToURL(backDesignJson, backJSONBlob);
         } else if (designData?.back != null && designData?.front == null) {
-          console.log('back call', urls);
           const backDesignVariant1 = urls[2].imageUrl;
           const backDesignVariant2 = urls[3].imageUrl;
           const backDesignJson = urls[4].imageUrl;
-          console.log('back images', designData?.back);
           postDataToURL(
             backDesignVariant1,
             dataURLtoFile(
