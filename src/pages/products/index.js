@@ -15,6 +15,8 @@ import {
   Slide,
   Collapse,
   Paper,
+  Card,
+  CardMedia,
 } from '@mui/material';
 // import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 // import axios from 'axios';
@@ -510,10 +512,34 @@ const Product = () => {
               >
                 {product.colors?.map(({ id, label }) => {
                   return (
-                    <>
+                    <Card
+                      className={classes.imageContainer}
+                      onMouseOver={() => {
+                        if (product.backDesign) {
+                          product.slug !== 'Case' &&
+                            product.slug !== 'mug' &&
+                            product.slug !== 'poster' &&
+                            (console.log('call ', product.slug),
+                            setDesignImage(product.backDesign),
+                            product.slug === 'hoodie'
+                              ? setBackDesignImage(BackHoodie)
+                              : product.slug === 'longsleeve'
+                              ? setBackDesignImage(BackLong)
+                              : setBackDesignImage(BackTee));
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        if (product.backDesign) {
+                          product.slug !== 'Case' &&
+                            product.slug !== 'mug' &&
+                            product.slug !== 'poster' &&
+                            (setDesignImage(product.design), setBackDesignImage(product.image));
+                        }
+                      }}
+                    >
                       {console.log('call product', product)}
-                      <div
-                        className={classes.imageContainer}
+                      <CardMedia
+                        component="img"
                         style={{
                           // backgroundColor: '#121616',
 
@@ -526,52 +552,26 @@ const Product = () => {
                               ? '#121616'
                               : '',
                           backgroundImage: product.slug === 'Case' && `url(${designImage})`,
-                          backgroundSize: product.slug === 'Case' && '33% 100%',
+                          backgroundSize: product.name === 'Case' && '37% 80%',
                         }}
-                        onMouseOver={() => {
-                          if (product.backDesign) {
-                            product.slug !== 'Case' &&
-                              product.slug !== 'mug' &&
-                              product.slug !== 'poster' &&
-                              (console.log('call ', product.slug),
-                              setDesignImage(product.backDesign),
-                              product.slug === 'hoodie'
-                                ? setBackDesignImage(BackHoodie)
-                                : product.slug === 'longsleeve'
-                                ? setBackDesignImage(BackLong)
-                                : setBackDesignImage(BackTee));
-                          }
-                        }}
-                        onMouseLeave={() => {
-                          if (product.backDesign) {
-                            product.slug !== 'Case' &&
-                              product.slug !== 'mug' &&
-                              product.slug !== 'poster' &&
-                              (setDesignImage(product.design), setBackDesignImage(product.image));
-                          }
-                        }}
-                      >
-                        <img
-                          src={
-                            product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage
-                          }
-                          alt=""
-                          className={classes.image}
-                        />
-                        {product.slug !== 'Case' &&
-                          (product.slug !== 'mug' && product.slug !== 'poster'
-                            ? designImage && (
-                                <img src={designImage} alt="design" className={classes.design} />
-                              )
-                            : mugPosterDesign && (
-                                <img
-                                  src={mugPosterDesign}
-                                  alt="design"
-                                  className={classes.design}
-                                />
-                              ))}
-                      </div>
-                    </>
+                        //  <img
+                        image={
+                          product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage
+                        }
+                        alt=""
+                        //   className={classes.image}
+                        // />
+                      />
+
+                      {product.slug !== 'Case' &&
+                        (product.slug !== 'mug' && product.slug !== 'poster'
+                          ? designImage && (
+                              <img src={designImage} alt="design" className={classes.design} />
+                            )
+                          : mugPosterDesign && (
+                              <img src={mugPosterDesign} alt="design" className={classes.design} />
+                            ))}
+                    </Card>
                   );
                 })}
               </Carousel>
