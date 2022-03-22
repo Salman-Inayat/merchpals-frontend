@@ -20,9 +20,7 @@ import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
 import { addToCart, getCart } from '../../../../store/redux/actions/cart';
 import { useState } from 'react';
-import BackLong from '../../../../assets/images/back-long.png';
-import BackTee from '../../../../assets/images/back-tee.png';
-import BackHoodie from '../../../../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   accordian: {
     backgroundColor: '#0A0A0A',
@@ -232,6 +230,9 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
             <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
               <Grid item xs={9} container>
                 <Card
+                  style={{
+                    borderRadius: '0px',
+                  }}
                   className={classes.imageCard}
                   onMouseOver={() => {
                     if (variant.backDesign) {
@@ -260,15 +261,13 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     className={classes.avatar}
                     component="img"
                     image={
-                      product.name === 'Case'
-                        ? '/assets/img/FINALCASE.png'
-                        : designChange.status && designChange.id == variant.id
+                      designChange.status && designChange.id == variant.id
                         ? product.name === 'Hoodie'
-                          ? BackHoodie
+                          ? product.backImage
                           : product.name === 'Long Sleeve'
-                          ? BackLong
+                          ? product.backImage
                           : product.name === 'Tee'
-                          ? BackTee
+                          ? product.backImage
                           : product.image
                         : product.image
                     }

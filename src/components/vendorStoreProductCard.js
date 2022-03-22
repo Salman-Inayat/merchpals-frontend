@@ -12,9 +12,6 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
-import BackLong from '../assets/images/back-long.png';
-import BackTee from '../assets/images/back-tee.png';
-import BackHoodie from '../assets/images/Back-hoodie.png';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -124,10 +121,10 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
               product.name !== 'Poster' &&
               (setFrontChange(true),
               product.slug === 'hoodie'
-                ? setProductImage(BackHoodie)
+                ? setProductImage(product.backImage)
                 : product.slug === 'longsleeve'
-                ? setProductImage(BackLong)
-                : setProductImage(BackTee));
+                ? setProductImage(product.backImage)
+                : setProductImage(product.backImage));
           }
         }}
         onMouseLeave={() => {
@@ -141,7 +138,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
       >
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productImage}
+          image={productImage}
           className={classes.productImage}
           alt="green iguana"
           style={{
@@ -225,10 +222,9 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
         </Typography>
       </Grid>
       <div hidden>
+        {console.log('call vendor', product.backImage)}
         <img src={backDesign} />
-        <img src={BackLong} />
-        <img src={BackTee} />
-        <img src={BackHoodie} />
+        <img src={product?.backImage} />
       </div>
     </>
   );

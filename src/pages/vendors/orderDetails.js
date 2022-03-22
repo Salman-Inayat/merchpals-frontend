@@ -18,9 +18,7 @@ import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { calculateOrderProfit } from '../../configs/const';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   design: {
     position: 'absolute',
@@ -127,15 +125,13 @@ function VendorOrderDetails() {
                     <Card>
                       <CardMedia
                         src={
-                          product.vendorProduct.productId.name === 'Case'
-                            ? '/assets/img/FINALCASE.png'
-                            : designChange.status && designChange.id == product._id
+                          designChange.status && designChange.id == product._id
                             ? product.vendorProduct.productId.name === 'Hoodie'
-                              ? BackHoodie
+                              ? product.vendorProduct.productId.backImage
                               : product.vendorProduct.productId.name === 'Long Sleeve'
-                              ? BackLong
+                              ? product.vendorProduct.productId.backImage
                               : product.vendorProduct.productId.name === 'Tee'
-                              ? BackTee
+                              ? product.vendorProduct.productId.backImage
                               : product.vendorProduct.productId.image
                             : product.vendorProduct.productId.image
                         }
@@ -262,9 +258,7 @@ function VendorOrderDetails() {
                                     ?.imageUrl
                                 }
                               />
-                              <img src={BackLong} />
-                              <img src={BackTee} />
-                              <img src={BackHoodie} />
+                              <img src={product?.vendorProduct?.productId?.backImage} />
                             </div>
                           </>
                         )}

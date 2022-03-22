@@ -29,9 +29,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Slide from '@mui/material/Slide';
 import { useMediaQuery } from 'react-responsive';
 import { calculateProfit } from '../../configs/const';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -273,10 +270,10 @@ const ProductCard = ({
                 product.name !== 'Mug' &&
                 (setDesignChange(true),
                 product.slug === 'hoodie'
-                  ? setProductDesign(BackHoodie)
+                  ? setProductDesign(product.backImage)
                   : product.slug === 'longsleeve'
-                  ? setProductDesign(BackLong)
-                  : setProductDesign(BackTee));
+                  ? setProductDesign(product.backImage)
+                  : setProductDesign(product.backImage));
             }
           }}
           onMouseLeave={() => {
@@ -290,7 +287,7 @@ const ProductCard = ({
         >
           <CardMedia
             component="img"
-            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
+            image={productDesign}
             alt=""
             className={classes.productImage}
             style={{
@@ -473,9 +470,7 @@ const ProductCard = ({
       )}
       <div hidden>
         <img src={backDesignImg} />
-        <img src={BackLong} />
-        <img src={BackTee} />
-        <img src={BackHoodie} />
+        <img src={product?.backImage} />
       </div>
     </Grid>
   );

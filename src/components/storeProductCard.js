@@ -12,9 +12,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
-import BackLong from '../assets/images/back-long.png';
-import BackTee from '../assets/images/back-tee.png';
-import BackHoodie from '../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   productImage: {
     height: '100%',
@@ -151,10 +149,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
               product.name !== 'Poster' &&
               (setDesignChange(true),
               product.slug === 'hoodie'
-                ? setProductDesign(BackHoodie)
+                ? setProductDesign(product.backImage)
                 : product.slug === 'longsleeve'
-                ? setProductDesign(BackLong)
-                : setProductDesign(BackTee));
+                ? setProductDesign(product.backImage)
+                : setProductDesign(product.backImage));
           }
         }}
         onMouseLeave={() => {
@@ -168,7 +166,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       >
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
+          image={productDesign}
           alt="green iguana"
           className={classes.productImage}
           style={{
@@ -269,9 +267,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       </Button> */}
       <div hidden>
         <img src={backDesign} />
-        <img src={BackLong} />
-        <img src={BackTee} />
-        <img src={BackHoodie} />
+        <img src={product?.backImage} />
       </div>
     </Box>
   );

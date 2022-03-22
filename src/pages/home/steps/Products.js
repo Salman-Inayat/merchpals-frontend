@@ -168,7 +168,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
     setUnselectProducts(!unselectProducts);
   };
 
-  console.log({ selectedVariants });
+  console.log('product new new new', products);
   return (
     <>
       <Grid container className={classes.smallScreen}>

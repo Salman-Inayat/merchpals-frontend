@@ -50,9 +50,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -266,6 +264,7 @@ const Product = () => {
   let designUrl, backDesignUrl, mugPoster;
   useEffect(() => {
     if (fetchedProduct) {
+      console.log('fetched call back image', fetchedProduct);
       fetchedProduct.name === 'Case'
         ? (designUrl =
             fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
@@ -290,6 +289,7 @@ const Product = () => {
         name: fetchedProduct.name,
         description: fetchedProduct.description,
         image: fetchedProduct.image,
+        backImage: fetchedProduct.backImage,
         cost: fetchedProduct.price,
         basePrice: fetchedProduct.basePrice,
         slug: fetchedProduct.slug,
@@ -414,6 +414,7 @@ const Product = () => {
         basePrice: product.basePrice,
         name: product.name,
         image: product.image,
+        backImage: product.backImage,
         slug: product.slug,
       };
     }
@@ -513,6 +514,9 @@ const Product = () => {
                 {product.colors?.map(({ id, label }) => {
                   return (
                     <Card
+                      style={{
+                        borderRadius: '0px',
+                      }}
                       className={classes.imageContainer}
                       onMouseOver={() => {
                         if (product.backDesign) {
@@ -522,10 +526,10 @@ const Product = () => {
                             (console.log('call ', product.slug),
                             setDesignImage(product.backDesign),
                             product.slug === 'hoodie'
-                              ? setBackDesignImage(BackHoodie)
+                              ? setBackDesignImage(product.backImage)
                               : product.slug === 'longsleeve'
-                              ? setBackDesignImage(BackLong)
-                              : setBackDesignImage(BackTee));
+                              ? setBackDesignImage(product.backImage)
+                              : setBackDesignImage(product.backImage));
                         }
                       }}
                       onMouseLeave={() => {
@@ -555,9 +559,7 @@ const Product = () => {
                           backgroundSize: product.name === 'Case' && '37% 80%',
                         }}
                         //  <img
-                        image={
-                          product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage
-                        }
+                        image={backDesignImage}
                         alt=""
                         //   className={classes.image}
                         // />
@@ -605,7 +607,7 @@ const Product = () => {
                     </Typography>
                   </Grid>
                 </Grid>
-
+                {console.log('slug', product)}
                 <FormControl component="fieldset">
                   <FormLabel sx={{ mb: 1 }} component="legend">
                     Color options:
@@ -639,20 +641,10 @@ const Product = () => {
                             />
                           }
                           label={
-                            <div
+                            <Card
                               className={classes.color}
                               style={{
-                                backgroundColor:
-                                  label === 'white'
-                                    ? '#ffffff'
-                                    : label === 'navy'
-                                    ? '#262d4f '
-                                    : label === 'black'
-                                    ? '#121616'
-                                    : '',
-                                backgroundImage: `url(${product.image})`,
-                                backgroundSize: '100% 100%',
-                                backgroundRepeat: 'no-repeat',
+                                borderRadius: '0px',
                                 width: '50px',
                                 height: '50px',
                                 display: 'flex',
@@ -660,18 +652,52 @@ const Product = () => {
                                 alignItems: 'center',
                               }}
                             >
-                              {' '}
-                              {/* <Typography>Rehman</Typography> */}
-                              {/* <img src={`${product.image}`} height="50" width="50" /> */}
-                              <img
-                                src={product.design}
-                                width="15px"
-                                height="15px"
+                              <CardMedia
+                                component="img"
                                 style={{
-                                  position: 'absolute',
+                                  backgroundColor:
+                                    product.name !== 'Case' && label === 'white'
+                                      ? '#ffffff'
+                                      : label === 'navy'
+                                      ? '#262d4f '
+                                      : label === 'black'
+                                      ? '#121616'
+                                      : '',
+                                  backgroundImage: product.slug === 'Case' && `url(${designImage})`,
+                                  backgroundSize: product.name === 'Case' && '37% 80%',
                                 }}
+                                //  <img
+                                image={product.image}
+                                alt=""
+                                //   className={classes.image}
+                                // />
                               />
-                            </div>
+
+                              {product.slug !== 'Case' &&
+                                (product.slug !== 'mug' && product.slug !== 'poster'
+                                  ? designImage && (
+                                      <img
+                                        src={designImage}
+                                        alt="design"
+                                        width="15px"
+                                        height="15px"
+                                        style={{
+                                          position: 'absolute',
+                                        }}
+                                      />
+                                    )
+                                  : mugPosterDesign && (
+                                      <img
+                                        src={mugPosterDesign}
+                                        alt="design"
+                                        width="15px"
+                                        height="15px"
+                                        style={{
+                                          position: 'absolute',
+                                        }}
+                                      />
+                                    ))}
+                            </Card>
                           }
                         />
                       );
@@ -829,10 +855,9 @@ const Product = () => {
       </Grid>
       {product.backDesign !== '' && (
         <div hidden>
+          {console.log('call hidden', product)}
           <img src={product.backDesign} />
-          <img src={BackLong} />
-          <img src={BackTee} />
-          <img src={BackHoodie} />
+          <img src={product.backImage} />
         </div>
       )}
     </Grid>
