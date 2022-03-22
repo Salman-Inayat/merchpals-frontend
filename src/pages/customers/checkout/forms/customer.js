@@ -12,6 +12,8 @@ import {
   Tooltip,
   IconButton,
   Stack,
+  Card,
+  CardMedia,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { makeStyles } from '@mui/styles';
@@ -104,6 +106,42 @@ const useStyles = makeStyles(theme => ({
   },
   design: {
     position: 'absolute',
+    top: '45%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: '35%',
+    width: '35%',
+  },
+  poster: {
+    height: '57%',
+    width: '57%',
+    borderRadius: '5px',
+    top: '50%',
+
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '105px',
+    //   width: '105px',
+    // },
+  },
+  phoneCase: {
+    top: '50%',
+    width: '31%',
+    height: '29%',
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '50px',
+    //   width: '50px',
+    //   top: '52%',
+    // },
+  },
+  mug: {
+    height: '30%',
+    width: '30%',
+    top: '55%',
+    left: '52%',
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '60px',
+    //   width: '60px',
+    // },
   },
 }));
 
@@ -193,7 +231,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
           product.productMappings.map((variant, i) => (
             <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
               <Grid item xs={9} container>
-                <Stack
+                <Card
                   className={classes.imageCard}
                   onMouseOver={() => {
                     if (variant.backDesign) {
@@ -218,23 +256,10 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     }
                   }}
                 >
-                  <Avatar
+                  <CardMedia
                     className={classes.avatar}
-                    style={{
-                      backgroundColor:
-                        variant.color === 'n/a'
-                          ? '#fff'
-                          : variant.color === 'white'
-                          ? '#ffffff'
-                          : variant.color === 'navy'
-                          ? '#262d4f '
-                          : variant.label === 'black'
-                          ? '#121616'
-                          : '',
-                      backgroundImage: product.name === 'Case' && `url(${variant.design})`,
-                      backgroundSize: '37% 80%',
-                    }}
-                    src={
+                    component="img"
+                    image={
                       product.name === 'Case'
                         ? '/assets/img/FINALCASE.png'
                         : designChange.status && designChange.id == variant.id
@@ -247,35 +272,77 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                           : product.image
                         : product.image
                     }
-                    variant="square"
+                    alt=""
+                    style={{
+                      backgroundColor:
+                        variant.color === 'n/a'
+                          ? '#fff'
+                          : variant.color === 'white'
+                          ? '#ffffff'
+                          : variant.color === 'navy'
+                          ? '#262d4f '
+                          : variant.label === 'black'
+                          ? '#121616'
+                          : '',
+                      backgroundImage: product.name === 'Case' && `url(${variant.design})`,
+                      // backgroundColor: 'red',
+                      backgroundSize: product.name === 'Case' && '37% 80%',
+                    }}
                   />
 
                   {product.name !== 'Case' &&
                     (product.name !== 'Mug' && product.name !== 'Poster'
                       ? designChange.status && designChange.id == variant.id
                         ? variant.backDesign && (
-                            <Avatar
-                              className={classes.design}
+                            <img
+                              className={[
+                                classes.design,
+                                product.name === 'Poster'
+                                  ? classes.poster
+                                  : product.name === 'Case'
+                                  ? classes.phoneCase
+                                  : product.name === 'Mug'
+                                  ? classes.mug
+                                  : '',
+                              ].join(' ')}
                               src={variant.backDesign}
-                              variant="square"
+                              // variant="square"
                             />
                           )
                         : variant.design && (
-                            <Avatar
-                              className={classes.design}
+                            <img
+                              className={[
+                                classes.design,
+                                product.name === 'Poster'
+                                  ? classes.poster
+                                  : product.name === 'Case'
+                                  ? classes.phoneCase
+                                  : product.name === 'Mug'
+                                  ? classes.mug
+                                  : '',
+                              ].join(' ')}
                               src={variant.design}
-                              variant="square"
+                              // variant="square"
                             />
                           )
                       : variant.mugPoster &&
                         (product.name === 'Mug' || product.name === 'Poster') && (
-                          <Avatar
-                            className={classes.design}
+                          <img
+                            className={[
+                              classes.design,
+                              product.name === 'Poster'
+                                ? classes.poster
+                                : product.name === 'Case'
+                                ? classes.phoneCase
+                                : product.name === 'Mug'
+                                ? classes.mug
+                                : '',
+                            ].join(' ')}
                             src={variant.mugPoster}
-                            variant="square"
+                            // variant="square"
                           />
                         ))}
-                </Stack>
+                </Card>
                 <Stack direction="column" ml={{ md: 2, xs: 1 }}>
                   <Typography className={classes.text}> Style: {product.name}</Typography>
                   <Typography className={classes.text}>
