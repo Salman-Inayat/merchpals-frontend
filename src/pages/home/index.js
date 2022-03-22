@@ -213,6 +213,10 @@ const Home = () => {
         front: store.getState().canvas.frontShape,
         back: store.getState().canvas.backShape,
       },
+      mobileBackgroundImage: {
+        front: store.getState().canvas.frontMobileBackgroundImage,
+        back: store.getState().canvas.backMobileBackgroundImage,
+      },
     };
 
     const frontJSONBlob = new Blob([JSON.stringify(designData?.front?.designJson || '')], {

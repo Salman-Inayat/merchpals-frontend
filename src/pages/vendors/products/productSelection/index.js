@@ -71,6 +71,10 @@ const ProductSelection = ({ designName }) => {
         front: store.getState().canvas.frontShape,
         back: store.getState().canvas.backShape,
       },
+      mobileBackgroundImage: {
+        front: store.getState().canvas.frontMobileBackgroundImage,
+        back: store.getState().canvas.backMobileBackgroundImage,
+      },
     };
 
     axios

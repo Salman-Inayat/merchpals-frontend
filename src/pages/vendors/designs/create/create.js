@@ -61,14 +61,7 @@ const CreateDesign = ({ design }) => {
           />
         </Grid>
         <Grid item md={2} xs={12}></Grid>
-        <Grid
-          mt={4}
-          item
-          md={12}
-          display="flex"
-          justifyContent="center"
-          alignItems=" center"
-        >
+        <Grid mt={4} item md={12} display="flex" justifyContent="center" alignItems=" center">
           <Button variant="contained" onClick={exportAndTriggerSave}>
             Save Design
           </Button>

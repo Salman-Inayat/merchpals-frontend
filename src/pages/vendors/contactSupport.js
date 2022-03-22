@@ -38,13 +38,13 @@ const useStyles = makeStyles(theme => ({
   imgUpload: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   uploadButton: {
     backgroundColor: '#d1cfcf',
     borderRadius: '50px',
     color: 'black',
-    marginRight: '1rem'
+    marginRight: '1rem',
   },
   label: {
     marginLeft: '3px',
@@ -96,7 +96,7 @@ const ContactSupport = props => {
   const [phoneNo, setPhoneNo] = useState('');
   const [toggleSubmit, setToggleSubmit] = useState(true);
   const [orderNumber, setOrderNumber] = useState('');
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState('');
 
   const ContactSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Invalid email address'),
@@ -159,7 +159,7 @@ const ContactSupport = props => {
     var reader = new FileReader();
     reader.onload = function (f) {
       var data = f.target.result;
-      setImageUrl(file.name)
+      setImageUrl(file.name);
       // create functionality for sending image to db
     };
     reader.readAsDataURL(file);
@@ -197,7 +197,7 @@ const ContactSupport = props => {
         <span className={classes.fieldError}>{errors?.name?.message}</span>
       </Grid>
       <Grid item md={12} xs={12}>
-      <InputLabel className={classes.label}>
+        <InputLabel className={classes.label}>
           Phone Number<span className={classes.required}>*</span>
         </InputLabel>
         <PhoneNumberInput
@@ -208,18 +208,16 @@ const ContactSupport = props => {
         />
         <span className={classes.fieldError}>{errors?.phoneNo?.message}</span>
       </Grid>
-      { props.isCustomer && (
+      {props.isCustomer && (
         <Grid item md={12} xs={12}>
-          <InputLabel className={classes.label}>
-          Order #
-        </InputLabel>
-        <Input
-          className={classes.textField}
-                placeholder="Your order number"
-                onChange={e => {
-                  setOrderNumber(e.target.value);
-                }}
-              />
+          <InputLabel className={classes.label}>Order #</InputLabel>
+          <Input
+            className={classes.textField}
+            placeholder="Your order number"
+            onChange={e => {
+              setOrderNumber(e.target.value);
+            }}
+          />
           <span className={classes.fieldError}>{errors?.phoneNo?.message}</span>
         </Grid>
       )}
@@ -265,36 +263,37 @@ const ContactSupport = props => {
           rows={4}
         />
         <span className={classes.fieldError}>{errors?.message?.message}</span>
-        <Grid style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem'}}>
-        <Grid className={classes.imgUpload}>
-        <Button
-          component='label'
-          className={classes.uploadButton}>
-            Choose File
-            <input
-              type='file'
-              hidden
-              onChange={e => addImage(e)}
+        <Grid
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '1rem',
+          }}
+        >
+          <Grid className={classes.imgUpload}>
+            <Button component="label" className={classes.uploadButton}>
+              Choose File
+              <input
+                type="file"
+                hidden
+                onChange={e => addImage(e)}
                 onClick={event => {
                   event.target.value = null;
                 }}
-                accept='image/png, image/jpeg'>
-            </input>
-        </Button>
-        <p>{imageUrl}</p>
-        </Grid>
-        <Grid>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={toggleSubmit}
-        >
-          Submit
-        </Button>
-      </Grid>
+                accept="image/png, image/jpeg"
+              ></input>
+            </Button>
+            <p>{imageUrl}</p>
+          </Grid>
+          <Grid>
+            <Button variant="contained" onClick={handleSubmit} disabled={toggleSubmit}>
+              Submit
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
-      
     </Grid>
   );
 };
