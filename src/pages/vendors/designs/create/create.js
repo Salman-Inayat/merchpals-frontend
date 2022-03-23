@@ -21,15 +21,14 @@ const CreateDesign = ({ design }) => {
   const [nameError, setNameError] = useState('');
   const [name, setName] = useState('');
   const childRef = useRef();
+
   const exportAndTriggerSave = () => {
-    setTriggerExport(triggerExport + 1);
+    // setTriggerExport(triggerExport + 1);
     saveDesignToStore();
     setDisplaySave(true);
   };
   const saveDesignToStore = () => {
     childRef.current.saveDesign();
-
-    console.log('Ath the end');
   };
   const handleSaveNameAndMove = () => {
     if (!name.trim()) {
@@ -40,7 +39,11 @@ const CreateDesign = ({ design }) => {
     navigate('/vendor/design/product-selection', { state: { name } });
   };
 
-  const handleClose = () => setDisplaySave(false);
+  // const handleClose = () => setDisplaySave(false);
+  const handleClose = (event, reason) => {
+    if (reason && reason == 'backdropClick') return;
+    setDisplaySave(false);
+  };
 
   return (
     <LoggedInVendor>
