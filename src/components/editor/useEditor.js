@@ -619,9 +619,9 @@ const useEditor = mode => {
     var originalVP = canvas.viewportTransform;
     // place the canvas on center of the preview
     if (isMobile) {
-      canvas.viewportTransform = [0.14, 0, 0, 0.14, 0, 0];
+      canvas.viewportTransform = [0.145, 0, 0, 0.145, 0, 0];
     } else {
-      canvas.viewportTransform = [0.11, 0, 0, 0.11, 0, 0];
+      canvas.viewportTransform = [0.115, 0, 0, 0.115, 0, 0];
     }
 
     copy(canvas.toCanvasElement(), canvas);
@@ -1245,6 +1245,8 @@ const useEditor = mode => {
           },
           () => {
             canvas.renderAll();
+            ctx2.fillStyle = '#ffffff00';
+            ctx2.fillRect(0, 0, c2.width, c2.height);
             afterRender();
             setBackground('image');
             patternSourceCanvas.dispose();
