@@ -94,7 +94,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const [productImage, setProductImage] = useState();
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+      product?.designId?.frontDesign?.designImages[2]?.imageUrl,
   );
 
   useEffect(() => {
