@@ -168,23 +168,23 @@ const ProductSelection = ({ designName }) => {
           await postDataToURL(
             frontDesignVariant1,
             dataURLtoFile(
-              design?.front?.designImages[0]?.data || '',
-              `${design?.front?.designImages[0]?.name || ''}.png`,
+              design?.back?.designImages[0]?.data || '',
+              `${design?.back?.designImages[0]?.name || ''}.png`,
             ),
           );
 
           await postDataToURL(
             frontDesignVariant2,
             dataURLtoFile(
-              design?.front?.designImages[2]?.data || '',
-              `${design?.front?.designImages[2]?.name || ''}.png`,
+              design?.back?.designImages[2]?.data || '',
+              `${design?.back?.designImages[2]?.name || ''}.png`,
             ),
           );
           await postDataToURL(
             frontDesignVariant3,
             dataURLtoFile(
-              design?.front?.designImages[3]?.data || '',
-              `${design?.front?.designImages[3]?.name || ''}.png`,
+              design?.back?.designImages[3]?.data || '',
+              `${design?.back?.designImages[3]?.name || ''}.png`,
             ),
           );
 

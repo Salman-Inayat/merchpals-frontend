@@ -235,23 +235,23 @@ const EditDesign = () => {
             await postDataToURL(
               frontDesignVariant1,
               dataURLtoFile(
-                newDesign?.front?.designImages[0]?.data || '',
-                `${newDesign?.front?.designImages[0]?.name || ''}.png`,
+                newDesign?.back?.designImages[0]?.data || '',
+                `${newDesign?.back?.designImages[0]?.name || ''}.png`,
               ),
             );
 
             await postDataToURL(
               frontDesignVariant2,
               dataURLtoFile(
-                newDesign?.front?.designImages[2]?.data || '',
-                `${newDesign?.front?.designImages[2]?.name || ''}.png`,
+                newDesign?.back?.designImages[2]?.data || '',
+                `${newDesign?.back?.designImages[2]?.name || ''}.png`,
               ),
             );
             await postDataToURL(
               frontDesignVariant3,
               dataURLtoFile(
-                newDesign?.front?.designImages[3]?.data || '',
-                `${newDesign?.front?.designImages[3]?.name || ''}.png`,
+                newDesign?.back?.designImages[3]?.data || '',
+                `${newDesign?.back?.designImages[3]?.name || ''}.png`,
               ),
             );
 
