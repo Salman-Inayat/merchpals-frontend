@@ -86,9 +86,7 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
     const cardElement = elements.getElement(CardElement);
     const { error, token } = await stripe.createToken(cardElement);
     placeOrder(token);
-    if (!error) {
-      setLoading(false);
-    } else {
+    if (error) {
       setLoading(false);
     }
   };

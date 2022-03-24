@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '0px',
-    backgroundColor: '#F6F0ED',
+    // backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
   },
   productName: {
