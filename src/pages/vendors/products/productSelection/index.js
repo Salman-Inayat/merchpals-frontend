@@ -158,9 +158,36 @@ const ProductSelection = ({ designName }) => {
           await postDataToURL(backDesignJson, backJSONBlob);
           await postDataToURL(frontDesignJson, frontJSONBlob);
         } else if (design?.back != null && design?.front == null) {
-          const backDesignVariant1 = urls[0].imageUrl;
-          const backDesignVariant2 = urls[1].imageUrl;
-          const backDesignJson = urls[2].imageUrl;
+          const frontDesignVariant1 = urls[0].imageUrl;
+          const frontDesignVariant2 = urls[1].imageUrl;
+          const frontDesignVariant3 = urls[2].imageUrl;
+          const backDesignVariant1 = urls[3].imageUrl;
+          const backDesignVariant2 = urls[4].imageUrl;
+          const backDesignJson = urls[5].imageUrl;
+
+          await postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              design?.front?.designImages[0]?.data || '',
+              `${design?.front?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+
+          await postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              design?.front?.designImages[2]?.data || '',
+              `${design?.front?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              design?.front?.designImages[3]?.data || '',
+              `${design?.front?.designImages[3]?.name || ''}.png`,
+            ),
+          );
+
           await postDataToURL(
             backDesignVariant1,
             dataURLtoFile(

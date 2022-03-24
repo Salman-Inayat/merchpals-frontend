@@ -162,7 +162,6 @@ const EditDesign = () => {
           });
 
           if (newDesign?.front != null && newDesign?.back != null) {
-            console.log('front back edit call both', urls);
             const frontDesignVariant1 = urls[0].imageUrl;
             const frontDesignVariant2 = urls[1].imageUrl;
             const frontDesignVariant3 = urls[2].imageUrl;
@@ -225,11 +224,37 @@ const EditDesign = () => {
             await postDataToURL(backDesignJson, backJSONBlob);
             await postDataToURL(frontDesignJson, frontJSONBlob);
           } else if (newDesign?.front == null && newDesign?.back != null) {
-            console.log('back edit call ', urls);
-            const backDesignVariant1 = urls[0].imageUrl;
-            const backDesignVariant2 = urls[1].imageUrl;
-            const backDesignJson = urls[2].imageUrl;
-            console.log('back design 1');
+            const frontDesignVariant1 = urls[0].imageUrl;
+            const frontDesignVariant2 = urls[1].imageUrl;
+            const frontDesignVariant3 = urls[2].imageUrl;
+
+            const backDesignVariant1 = urls[3].imageUrl;
+            const backDesignVariant2 = urls[4].imageUrl;
+            const backDesignJson = urls[5].imageUrl;
+
+            await postDataToURL(
+              frontDesignVariant1,
+              dataURLtoFile(
+                newDesign?.front?.designImages[0]?.data || '',
+                `${newDesign?.front?.designImages[0]?.name || ''}.png`,
+              ),
+            );
+
+            await postDataToURL(
+              frontDesignVariant2,
+              dataURLtoFile(
+                newDesign?.front?.designImages[2]?.data || '',
+                `${newDesign?.front?.designImages[2]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant3,
+              dataURLtoFile(
+                newDesign?.front?.designImages[3]?.data || '',
+                `${newDesign?.front?.designImages[3]?.name || ''}.png`,
+              ),
+            );
+
             await postDataToURL(
               backDesignVariant1,
               dataURLtoFile(
@@ -237,7 +262,6 @@ const EditDesign = () => {
                 `${newDesign?.back?.designImages[1]?.name || ''}.png`,
               ),
             );
-            console.log('back design 2');
 
             await postDataToURL(
               backDesignVariant2,
@@ -246,11 +270,9 @@ const EditDesign = () => {
                 `${newDesign?.back?.designImages[1]?.name || ''}.png`,
               ),
             );
-            console.log('back json call', backJSONBlob);
 
             await postDataToURL(backDesignJson, backJSONBlob);
           } else {
-            console.log('front edit call', urls);
             const frontDesignVariant1 = urls[0].imageUrl;
             const frontDesignVariant2 = urls[1].imageUrl;
             const frontDesignVariant3 = urls[2].imageUrl;

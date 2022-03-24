@@ -312,9 +312,37 @@ const Home = () => {
           postDataToURL(frontDesignJson, frontJSONBlob);
           postDataToURL(backDesignJson, backJSONBlob);
         } else if (designData?.back != null && designData?.front == null) {
-          const backDesignVariant1 = urls[2].imageUrl;
-          const backDesignVariant2 = urls[3].imageUrl;
-          const backDesignJson = urls[4].imageUrl;
+          const frontDesignVariant1 = urls[2].imageUrl;
+          const frontDesignVariant2 = urls[3].imageUrl;
+          const frontDesignVariant3 = urls[4].imageUrl;
+
+          const backDesignVariant1 = urls[5].imageUrl;
+          const backDesignVariant2 = urls[6].imageUrl;
+          const backDesignJson = urls[7].imageUrl;
+
+          postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              designData?.back?.designImages[0]?.data || '',
+              `${designData?.back?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+
+          postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              designData?.back?.designImages[2]?.data || '',
+              `${designData?.back?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              designData?.back?.designImages[3]?.data || '',
+              `${designData?.back?.designImages[3]?.name || ''}.png`,
+            ),
+          );
+
           postDataToURL(
             backDesignVariant1,
             dataURLtoFile(
