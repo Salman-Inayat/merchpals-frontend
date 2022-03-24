@@ -207,7 +207,7 @@ const ProductCard = ({
       console.log('design images', design, product);
       setIphoneDesign(
         design?.frontDesign?.designImages[3]?.imageUrl ||
-          design?.backDesign?.designImages[1]?.imageUrl,
+          design?.frontDesign?.designImages[2]?.imageUrl,
       );
       setDesignImg(design?.frontDesign?.designImages[4]?.imageUrl);
       setMugPosterDesign(

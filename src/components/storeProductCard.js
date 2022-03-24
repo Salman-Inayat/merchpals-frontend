@@ -111,15 +111,13 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const [designChange, setDesignChange] = useState(false);
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+      product?.designId?.frontDesign?.designImages[2]?.imageUrl,
   );
   const [mugPosterDesign, setMugPosterDesign] = useState(
     product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
       product?.designId?.backDesign?.designImages[1]?.imageUrl,
   );
-  // const [iphoneDesignImage, setIphoneDesignImage] = useState(
-  //   product.designId.frontDesign.designImages[3].imageUrl,
-  // );
+
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
