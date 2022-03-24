@@ -23,7 +23,6 @@ const CreateDesign = ({ design }) => {
   const childRef = useRef();
 
   const exportAndTriggerSave = () => {
-    // setTriggerExport(triggerExport + 1);
     saveDesignToStore();
     setDisplaySave(true);
   };

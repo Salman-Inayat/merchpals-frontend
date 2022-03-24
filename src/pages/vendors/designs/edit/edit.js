@@ -150,13 +150,6 @@ const EditDesign = () => {
         .then(async response => {
           const urls = response.data.response;
 
-          const frontDesignVariant1 = urls[0].imageUrl;
-          const frontDesignVariant2 = urls[1].imageUrl;
-          const frontDesignVariant3 = urls[2].imageUrl;
-          const frontDesignVariant4 = urls[3].imageUrl;
-          const frontDesignVariant5 = urls[4].imageUrl;
-          const frontDesignJson = urls[5].imageUrl;
-
           const frontJSONBlob = new Blob([JSON.stringify(newDesign?.front?.designJson || '')], {
             type: 'application/json',
           });
@@ -165,85 +158,163 @@ const EditDesign = () => {
             type: 'application/json',
           });
 
-          console.log(newDesign?.front?.designImages[1]?.data);
-          await postDataToURL(
-            frontDesignVariant1,
-            dataURLtoFile(
-              newDesign?.front?.designImages[0]?.data || newDesign?.back?.designImages[0]?.data,
-              `${
-                newDesign?.front?.designImages[0]?.name || newDesign?.back?.designImages[0]?.name
-              }.png`,
-            ),
-          );
-          await postDataToURL(
-            frontDesignVariant2,
-            dataURLtoFile(
-              newDesign?.front?.designImages[1]?.data || newDesign?.back?.designImages[1]?.data,
-              `${
-                newDesign?.front?.designImages[1]?.name || newDesign?.back?.designImages[1]?.name
-              }.png`,
-            ),
-          );
-          await postDataToURL(
-            frontDesignVariant3,
-            dataURLtoFile(
-              newDesign?.front?.designImages[2]?.data || newDesign?.back?.designImages[2]?.data,
-              `${
-                newDesign?.front?.designImages[2]?.name || newDesign?.back?.designImages[2]?.name
-              }.png`,
-            ),
-          );
-          await postDataToURL(
-            frontDesignVariant4,
-            dataURLtoFile(
-              newDesign?.front?.designImages[3]?.data || newDesign?.back?.designImages[3]?.data,
-              `${
-                newDesign?.front?.designImages[3]?.name || newDesign?.back?.designImages[3]?.name
-              }.png`,
-            ),
-          );
-          await postDataToURL(
-            frontDesignVariant5,
-            dataURLtoFile(
-              newDesign?.front?.designImages[4]?.data || newDesign?.back?.designImages[4]?.data,
-              `${
-                newDesign?.front?.designImages[4]?.name || newDesign?.back?.designImages[4]?.name
-              }.png`,
-            ),
-          );
+          if (newDesign?.front != null && newDesign?.back != null) {
+            const frontDesignVariant1 = urls[0].imageUrl;
+            const frontDesignVariant2 = urls[1].imageUrl;
+            const frontDesignVariant3 = urls[2].imageUrl;
+            const frontDesignVariant4 = urls[3].imageUrl;
+            const frontDesignVariant5 = urls[4].imageUrl;
+            const frontDesignJson = urls[5].imageUrl;
+            const backDesignVariant1 = urls[6].imageUrl;
+            const backDesignVariant2 = urls[7].imageUrl;
+            const backDesignJson = urls[8].imageUrl;
+            await postDataToURL(
+              frontDesignVariant1,
+              dataURLtoFile(
+                newDesign?.front?.designImages[0]?.data || '',
+                `${newDesign?.front?.designImages[0]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant2,
+              dataURLtoFile(
+                newDesign?.front?.designImages[1]?.data || '',
+                `${newDesign?.front?.designImages[1]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant3,
+              dataURLtoFile(
+                newDesign?.front?.designImages[2]?.data || '',
+                `${newDesign?.front?.designImages[2]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant4,
+              dataURLtoFile(
+                newDesign?.front?.designImages[3]?.data || '',
+                `${newDesign?.front?.designImages[3]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant5,
+              dataURLtoFile(
+                newDesign?.front?.designImages[4]?.data || '',
+                `${newDesign?.front?.designImages[4]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              backDesignVariant1,
+              dataURLtoFile(
+                newDesign?.back?.designImages[1]?.data || '',
+                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              backDesignVariant2,
+              dataURLtoFile(
+                newDesign?.back?.designImages[1]?.data || '',
+                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+              ),
+            );
 
-          await postDataToURL(frontDesignJson, frontJSONBlob);
+            await postDataToURL(backDesignJson, backJSONBlob);
+            await postDataToURL(frontDesignJson, frontJSONBlob);
+          } else if (newDesign?.front == null && newDesign?.back != null) {
+            const frontDesignVariant1 = urls[0].imageUrl;
+            const frontDesignVariant2 = urls[1].imageUrl;
+            const frontDesignVariant3 = urls[2].imageUrl;
 
-          const uploadbackDesignFiles = () => {
-            const promise = new Promise((resolve, reject) => {
-              if (newDesign?.back != null) {
-                const backDesignVariant1 = urls[6].imageUrl;
-                const backDesignVariant2 = urls[7].imageUrl;
-                const backDesignJson = urls[8].imageUrl;
+            const backDesignVariant1 = urls[3].imageUrl;
+            const backDesignVariant2 = urls[4].imageUrl;
+            const backDesignJson = urls[5].imageUrl;
 
-                postDataToURL(
-                  backDesignVariant1,
-                  dataURLtoFile(
-                    newDesign?.back?.designImages[1]?.data || '',
-                    `${newDesign?.back?.designImages[1]?.name || ''}.png`,
-                  ),
-                );
-                postDataToURL(
-                  backDesignVariant2,
-                  dataURLtoFile(
-                    newDesign?.back?.designImages[1]?.data || '',
-                    `${newDesign?.back?.designImages[1]?.name || ''}.png`,
-                  ),
-                );
+            await postDataToURL(
+              frontDesignVariant1,
+              dataURLtoFile(
+                newDesign?.back?.designImages[0]?.data || '',
+                `${newDesign?.back?.designImages[0]?.name || ''}.png`,
+              ),
+            );
 
-                postDataToURL(backDesignJson, backJSONBlob);
-              }
-              resolve();
-            });
-            return promise;
-          };
+            await postDataToURL(
+              frontDesignVariant2,
+              dataURLtoFile(
+                newDesign?.back?.designImages[2]?.data || '',
+                `${newDesign?.back?.designImages[2]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant3,
+              dataURLtoFile(
+                newDesign?.back?.designImages[3]?.data || '',
+                `${newDesign?.back?.designImages[3]?.name || ''}.png`,
+              ),
+            );
 
-          await uploadbackDesignFiles();
+            await postDataToURL(
+              backDesignVariant1,
+              dataURLtoFile(
+                newDesign?.back?.designImages[1]?.data || '',
+                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+              ),
+            );
+
+            await postDataToURL(
+              backDesignVariant2,
+              dataURLtoFile(
+                newDesign?.back?.designImages[1]?.data || '',
+                `${newDesign?.back?.designImages[1]?.name || ''}.png`,
+              ),
+            );
+
+            await postDataToURL(backDesignJson, backJSONBlob);
+          } else {
+            const frontDesignVariant1 = urls[0].imageUrl;
+            const frontDesignVariant2 = urls[1].imageUrl;
+            const frontDesignVariant3 = urls[2].imageUrl;
+            const frontDesignVariant4 = urls[3].imageUrl;
+            const frontDesignVariant5 = urls[4].imageUrl;
+            const frontDesignJson = urls[5].imageUrl;
+
+            await postDataToURL(
+              frontDesignVariant1,
+              dataURLtoFile(
+                newDesign?.front?.designImages[0]?.data || '',
+                `${newDesign?.front?.designImages[0]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant2,
+              dataURLtoFile(
+                newDesign?.front?.designImages[1]?.data || '',
+                `${newDesign?.front?.designImages[1]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant3,
+              dataURLtoFile(
+                newDesign?.front?.designImages[2]?.data || '',
+                `${newDesign?.front?.designImages[2]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant4,
+              dataURLtoFile(
+                newDesign?.front?.designImages[3]?.data || '',
+                `${newDesign?.front?.designImages[3]?.name || ''}.png`,
+              ),
+            );
+            await postDataToURL(
+              frontDesignVariant5,
+              dataURLtoFile(
+                newDesign?.front?.designImages[4]?.data || '',
+                `${newDesign?.front?.designImages[4]?.name || ''}.png`,
+              ),
+            );
+
+            await postDataToURL(frontDesignJson, frontJSONBlob);
+          }
 
           dispatch(clearDesign());
           dispatch(clearCanvas());
@@ -252,6 +323,7 @@ const EditDesign = () => {
 
           navigate('/vendor/designs');
         })
+
         .catch(error => console.log({ error }));
     }, 4000);
   };
