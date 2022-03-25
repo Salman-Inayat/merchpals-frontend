@@ -19,7 +19,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { baseURL } from '../../../configs/const';
-import ImageCrop from '../../../components/imageCrop/imageCrop';
+import ImageCrop from '../../../components/imageCrop.js';
 import PhoneFrame from '../../../assets/images/iPhone-display.png';
 
 import CameraAltIcon from '@mui/icons-material/CameraAlt';

@@ -249,7 +249,7 @@ const ProductCard = ({
           ? '#262d4f '
           : bgColor === 'black'
           ? '#121616'
-          : '';
+          : '#fff';
     }
     return bgColor;
   };
@@ -262,7 +262,7 @@ const ProductCard = ({
         ? '#262d4f '
         : event.target.value === 'black'
         ? '#121616'
-        : '';
+        : '#fff';
     setRadioCardColor(bgColor);
   };
 
