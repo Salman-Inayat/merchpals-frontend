@@ -1706,7 +1706,15 @@ const useEditor = mode => {
 
       const handleCanvasBackground = () => {
         const promise = new Promise((resolve, reject) => {
+          console.log('canvas background color: ', canvas.backgroundColor);
           if (background === 'color' || initialBackgroundState === 'color') {
+            if (background === '') {
+              backgroundColor = '#ffffff00';
+              ctx2.fillStyle = backgroundColor;
+              ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+              resolve();
+            }
+
             backgroundColor = canvas.backgroundColor;
             ctx2.fillStyle = backgroundColor;
             ctx2.fillRect(0, 0, canvas2.width, canvas2.height);

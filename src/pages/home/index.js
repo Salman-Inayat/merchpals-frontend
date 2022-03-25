@@ -406,8 +406,9 @@ const Home = () => {
           postDataToURL(frontDesignJson, frontJSONBlob);
         }
 
-        nextStep();
         setShowWelcomeMessage(true);
+
+        nextStep();
         dispatch(clearDesign());
         dispatch(clearCanvas());
       })
