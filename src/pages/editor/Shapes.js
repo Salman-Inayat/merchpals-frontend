@@ -5,44 +5,20 @@ import Circle from '../../assets/images/svgs/Circle.svg';
 import Triangle from '../../assets/images/svgs/Triangle.svg';
 import Square from '../../assets/images/svgs/Square.svg';
 const useStyles = makeStyles(theme => ({
-  smileyContainer: {
-    height: '450px',
-    overflow: 'scroll',
-    [theme.breakpoints.down('sm')]: {
-      height: '225px',
-    },
-  },
   smileys: {
-    width: '4rem',
-
+    width: '1rem',
+    height: '1.1em',
     overflow: 'auto',
     [theme.breakpoints.down('md')]: {
-      width: '60px',
-
+      // width: '60px',
       display: 'inline-block',
     },
-
     [theme.breakpoints.down('sm')]: {
-      width: '2rem',
+      // width: '5rem',
+      // height: '1.4rem',
       display: 'inline-block',
     },
   },
-  // smiliesPaper: {
-  //   position: 'absolute',
-  //   top: '280px',
-  //   left: '62%',
-  //   transform: 'translate(-50%, -50%)',
-  //   width: '150px',
-  //   height: '170px',
-  //   padding: '8px 8px',
-  //   backgroundColor: '#fff',
-  //   [theme.breakpoints.down('sm')]: {
-  //     width: '120px',
-
-  //     top: '230px',
-  //     left: '85%',
-  //   },
-  // },
 }));
 const Shapes = ({ addShape }) => {
   const classes = useStyles();
@@ -71,7 +47,7 @@ const Shapes = ({ addShape }) => {
         value={shape}
         label="Shape"
         onChange={handleShapeChange}
-        // SelectDisplayProps={{ style: { paddingTop: 5, paddingBottom: 5 } }}
+        SelectDisplayProps={{ style: { paddingTop: 5, paddingBottom: 5 } }}
       >
         {shapes.map((shape, index) => (
           <MenuItem value={shape.value} key={index}>

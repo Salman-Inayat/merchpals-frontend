@@ -29,6 +29,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Slide from '@mui/material/Slide';
 import { useMediaQuery } from 'react-responsive';
 import { calculateProfit } from '../../configs/const';
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -181,7 +184,6 @@ const ProductCard = ({
   const [productDesign, setProductDesign] = useState();
   const [designChange, setDesignChange] = useState(false);
   const [iphoneDesign, setIphoneDesign] = useState('');
-  const [mugPosterDesign, setMugPosterDesign] = useState('');
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const renderBgColor = () => {
@@ -207,10 +209,9 @@ const ProductCard = ({
       console.log('design images', design, product);
       setIphoneDesign(
         design?.frontDesign?.designImages[3]?.imageUrl ||
-          design?.frontDesign?.designImages[2]?.imageUrl,
+          design?.backDesign?.designImages[1]?.imageUrl,
       );
-      setDesignImg(design?.frontDesign?.designImages[4]?.imageUrl);
-      setMugPosterDesign(
+      setDesignImg(
         design?.frontDesign?.designImages[4]?.imageUrl ||
           design?.backDesign?.designImages[1]?.imageUrl,
       );
@@ -261,33 +262,10 @@ const ProductCard = ({
             checkedIcon={<CheckCircleIcon />}
           />
         </Box>
-        <Box
-          className={classes.imageContainer}
-          onMouseOver={() => {
-            if (design.backDesign?.designImages[1]?.imageUrl) {
-              product.name !== 'Case' &&
-                product.name !== 'Poster' &&
-                product.name !== 'Mug' &&
-                (setDesignChange(true),
-                product.slug === 'hoodie'
-                  ? setProductDesign(product.backImage)
-                  : product.slug === 'longsleeve'
-                  ? setProductDesign(product.backImage)
-                  : setProductDesign(product.backImage));
-            }
-          }}
-          onMouseLeave={() => {
-            if (design.backDesign?.designImages[1]?.imageUrl) {
-              product.name !== 'Case' &&
-                product.name !== 'Poster' &&
-                product.name !== 'Mug' &&
-                (setDesignChange(false), setProductDesign(product.image));
-            }
-          }}
-        >
+        <Box className={classes.imageContainer}>
           <CardMedia
             component="img"
-            image={productDesign}
+            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
             alt=""
             className={classes.productImage}
             style={{
@@ -296,57 +274,76 @@ const ProductCard = ({
                 product.name === 'Case' && design && `url(${iphoneDesign && iphoneDesign})`,
               backgroundSize: '37% 80%',
             }}
+            onMouseOver={() => {
+              if (
+                design.backDesign?.designImages[1]?.imageUrl &&
+                design.frontDesign?.designImages[4]?.imageUrl
+              ) {
+                product.name !== 'Case' &&
+                  product.name !== 'Poster' &&
+                  product.name !== 'Mug' &&
+                  (setDesignChange(true),
+                  product.slug === 'hoodie'
+                    ? setProductDesign(BackHoodie)
+                    : product.slug === 'longsleeve'
+                    ? setProductDesign(BackLong)
+                    : setProductDesign(BackTee));
+              }
+            }}
+            onMouseLeave={() => {
+              if (
+                design.backDesign?.designImages[1]?.imageUrl &&
+                design.frontDesign?.designImages[4]?.imageUrl
+              ) {
+                product.name !== 'Case' &&
+                  product.name !== 'Poster' &&
+                  product.name !== 'Mug' &&
+                  (setDesignChange(false), setProductDesign(product.image));
+              }
+            }}
           />
-          {product.name !== 'Case' && (
+          {product.name !== 'Case' && design && (
             <Box>
-              {design && product.name !== 'Poster' && product.name !== 'Mug'
-                ? designChange
-                  ? backDesignImg && (
-                      <img
-                        className={[
-                          classes.design,
-                          product.name === 'Poster'
-                            ? classes.poster
-                            : product.name === 'Phone Case'
-                            ? classes.phoneCase
-                            : product.name === 'Mug'
-                            ? classes.mug
-                            : '',
-                        ].join(' ')}
-                        src={backDesignImg}
-                      />
-                    )
-                  : designImg && (
-                      <img
-                        className={[
-                          classes.design,
-                          product.name === 'Poster'
-                            ? classes.poster
-                            : product.name === 'Phone Case'
-                            ? classes.phoneCase
-                            : product.name === 'Mug'
-                            ? classes.mug
-                            : '',
-                        ].join(' ')}
-                        src={designImg}
-                      />
-                    )
-                : mugPosterDesign &&
-                  (product.name === 'Mug' || product.name === 'Poster') && (
-                    <img
-                      className={[
-                        classes.design,
-                        product.name === 'Poster'
-                          ? classes.poster
-                          : product.name === 'Case'
-                          ? classes.phoneCase
-                          : product.name === 'Mug'
-                          ? classes.mug
-                          : '',
-                      ].join(' ')}
-                      src={mugPosterDesign}
-                    />
-                  )}
+              <img
+                className={[
+                  classes.design,
+                  product.name === 'Poster'
+                    ? classes.poster
+                    : product.name === 'Phone Case'
+                    ? classes.phoneCase
+                    : product.name === 'Mug'
+                    ? classes.mug
+                    : '',
+                ].join(' ')}
+                src={designChange ? (backDesignImg ? backDesignImg : designImg) : designImg}
+                onMouseOver={() => {
+                  if (
+                    design.backDesign?.designImages[1]?.imageUrl &&
+                    design.frontDesign?.designImages[4]?.imageUrl
+                  ) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      (setDesignChange(true),
+                      product.slug === 'hoodie'
+                        ? setProductDesign(BackHoodie)
+                        : product.slug === 'longsleeve'
+                        ? setProductDesign(BackLong)
+                        : setProductDesign(BackTee));
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (
+                    design.backDesign?.designImages[1]?.imageUrl &&
+                    design.frontDesign?.designImages[4]?.imageUrl
+                  ) {
+                    product.name !== 'Case' &&
+                      product.name !== 'Poster' &&
+                      product.name !== 'Mug' &&
+                      (setDesignChange(false), setProductDesign(product.image));
+                  }
+                }}
+              />
             </Box>
           )}
         </Box>
@@ -470,7 +467,9 @@ const ProductCard = ({
       )}
       <div hidden>
         <img src={backDesignImg} />
-        <img src={product?.backImage} />
+        <img src={BackLong} />
+        <img src={BackTee} />
+        <img src={BackHoodie} />
       </div>
     </Grid>
   );

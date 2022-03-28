@@ -12,11 +12,11 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles(theme => ({
   selected: {
     border: '3px solid #116dff',
-    borderRadius: '16px',
-  },
-}));
-const EditDesign = ({ designId }) => {
-  const classes = useStyles();
+    borderRadius: '16px'
+  }
+}))
+const EditDesign = ({designId}) => {
+  const classes = useStyles()
   const navigate = useNavigate();
   const [selectedVariants, setSelectedVariants] = useState({});
   const [products, setProducts] = useState([]);
@@ -47,7 +47,7 @@ const EditDesign = ({ designId }) => {
         },
       })
       .then(response => {
-        console.log({ response });
+        console.log({ response })
         setDesign(response.data.design);
       })
       .catch(error => console.log({ error: error.response.data.message }));
@@ -219,55 +219,46 @@ const EditDesign = ({ designId }) => {
 
     return cost_price;
   };
-  console.log(selectedVariants);
-  console.log(products);
+  console.log(selectedVariants)
+  console.log(products)
 
   return (
     // <LoggedInVendor >
-    <Grid
-      mt={5}
-      style={{
-        margin: 'auto',
-        width: '100vw',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Grid justifyContent="center" container style={{ maxWidth: '800px', margin: 'auto' }}>
-        {products?.map((product, i) => (
-          <Grid
-            style={{ paddingLeft: '10px', paddingRight: '10px' }}
-            justifyContent="center"
-            container
-            md={4}
-            mt={5}
-            xs={6}
-            key={`product-${i}`}
-          >
-            <div className={selectedVariants[product._id] ? classes.selected : null}>
-              <ProductCardWithPricing
-                design={design}
-                product={product}
-                price={productPrice(product)}
-                shippingCost={productShippingCost(product)}
-                costPrice={productCostPrice(product)}
-                onVariantClick={onVariantClick}
-                onProductClick={onProductClick}
-                selectedVariants={selectedVariants}
-                updatePrice={updatePrice}
-              />
-            </div>
-          </Grid>
-        ))}
+      <Grid mt={5} style={{margin: 'auto', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Grid justifyContent="center" container style={{maxWidth: '800px', margin: 'auto'}}>
+            {products?.map((product, i) => (
+              <Grid
+                style={{paddingLeft: '10px', paddingRight: '10px'}}
+                justifyContent="center"
+                container
+                md={4}
+                mt={5}
+                xs={6}
+                key={`product-${i}`}
+              >
+                <div className={selectedVariants[product._id] ? classes.selected : null}>
+                <ProductCardWithPricing
+                  design={design}
+                  product={product}
+                  price={productPrice(product)}
+                  shippingCost={productShippingCost(product)}
+                  costPrice={productCostPrice(product)}
+                  onVariantClick={onVariantClick}
+                  onProductClick={onProductClick}
+                  selectedVariants={selectedVariants}
+                  updatePrice={updatePrice}
+                />
+                </div>
+              </Grid>
+            ))}
 
-        <Grid mt={6} justifyContent="center" container>
-          <Button variant="contained" onClick={formatAndContinue}>
-            Update products
-          </Button>
+            <Grid mt={6} justifyContent="center" container>
+              <Button variant="contained" onClick={formatAndContinue}>
+                Update products
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-    </Grid>
     // </LoggedInVendor>
   );
 };

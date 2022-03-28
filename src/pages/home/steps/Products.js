@@ -168,7 +168,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
     setUnselectProducts(!unselectProducts);
   };
 
-  console.log('product new new new', products);
+  console.log({ selectedVariants });
   return (
     <>
       <Grid container className={classes.smallScreen}>
@@ -208,7 +208,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
           size="large"
           color="primary"
           variant="outlined"
-          style={{ height: '70px' }}
+          style={{height: '70px'}}
         >
           {unselectProducts ? 'Done' : 'Unselect'}
         </Button>
@@ -218,7 +218,7 @@ const Products = ({ productSelectionCompleted = () => {}, products = [], designN
           size="large"
           color="primary"
           variant="contained"
-          style={{ height: '70px' }}
+          style={{height: '70px'}}
         >
           Save &#38; Continue
         </Button>
