@@ -7,7 +7,7 @@ const saveBackDesign = (state, action) => {
   return { ...state, design: { ...state.design, back: action.payload } };
 };
 const saveThemeColor = (state, action) => {
-    return { ...state, themeColor: action.payload };
+  return { ...state, themeColor: action.payload };
 };
 const clearDesign = (state, action) => {
   return { ...state, design: {} };
@@ -23,7 +23,7 @@ const designReducer = (state = initialState, action) => {
       return saveFrontDesign(state, action);
     }
     case SAVE_BACK_DESIGN: {
-        return saveBackDesign(state, action);
+      return saveBackDesign(state, action);
     }
     case SAVE_THEME_COLOR: {
       return saveThemeColor(state, action);

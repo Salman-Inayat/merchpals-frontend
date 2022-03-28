@@ -21,11 +21,7 @@ import {
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {
-  clearLogoutFlag,
-  logout,
-  getLoggedInUserInfo,
-} from '../../store/redux/actions/auth';
+import { clearLogoutFlag, logout, getLoggedInUserInfo } from '../../store/redux/actions/auth';
 import { useNavigate, Link as RouterLink, useLocation } from 'react-router-dom';
 import ContactSupport from '../../pages/vendors/contactSupport';
 import { makeStyles } from '@mui/styles';
@@ -62,7 +58,7 @@ const LoggedInVendor = ({
   isLoggedOut = false,
   user = null,
   children,
-  hide
+  hide,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -128,102 +124,104 @@ const LoggedInVendor = ({
       <Grid xs={12} item>
         {hide === true ? null : (
           <Box>
-          <AppBar position="static" sx={{backgroundColor: 'white'}} display="flex">
-            <Toolbar sx={{width: '100%'}}>
-            {location.pathname === '/vendor' ? <RouterLink to='/vendor' style={{marginRight: 'auto'}}>
-            <img src={logo} alt='' style={{maxHeight:'70px', marginRight: 'auto'}}/>
-            </RouterLink> : <BackButton/>}
-              <Box
-                sx={{
-                  marginLeft: 'auto',
-                  float: 'right',
-                  display: 'flex',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                }}
-              >
-                <Tooltip title="Account settings">
-                  <IconButton
-                    onClick={handleClick}
-                    size="small"
-                    sx={{ ml: 2 }}
-                    aria-controls={open ? 'account-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                  >
-                    <Avatar sx={{ width: 32, height: 32 }} src={gear}/>
-                  </IconButton>
-                </Tooltip>
-              </Box>
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                PaperProps={{
-                  elevation: 0,
-                  sx: {
-                    overflow: 'visible',
-                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                    mt: 1.5,
-                    '& .MuiAvatar-root': {
-                      width: 32,
-                      height: 32,
-                      ml: -0.5,
-                      mr: 1,
+            <AppBar position="static" sx={{ backgroundColor: 'white' }} display="flex">
+              <Toolbar sx={{ width: '100%' }}>
+                {location.pathname === '/vendor' ? (
+                  <RouterLink to="/vendor" style={{ marginRight: 'auto' }}>
+                    <img src={logo} alt="" style={{ maxHeight: '70px', marginRight: 'auto' }} />
+                  </RouterLink>
+                ) : (
+                  <BackButton />
+                )}
+                <Box
+                  sx={{
+                    marginLeft: 'auto',
+                    float: 'right',
+                    display: 'flex',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Tooltip title="Account settings">
+                    <IconButton
+                      onClick={handleClick}
+                      size="small"
+                      sx={{ ml: 2 }}
+                      aria-controls={open ? 'account-menu' : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? 'true' : undefined}
+                    >
+                      <Avatar sx={{ width: 32, height: 32 }} src={gear} />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                      mt: 1.5,
+                      '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      '&:before': {
+                        content: '""',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: 'background.paper',
+                        transform: 'translateY(-50%) rotate(45deg)',
+                        zIndex: 0,
+                      },
                     },
-                    '&:before': {
-                      content: '""',
-                      display: 'block',
-                      position: 'absolute',
-                      top: 0,
-                      right: 14,
-                      width: 10,
-                      height: 10,
-                      bgcolor: 'background.paper',
-                      transform: 'translateY(-50%) rotate(45deg)',
-                      zIndex: 0,
-                    },
-                  },
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              >
-                <MenuItem onClick={handleProfileSettingsButton}>
-                  <ListItemIcon>
-                    <SettingsIcon fontSize="small" />
-                  </ListItemIcon>
-                  Profile Settings
-                </MenuItem>
-                <MenuItem onClick={handleStoreSettingsButton}>
-                  <ListItemIcon>
-                    <SettingsIcon fontSize="small" />
-                  </ListItemIcon>
-                  Store Settings
-                </MenuItem>
-                <MenuItem onClick={toggleContactModal}>
-                  <ListItemIcon>
-                    <SettingsIcon fontSize="small" />
-                  </ListItemIcon>
-                  Contact Support
-                </MenuItem>
-                <MenuItem onClick={() => logout()}>
-                  <ListItemIcon>
-                    <LogoutIcon fontSize="small" />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
-              </Menu>
-            </Toolbar>
-          </AppBar>
-        </Box>
+                  }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem onClick={handleProfileSettingsButton}>
+                    <ListItemIcon>
+                      <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Profile Settings
+                  </MenuItem>
+                  <MenuItem onClick={handleStoreSettingsButton}>
+                    <ListItemIcon>
+                      <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Store Settings
+                  </MenuItem>
+                  <MenuItem onClick={toggleContactModal}>
+                    <ListItemIcon>
+                      <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Contact Support
+                  </MenuItem>
+                  <MenuItem onClick={() => logout()}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </Toolbar>
+            </AppBar>
+          </Box>
         )}
       </Grid>
       {/* TODO: padding issue  p={isMobile ? 1 : 4}*/}
-      <Grid xs={12} container item>
-        {children}
-      </Grid>
+      <Grid container>{children}</Grid>
       <Modal
         open={modalOpen}
         onClose={toggleContactModal}
@@ -238,11 +236,7 @@ const LoggedInVendor = ({
           />
         </Card>
       </Modal>
-      <Snackbar
-        open={snackBarToggle.visible}
-        autoHideDuration={2000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
     </Grid>

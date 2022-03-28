@@ -21,9 +21,7 @@ import store from '../../store';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useMediaQuery } from 'react-responsive';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   product: {
     border: '1px solid #ccc',
@@ -211,6 +209,7 @@ const ProductCard = ({
   const classes = useStyles();
   const [design, setDesign] = useState('');
   const [iphoneDesign, setIphoneDesign] = useState('');
+  const [mugPosterDesign, setMugPosterDesign] = useState('');
   const [productDesign, setProductDesign] = useState();
   const [radioCardColor, setRadioCardColor] = useState('');
   const [check, setCheck] = useState('');
@@ -218,17 +217,18 @@ const ProductCard = ({
   const islargeDesktop = useMediaQuery({ minWidth: 1400 });
 
   useEffect(() => {
-    console.log(design)
+    // console.log(design);
     setTimeout(() => {
-      const design =
-        store.getState().design?.design?.front?.designImages[4]?.data ||
-        store.getState().design?.design?.back?.designImages[4]?.data;
+      const design = store.getState().design?.design?.front?.designImages[4]?.data;
       const iphoneDesign =
         store.getState().design?.design?.front?.designImages[3]?.data ||
         store.getState().design?.design?.back?.designImages[3]?.data;
-      console.log('desogn', { design });
+      const mugPoster =
+        store.getState().design?.design?.front?.designImages[4]?.data ||
+        store.getState().design?.design?.back?.designImages[4]?.data;
       setDesign(design);
       setIphoneDesign(iphoneDesign);
+      setMugPosterDesign(mugPoster);
       setProductDesign(product.image);
     }, 1000);
   }, []);
@@ -247,7 +247,7 @@ const ProductCard = ({
           ? '#262d4f '
           : bgColor === 'black'
           ? '#121616'
-          : '';
+          : '#fff';
     }
     return bgColor;
   };
@@ -260,10 +260,10 @@ const ProductCard = ({
         ? '#262d4f '
         : event.target.value === 'black'
         ? '#121616'
-        : '';
+        : '#fff';
     setRadioCardColor(bgColor);
   };
-
+  // console.log('single product', productDesign);
   return (
     <>
       <Typography
@@ -276,64 +276,43 @@ const ProductCard = ({
       >
         {designName ? designName : ''} {product.slug === 'longsleeve' ? 'Long' : product.name}
       </Typography>
-      <Grid style={{
-              backgroundColor: selectedVariants[product._id] ? '#116dff' : ' #ccc',
-              padding: selectedVariants[product._id] ? '.4rem' : ' 0',
-            }}>
-      <Card
-        className={classes.productCard}
+      <Grid
         style={{
-          backgroundColor: !unselectProducts ? radioCardColor : renderBgColor(),
+          backgroundColor: selectedVariants[product._id] ? '#116dff' : ' #ccc',
+          padding: selectedVariants[product._id] ? '.4rem' : ' 0',
         }}
       >
-        <Box className={classes.checkboxContainer}>
-          <Checkbox
-            disabled={!unselectProducts}
-            checked={selectedVariants[product._id] ? true : false}
-            onChange={() => onProductClick(event.target.value)}
-            value={product._id}
-            icon={<RadioButtonUncheckedIcon />}
-            checkedIcon={<CheckCircleIcon />}
-            style={{
-              color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
-            }}
-          />
-        </Box>
-
-        <CardMedia
-          component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
-          alt=""
-          className={classes.productImage}
+        <Card
+          className={classes.productCard}
           style={{
-            border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
-            backgroundImage: product.name === 'Case' && `url(${iphoneDesign})`,
-            // backgroundColor: 'red',
-            backgroundSize: '37% 80%',
+            backgroundColor: !unselectProducts ? radioCardColor : renderBgColor(),
           }}
           onMouseOver={() => {
             if (
-              store.getState().design?.design?.back?.designImages[4]?.data &&
-              store.getState().design?.design?.front?.designImages[4]?.data
+              store.getState().design?.design?.back?.designImages[4]?.data
+              // &&
+              // store.getState().design?.design?.front?.designImages[4]?.data
             ) {
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
                 product.name !== 'Mug' &&
                 (setDesign(
-                  store.getState().design?.design?.back?.designImages[4]?.data ||
-                    store.getState().design?.design?.front?.designImages[4]?.data,
+                  store.getState().design?.design?.back?.designImages[4]?.data,
+                  // ||
+                  //   store.getState().design?.design?.front?.designImages[4]?.data,
                 ),
                 product.slug === 'hoodie'
-                  ? setProductDesign(BackHoodie)
+                  ? setProductDesign(product.backImage)
                   : product.slug === 'longsleeve'
-                  ? setProductDesign(BackLong)
-                  : setProductDesign(BackTee));
+                  ? setProductDesign(product.backImage)
+                  : setProductDesign(product.backImage));
             }
           }}
           onMouseLeave={() => {
             if (
-              store.getState().design?.design?.back?.designImages[4]?.data &&
-              store.getState().design?.design?.front?.designImages[4]?.data
+              store.getState().design?.design?.back?.designImages[4]?.data
+              // &&
+              // store.getState().design?.design?.front?.designImages[4]?.data
             ) {
               product.name !== 'Case' &&
                 product.name !== 'Poster' &&
@@ -342,58 +321,70 @@ const ProductCard = ({
                 setProductDesign(product.image));
             }
           }}
-        />
-        {product.name !== 'Case' && (
-          <Box>
-            {design && (
-              <img
-                className={[
-                  classes.design,
-                  product.name === 'Poster'
-                    ? classes.poster
-                    : product.name === 'Case'
-                    ? classes.phoneCase
-                    : product.name === 'Mug'
-                    ? classes.mug
-                    : '',
-                ].join(' ')}
-                src={design}
-                onMouseOver={() => {
-                  if (
-                    store.getState().design?.design?.back?.designImages[4]?.data &&
-                    store.getState().design?.design?.front?.designImages[4]?.data
-                  ) {
-                    product.name !== 'Case' &&
-                      product.name !== 'Poster' &&
-                      product.name !== 'Mug' &&
-                      (setDesign(
-                        store.getState().design?.design?.back?.designImages[4]?.data ||
-                          store.getState().design?.design?.front?.designImages[4]?.data,
-                      ),
-                      product.slug === 'hoodie'
-                        ? setProductDesign(BackHoodie)
-                        : product.slug === 'longsleeve'
-                        ? setProductDesign(BackLong)
-                        : setProductDesign(BackTee));
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (
-                    store.getState().design?.design?.back?.designImages[4]?.data &&
-                    store.getState().design?.design?.front?.designImages[4]?.data
-                  ) {
-                    product.name !== 'Case' &&
-                      product.name !== 'Poster' &&
-                      product.name !== 'Mug' &&
-                      (setDesign(store.getState().design?.design?.front?.designImages[4]?.data),
-                      setProductDesign(product.image));
-                  }
-                }}
-              />
-            )}
+        >
+          <Box className={classes.checkboxContainer}>
+            <Checkbox
+              disabled={!unselectProducts}
+              checked={selectedVariants[product._id] ? true : false}
+              onChange={() => onProductClick(event.target.value)}
+              value={product._id}
+              icon={<RadioButtonUncheckedIcon />}
+              checkedIcon={<CheckCircleIcon />}
+              style={{
+                color: selectedVariants[product._id] ? '#116dff' : ' #ccc',
+              }}
+            />
           </Box>
-        )}
-      </Card>
+
+          <CardMedia
+            component="img"
+            image={productDesign}
+            alt=""
+            className={classes.productImage}
+            style={{
+              border: selectedVariants[product._id] ? '3px solid #116dff' : '3px solid #ccc',
+              backgroundImage: product.name === 'Case' && `url(${iphoneDesign})`,
+              // backgroundColor: 'red',
+              backgroundSize: product.name === 'Case' && '37% 80%',
+            }}
+          />
+          {product.name !== 'Case' && (
+            <Box>
+              {design && product.name !== 'Poster' && product.name !== 'Mug' ? (
+                <img
+                  className={[
+                    classes.design,
+                    product.name === 'Poster'
+                      ? classes.poster
+                      : product.name === 'Case'
+                      ? classes.phoneCase
+                      : product.name === 'Mug'
+                      ? classes.mug
+                      : '',
+                  ].join(' ')}
+                  src={design}
+                />
+              ) : (
+                mugPosterDesign &&
+                (product.name === 'Mug' || product.name === 'Poster') && (
+                  <img
+                    className={[
+                      classes.design,
+                      product.name === 'Poster'
+                        ? classes.poster
+                        : product.name === 'Case'
+                        ? classes.phoneCase
+                        : product.name === 'Mug'
+                        ? classes.mug
+                        : '',
+                    ].join(' ')}
+                    src={mugPosterDesign}
+                  />
+                )
+              )}
+            </Box>
+          )}
+        </Card>
       </Grid>
 
       <Grid justifyContent="center" spacing={3} className={classes.colorGrid} container>
@@ -603,9 +594,7 @@ const ProductCard = ({
         )}
       </Grid>
       <div hidden>
-        <img src={BackHoodie} />
-        <img src={BackTee} />
-        <img src={BackLong} />
+        <img src={product?.backImage} />
       </div>
     </>
   );

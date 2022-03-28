@@ -243,7 +243,7 @@ function StoreSettings() {
         })
         .catch(err => {
           // setCreateStoreError(true);
-          console.log(err)
+          console.log(err);
         });
     }
   };
