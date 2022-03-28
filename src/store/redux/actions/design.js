@@ -8,12 +8,8 @@ export const saveBackDesign = backDesign => async dispatch => {
   dispatch({ type: SAVE_BACK_DESIGN, payload: backDesign });
 };
 
-export const clearDesign = () => dispatch => {
-  const promise = new Promise(resolve => {
-    dispatch({ type: CLEAR_DESIGN });
-    resolve();
-  });
-  return promise;
+export const clearDesign = () => async dispatch => {
+  dispatch({ type: CLEAR_DESIGN });
 };
 
 export const saveThemeColor =

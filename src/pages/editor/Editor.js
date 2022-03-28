@@ -218,8 +218,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Editor = forwardRef((props, ref) => {
-  const { frontCanvasJSON, backCanvasJSON, saveEditDesign, designName, title } = props;
-
+  const {
+    triggerExport = 0,
+    frontCanvasJSON,
+    backCanvasJSON,
+    saveEditDesign,
+    designName,
+    title,
+  } = props;
   const canvasShape = useSelector(state => state.canvas.shape);
   const frontCanvasShape = useSelector(state => state.canvas.frontShape);
   const backCanvasShape = useSelector(state => state.canvas.backShape);
@@ -237,6 +243,8 @@ const Editor = forwardRef((props, ref) => {
   const backEditorJs = useEditor('back');
 
   useEffect(() => {
+    // console.log('Editor call');
+
     var style1 = document.getElementById('style1');
     var style2 = document.getElementById('style2');
     var style3 = document.getElementById('style3');
@@ -273,10 +281,14 @@ const Editor = forwardRef((props, ref) => {
   const MINUTE_MS = 500;
 
   useEffect(() => {
+    console.log('Editor call 2');
+
     handleBlankCanvas();
   }, []);
 
   useEffect(() => {
+    // console.log('Editor call 3');
+
     handleBlankCanvas();
   }, [canvasMode]);
 
@@ -318,6 +330,12 @@ const Editor = forwardRef((props, ref) => {
     // );
     return !pixelBuffer.some(color => color !== 0);
   };
+
+  useEffect(() => {
+    if (triggerExport > 0) {
+      exportCanvas();
+    }
+  }, [triggerExport]);
 
   useImperativeHandle(ref, () => ({
     saveDesign() {
@@ -814,7 +832,7 @@ const Editor = forwardRef((props, ref) => {
 
             <Paper
               elevation={5}
-              className={`${classes.PopUpModel} ${classes.SmileyModal}`}
+              className={`${classes.PopUpModel} ${classes.shapeModal}`}
               id="shape-button"
               hidden
             >

@@ -35,15 +35,15 @@ const useStyle = makeStyles(theme => ({
   },
   dContainer: {
     [theme.breakpoints.down('sm')]: {
-      maxWidth: '70px',
-    },
+      maxWidth: '70px'
+    }
   },
 
   card: {
     borderRadius: '10px',
     [theme.breakpoints.down('sm')]: {
-      maxWidth: '100px',
-    },
+      maxWidth: '100px'
+    }
   },
   designImage: {
     height: '100%',
@@ -55,7 +55,7 @@ const useStyle = makeStyles(theme => ({
     width: '100%',
     objectFit: 'cover',
     padding: '.4rem',
-    backgroundColor: '#116dff',
+    backgroundColor: '#116dff'
   },
   selectedButton: {
     position: 'absolute',
@@ -65,14 +65,14 @@ const useStyle = makeStyles(theme => ({
     zIndex: '500',
     paddingTop: '.4rem',
     paddingBottom: '.4rem',
-    backgroundColor: 'black',
+    backgroundColor:'black',
     color: 'white',
-    fontWeight: '600',
+    fontWeight: '600'
   },
   addButton: {
     height: '50px',
     with: '50px',
-    fontSize: '24px',
+    fontSize: '24px'
   },
   buttonsContainer: {
     display: 'flex',
@@ -81,7 +81,7 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-const VendorDesigns = ({ ndesigns, designImage, activeDesign, setDesign = () => {} }) => {
+const VendorDesigns = ({ndesigns, designImage, activeDesign, setDesign = () => {}}) => {
   const navigate = useNavigate();
   const [designs, setDesigns] = useState([]);
   const [fetched, setFetched] = useState(false);
@@ -108,12 +108,7 @@ const VendorDesigns = ({ ndesigns, designImage, activeDesign, setDesign = () => 
         designs.map(design => {
           setDesignImage(prevState => [
             ...prevState,
-            {
-              id: design._id,
-              url:
-                design?.frontDesign?.designImages[4]?.imageUrl ||
-                design?.backDesign?.designImages[1]?.imageUrl,
-            },
+            { id: design._id, url: design.frontDesign.designImages[4].imageUrl },
           ]);
         });
         setFetched(true);
@@ -122,7 +117,7 @@ const VendorDesigns = ({ ndesigns, designImage, activeDesign, setDesign = () => 
       .catch(error => console.log({ error }));
   };
   const navigateToCreate = () => {
-    if (designs.length >= 5) {
+    if (designs.length == 10) {
       setSnackBarToggle({
         visible: true,
         type: 'error',
@@ -140,7 +135,7 @@ const VendorDesigns = ({ ndesigns, designImage, activeDesign, setDesign = () => 
       visible: false,
     });
 
-  // console.log(fetched)
+    // console.log(fetched)
   return (
     <LoggedInVendor>
       <Grid mt={5} container className={classes.designContainer}>
@@ -152,25 +147,23 @@ const VendorDesigns = ({ ndesigns, designImage, activeDesign, setDesign = () => 
           flexDirection="row"
           justifyContent="space-between"
           alignItems="center"
-        ></Grid>
+        >
+    
+        </Grid>
         <Grid item md={12}>
-          <Typography marginBottom={2} align="center" variant="h3">
-            Designs & Prices
-          </Typography>
+        <Typography marginBottom={2} align="center" variant="h3">
+              Designs & Prices
+            </Typography>
           <Grid container spacing={isMobile ? 2 : 4}>
             {ndesigns.map((design, index) => (
               <Grid item md={3} xs={6} key={index}>
                 <Button
-                  className={classes.btn}
-                  // onClick={() => navigate(`/vendor/edit-design/${design._id}`)}
-                  // () => setDesign(design)
-                  onClick={
-                    activeDesign === design._id
-                      ? () => navigate(`/vendor/edit-design/${design._id}`)
-                      : () => setDesign(design)
-                  }
-                  size="small"
-                >
+                      className={classes.btn}
+                      // onClick={() => navigate(`/vendor/edit-design/${design._id}`)}
+                      // () => setDesign(design)
+                      onClick={activeDesign === design._id ? () => navigate(`/vendor/edit-design/${design._id}`) : () => setDesign(design)}
+                      size="small"
+                    >
                   {designImage.length > 0 && (
                     <CardMedia
                       component="img"
@@ -178,42 +171,27 @@ const VendorDesigns = ({ ndesigns, designImage, activeDesign, setDesign = () => 
                       height="80%"
                       key={design._id}
                       variant="square"
-                      className={
-                        activeDesign === design._id ? classes.selected : classes.designImage
-                      }
+                      className={activeDesign === design._id ? classes.selected : classes.designImage}
                     />
                   )}
-                  {activeDesign === design._id && (
-                    <Typography className={classes.selectedButton}>Edit</Typography>
-                  )}
+                  {activeDesign === design._id && <Typography className={classes.selectedButton}>Edit</Typography>}
+
                 </Button>
               </Grid>
             ))}
-            {ndesigns && (
-              // <Grid  item md={3} xs={6}>
-              <Card
-                className={classes.card}
-                style={{
-                  height: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: '5rem',
-                }}
-              >
-                <Button
-                  className={classes.addButton}
-                  onClick={navigateToCreate}
-                  variant="contained"
-                  size="medium"
-                >
-                  +
-                </Button>
-              </Card>
-              // </Grid>
-            )}
+                  {ndesigns && (
+                    // <Grid  item md={3} xs={6}>
+                       <Card className={classes.card} style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5rem'}}>
+              <Button className={classes.addButton} onClick={navigateToCreate} variant="contained" size="medium">
+              +
+            </Button>
+            </Card>
+                      // </Grid>
+           
+          )}
           </Grid>
         </Grid>
+        
       </Grid>
       <Snackbar open={snackBarToggle.visible} autoHideDuration={3000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>

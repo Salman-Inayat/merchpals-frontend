@@ -21,13 +21,15 @@ const CreateDesign = ({ design }) => {
   const [nameError, setNameError] = useState('');
   const [name, setName] = useState('');
   const childRef = useRef();
-
   const exportAndTriggerSave = () => {
+    setTriggerExport(triggerExport + 1);
     saveDesignToStore();
     setDisplaySave(true);
   };
   const saveDesignToStore = () => {
     childRef.current.saveDesign();
+
+    console.log('Ath the end');
   };
   const handleSaveNameAndMove = () => {
     if (!name.trim()) {
@@ -38,11 +40,7 @@ const CreateDesign = ({ design }) => {
     navigate('/vendor/design/product-selection', { state: { name } });
   };
 
-  // const handleClose = () => setDisplaySave(false);
-  const handleClose = (event, reason) => {
-    if (reason && reason == 'backdropClick') return;
-    setDisplaySave(false);
-  };
+  const handleClose = () => setDisplaySave(false);
 
   return (
     <LoggedInVendor>
@@ -63,7 +61,14 @@ const CreateDesign = ({ design }) => {
           />
         </Grid>
         <Grid item md={2} xs={12}></Grid>
-        <Grid mt={4} item md={12} display="flex" justifyContent="center" alignItems=" center">
+        <Grid
+          mt={4}
+          item
+          md={12}
+          display="flex"
+          justifyContent="center"
+          alignItems=" center"
+        >
           <Button variant="contained" onClick={exportAndTriggerSave}>
             Save Design
           </Button>
