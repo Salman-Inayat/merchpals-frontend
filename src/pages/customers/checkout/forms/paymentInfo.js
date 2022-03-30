@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: '60px',
     fontWeight: '400',
     borderRadius: '100px',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   banner: {
     width: '500px',
@@ -86,9 +86,7 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
     const cardElement = elements.getElement(CardElement);
     const { error, token } = await stripe.createToken(cardElement);
     placeOrder(token);
-    if (!error) {
-      setLoading(false);
-    } else {
+    if (error) {
       setLoading(false);
     }
   };
@@ -119,7 +117,7 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
             </Grid>
           </Grid>
           <Grid justifyContent="center" xs={10} mt={3} container>
-          <Grid item xs={10} display="flex" justifyContent="center">
+            <Grid item xs={10} display="flex" justifyContent="center">
               <Button
                 disabled={!completedAddress}
                 onClick={createToken}
@@ -131,7 +129,8 @@ const PaymentInfo = ({ placeOrder = () => {}, completedAddress = false, loading,
             <Grid xs={10} mt={3} item>
               <Typography>
                 By clicking the &#39;Place Order&#39; button, you confirm that you have read,
-                understand and accept our Terms of Service, Terms of Sale, Privacy Policy and Return Policy
+                understand and accept our Terms of Service, Terms of Sale, Privacy Policy and Return
+                Policy
               </Typography>
             </Grid>
           </Grid>

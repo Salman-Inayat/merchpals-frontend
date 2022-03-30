@@ -12,12 +12,10 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
-import BackLong from '../assets/images/back-long.png';
-import BackTee from '../assets/images/back-tee.png';
-import BackHoodie from '../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   productImage: {
-    height: '100%'
+    height: '100%',
   },
   container: {
     // padding: '30px',
@@ -32,11 +30,11 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     borderRadius: '0px',
-    backgroundColor: '#F6F0ED',
+    // backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
   },
   borderR: {
-    borderRadius: '5px!important'
+    borderRadius: '5px!important',
   },
   button: {
     backgroundColor: '#116DFF',
@@ -45,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   productName: {
     // color: '#0097a7',
     alignSelf: 'flex-start',
-    marginTop: '1rem'
+    marginTop: '1rem',
   },
 
   design: {
@@ -64,13 +62,13 @@ const useStyles = makeStyles(theme => ({
     color: '#555352',
     fontWeight: '300',
     fontSize: '14px!important',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   priceText: {
     color: 'black',
     fontWeight: '600',
     fontSize: '14px',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
   poster: {
     height: '140px',
@@ -106,20 +104,20 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [color, setColor] = useState();
-  const frontDesign =
-    product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
-    product?.designId?.backDesign?.designImages[1]?.imageUrl;
+  const frontDesign = product?.designId?.frontDesign?.designImages[4]?.imageUrl;
   const backDesign = product?.designId?.backDesign?.designImages[1]?.imageUrl;
   const [designImage, setDesignImage] = useState(frontDesign);
   const [productDesign, setProductDesign] = useState(product.image);
   const [designChange, setDesignChange] = useState(false);
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[3]?.imageUrl,
+      product?.designId?.frontDesign?.designImages[2]?.imageUrl,
   );
-  // const [iphoneDesignImage, setIphoneDesignImage] = useState(
-  //   product.designId.frontDesign.designImages[3].imageUrl,
-  // );
+  const [mugPosterDesign, setMugPosterDesign] = useState(
+    product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
+      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+  );
+
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
@@ -138,89 +136,95 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   }, [product]);
   return (
     <Box className={classes.container} onClick={exploreProduct}>
-      <Card variant="outlined" className={classes.card}>
+      <Card
+        variant="outlined"
+        className={classes.card}
+        onMouseOver={() => {
+          console.log('call');
+          if (product?.designId?.backDesign?.designImages[1]?.imageUrl) {
+            product.name !== 'Case' &&
+              product.name !== 'Mug' &&
+              product.name !== 'Poster' &&
+              (setDesignChange(true),
+              product.slug === 'hoodie'
+                ? setProductDesign(product.backImage)
+                : product.slug === 'longsleeve'
+                ? setProductDesign(product.backImage)
+                : setProductDesign(product.backImage));
+          }
+        }}
+        onMouseLeave={() => {
+          if (product?.designId?.backDesign?.designImages[1]?.imageUrl) {
+            product.name !== 'Case' &&
+              product.name !== 'Mug' &&
+              product.name !== 'Poster' &&
+              (setDesignChange(false), setProductDesign(product.image));
+          }
+        }}
+      >
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
+          image={productDesign}
           alt="green iguana"
           className={classes.productImage}
           style={{
             backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
             backgroundSize: '37% 80%',
           }}
-          onMouseOver={() => {
-            console.log('call');
-            if (
-              product?.designId?.backDesign?.designImages[1]?.imageUrl &&
-              product?.designId?.frontDesign?.designImages[4]?.imageUrl
-            ) {
-              product.name !== 'Case' &&
-                product.name !== 'Mug' &&
-                product.name !== 'Poster' &&
-                (setDesignChange(true),
-                product.slug === 'hoodie'
-                  ? setProductDesign(BackHoodie)
-                  : product.slug === 'longsleeve'
-                  ? setProductDesign(BackLong)
-                  : setProductDesign(BackTee));
-            }
-          }}
-          onMouseLeave={() => {
-            if (
-              product?.designId?.frontDesign?.designImages[4]?.imageUrl &&
-              product?.designId?.backDesign?.designImages[1]?.imageUrl
-            ) {
-              product.name !== 'Case' &&
-                product.name !== 'Mug' &&
-                product.name !== 'Poster' &&
-                (setDesignChange(false), setProductDesign(product.image));
-            }
-          }}
         />
-        {product.name !== 'Case' && product?.designId && (
-          <img
-            src={designChange ? (backDesign ? backDesign : designImage) : designImage}
-            className={[
-              classes.borderR,
-              classes.design,
-              product.name === 'Poster'
-                ? classes.poster
-                : product.name === 'Case'
-                ? classes.phoneCase
-                : product.name === 'Mug'
-                ? classes.mug
-                : '',
-            ].join(' ')}
-            onMouseOver={() => {
-              console.log('call');
-              if (
-                product?.designId?.backDesign?.designImages[1]?.imageUrl &&
-                product?.designId?.frontDesign?.designImages[4]?.imageUrl
-              ) {
-                product.name !== 'Case' &&
-                  product.name !== 'Mug' &&
-                  product.name !== 'Poster' &&
-                  (setDesignChange(true),
-                  product.slug === 'hoodie'
-                    ? setProductDesign(BackHoodie)
-                    : product.slug === 'longsleeve'
-                    ? setProductDesign(BackLong)
-                    : setProductDesign(BackTee));
-              }
-            }}
-            onMouseLeave={() => {
-              if (
-                product?.designId?.backDesign?.designImages[1]?.imageUrl &&
-                product?.designId?.frontDesign?.designImages[4]?.imageUrl
-              ) {
-                product.name !== 'Case' &&
-                  product.name !== 'Mug' &&
-                  product.name !== 'Poster' &&
-                  (setDesignChange(false), setProductDesign(product.image));
-              }
-            }}
-          />
-        )}
+        {product.name !== 'Poster' &&
+        product.name !== 'Mug' &&
+        product?.designId &&
+        product.name !== 'Case'
+          ? designChange
+            ? backDesign && (
+                <img
+                  src={backDesign}
+                  className={[
+                    classes.borderR,
+                    classes.design,
+                    product.name === 'Poster'
+                      ? classes.poster
+                      : product.name === 'Case'
+                      ? classes.phoneCase
+                      : product.name === 'Mug'
+                      ? classes.mug
+                      : '',
+                  ].join(' ')}
+                />
+              )
+            : designImage && (
+                <img
+                  src={designImage}
+                  className={[
+                    classes.borderR,
+                    classes.design,
+                    product.name === 'Poster'
+                      ? classes.poster
+                      : product.name === 'Case'
+                      ? classes.phoneCase
+                      : product.name === 'Mug'
+                      ? classes.mug
+                      : '',
+                  ].join(' ')}
+                />
+              )
+          : mugPosterDesign &&
+            (product.name === 'Mug' || product.name === 'Poster') && (
+              <img
+                className={[
+                  classes.design,
+                  product.name === 'Poster'
+                    ? classes.poster
+                    : product.name === 'Case'
+                    ? classes.phoneCase
+                    : product.name === 'Mug'
+                    ? classes.mug
+                    : '',
+                ].join(' ')}
+                src={mugPosterDesign}
+              />
+            )}
       </Card>
       <Grid className={classes.productName}>
         <Typography
@@ -242,8 +246,12 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           {`${color} Colors`}
         </Typography>
         <Typography
-        className={classes.priceText}
-         gutterBottom align="left" variant="h5" component="div">
+          className={classes.priceText}
+          gutterBottom
+          align="left"
+          variant="h5"
+          component="div"
+        >
           {`$${product.price} USD`}
         </Typography>
       </Grid>
@@ -257,9 +265,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       </Button> */}
       <div hidden>
         <img src={backDesign} />
-        <img src={BackLong} />
-        <img src={BackTee} />
-        <img src={BackHoodie} />
+        <img src={product?.backImage} />
       </div>
     </Box>
   );

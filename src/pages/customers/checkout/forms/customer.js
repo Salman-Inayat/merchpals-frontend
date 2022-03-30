@@ -12,15 +12,15 @@ import {
   Tooltip,
   IconButton,
   Stack,
+  Card,
+  CardMedia,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
 import { addToCart, getCart } from '../../../../store/redux/actions/cart';
 import { useState } from 'react';
-import BackLong from '../../../../assets/images/back-long.png';
-import BackTee from '../../../../assets/images/back-tee.png';
-import BackHoodie from '../../../../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   accordian: {
     backgroundColor: '#0A0A0A',
@@ -104,6 +104,42 @@ const useStyles = makeStyles(theme => ({
   },
   design: {
     position: 'absolute',
+    top: '45%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: '35%',
+    width: '35%',
+  },
+  poster: {
+    height: '57%',
+    width: '57%',
+    borderRadius: '5px',
+    top: '50%',
+
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '105px',
+    //   width: '105px',
+    // },
+  },
+  phoneCase: {
+    top: '50%',
+    width: '31%',
+    height: '29%',
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '50px',
+    //   width: '50px',
+    //   top: '52%',
+    // },
+  },
+  mug: {
+    height: '30%',
+    width: '30%',
+    top: '55%',
+    left: '52%',
+    // [theme.breakpoints.down('sm')]: {
+    //   height: '60px',
+    //   width: '60px',
+    // },
   },
 }));
 
@@ -181,24 +217,25 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
   };
   console.log('product', products);
   return (
-    <Accordion defaultExpanded >
-      <AccordionSummary 
-        style={{backgroundColor: '#d1cfcf'}} 
-        expandIcon={<ExpandMoreIcon 
-        style={{ color: '#212B36' }} />}>
+    <Accordion defaultExpanded>
+      <AccordionSummary
+        style={{ backgroundColor: '#d1cfcf' }}
+        expandIcon={<ExpandMoreIcon style={{ color: '#212B36' }} />}
+      >
         <Typography className={classes.heading}>In your bag</Typography>
       </AccordionSummary>
       <AccordionDetails>
         {products.map(product =>
           product.productMappings.map((variant, i) => (
             <Grid direction="row" xs={12} item container mt={2} key={`product-${i}`}>
-              {console.log('variant', variant, i)}
               <Grid item xs={9} container>
-                <Stack
+                <Card
+                  style={{
+                    borderRadius: '0px',
+                  }}
                   className={classes.imageCard}
                   onMouseOver={() => {
-                    console.log('call');
-                    if (variant.backDesign && variant.design) {
+                    if (variant.backDesign) {
                       product.name !== 'Case' &&
                         product.name !== 'Mug' &&
                         product.name !== 'Poster' &&
@@ -209,7 +246,7 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     }
                   }}
                   onMouseLeave={() => {
-                    if (variant.backDesign && variant.design) {
+                    if (variant.backDesign) {
                       product.name !== 'Case' &&
                         product.name !== 'Mug' &&
                         product.name !== 'Poster' &&
@@ -220,8 +257,21 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     }
                   }}
                 >
-                  <Avatar
+                  <CardMedia
                     className={classes.avatar}
+                    component="img"
+                    image={
+                      designChange.status && designChange.id == variant.id
+                        ? product.name === 'Hoodie'
+                          ? product.backImage
+                          : product.name === 'Long Sleeve'
+                          ? product.backImage
+                          : product.name === 'Tee'
+                          ? product.backImage
+                          : product.image
+                        : product.image
+                    }
+                    alt=""
                     style={{
                       backgroundColor:
                         variant.color === 'n/a'
@@ -234,39 +284,64 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                           ? '#121616'
                           : '',
                       backgroundImage: product.name === 'Case' && `url(${variant.design})`,
-                      backgroundSize: '37% 80%',
+                      // backgroundColor: 'red',
+                      backgroundSize: product.name === 'Case' && '37% 80%',
                     }}
-                    src={
-                      product.name === 'Case'
-                        ? '/assets/img/FINALCASE.png'
-                        : designChange.status && designChange.id == variant.id
-                        ? product.name === 'Hoodie'
-                          ? BackHoodie
-                          : product.name === 'Long Sleeve'
-                          ? BackLong
-                          : product.name === 'Tee'
-                          ? BackTee
-                          : product.image
-                        : product.image
-                    }
-                    variant="square"
                   />
-                  <Avatar
-                    className={classes.design}
-                    src={
-                      designChange.status && designChange.id == variant.id
-                        ? product.name === 'Hoodie'
-                          ? variant.backDesign
-                          : product.name === 'Long Sleeve'
-                          ? variant.backDesign
-                          : product.name === 'Tee'
-                          ? variant.backDesign
-                          : variant.design
-                        : variant.design
-                    }
-                    variant="square"
-                  />
-                </Stack>
+
+                  {product.name !== 'Case' &&
+                    (product.name !== 'Mug' && product.name !== 'Poster'
+                      ? designChange.status && designChange.id == variant.id
+                        ? variant.backDesign && (
+                            <img
+                              className={[
+                                classes.design,
+                                product.name === 'Poster'
+                                  ? classes.poster
+                                  : product.name === 'Case'
+                                  ? classes.phoneCase
+                                  : product.name === 'Mug'
+                                  ? classes.mug
+                                  : '',
+                              ].join(' ')}
+                              src={variant.backDesign}
+                              // variant="square"
+                            />
+                          )
+                        : variant.design && (
+                            <img
+                              className={[
+                                classes.design,
+                                product.name === 'Poster'
+                                  ? classes.poster
+                                  : product.name === 'Case'
+                                  ? classes.phoneCase
+                                  : product.name === 'Mug'
+                                  ? classes.mug
+                                  : '',
+                              ].join(' ')}
+                              src={variant.design}
+                              // variant="square"
+                            />
+                          )
+                      : variant.mugPoster &&
+                        (product.name === 'Mug' || product.name === 'Poster') && (
+                          <img
+                            className={[
+                              classes.design,
+                              product.name === 'Poster'
+                                ? classes.poster
+                                : product.name === 'Case'
+                                ? classes.phoneCase
+                                : product.name === 'Mug'
+                                ? classes.mug
+                                : '',
+                            ].join(' ')}
+                            src={variant.mugPoster}
+                            // variant="square"
+                          />
+                        ))}
+                </Card>
                 <Stack direction="column" ml={{ md: 2, xs: 1 }}>
                   <Typography className={classes.text}> Style: {product.name}</Typography>
                   <Typography className={classes.text}>
@@ -296,14 +371,19 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                     </Box>
                   </Grid>
                   <Button
-                  classes={{
-                    root: classes.removeBtn,
-                  }}
-                  onClick={() => removeFromCart(product.vendorProduct, variant.id)}
-                  style={{fontSize: '10px', position: 'absolute', right: '0', marginTop: '.3rem'}}
-                >
-                  Remove
-                </Button>
+                    classes={{
+                      root: classes.removeBtn,
+                    }}
+                    onClick={() => removeFromCart(product.vendorProduct, variant.id)}
+                    style={{
+                      fontSize: '10px',
+                      position: 'absolute',
+                      right: '0',
+                      marginTop: '.3rem',
+                    }}
+                  >
+                    Remove
+                  </Button>
                 </Stack>
               </Grid>
               {/* <Grid xs={3} item display="flex" justifyContent="flex-end">
@@ -327,20 +407,20 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
 taxes"
               >
                 <IconButton className={classes.infoBtn}>
-                  <QuestionMark 
-                    className={classes.infoIcon} 
+                  <QuestionMark
+                    className={classes.infoIcon}
                     onClick={() =>
                       setShowToolTip({
                         subTotal: !showTooltip.subTotal,
                       })
                     }
-                  /> 
+                  />
                 </IconButton>
               </Tooltip>
             </Grid>
             <Grid xs={6} item>
               <Typography className={classes.summaryText} align="right">
-              $
+                $
                 {priceCalculation.orderActualAmount
                   ? priceCalculation.orderActualAmount.toFixed(2)
                   : 0}
@@ -357,8 +437,8 @@ taxes"
                 {priceCalculation.shippingAmount === 'FREE'
                   ? 'FREE'
                   : `$${
-                    priceCalculation.shippingAmount ? priceCalculation.shippingAmount : 'FREE'
-                  }`}
+                      priceCalculation.shippingAmount ? priceCalculation.shippingAmount : 'FREE'
+                    }`}
               </Typography>
             </Grid>
           </Grid>
@@ -374,7 +454,7 @@ taxes"
                 title="This covers the cost of Sales Tax, VAT, GST, QST, PST, and HST. Please check with your 
 applicable state or local government for more information"
               >
-               <IconButton
+                <IconButton
                   className={classes.infoBtn}
                   onClick={() =>
                     setShowToolTip({
@@ -388,14 +468,14 @@ applicable state or local government for more information"
             </Grid>
             <Grid xs={2} item>
               <Typography className={classes.summaryText} align="right">
-              ${priceCalculation.taxAmount ? priceCalculation.taxAmount.toFixed(2) : 0}
+                ${priceCalculation.taxAmount ? priceCalculation.taxAmount.toFixed(2) : 0}
               </Typography>
             </Grid>
           </Grid>
           <Grid justifyContent="space-between" item container>
             <Typography className={classes.summaryText}>Total</Typography>
             <Typography className={classes.totalText} align="right">
-            $
+              $
               {priceCalculation.amountWithTaxAndShipping
                 ? priceCalculation.amountWithTaxAndShipping.toFixed(2)
                 : 0}

@@ -59,18 +59,18 @@ const useStyles = makeStyles(theme => ({
     color: 'red',
   },
   continueBtn: {
-      color: 'white',
-      width: '80%',
-      border: 'none',
-      margin: '10px',
-      padding: '2.4rem 2rem',
-      maxHeight: '70px',
-      fontWeight: '400',
-      borderRadius: '100px',
-      backgroundColor: 'black',
-      [theme.breakpoints.up('lg')]: {
-        width: '40%'
-      }
+    color: 'white',
+    width: '80%',
+    border: 'none',
+    margin: '10px',
+    padding: '2.4rem 2rem',
+    maxHeight: '70px',
+    fontWeight: '400',
+    borderRadius: '100px',
+    backgroundColor: 'black',
+    [theme.breakpoints.up('lg')]: {
+      width: '40%',
+    },
   },
   error: {
     color: 'red',
@@ -127,9 +127,8 @@ const BillingAddress = ({
   const CustomerSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
-    zip: Yup.string()
-      .required('Postal Code is required'),
-      // .min('5', 'Postal code should be 5 digits'),
+    zip: Yup.string().required('Postal Code is required'),
+    // .min('5', 'Postal code should be 5 digits'),
     street: Yup.string().required('Street Address is required'),
     city: Yup.string().required('City name is required'),
     state: Yup.string().required('State name is required'),
@@ -147,7 +146,7 @@ const BillingAddress = ({
     reValidateMode: 'onBlur',
     resolver: yupResolver(CustomerSchema),
     defaultValues: {
-      country: 'US'
+      country: 'US',
     },
   });
 
@@ -413,73 +412,71 @@ const BillingAddress = ({
             <span className={classes.fieldError}>{errors?.state?.message}</span>
           </Grid>
         </Grid>
-        {
-          state && (
-            <Grid mt={3} justifyContent="space-between" container spacing={2}>
-              <Grid item md={6} xs={12}>
-                <InputLabel className={classes.label}>
-                  Phone Number<span className={classes.required}>*</span>
-                </InputLabel>
-                <PhoneNumberInput
-                  inputStyle={{ height: '45px', paddingLeft: '55px' }}
-                  phoneNo={phoneNo}
-                  setPhoneNo={value => {
-                    setFormErrors({ ...formErrors, phoneNo: '' });
-                    setPhoneNo(value);
-                    setPhoneErr('');
-                  }}
-                  error={formErrors.phoneNo || phoneErr}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
+        {state && (
+          <Grid mt={3} justifyContent="space-between" container spacing={2}>
+            <Grid item md={6} xs={12}>
               <InputLabel className={classes.label}>
-              Email<span className={classes.required}>*</span>
-            </InputLabel>
-                
-                <Input
-                  value={email}
-                  onChange={e => {
-                    setEmailErr('');
-                    setEmail(e.target.value);
-                  }}
-                  onKeyUp={() => setFormErrors({ ...formErrors, email: '' })}
-                  className={classes.textField}
-                  placeholder="Email"
-                />
-                <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
-              </Grid>
-              {country === 'BR' && (
-                <Grid item md={6} xs={12}>
-                  <InputLabel className={classes.label}>CPF</InputLabel>
-                  <Input
-                    value={cpf}
-                    onChange={e => {
-                      setCpfErr('');
-                      setCPF(e.target.value);
-                    }}
-                    onKeyUp={() => setFormErrors({ cpf: '' })}
-                    className={classes.textField}
-                    placeholder="CPF"
-                    inputComponent={TextMaskCustom}
-                  />
-                  <span className={classes.fieldError}>{cpfErr}</span>
-                </Grid>
-              )}
+                Phone Number<span className={classes.required}>*</span>
+              </InputLabel>
+              <PhoneNumberInput
+                inputStyle={{ height: '45px', paddingLeft: '55px' }}
+                phoneNo={phoneNo}
+                setPhoneNo={value => {
+                  setFormErrors({ ...formErrors, phoneNo: '' });
+                  setPhoneNo(value);
+                  setPhoneErr('');
+                }}
+                error={formErrors.phoneNo || phoneErr}
+              />
             </Grid>
-          )
-        }
+            <Grid item md={6} xs={12}>
+              <InputLabel className={classes.label}>
+                Email<span className={classes.required}>*</span>
+              </InputLabel>
+
+              <Input
+                value={email}
+                onChange={e => {
+                  setEmailErr('');
+                  setEmail(e.target.value);
+                }}
+                onKeyUp={() => setFormErrors({ ...formErrors, email: '' })}
+                className={classes.textField}
+                placeholder="Email"
+              />
+              <span className={classes.fieldError}>{formErrors.email || emailErr}</span>
+            </Grid>
+            {country === 'BR' && (
+              <Grid item md={6} xs={12}>
+                <InputLabel className={classes.label}>CPF</InputLabel>
+                <Input
+                  value={cpf}
+                  onChange={e => {
+                    setCpfErr('');
+                    setCPF(e.target.value);
+                  }}
+                  onKeyUp={() => setFormErrors({ cpf: '' })}
+                  className={classes.textField}
+                  placeholder="CPF"
+                  inputComponent={TextMaskCustom}
+                />
+                <span className={classes.fieldError}>{cpfErr}</span>
+              </Grid>
+            )}
+          </Grid>
+        )}
         <Grid justifyContent="center" mt={3} container>
           {taxError && <Typography className={classes.error}>{taxError}</Typography>}
           {shippingError && <Typography className={classes.error}>{shippingError}</Typography>}
         </Grid>
         <Grid justifyContent="center" mt={3} container>
           {displayContinueButton && (
-          <PulsingButton
-          onClick={validateAndContinue}
-          text='Continue'
-          bg='#000000'
-          icon={<ArrowForward style={{marginLeft: '10px'}}/>}>
-      </PulsingButton>
+            <PulsingButton
+              onClick={validateAndContinue}
+              text="Continue"
+              bg="#000000"
+              icon={<ArrowForward style={{ marginLeft: '10px' }} />}
+            ></PulsingButton>
           )}
         </Grid>
       </Grid>
