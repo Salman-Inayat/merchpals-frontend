@@ -7,15 +7,16 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
   const [triggerExport, setTriggerExport] = useState(0);
   const childRef = useRef();
 
-  const exportAndMove = () => {
-    setTriggerExport(triggerExport + 1);
-    saveDesignToStore();
+  const exportAndMove = async () => {
+    await saveDesignToStore();
     nextStep();
   };
 
-  const saveDesignToStore = () => {
-    childRef.current.saveDesign();
-
+  const saveDesignToStore = async () => {
+    const promise = new Promise((resolve, reject) => {
+      childRef.current.saveDesign().then(resolve()).catch(reject());
+    });
+    return promise;
   };
 
   return (

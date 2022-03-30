@@ -287,7 +287,7 @@ const Checkout = ({
 
     createOrder(data);
   };
-console.log('redux', reduxCartProducts);
+
   return (
     <Grid justifyContent="center" alignItems="center" container className={classes.card}>
       <Grid xs={12} item pt={2}>
