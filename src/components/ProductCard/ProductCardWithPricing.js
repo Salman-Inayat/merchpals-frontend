@@ -184,6 +184,7 @@ const ProductCard = ({
   const [productDesign, setProductDesign] = useState();
   const [designChange, setDesignChange] = useState(false);
   const [iphoneDesign, setIphoneDesign] = useState('');
+  const [mugPosterDesign, setMugPosterDesign] = useState('');
   let isMobile = useMediaQuery({ maxWidth: 767 });
 
   const renderBgColor = () => {
@@ -211,7 +212,8 @@ const ProductCard = ({
         design?.frontDesign?.designImages[3]?.imageUrl ||
           design?.backDesign?.designImages[1]?.imageUrl,
       );
-      setDesignImg(
+      setDesignImg(design?.frontDesign?.designImages[4]?.imageUrl);
+      setMugPosterDesign(
         design?.frontDesign?.designImages[4]?.imageUrl ||
           design?.backDesign?.designImages[1]?.imageUrl,
       );
@@ -275,10 +277,7 @@ const ProductCard = ({
               backgroundSize: '37% 80%',
             }}
             onMouseOver={() => {
-              if (
-                design.backDesign?.designImages[1]?.imageUrl &&
-                design.frontDesign?.designImages[4]?.imageUrl
-              ) {
+              if (design.backDesign?.designImages[1]?.imageUrl) {
                 product.name !== 'Case' &&
                   product.name !== 'Poster' &&
                   product.name !== 'Mug' &&
@@ -291,10 +290,7 @@ const ProductCard = ({
               }
             }}
             onMouseLeave={() => {
-              if (
-                design.backDesign?.designImages[1]?.imageUrl &&
-                design.frontDesign?.designImages[4]?.imageUrl
-              ) {
+              if (design.backDesign?.designImages[1]?.imageUrl) {
                 product.name !== 'Case' &&
                   product.name !== 'Poster' &&
                   product.name !== 'Mug' &&
@@ -302,48 +298,56 @@ const ProductCard = ({
               }
             }}
           />
-          {product.name !== 'Case' && design && (
+          {product.name !== 'Case' && (
             <Box>
-              <img
-                className={[
-                  classes.design,
-                  product.name === 'Poster'
-                    ? classes.poster
-                    : product.name === 'Phone Case'
-                    ? classes.phoneCase
-                    : product.name === 'Mug'
-                    ? classes.mug
-                    : '',
-                ].join(' ')}
-                src={designChange ? (backDesignImg ? backDesignImg : designImg) : designImg}
-                onMouseOver={() => {
-                  if (
-                    design.backDesign?.designImages[1]?.imageUrl &&
-                    design.frontDesign?.designImages[4]?.imageUrl
-                  ) {
-                    product.name !== 'Case' &&
-                      product.name !== 'Poster' &&
-                      product.name !== 'Mug' &&
-                      (setDesignChange(true),
-                      product.slug === 'hoodie'
-                        ? setProductDesign(BackHoodie)
-                        : product.slug === 'longsleeve'
-                        ? setProductDesign(BackLong)
-                        : setProductDesign(BackTee));
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (
-                    design.backDesign?.designImages[1]?.imageUrl &&
-                    design.frontDesign?.designImages[4]?.imageUrl
-                  ) {
-                    product.name !== 'Case' &&
-                      product.name !== 'Poster' &&
-                      product.name !== 'Mug' &&
-                      (setDesignChange(false), setProductDesign(product.image));
-                  }
-                }}
-              />
+              {design && product.name !== 'Poster' && product.name !== 'Mug'
+                ? designChange
+                  ? backDesignImg && (
+                      <img
+                        className={[
+                          classes.design,
+                          product.name === 'Poster'
+                            ? classes.poster
+                            : product.name === 'Phone Case'
+                            ? classes.phoneCase
+                            : product.name === 'Mug'
+                            ? classes.mug
+                            : '',
+                        ].join(' ')}
+                        src={backDesignImg}
+                      />
+                    )
+                  : designImg && (
+                      <img
+                        className={[
+                          classes.design,
+                          product.name === 'Poster'
+                            ? classes.poster
+                            : product.name === 'Phone Case'
+                            ? classes.phoneCase
+                            : product.name === 'Mug'
+                            ? classes.mug
+                            : '',
+                        ].join(' ')}
+                        src={designImg}
+                      />
+                    )
+                : mugPosterDesign &&
+                  (product.name === 'Mug' || product.name === 'Poster') && (
+                    <img
+                      className={[
+                        classes.design,
+                        product.name === 'Poster'
+                          ? classes.poster
+                          : product.name === 'Case'
+                          ? classes.phoneCase
+                          : product.name === 'Mug'
+                          ? classes.mug
+                          : '',
+                      ].join(' ')}
+                      src={mugPosterDesign}
+                    />
+                  )}
             </Box>
           )}
         </Box>

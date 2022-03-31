@@ -74,7 +74,7 @@ const ProductSelection = ({ designName }) => {
     };
 
     axios
-    .post(`${baseURL}/store/add-design`, data, {
+      .post(`${baseURL}/store/add-design`, data, {
         headers: {
           Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
           'Content-Type': 'application/json',
@@ -84,14 +84,6 @@ const ProductSelection = ({ designName }) => {
         console.log(response);
 
         const urls = response.data.response;
-
-        const frontDesignVariant1 = urls[0].imageUrl;
-        const frontDesignVariant2 = urls[1].imageUrl;
-        const frontDesignVariant3 = urls[2].imageUrl;
-        const frontDesignVariant4 = urls[3].imageUrl;
-        const frontDesignVariant5 = urls[4].imageUrl;
-        const frontDesignJson = urls[5].imageUrl;
-
         const frontJSONBlob = new Blob([JSON.stringify(design?.front?.designJson || '')], {
           type: 'application/json',
         });
@@ -100,67 +92,130 @@ const ProductSelection = ({ designName }) => {
           type: 'application/json',
         });
 
-        await postDataToURL(
-          frontDesignVariant1,
-          dataURLtoFile(
-            design?.front?.designImages[0]?.data || design?.back?.designImages[0]?.data,
-            `${design?.front?.designImages[0]?.name || design?.back?.designImages[0]?.name}.png`,
-          ),
-        );
-        await postDataToURL(
-          frontDesignVariant2,
-          dataURLtoFile(
-            design?.front?.designImages[1]?.data || design?.back?.designImages[1]?.data,
-            `${design?.front?.designImages[1]?.name || design?.back?.designImages[1]?.name}.png`,
-          ),
-        );
-        await postDataToURL(
-          frontDesignVariant3,
-          dataURLtoFile(
-            design?.front?.designImages[2]?.data || design?.back?.designImages[2]?.data,
-            `${design?.front?.designImages[2]?.name || design?.back?.designImages[2]?.name}.png`,
-          ),
-        );
-        await postDataToURL(
-          frontDesignVariant4,
-          dataURLtoFile(
-            design?.front?.designImages[3]?.data || design?.back?.designImages[3]?.data,
-            `${design?.front?.designImages[3]?.name || design?.back?.designImages[3]?.name}.png`,
-          ),
-        );
-        await postDataToURL(
-          frontDesignVariant5,
-          dataURLtoFile(
-            design?.front?.designImages[4]?.data || design?.back?.designImages[4]?.data,
-            `${design?.front?.designImages[4]?.name || design?.back?.designImages[4]?.name}.png`,
-          ),
-        );
+        if (design?.front != null && design?.back != null) {
+          const frontDesignVariant1 = urls[0].imageUrl;
+          const frontDesignVariant2 = urls[1].imageUrl;
+          const frontDesignVariant3 = urls[2].imageUrl;
+          const frontDesignVariant4 = urls[3].imageUrl;
+          const frontDesignVariant5 = urls[4].imageUrl;
+          const frontDesignJson = urls[5].imageUrl;
+          const backDesignVariant1 = urls[6].imageUrl;
+          const backDesignVariant2 = urls[7].imageUrl;
+          const backDesignJson = urls[8].imageUrl;
+          await postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              design?.front?.designImages[0]?.data || '',
+              `${design?.front?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              design?.front?.designImages[1]?.data || '',
+              `${design?.front?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              design?.front?.designImages[2]?.data || '',
+              `${design?.front?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant4,
+            dataURLtoFile(
+              design?.front?.designImages[3]?.data || '',
+              `${design?.front?.designImages[3]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant5,
+            dataURLtoFile(
+              design?.front?.designImages[4]?.data || '',
+              `${design?.front?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              design?.back?.designImages[1]?.data || '',
+              `${design?.back?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              design?.back?.designImages[4]?.data || '',
+              `${design?.back?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(backDesignJson, backJSONBlob);
+          await postDataToURL(frontDesignJson, frontJSONBlob);
+        } else if (design?.back != null && design?.front == null) {
+          const backDesignVariant1 = urls[0].imageUrl;
+          const backDesignVariant2 = urls[1].imageUrl;
+          const backDesignJson = urls[2].imageUrl;
+          await postDataToURL(
+            backDesignVariant1,
+            dataURLtoFile(
+              design?.back?.designImages[1]?.data || '',
+              `${design?.back?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            backDesignVariant2,
+            dataURLtoFile(
+              design?.back?.designImages[4]?.data || '',
+              `${design?.back?.designImages[4]?.name || ''}.png`,
+            ),
+          );
 
-        await postDataToURL(frontDesignJson, frontJSONBlob);
-
-        if (design?.back != null) {
-          if (urls.length != 6) {
-            const backDesignVariant1 = urls[6].imageUrl;
-            const backDesignVariant2 = urls[7].imageUrl;
-            const backDesignJson = urls[8].imageUrl;
-
-            await postDataToURL(
-              backDesignVariant1,
-              dataURLtoFile(
-                design?.back?.designImages[1]?.data || '',
-                `${design?.back?.designImages[1]?.name || ''}.png`,
-              ),
-            );
-            await postDataToURL(
-              backDesignVariant2,
-              dataURLtoFile(
-                design?.back?.designImages[4]?.data || '',
-                `${design?.back?.designImages[4]?.name || ''}.png`,
-              ),
-            );
-
-            await postDataToURL(backDesignJson, backJSONBlob);
-          }
+          await postDataToURL(backDesignJson, backJSONBlob);
+        } else {
+          const frontDesignVariant1 = urls[0].imageUrl;
+          const frontDesignVariant2 = urls[1].imageUrl;
+          const frontDesignVariant3 = urls[2].imageUrl;
+          const frontDesignVariant4 = urls[3].imageUrl;
+          const frontDesignVariant5 = urls[4].imageUrl;
+          const frontDesignJson = urls[5].imageUrl;
+          await postDataToURL(
+            frontDesignVariant1,
+            dataURLtoFile(
+              design?.front?.designImages[0]?.data || '',
+              `${design?.front?.designImages[0]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant2,
+            dataURLtoFile(
+              design?.front?.designImages[1]?.data || '',
+              `${design?.front?.designImages[1]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant3,
+            dataURLtoFile(
+              design?.front?.designImages[2]?.data || '',
+              `${design?.front?.designImages[2]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant4,
+            dataURLtoFile(
+              design?.front?.designImages[3]?.data || '',
+              `${design?.front?.designImages[3]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(
+            frontDesignVariant5,
+            dataURLtoFile(
+              design?.front?.designImages[4]?.data || '',
+              `${design?.front?.designImages[4]?.name || ''}.png`,
+            ),
+          );
+          await postDataToURL(frontDesignJson, frontJSONBlob);
         }
 
         localStorage.removeItem('design');

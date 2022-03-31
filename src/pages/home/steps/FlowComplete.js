@@ -90,58 +90,55 @@ function FlowComplete({ storeURL }) {
     });
 
   return (
-    <div className={classes.container}>
-      <Grid container>
-        <Grid item md={12}>
-          <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
-            <Box>
-              <Typography variant="h5" color="initial" align="center">
-                It&#39;s Live!
-              </Typography>
-              <Typography variant="h5" color="initial" align="center">
-                Add your store link to your bio
-              </Typography>
-            </Box>
-            <img src={PhoneFrame} className={classes.phoneFrame}></img>
-            <Grid item md={12} sm={12} xs={12} className={classes.copyContent}>
-              <TextField
-                id="outlined-read-only-input"
-                label={!storeURL && 'Copy Store Link'}
-                value={`${process.env.REACT_APP_URL}/${storeURL}`}
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <Box>
-                      <Button
-                        color="primary"
-                        // variant="contained"
-                        onClick={() => copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)}
-                      >
-                        Copy
-                        <ContentCopyIcon color="white" />
-                      </Button>
-                    </Box>
-                  ),
-                }}
-                fullWidth
-                className={classes.copyLinkText}
-              />
-            </Grid>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => navigate('/vendor', { replace: true })}
-            >
-              Go to dashboard
-            </Button>
-          </Stack>
+    <Grid item md={12}>
+      <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+        <Box>
+          <Typography variant="h5" color="initial" align="center">
+            It&#39;s Live!
+          </Typography>
+          <Typography variant="h5" color="initial" align="center">
+            Add your store link to your bio
+          </Typography>
+        </Box>
+        <img src={PhoneFrame} className={classes.phoneFrame}></img>
+        <Grid item md={12} sm={12} xs={12} className={classes.copyContent}>
+          <TextField
+            id="outlined-read-only-input"
+            label={!storeURL && 'Copy Store Link'}
+            value={`${process.env.REACT_APP_URL}/${storeURL}`}
+            InputProps={{
+              readOnly: true,
+              endAdornment: (
+                <Box>
+                  <Button
+                    color="primary"
+                    // variant="contained"
+                    onClick={() => copyToClipboard(`${process.env.REACT_APP_URL}/${storeURL}`)}
+                  >
+                    Copy
+                    <ContentCopyIcon color="white" />
+                  </Button>
+                </Box>
+              ),
+            }}
+            fullWidth
+            className={classes.copyLinkText}
+          />
         </Grid>
-      </Grid>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => navigate('/vendor', { replace: true })}
+        >
+          Go to dashboard
+        </Button>
+      </Stack>
+
       <Confetti numberOfPieces={confettiRun ? 500 : 0} />
       <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
       </Snackbar>
-    </div>
+    </Grid>
   );
 }
 
