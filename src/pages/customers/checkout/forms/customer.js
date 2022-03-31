@@ -20,9 +20,7 @@ import { makeStyles } from '@mui/styles';
 import QuestionMark from '@mui/icons-material/QuestionMark';
 import { addToCart, getCart } from '../../../../store/redux/actions/cart';
 import { useState } from 'react';
-import BackLong from '../../../../assets/images/back-long.png';
-import BackTee from '../../../../assets/images/back-tee.png';
-import BackHoodie from '../../../../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   accordian: {
     backgroundColor: '#0A0A0A',
@@ -255,20 +253,21 @@ const Customer = ({ products = [], setProducts, addToCart, storeUrl, priceCalcul
                         });
                     }
                   }}
+                  style={{
+                    borderRadius: '0px',
+                  }}
                 >
                   <CardMedia
                     className={classes.avatar}
                     component="img"
                     image={
-                      product.name === 'Case'
-                        ? '/assets/img/FINALCASE.png'
-                        : designChange.status && designChange.id == variant.id
+                      designChange.status && designChange.id == variant.id
                         ? product.name === 'Hoodie'
-                          ? BackHoodie
+                          ? product.backImage
                           : product.name === 'Long Sleeve'
-                          ? BackLong
+                          ? product.backImage
                           : product.name === 'Tee'
-                          ? BackTee
+                          ? product.backImage
                           : product.image
                         : product.image
                     }

@@ -814,7 +814,7 @@ const Editor = forwardRef((props, ref) => {
 
             <Paper
               elevation={5}
-              className={`${classes.PopUpModel} ${classes.shapeModal}`}
+              className={`${classes.PopUpModel} ${classes.SmileyModal}`}
               id="shape-button"
               hidden
             >

@@ -12,9 +12,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
-import BackLong from '../assets/images/back-long.png';
-import BackTee from '../assets/images/back-tee.png';
-import BackHoodie from '../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   productImage: {
     height: '100%',
@@ -32,7 +30,6 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     borderRadius: '0px',
-    backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
   },
   borderR: {
@@ -113,15 +110,13 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   const [designChange, setDesignChange] = useState(false);
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+      product?.designId?.frontDesign?.designImages[2]?.imageUrl,
   );
   const [mugPosterDesign, setMugPosterDesign] = useState(
     product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
       product?.designId?.backDesign?.designImages[1]?.imageUrl,
   );
-  // const [iphoneDesignImage, setIphoneDesignImage] = useState(
-  //   product.designId.frontDesign.designImages[3].imageUrl,
-  // );
+
   const exploreProduct = () => {
     navigate({
       pathname: `/store/${storeUrl}/products/${product.vendorProductId}`,
@@ -151,10 +146,10 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
               product.name !== 'Poster' &&
               (setDesignChange(true),
               product.slug === 'hoodie'
-                ? setProductDesign(BackHoodie)
+                ? setProductDesign(product.backImage)
                 : product.slug === 'longsleeve'
-                ? setProductDesign(BackLong)
-                : setProductDesign(BackTee));
+                ? setProductDesign(product.backImage)
+                : setProductDesign(product.backImage));
           }
         }}
         onMouseLeave={() => {
@@ -168,7 +163,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       >
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
+          image={productDesign}
           alt="green iguana"
           className={classes.productImage}
           style={{
@@ -269,9 +264,7 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
       </Button> */}
       <div hidden>
         <img src={backDesign} />
-        <img src={BackLong} />
-        <img src={BackTee} />
-        <img src={BackHoodie} />
+        <img src={product?.backImage} />
       </div>
     </Box>
   );

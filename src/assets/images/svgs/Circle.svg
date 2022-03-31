@@ -1,7 +1,7 @@
 <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
-	<title>New Project</title>
-	<style>
-		.s0 { fill: none;stroke: #000;stroke-linecap: round;stroke-width: 20;stroke-dasharray: 10,10 } 
-	</style>
-	<path id="Layer 1" class="s0" d="m194 340c-79.1 0-143-63.9-143-143c0-79.1 63.9-143 143-143c79.1 0 143 63.9 143 143c0 79.1-63.9 143-143 143z" />
+    <title>New Project</title>
+    <style>
+        .s0 { fill: none;stroke: #000;stroke-linecap: round;stroke-width: 10;stroke-dasharray: 10,10 }
+    </style>
+    <path id="Layer 1" class="s0" d="m194 340c-79.1 0-143-63.9-143-143c0-79.1 63.9-143 143-143c79.1 0 143 63.9 143 143c0 79.1-63.9 143-143 143z" />
 </svg>

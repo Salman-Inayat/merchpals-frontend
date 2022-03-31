@@ -21,9 +21,7 @@ import store from '../../store';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useMediaQuery } from 'react-responsive';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
+
 const useStyles = makeStyles(theme => ({
   product: {
     border: '1px solid #ccc',
@@ -304,10 +302,10 @@ const ProductCard = ({
                   //   store.getState().design?.design?.front?.designImages[4]?.data,
                 ),
                 product.slug === 'hoodie'
-                  ? setProductDesign(BackHoodie)
+                  ? setProductDesign(product.backImage)
                   : product.slug === 'longsleeve'
-                  ? setProductDesign(BackLong)
-                  : setProductDesign(BackTee));
+                  ? setProductDesign(product.backImage)
+                  : setProductDesign(product.backImage));
             }
           }}
           onMouseLeave={() => {
@@ -340,7 +338,7 @@ const ProductCard = ({
 
           <CardMedia
             component="img"
-            image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productDesign}
+            image={productDesign}
             alt=""
             className={classes.productImage}
             style={{
@@ -596,9 +594,7 @@ const ProductCard = ({
         )}
       </Grid>
       <div hidden>
-        <img src={BackHoodie} />
-        <img src={BackTee} />
-        <img src={BackLong} />
+        <img src={product?.backImage} />
       </div>
     </>
   );

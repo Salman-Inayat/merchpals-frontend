@@ -50,9 +50,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -290,6 +288,7 @@ const Product = () => {
         name: fetchedProduct.name,
         description: fetchedProduct.description,
         image: fetchedProduct.image,
+        backImage: fetchedProduct.backImage,
         cost: fetchedProduct.price,
         basePrice: fetchedProduct.basePrice,
         slug: fetchedProduct.slug,
@@ -414,6 +413,7 @@ const Product = () => {
         basePrice: product.basePrice,
         name: product.name,
         image: product.image,
+        backImage: product.backImage,
         slug: product.slug,
       };
     }
@@ -522,10 +522,10 @@ const Product = () => {
                             (console.log('call ', product.slug),
                             setDesignImage(product.backDesign),
                             product.slug === 'hoodie'
-                              ? setBackDesignImage(BackHoodie)
+                              ? setBackDesignImage(product.backImage)
                               : product.slug === 'longsleeve'
-                              ? setBackDesignImage(BackLong)
-                              : setBackDesignImage(BackTee));
+                              ? setBackDesignImage(product.backImage)
+                              : setBackDesignImage(product.backImage));
                         }
                       }}
                       onMouseLeave={() => {
@@ -535,6 +535,9 @@ const Product = () => {
                             product.slug !== 'poster' &&
                             (setDesignImage(product.design), setBackDesignImage(product.image));
                         }
+                      }}
+                      style={{
+                        borderRadius: '0px',
                       }}
                     >
                       {console.log('call product', product)}
@@ -555,9 +558,7 @@ const Product = () => {
                           backgroundSize: product.name === 'Case' && '37% 80%',
                         }}
                         //  <img
-                        image={
-                          product.name === 'Case' ? '/assets/img/FINALCASE.png' : backDesignImage
-                        }
+                        image={backDesignImage}
                         alt=""
                         //   className={classes.image}
                         // />
@@ -639,20 +640,10 @@ const Product = () => {
                             />
                           }
                           label={
-                            <div
+                            <Card
                               className={classes.color}
                               style={{
-                                backgroundColor:
-                                  label === 'white'
-                                    ? '#ffffff'
-                                    : label === 'navy'
-                                    ? '#262d4f '
-                                    : label === 'black'
-                                    ? '#121616'
-                                    : '',
-                                backgroundImage: `url(${product.image})`,
-                                backgroundSize: '100% 100%',
-                                backgroundRepeat: 'no-repeat',
+                                borderRadius: '0px',
                                 width: '50px',
                                 height: '50px',
                                 display: 'flex',
@@ -660,18 +651,51 @@ const Product = () => {
                                 alignItems: 'center',
                               }}
                             >
-                              {' '}
-                              {/* <Typography>Rehman</Typography> */}
-                              {/* <img src={`${product.image}`} height="50" width="50" /> */}
-                              <img
-                                src={product.design}
-                                width="15px"
-                                height="15px"
+                              <CardMedia
+                                component="img"
                                 style={{
-                                  position: 'absolute',
+                                  backgroundColor:
+                                    product.name !== 'Case' && label === 'white'
+                                      ? '#FFFFFF'
+                                      : label === 'navy'
+                                      ? '#262D4F '
+                                      : label === 'black'
+                                      ? '#121616'
+                                      : '',
+                                  backgroundImage: product.slug === 'Case' && `url(${designImage})`,
+                                  backgroundSize: product.name === 'Case' && '37% 80%',
                                 }}
+                                //  <img
+                                image={product.image}
+                                alt=""
+                                //   className={classes.image}
+                                // />
                               />
-                            </div>
+                              {product.slug !== 'Case' &&
+                                (product.slug !== 'mug' && product.slug !== 'poster'
+                                  ? designImage && (
+                                      <img
+                                        src={designImage}
+                                        alt="design"
+                                        width="15px"
+                                        height="15px"
+                                        style={{
+                                          position: 'absolute',
+                                        }}
+                                      />
+                                    )
+                                  : mugPosterDesign && (
+                                      <img
+                                        src={mugPosterDesign}
+                                        alt="design"
+                                        width="15px"
+                                        height="15px"
+                                        style={{
+                                          position: 'absolute',
+                                        }}
+                                      />
+                                    ))}
+                            </Card>
                           }
                         />
                       );
@@ -830,9 +854,7 @@ const Product = () => {
       {product.backDesign !== '' && (
         <div hidden>
           <img src={product.backDesign} />
-          <img src={BackLong} />
-          <img src={BackTee} />
-          <img src={BackHoodie} />
+          <img src={product.backImage} />
         </div>
       )}
     </Grid>
