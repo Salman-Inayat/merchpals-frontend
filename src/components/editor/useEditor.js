@@ -9,12 +9,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SAVE_FRONT_DESIGN, SAVE_BACK_DESIGN } from '../../store/redux/types';
 import { fill, initial } from 'lodash';
 import { clearDesign } from '../../store/redux/actions/design';
+import { rotate, expand, slider } from '../../assets/images/icons';
 import {
   saveFrontCanvasBackgroundImageForMobile,
   saveBackCanvasBackgroundImageForMobile,
 } from '../../store/redux/actions/canvas';
 import store from '../../store';
-
 import {
   CANVAS_WIDTH_DESKTOP,
   CANVAS_HEIGHT_DESKTOP,
@@ -90,6 +90,12 @@ const useEditor = mode => {
   const firstUpdate = useRef(true);
 
   const applyProperties = selectedObject => {
+    var rotateIcon = document.createElement('img');
+    var expandIcon = document.createElement('img');
+    var sliderIcon = document.createElement('img');
+    rotateIcon.src = rotate;
+    expandIcon.src = expand;
+    sliderIcon.src = slider;
     selectedObject.hasRotatingPoint = true;
     selectedObject.transparentCorners = false;
     selectedObject.cornerColor = 'white';
@@ -99,21 +105,52 @@ const useEditor = mode => {
     selectedObject.padding = 5;
     selectedObject.cornerSize = 30;
     selectedObject.rotatingPointOffset = 30;
+    selectedObject.controls.mtr.offsetY = -10;
+    selectedObject.controls.mtr.withConnection = false;
+    selectedObject.controls.rotateControl = new fabric.Control({
+      ...selectedObject.controls.mtr,
+      x: 0,
+      y: -0.5,
+      offsetY: -10,
+      cursorStyle: 'pointer',
+      render: renderIcon,
+      cornerSize: 30,
+      rotatingPointOffset: 30,
+      img: rotateIcon,
+    });
+    selectedObject.controls.expandControl = new fabric.Control({
+      ...selectedObject.controls.br,
+      x: 0.5,
+      y: 0.5,
+      render: renderIcon,
+      cornerSize: 30,
+      img: expandIcon,
+    });
+    if (selectedObject.text) {
+      selectedObject.controls.sliderControl = new fabric.Control({
+        ...selectedObject.controls.mr,
+        x: 0.5,
+        y: 0,
+        render: renderIcon,
+        cornerSize: 30,
+        img: sliderIcon,
+      });
+    }
     selectedObject.setControlsVisibility({
       mt: false,
       mb: false,
       ml: false,
       mr: false,
       bl: false,
-      br: true,
+      br: false,
       tl: false,
       tr: false,
-      mtr: true,
+      mtr: false,
     });
 
     if (selectedObject.type === 'textbox') {
       selectedObject.setControlsVisibility({
-        mr: true,
+        mr: false,
       });
     }
 
@@ -134,6 +171,15 @@ const useEditor = mode => {
         });
     }
   };
+  function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+    var size = this.cornerSize;
+    ctx.save();
+    ctx.translate(left, top);
+    ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+    ctx.drawImage(this.img, -size / 2, -size / 2, size, size);
+    ctx.style = styleOverride;
+    ctx.restore();
+  }
 
   useEffect(() => {
     setC2(document.getElementById(`${mode}-canvas-preview`));
@@ -145,6 +191,7 @@ const useEditor = mode => {
   const updateShape = () => {
     const canvasWrapper = document.getElementById(`${mode}-canvas-wrapper`);
     const canvasContainer = document.getElementById(`${mode}-canvas-container`);
+    canvasWrapper.style.backgroundColor = 'white';
 
     const circle = new fabric.Circle({
       radius: isMobile ? CANVAS_HEIGHT_MOBILE / 2 : CANVAS_WIDTH_DESKTOP / 2,
@@ -216,7 +263,7 @@ const useEditor = mode => {
         canvas.renderAll();
 
         c2.style.clipPath = previewClipPaths[0];
-        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+        canvasContainer.style.border = isMobile ? '3px dashed #EEEEEE' : '4px dashed #EEEEEE';
 
         canvasContainer.style.borderRadius = '50%';
 
@@ -241,7 +288,7 @@ const useEditor = mode => {
 
         c2.style.clipPath = previewClipPaths[1];
         canvasContainer.style.borderRadius = isMobile ? '1px' : '5px';
-        canvasContainer.style.border = isMobile ? '1px solid #000' : '2px solid #000';
+        canvasContainer.style.border = isMobile ? '3px dashed whitesmoke' : '4px dashed whitesmoke';
         break;
       case 'triangle':
         canvasContainer.style.removeProperty('border');
@@ -280,42 +327,62 @@ const useEditor = mode => {
   const loadJson = (canvas, json) => {
     const promise = new Promise((resolve, reject) => {
       const parsedJson = JSON.parse(json);
-      parsedJson.background.source =
-        mode === 'front'
-          ? store
-              .getState()
-              .canvas.frontMobileBackgroundImage.replace('mobile-texture-image', 'texture-image')
-          : store
-              .getState()
-              .canvas.backMobileBackgroundImage.replace('mobile-texture-image', 'texture-image');
+      if (typeof parsedJson.background === 'object') {
+        parsedJson.background.source =
+          mode === 'front'
+            ? store
+                .getState()
+                .canvas.frontMobileBackgroundImage.replace('mobile-texture-image', 'texture-image')
+            : store
+                .getState()
+                .canvas.backMobileBackgroundImage.replace('mobile-texture-image', 'texture-image');
 
-      fabric.Image.fromURL(parsedJson.background.source, function (image) {
-        image.set({
-          left: 0,
-          top: 0,
-          scaleX: canvas.width / image.width,
-          scaleY: canvas.height / image.height,
+        fabric.Image.fromURL(parsedJson.background.source, function (image) {
+          image.set({
+            left: 0,
+            top: 0,
+            scaleX: canvas.width / image.width,
+            scaleY: canvas.height / image.height,
+          });
+
+          var patternSourceCanvas = new fabric.StaticCanvas();
+          patternSourceCanvas.setDimensions({
+            width: image.getScaledWidth(),
+            height: image.getScaledHeight(),
+          });
+          patternSourceCanvas.setBackgroundImage(
+            image,
+            patternSourceCanvas.renderAll.bind(patternSourceCanvas),
+          );
+
+          const contentType = 'image/png';
+          const b64Data = patternSourceCanvas.toDataURL(contentType).split(',')[1];
+
+          const blob = b64toBlob(b64Data, contentType);
+          const blobUrl = URL.createObjectURL(blob);
+
+          parsedJson.background.source = blobUrl;
+          canvas.loadFromJSON(parsedJson, canvas.renderAll.bind(canvas));
+
+          if (canvas.getObjects().length == 0) {
+            const text = new fabric.Textbox('s', {
+              left: 40,
+              top: 100,
+              opacity: 0.1,
+              fontSize: 5,
+              hasControls: false,
+              hasRotatingPoint: false,
+              lockMovementX: true,
+              lockMovementY: true,
+            });
+            canvas.add(text);
+          }
+          canvas.renderAll();
+
+          afterRender();
+          resolve();
         });
-
-        var patternSourceCanvas = new fabric.StaticCanvas();
-        patternSourceCanvas.setDimensions({
-          width: image.getScaledWidth(),
-          height: image.getScaledHeight(),
-        });
-        patternSourceCanvas.setBackgroundImage(
-          image,
-          patternSourceCanvas.renderAll.bind(patternSourceCanvas),
-        );
-
-        console.log(patternSourceCanvas.toDataURL());
-
-        const contentType = 'image/png';
-        const b64Data = patternSourceCanvas.toDataURL(contentType).split(',')[1];
-
-        const blob = b64toBlob(b64Data, contentType);
-        const blobUrl = URL.createObjectURL(blob);
-
-        parsedJson.background.source = blobUrl;
+      } else if (typeof parsedJson.background === 'string') {
         canvas.loadFromJSON(parsedJson, canvas.renderAll.bind(canvas));
 
         if (canvas.getObjects().length == 0) {
@@ -335,7 +402,12 @@ const useEditor = mode => {
 
         afterRender();
         resolve();
-      });
+      } else {
+        canvas.loadFromJSON(parsedJson, canvas.renderAll.bind(canvas));
+        canvas.renderAll();
+        afterRender();
+        resolve();
+      }
     });
 
     if (typeof canvas.backgroundColor === 'string') {
@@ -555,6 +627,7 @@ const useEditor = mode => {
     } else {
       canvas.viewportTransform = [0.115, 0, 0, 0.115, 0, 0];
     }
+
     copy(canvas.toCanvasElement(), canvas);
     canvas.viewportTransform = originalVP;
   }
@@ -1128,8 +1201,7 @@ const useEditor = mode => {
   };
 
   const setCanvasImage = imgUrl => {
-    setPhonebackgroundImage(imgUrl.replace('texture-image', 'mobile-texture-image'));
-
+    // setPhonebackgroundImage(imgUrl.replace('texture-image', 'mobile-texture-image'));
     if (mode === 'front') {
       dispatch(
         saveFrontCanvasBackgroundImageForMobile(
@@ -1144,7 +1216,6 @@ const useEditor = mode => {
         ),
       );
     }
-
     canvasProperties.canvasImage = imgUrl;
     if (canvasProperties.canvasImage) {
       fabric.Image.fromURL(canvasProperties.canvasImage, function (image) {
@@ -1178,6 +1249,8 @@ const useEditor = mode => {
           },
           () => {
             canvas.renderAll();
+            ctx2.fillStyle = '#ffffff00';
+            ctx2.fillRect(0, 0, c2.width, c2.height);
             afterRender();
             setBackground('image');
             patternSourceCanvas.dispose();
