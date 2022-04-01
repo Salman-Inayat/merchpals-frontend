@@ -76,7 +76,7 @@ export default function Router() {
     { path: '/vendor/settings', element: <Settings /> },
     { path: '/vendor/profile-settings', element: <ProfileSettings /> },
     { path: '/vendor/store-settings', element: <StoreSettings /> },
-    { path: '/contact', element: <Contact /> },
+    { path: '/contact', element: <Contact/> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },

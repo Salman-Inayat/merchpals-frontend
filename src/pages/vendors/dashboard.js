@@ -59,31 +59,31 @@ const useStyles = makeStyles(theme => ({
       flexWrap: 'wrap',
       padding: '4.8rem 3.8rem',
       margin: '1rem',
-    },
+  }
   },
   button: {
     backgroundColor: '#116dff',
-    color: 'white',
-    fontSize: '20px',
-    width: '280px',
-    height: '80px',
-    fontWeight: '600',
-    textDecoration: 'none',
-    borderRadius: '100px',
-    border: 'none',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: '3rem',
-    padding: '1rem 1rem',
-    boxShadow: '1px 2px 2px 1px rgba(0,0,0,.6)',
-    [theme.breakpoints.up('md')]: {
-      width: '30%',
-      padding: '2.8rem 2.8rem',
-      margin: '1rem',
-      fontSize: '28px',
-    },
-  },
+      color: 'white',
+      fontSize: '20px',
+      width: '280px',
+      height: '80px',
+      fontWeight: '600',
+      textDecoration: 'none',
+      borderRadius: '100px',
+      border: 'none',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: '3rem',
+      padding: '1rem 1rem',
+      boxShadow: '1px 2px 2px 1px rgba(0,0,0,.6)',
+      [theme.breakpoints.up('md')]: {
+          width: '30%',
+          padding: '2.8rem 2.8rem',
+          margin: '1rem',
+          fontSize: '28px'
+      }
+  }
 }));
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -157,20 +157,17 @@ const Dashboard = () => {
   };
 
   return (
-    <Grid container style={{ backgroundColor: '#e7e9eb' }}>
-      <Grid className={classes.buttons} md={12} xs={12}>
-        <Button className={classes.button} onClick={() => navigate('/vendor/store')}>
-          My Store
-        </Button>
-        <Button className={classes.button} onClick={() => navigate('/vendor/designs')}>
-          Design & Prices
-        </Button>
-        <Button className={classes.button} onClick={() => navigate('/vendor/orders')}>
-          Orders
-        </Button>
-        <Button className={classes.button} onClick={() => navigate('/vendor/payment/onboarding')}>
-          My Profit
-        </Button>
+    <Grid container style={{backgroundColor: '#e7e9eb'}}>
+      <Grid
+        className={classes.buttons}
+        md={12}
+        xs={12}
+
+      >
+        <Button className={classes.button} onClick={() => navigate('/vendor/store')}>My Store</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/designs')}>Design & Prices</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/orders')}>Orders</Button>
+        <Button className={classes.button} onClick={() => navigate('/vendor/payment/onboarding')}>My Profit</Button>
         {/* <Button onClick={toggleContactModal}>Contact Support</Button> */}
       </Grid>
 

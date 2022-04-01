@@ -18,7 +18,9 @@ import { makeStyles } from '@mui/styles';
 
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { calculateOrderProfit } from '../../configs/const';
-
+import BackLong from '../../assets/images/back-long.png';
+import BackTee from '../../assets/images/back-tee.png';
+import BackHoodie from '../../assets/images/Back-hoodie.png';
 const useStyles = makeStyles(theme => ({
   design: {
     position: 'absolute',
@@ -125,13 +127,15 @@ function VendorOrderDetails() {
                     <Card>
                       <CardMedia
                         src={
-                          designChange.status && designChange.id == product._id
+                          product.vendorProduct.productId.name === 'Case'
+                            ? '/assets/img/FINALCASE.png'
+                            : designChange.status && designChange.id == product._id
                             ? product.vendorProduct.productId.name === 'Hoodie'
-                              ? product.vendorProduct.productId.backImage
+                              ? BackHoodie
                               : product.vendorProduct.productId.name === 'Long Sleeve'
-                              ? product.vendorProduct.productId.backImage
+                              ? BackLong
                               : product.vendorProduct.productId.name === 'Tee'
-                              ? product.vendorProduct.productId.backImage
+                              ? BackTee
                               : product.vendorProduct.productId.image
                             : product.vendorProduct.productId.image
                         }
@@ -258,7 +262,9 @@ function VendorOrderDetails() {
                                     ?.imageUrl
                                 }
                               />
-                              <img src={product?.vendorProduct?.productId?.backImage} />
+                              <img src={BackLong} />
+                              <img src={BackTee} />
+                              <img src={BackHoodie} />
                             </div>
                           </>
                         )}

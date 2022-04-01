@@ -38,7 +38,7 @@ const useStyle = makeStyles(theme => ({
     position: 'absolute',
     width: '50%',
     left: '25%',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   logo: {
     position: 'absolute',
@@ -50,8 +50,8 @@ const useStyle = makeStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       margin: 'auto',
       width: '300px',
-      borderRadius: '50%',
-    },
+      borderRadius: '50%'
+    }
   },
   storeName: {
     fontSize: '1.5rem',
@@ -72,7 +72,7 @@ const useStyle = makeStyles(theme => ({
   topBar: {
     padding: '0px 5%',
     display: 'flex',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row-reverse'
   },
   shoppingCart: {
     cursor: 'pointer',
@@ -119,15 +119,16 @@ const Store = ({ fetchStore, store }) => {
     },
   }));
   const handleCartButton = () => {
-    const cart = JSON.parse(localStorage.getItem('MERCHPALS_CART'));
-    if (cart) {
-      if (cart.products.length === 0) {
+    const cart = JSON.parse(localStorage.getItem('MERCHPALS_CART'))
+    if(cart) {
+      if(cart.products.length === 0) {
         navigate(`/cart/${storeUrl}`);
-      } else {
+      }
+      else {
         navigate(`/checkout/${storeUrl}`);
       }
-      return;
-    }
+      return
+    } 
   };
   return store ? (
     <Grid container spacing={3} className={themeClass}>
@@ -135,16 +136,12 @@ const Store = ({ fetchStore, store }) => {
         <Grid className={classes.header}>
           <Typography variant="h4">Official Store</Typography>
         </Grid>
-        <Grid
-          display="flex"
-          justifyContent="flex-end"
-          style={{ position: 'relative', right: '0', top: '0' }}
-        >
+        <Grid display="flex" justifyContent="flex-end" style={{position: 'relative', right: '0', top: '0'}}>
           <IconButton
             aria-label="cart"
             onClick={handleCartButton}
             size="large"
-            style={{ height: '50px', width: '50px' }}
+            style={{ height: '50px', width: '50px'}}
           >
             <StyledBadge badgeContent={totalNumberOfVariants}>
               <ShoppingCartOutlinedIcon className={themeColorClass} sx={{ fontSize: '2rem' }} />

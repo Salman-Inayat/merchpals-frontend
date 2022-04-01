@@ -5,12 +5,18 @@ import { Grid, Button, Box } from '@mui/material';
 import styles from './imageCrop.module.css';
 
 export default function ImageCrop(props) {
+
   const [upImg, setUpImg] = useState();
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
   const [crop, setCrop] = useState(
     props.variant === 'storeLogo'
-      ? { unit: '%', width: 100, aspect: 1 / 1, x: 0, y: 0 }
+      ? { unit: '%',
+          width: 100,
+          aspect: 1 / 1,
+          x: 0,
+          y: 0
+        }
       : {
           unit: '%',
           width: 100,
@@ -139,7 +145,7 @@ export default function ImageCrop(props) {
         </Grid>
         <Grid item md={12} style={{ paddingTop: '0px' }}>
           <ReactCrop
-            className={styles.disableDrag}
+          className={styles.disableDrag}
             src={upImg}
             onImageLoaded={onLoad}
             crop={crop}

@@ -97,7 +97,7 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
         ></Paper>
       </Grid>
       <Grid item md={2}>
-        <Paper
+      <Paper
           elevation={4}
           className={
             color === 'BANG' ? classes.BANG_click : style.BANG ? classes.BANG_click : classes.BANG
@@ -106,7 +106,7 @@ export default function SelectTheme({ setThemeColor, color, setColor }) {
         ></Paper>
       </Grid>
       <Grid item md={2}>
-        <Paper
+      <Paper
           elevation={4}
           className={
             color === 'TONIGHT'

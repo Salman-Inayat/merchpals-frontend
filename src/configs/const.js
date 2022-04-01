@@ -17,21 +17,21 @@ export const calculateOrderProfit = order => {
   const tax = order.tax;
   const shippingAmount = order.shippingCost;
   const beforeTaxPrice = orderPrice + shippingAmount;
-  const afterTaxPrice = tax * (orderPrice + shippingAmount) + beforeTaxPrice;
+  const afterTaxPrice = tax*(orderPrice + shippingAmount) + beforeTaxPrice;
   // const productsTotal = order.products.reduce(
   //   (sum, curr) => sum + curr.vendorProduct.productId.basePrice,
   //   0,
   // );
   const printfulCost = order.printfulOrderMetadata.costs.total;
-  const stripeFee = afterTaxPrice * 0.029 + 0.3;
-  const profitAfterStripe = afterTaxPrice - stripeFee;
-
-  const profitAfterPrintful = profitAfterStripe - printfulCost;
-  const vendorProfit = profitAfterPrintful * 0.7;
-  const mpalsProfit = profitAfterPrintful * 0.3;
+  const stripeFee = (afterTaxPrice * .029) + .3
+  const profitAfterStripe = afterTaxPrice - stripeFee
+  
+  const profitAfterPrintful = profitAfterStripe - printfulCost
+  const vendorProfit = profitAfterPrintful * .7
+  const mpalsProfit = profitAfterPrintful * .3
   const profit = orderPrice - (orderPrice * 0.029 + 0.3) - printfulCost;
   // return (profit * VENDOR_PROFIT_MARGIN).toFixed(2);
-  return vendorProfit.toFixed(2);
+  return (vendorProfit.toFixed(2));
 };
 
 export const dataURLtoFile = (dataurl, filename) => {
