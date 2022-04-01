@@ -267,18 +267,18 @@ const Product = () => {
       fetchedProduct.name === 'Case'
         ? (designUrl =
             fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-              ? fetchedProduct.designId?.frontDesign?.designImages[3].imageUrl
-              : fetchedProduct.designId?.backDesign?.designImages[1].imageUrl)
+              ? fetchedProduct.designId?.frontDesign?.designImages[3]?.imageUrl
+              : fetchedProduct.designId?.frontDesign?.designImages[2]?.imageUrl)
         : (designUrl =
             fetchedProduct?.designId?.frontDesign?.designImages?.length > 3 &&
-            fetchedProduct.designId?.frontDesign.designImages[4].imageUrl);
+            fetchedProduct.designId?.frontDesign?.designImages[4]?.imageUrl);
       mugPoster =
         fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-          ? fetchedProduct.designId?.frontDesign?.designImages[4].imageUrl
-          : fetchedProduct.designId?.backDesign?.designImages[1].imageUrl;
+          ? fetchedProduct.designId?.frontDesign?.designImages[4]?.imageUrl
+          : fetchedProduct.designId?.backDesign?.designImages[1]?.imageUrl;
       backDesignUrl =
         fetchedProduct?.designId?.backDesign?.designImages?.length > 1 &&
-        fetchedProduct.designId?.backDesign.designImages[1].imageUrl;
+        fetchedProduct.designId?.backDesign?.designImages[1]?.imageUrl;
 
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);

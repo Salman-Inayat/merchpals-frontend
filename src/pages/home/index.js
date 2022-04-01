@@ -13,7 +13,7 @@ import { registerVendor } from '../../store/redux/actions/auth';
 import { clearDesign } from '../../store/redux/actions/design';
 import { clearCanvas } from '../../store/redux/actions/canvas';
 import Tick from '../../assets/images/tick.png';
-
+import store from '../../store';
 const useStyle = makeStyles(theme => ({
   fluid: {
     maxWidth: '100%',

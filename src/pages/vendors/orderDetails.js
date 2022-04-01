@@ -128,7 +128,35 @@ function VendorOrderDetails() {
                     <Typography sx={{ textAlign: 'center' }} variant="h5">
                       {product.vendorProduct.productId.name}
                     </Typography>
-                    <Card>
+                    <Card
+                      onMouseOver={() => {
+                        console.log('call');
+                        if (
+                          product?.vendorProduct?.designId?.backDesign?.designImages[1]?.imageUrl
+                        ) {
+                          product.vendorProduct.productId.name !== 'Case' &&
+                            product.vendorProduct.productId.name !== 'Mug' &&
+                            product.vendorProduct.productId.name !== 'Poster' &&
+                            setDesignChange({
+                              status: true,
+                              id: product._id,
+                            });
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        if (
+                          product?.vendorProduct?.designId?.backDesign?.designImages[1]?.imageUrl
+                        ) {
+                          product.vendorProduct.productId.name !== 'Case' &&
+                            product.vendorProduct.productId.name !== 'Mug' &&
+                            product.vendorProduct.productId.name !== 'Poster' &&
+                            setDesignChange({
+                              status: false,
+                              id: product._id,
+                            });
+                        }
+                      }}
+                    >
                       <CardMedia
                         src={
                           designChange.status && designChange.id == product._id
@@ -153,111 +181,94 @@ function VendorOrderDetails() {
                           backgroundImage:
                             product.vendorProduct.productId.name === 'Case' &&
                             `url(${
-                              product.vendorProduct.designId.frontDesign.designImages[3].imageUrl ||
-                              product.vendorProduct.designId.backDesign.designImages[1].imageUrl
+                              product.vendorProduct.designId.frontDesign.designImages[3]
+                                ?.imageUrl ||
+                              product.vendorProduct.designId.frontDesign.designImages[2]?.imageUrl
                             })`,
                           backgroundSize:
                             product.vendorProduct.productId.name === 'Case' && '37% 80%',
                         }}
                         height="100%"
                         component="img"
-                        onMouseOver={() => {
-                          console.log('call');
-                          if (
-                            product?.vendorProduct?.designId?.backDesign?.designImages[1]
-                              ?.imageUrl &&
-                            product.vendorProduct.designId.frontDesign.designImages[4].imageUrl
-                          ) {
-                            product.vendorProduct.productId.name !== 'Case' &&
-                              product.vendorProduct.productId.name !== 'Mug' &&
-                              product.vendorProduct.productId.name !== 'Poster' &&
-                              setDesignChange({
-                                status: true,
-                                id: product._id,
-                              });
-                          }
-                        }}
-                        onMouseLeave={() => {
-                          if (
-                            product?.vendorProduct?.designId?.backDesign?.designImages[1]
-                              ?.imageUrl &&
-                            product.vendorProduct.designId.frontDesign.designImages[4].imageUrl
-                          ) {
-                            product.vendorProduct.productId.name !== 'Case' &&
-                              product.vendorProduct.productId.name !== 'Mug' &&
-                              product.vendorProduct.productId.name !== 'Poster' &&
-                              setDesignChange({
-                                status: false,
-                                id: product._id,
-                              });
-                          }
-                        }}
                       />
                       {product?.vendorProduct?.designId &&
                         product.vendorProduct.productId.name !== 'Case' && (
                           <>
-                            <img
-                              src={
-                                designChange.status && designChange.id == product._id
-                                  ? product.vendorProduct.productId.name === 'Hoodie'
-                                    ? product.vendorProduct.designId.backDesign.designImages[1]
-                                        .imageUrl
-                                    : product.vendorProduct.productId.name === 'Long Sleeve'
-                                    ? product.vendorProduct.designId.backDesign.designImages[1]
-                                        .imageUrl
-                                    : product.vendorProduct.productId.name === 'Tee'
-                                    ? product.vendorProduct.designId.backDesign.designImages[1]
-                                        .imageUrl
-                                    : product.vendorProduct.designId.frontDesign.designImages[4]
-                                        .imageUrl
-                                  : product.vendorProduct.designId.frontDesign.designImages[4]
-                                      .imageUrl
-                              }
-                              className={[
-                                classes.design,
-                                product.vendorProduct.productId.name === 'Poster'
-                                  ? classes.poster
-                                  : product.vendorProduct.productId.name === 'Case'
-                                  ? classes.phoneCase
-                                  : product.vendorProduct.productId.name === 'Mug'
-                                  ? classes.mug
-                                  : '',
-                              ].join(' ')}
-                              onMouseOver={() => {
-                                console.log('call');
-                                if (
-                                  product?.vendorProduct?.designId?.backDesign?.designImages[1]
-                                    ?.imageUrl &&
+                            {designChange.status && designChange.id == product._id ? (
+                              (product.vendorProduct.productId.name === 'Hoodie' ||
+                                product.vendorProduct.productId.name === 'Long Sleeve' ||
+                                product.vendorProduct.productId.name === 'Tee') && (
+                                <img
+                                  src={
+                                    product.vendorProduct.designId.backDesign.designImages[1]
+                                      ?.imageUrl
+                                  }
+                                  className={[
+                                    classes.design,
+                                    product.vendorProduct.productId.name === 'Poster'
+                                      ? classes.poster
+                                      : product.vendorProduct.productId.name === 'Case'
+                                      ? classes.phoneCase
+                                      : product.vendorProduct.productId.name === 'Mug'
+                                      ? classes.mug
+                                      : '',
+                                  ].join(' ')}
+                                />
+                              )
+                            ) : (product.vendorProduct.productId.name === 'Hoodie' ||
+                                product.vendorProduct.productId.name === 'Long Sleeve' ||
+                                product.vendorProduct.productId.name === 'Tee') &&
+                              product.vendorProduct.designId.frontDesign.designImages[4]
+                                ?.imageUrl ? (
+                              <img
+                                src={
                                   product.vendorProduct.designId.frontDesign.designImages[4]
-                                    .imageUrl
-                                ) {
-                                  product.vendorProduct.productId.name !== 'Case' &&
-                                    product.vendorProduct.productId.name !== 'Mug' &&
-                                    product.vendorProduct.productId.name !== 'Poster' &&
-                                    setDesignChange({
-                                      status: true,
-                                      id: product._id,
-                                    });
+                                    ?.imageUrl
                                 }
-                              }}
-                              onMouseLeave={() => {
-                                if (
+                                className={[
+                                  classes.design,
+                                  product.vendorProduct.productId.name === 'Poster'
+                                    ? classes.poster
+                                    : product.vendorProduct.productId.name === 'Case'
+                                    ? classes.phoneCase
+                                    : product.vendorProduct.productId.name === 'Mug'
+                                    ? classes.mug
+                                    : '',
+                                ].join(' ')}
+                              />
+                            ) : (
+                              (product.vendorProduct.productId.name === 'Poster' ||
+                                product.vendorProduct.productId.name === 'Mug') && (
+                                <img
+                                  src={
+                                    product.vendorProduct.designId.frontDesign.designImages[4]
+                                      ?.imageUrl ||
+                                    product.vendorProduct.designId.backDesign.designImages[1]
+                                      ?.imageUrl
+                                  }
+                                  className={[
+                                    classes.design,
+                                    product.vendorProduct.productId.name === 'Poster'
+                                      ? classes.poster
+                                      : product.vendorProduct.productId.name === 'Case'
+                                      ? classes.phoneCase
+                                      : product.vendorProduct.productId.name === 'Mug'
+                                      ? classes.mug
+                                      : '',
+                                  ].join(' ')}
+                                />
+                              )
+                            )}
+
+                            <div hidden>
+                              <img
+                                src={
                                   product?.vendorProduct?.designId?.backDesign?.designImages[1]
-                                    ?.imageUrl &&
-                                  product.vendorProduct.designId.frontDesign.designImages[4]
-                                    .imageUrl
-                                ) {
-                                  product.vendorProduct.productId.name !== 'Case' &&
-                                    product.vendorProduct.productId.name !== 'Mug' &&
-                                    product.vendorProduct.productId.name !== 'Poster' &&
-                                    setDesignChange({
-                                      status: false,
-                                      id: product._id,
-                                    });
+                                    ?.imageUrl
                                 }
-                              }}
-                            />
-                            <img src={product?.vendorProduct?.productId?.backImage} />
+                              />
+                              <img src={product?.vendorProduct?.productId?.backImage} />
+                            </div>
                           </>
                         )}
                       <CardContent style={{ padding: '5px' }}>
@@ -313,15 +324,16 @@ function VendorOrderDetails() {
                       <Typography variant="p" component="p">
                         Shipping to:{' '}
                         {order.billingAddress.aptNo
-                          ? order.billingAddress.aptNo + ', '
-                          : '' +
+                          ? order.billingAddress.aptNo +
+                            ', ' +
                             order.billingAddress.street +
                             ', ' +
                             order.billingAddress.city +
                             ', ' +
                             order.billingAddress.state +
                             ', ' +
-                            order.billingAddress.country}
+                            order.billingAddress.country
+                          : ''}
                       </Typography>
                     </CardContent>
                   </Card>
