@@ -61,7 +61,7 @@ export default function Router() {
     { path: '/vendor/designs', element: <DesignPrices /> },
     { path: '/vendor/create-design', element: <VendorCreateDesigns /> },
     { path: '/vendor/edit-design/:designId', element: <VendorEditDesigns /> },
-    { path: '/vendor/orders', element: <VendorOrders /> },
+    { path: '/vendor/orders-profit', element: <VendorOrders /> },
     { path: '/vendor/orders/:orderId', element: <VendorOrderDetails /> },
     {
       path: '/vendor/edit-design/products/:designId',
@@ -76,7 +76,7 @@ export default function Router() {
     { path: '/vendor/settings', element: <Settings /> },
     { path: '/vendor/profile-settings', element: <ProfileSettings /> },
     { path: '/vendor/store-settings', element: <StoreSettings /> },
-    { path: '/contact', element: <Contact/> },
+    { path: '/contact', element: <Contact /> },
     { path: '/cart/:storeUrl', element: <Cart /> },
     { path: '/:storeUrl', element: <Store /> },
     { path: '/checkout/:storeUrl', element: <Checkout /> },

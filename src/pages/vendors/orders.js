@@ -11,9 +11,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderProfit } from '../../configs/const';
+import PaymentOnboarding from './payment';
 
 function VendorOrders() {
   const [orders, setOrders] = useState([]);
@@ -77,26 +79,68 @@ function VendorOrders() {
   return (
     <LoggedInVendor>
       <Grid container>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Order No.</TableCell>
+        <Grid
+          item
+          md={12}
+          xs={12}
+          sx={{
+            padding: '1rem',
+            borderRadius: '1rem',
+            backgroundColor: '#d1cfcf',
+          }}
+        >
+          <Typography align="center" variant="h4">
+            PROFITS
+          </Typography>
+        </Grid>
+        <Grid item md={12} xs={12}>
+          <PaymentOnboarding />
+        </Grid>
+        <Grid
+          item
+          md={12}
+          xs={12}
+          sx={{
+            marginTop: '1rem',
+            padding: '1rem',
+            borderRadius: '1rem',
+            backgroundColor: '#d1cfcf',
+          }}
+        >
+          <Typography align="center" variant="h4">
+            ORDERS
+          </Typography>
+        </Grid>
+        <Grid item md={12} xs={12}>
+          <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  {/* <TableCell align="center">Order No.</TableCell>
                 <TableCell align="center">Customer</TableCell>
                 <TableCell align="center">Products</TableCell>
                 <TableCell align="center">Total Amount</TableCell>
                 <TableCell align="center">Profit</TableCell>
-                <TableCell align="center">Added</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orders.map((order, index) => (
-                <TableRow
-                  key={order._id}
-                  onClick={() => handleOrderClick(order)}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  <TableCell component="th" scope="row" align="center">
+                <TableCell align="center">Added</TableCell> */}
+                  <TableCell align="center" size="small" style={{ width: '33%' }}>
+                    Date
+                  </TableCell>
+                  <TableCell align="center" style={{ width: '33%' }}>
+                    Products
+                  </TableCell>
+                  <TableCell align="center" style={{ width: '33%' }}>
+                    Profit
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orders.map((order, index) => (
+                  <TableRow
+                    key={order._id}
+                    onClick={() => handleOrderClick(order)}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    {/* <TableCell component="th" scope="row" align="center">
                     {order.printfulOrderMetadata.id}
                   </TableCell>
 
@@ -120,11 +164,28 @@ function VendorOrders() {
                   <TableCell component="th" scope="row" align="center">
                     {new Date(order.createdAt).toDateString()}
                   </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+               */}
+                    <TableCell component="th" scope="row" align="center">
+                      {new Date(order.createdAt).toDateString()}
+                    </TableCell>
+
+                    <TableCell component="th" scope="row" align="center">
+                      {order.products.map(product => (
+                        <Typography variant="body1" key={product._id}>
+                          {product.vendorProduct.productId.name}
+                        </Typography>
+                      ))}
+                    </TableCell>
+
+                    <TableCell component="th" scope="row" align="center">
+                      ${calculateOrderProfit(order)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
 
         {/* {rows.length > 0 && (
           <DataGrid

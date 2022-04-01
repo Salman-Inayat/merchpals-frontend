@@ -159,6 +159,7 @@ const label = { inputProps: { 'aria-label': 'Select Project' } };
 
 const ProductCard = ({
   product,
+  designName,
   design,
   price: productDefaultPrice,
   shippingCost,
@@ -352,7 +353,7 @@ const ProductCard = ({
         </Box>
         <CardContent>
           <Typography variant="body2" color="text.secondary">
-            {design?.name} {product.name}
+            {designName} {product.name}
           </Typography>
           <Typography
             variant="body2"

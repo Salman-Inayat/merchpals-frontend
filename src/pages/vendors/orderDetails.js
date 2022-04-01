@@ -75,6 +75,8 @@ function VendorOrderDetails() {
   //   const order = location.state.order;
   const navigate = useNavigate();
   const [totalProfit, setTotalProfit] = useState(0);
+  const [orderCreationDate, setOrderCreationDate] = useState();
+  const [orderPayoutDate, setOrderPayoutDate] = useState();
 
   const [order, setOrder] = useState();
   const [designChange, setDesignChange] = useState({
@@ -93,8 +95,12 @@ function VendorOrderDetails() {
       })
       .then(res => {
         const orderData = res.data.order;
-        console.log(res);
         setOrder(orderData);
+        const date = new Date(orderData.createdAt);
+        setOrderCreationDate(date.toDateString());
+
+        date.setDate(date.getDate() + 7);
+        setOrderPayoutDate(date.toDateString());
 
         const profit = calculateOrderProfit(orderData);
         setTotalProfit(profit);
@@ -275,23 +281,27 @@ function VendorOrderDetails() {
                   <Card>
                     <CardContent>
                       <Typography variant="p" component="p">
-                        Total Products: {order.products.length}
+                        Products: {order.products.length}
                       </Typography>
-
+                      {/* 
                       <Typography variant="p" component="p">
                         Total Amount: {order.totalAmount}$
-                      </Typography>
+                      </Typography> */}
 
                       <Typography variant="p" component="p">
-                        Profit: {totalProfit}$
+                        Profit: ${totalProfit}
                       </Typography>
 
-                      <Typography variant="p" component="p">
+                      {/* <Typography variant="p" component="p">
                         Store Name: {order.storeId.name}
+                      </Typography> */}
+
+                      <Typography variant="p" component="p">
+                        Order Placed: {orderCreationDate}
                       </Typography>
 
                       <Typography variant="p" component="p">
-                        Order added on: {new Date(order.createdAt).toDateString()}
+                        Ready to Payout: {orderPayoutDate}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -301,19 +311,17 @@ function VendorOrderDetails() {
                   <Card>
                     <CardContent>
                       <Typography variant="p" component="p">
-                        Order placed by: {order.customer.firstName + ' ' + order.customer.lastName}
-                      </Typography>
-                      <Typography variant="p" component="p">
-                        Billing Address:{' '}
-                        {order.billingAddress.aptNo +
-                          ', ' +
-                          order.billingAddress.street +
-                          ', ' +
-                          order.billingAddress.city +
-                          ', ' +
-                          order.billingAddress.state +
-                          ', ' +
-                          order.billingAddress.country}
+                        Shipping to:{' '}
+                        {order.billingAddress.aptNo
+                          ? order.billingAddress.aptNo + ', '
+                          : '' +
+                            order.billingAddress.street +
+                            ', ' +
+                            order.billingAddress.city +
+                            ', ' +
+                            order.billingAddress.state +
+                            ', ' +
+                            order.billingAddress.country}
                       </Typography>
                     </CardContent>
                   </Card>
