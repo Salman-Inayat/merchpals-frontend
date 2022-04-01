@@ -115,8 +115,16 @@ const LoginForm = ({
         <Typography>{loginError}</Typography>
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <FormControlLabel control={<Checkbox />} label="Remember me" />
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ my: 2 }}
+      >
+        <FormControlLabel
+          control={<Checkbox />}
+          label="Remember me"
+        />
 
         <Link component={RouterLink} variant="subtitle2" to="/forgot-password">
           Forgot password?

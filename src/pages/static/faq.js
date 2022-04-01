@@ -261,29 +261,22 @@ const CustomizedAccordions = () => {
         mt={4}
         className={classes.container}
       >
-        <Grid
-          item
-          md
-          container
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ p: '8px' }}
-        >
+        
+        <Grid item md container display="flex" alignItems="center" justifyContent='space-between' sx={{p:'8px'}}>
           <Grid xs={12} md={5}>
-            <Typography variant="h3" diplay="flex">
-              TRACK ORDER:
-            </Typography>
+          <Typography variant="h3" diplay="flex">
+          TRACK ORDER:
+        </Typography>
           </Grid>
 
-          <Grid display="flex" alignItems="center" md={7} justifyContent="flex-end">
+          <Grid display='flex' alignItems='center' md={7} justifyContent='flex-end'>
             <Typography variant="h5" mr={2}>
               ORDER#
             </Typography>
 
-            <Grid dislay="flex" justifyContent="center" alignItems="center">
+            <Grid dislay='flex' justifyContent='center' alignItems='center'>
               <TextField
-                sx={{ marginRight: '10px' }}
+                sx={{marginRight: '10px'}}
                 placeholder="Order number"
                 // {...register('firstName')}
                 // error={Boolean(errors.firstName?.message)}
@@ -302,8 +295,10 @@ const CustomizedAccordions = () => {
                 TRACK
               </Button>
             </Grid>
+
           </Grid>
         </Grid>
+        
       </Stack>
       <Divider />
       <Grid className={classes.container}>

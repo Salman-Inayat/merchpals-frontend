@@ -137,6 +137,7 @@ const ColorPallete = ({ setCanvasBackground, setCavasBackgroundImage, customClas
     '29.png',
     '30.png',
     '31.png',
+    '32.png',
   ];
 
   const [bgSolid, setBgSolid] = useState(solid[2]);

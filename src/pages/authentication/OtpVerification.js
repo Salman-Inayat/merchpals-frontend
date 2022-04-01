@@ -27,7 +27,6 @@ const useStyles = makeStyles(theme => ({
   grid: {
     backgroundColor: 'grey',
     height: '50vh',
-
     textAlign: 'center',
   },
   avatar: {
@@ -38,10 +37,10 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
   },
   paper: {
-    // marginTop: theme.spacing(8),
-    // display: 'flex',
-    // flexDirection: 'column',
-    // alignItems: 'center',
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   error: {
     marginTop: '5px',
@@ -177,7 +176,7 @@ const OtpVerification = ({
 
   return (
     <Page title="Verify Otp">
-      <Container>
+      <Container component="main" maxWidth="sm">
         <CssBaseline />
         <div className={classes.paper}>
           <Grid
@@ -186,7 +185,7 @@ const OtpVerification = ({
             className={classes.grid}
             justify="center"
             alignItems="center"
-            // spacing={3}
+            spacing={3}
           >
             <Grid item md={12} xs={12}>
               <Grid container alignItems="center" direction="column" display="flex">
