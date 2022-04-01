@@ -12,9 +12,6 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
-import BackLong from '../assets/images/back-long.png';
-import BackTee from '../assets/images/back-tee.png';
-import BackHoodie from '../assets/images/Back-hoodie.png';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -23,7 +20,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '0px',
-    backgroundColor: '#F6F0ED',
     boxShadow: '0 0 18px #BDBCBC',
   },
   productName: {
@@ -84,18 +80,20 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
   const navigate = useNavigate();
   const [color, setColor] = useState();
   const backDesign = product?.designId?.backDesign?.designImages[1]?.imageUrl;
-  const frontDesign =
-    product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
-    product?.designId?.backDesign?.designImages[1]?.imageUrl;
+  const frontDesign = product?.designId?.frontDesign?.designImages[4]?.imageUrl;
 
   const [designImage, setDesignImage] = useState(frontDesign);
   const [backDesignImage, setBackDesignImage] = useState(backDesign);
   const [frontChange, setFrontChange] = useState(false);
 
+  const [mugPosterDesign, setMugPosterDesign] = useState(
+    product?.designId?.frontDesign?.designImages[4]?.imageUrl ||
+      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+  );
   const [productImage, setProductImage] = useState();
   const [iphoneDesignImage, setIphoneDesignImage] = useState(
     product?.designId?.frontDesign?.designImages[3]?.imageUrl ||
-      product?.designId?.backDesign?.designImages[1]?.imageUrl,
+      product?.designId?.frontDesign?.designImages[2]?.imageUrl,
   );
 
   useEffect(() => {
@@ -111,76 +109,93 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
 
   return (
     <>
-      <Card variant="outlined" className={classes.card}>
+      <Card
+        variant="outlined"
+        className={classes.card}
+        onMouseEnter={() => {
+          console.log('call');
+          if (backDesign) {
+            product.name !== 'Case' &&
+              product.name !== 'Mug' &&
+              product.name !== 'Poster' &&
+              (setFrontChange(true),
+              product.slug === 'hoodie'
+                ? setProductImage(product.backImage)
+                : product.slug === 'longsleeve'
+                ? setProductImage(product.backImage)
+                : setProductImage(product.backImage));
+          }
+        }}
+        onMouseLeave={() => {
+          if (backDesign) {
+            product.name !== 'Case' &&
+              product.name !== 'Mug' &&
+              product.name !== 'Poster' &&
+              (setFrontChange(false), setProductImage(product.image));
+          }
+        }}
+      >
         <CardMedia
           component="img"
-          image={product.name === 'Case' ? '/assets/img/FINALCASE.png' : productImage}
+          image={productImage}
           className={classes.productImage}
           alt="green iguana"
-          onMouseEnter={() => {
-            console.log('call');
-            if (backDesign && frontDesign) {
-              product.name !== 'Case' &&
-                product.name !== 'Mug' &&
-                product.name !== 'Poster' &&
-                (setFrontChange(true),
-                product.slug === 'hoodie'
-                  ? setProductImage(BackHoodie)
-                  : product.slug === 'longsleeve'
-                  ? setProductImage(BackLong)
-                  : setProductImage(BackTee));
-            }
-          }}
-          onMouseLeave={() => {
-            if (backDesign && frontDesign) {
-              product.name !== 'Case' &&
-                product.name !== 'Mug' &&
-                product.name !== 'Poster' &&
-                (setFrontChange(false), setProductImage(product.image));
-            }
-          }}
           style={{
             backgroundImage: product.name === 'Case' && `url(${iphoneDesignImage})`,
             backgroundSize: product.name === 'Case' && '37% 80%',
           }}
         />
-        {product?.designId && product.name !== 'Case' && (
-          <img
-            src={frontChange ? (backDesign ? backDesign : frontDesign) : frontDesign}
-            className={[
-              classes.design,
-              product.name === 'Poster'
-                ? classes.poster
-                : product.name === 'Case'
-                ? classes.phoneCase
-                : product.name === 'Mug'
-                ? classes.mug
-                : '',
-            ].join(' ')}
-            onMouseEnter={() => {
-              console.log('call');
-              if (backDesign && frontDesign) {
-                product.name !== 'Case' &&
-                  product.name !== 'Mug' &&
-                  product.name !== 'Poster' &&
-                  (setFrontChange(true),
-                  product.slug === 'hoodie'
-                    ? setProductImage(BackHoodie)
-                    : product.slug === 'longsleeve'
-                    ? setProductImage(BackLong)
-                    : setProductImage(BackTee));
-              }
-            }}
-            onMouseLeave={() => {
-              if (backDesign && frontDesign) {
-                product.name !== 'Case' &&
-                  product.name !== 'Mug' &&
-                  product.name !== 'Poster' &&
-                  (setFrontChange(false), setProductImage(product.image));
-              }
-            }}
-          />
-        )}
+        {product.name !== 'Poster' &&
+        product.name !== 'Mug' &&
+        product?.designId &&
+        product.name !== 'Case'
+          ? frontChange
+            ? backDesign && (
+                <img
+                  src={backDesign}
+                  className={[
+                    classes.design,
+                    product.name === 'Poster'
+                      ? classes.poster
+                      : product.name === 'Case'
+                      ? classes.phoneCase
+                      : product.name === 'Mug'
+                      ? classes.mug
+                      : '',
+                  ].join(' ')}
+                />
+              )
+            : frontDesign && (
+                <img
+                  src={frontDesign}
+                  className={[
+                    classes.design,
+                    product.name === 'Poster'
+                      ? classes.poster
+                      : product.name === 'Case'
+                      ? classes.phoneCase
+                      : product.name === 'Mug'
+                      ? classes.mug
+                      : '',
+                  ].join(' ')}
+                />
+              )
+          : mugPosterDesign &&
+            (product.name === 'Mug' || product.name === 'Poster') && (
+              <img
+                className={[
+                  classes.design,
+                  product.name === 'Poster'
+                    ? classes.poster
+                    : product.name === 'Case'
+                    ? classes.phoneCase
+                    : product.name === 'Mug'
+                    ? classes.mug
+                    : '',
+                ].join(' ')}
+                src={mugPosterDesign}
+              />
+            )}
       </Card>
       <Grid className={classes.productName}>
         <Typography
@@ -190,7 +205,8 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${product.slug === 'longsleeve' ? 'Long' : product.name} // ${vendorName}`}
+          {`${product?.designId?.name !== 'default' ? product?.designId?.name : ''} 
+          ${product.slug === 'longsleeve' ? 'Long' : product.name}`}
         </Typography>
         <Typography
           gutterBottom
@@ -207,9 +223,7 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
       </Grid>
       <div hidden>
         <img src={backDesign} />
-        <img src={BackLong} />
-        <img src={BackTee} />
-        <img src={BackHoodie} />
+        <img src={product?.backImage} />
       </div>
     </>
   );

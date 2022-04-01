@@ -2,20 +2,24 @@ import { useState, useRef, useEffect } from 'react';
 import { Button, Grid } from '@mui/material';
 import Editor from '../../editor/Editor';
 import { connect } from 'react-redux';
+import { clearDesign } from '../../../store/redux/actions/design';
+import { useDispatch } from 'react-redux';
 
 const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) => {
   const [triggerExport, setTriggerExport] = useState(0);
   const childRef = useRef();
+  const dispatch = useDispatch();
 
-  const exportAndMove = () => {
-    setTriggerExport(triggerExport + 1);
-    saveDesignToStore();
+  const exportAndMove = async () => {
+    await saveDesignToStore();
     nextStep();
   };
 
-  const saveDesignToStore = () => {
-    childRef.current.saveDesign();
-
+  const saveDesignToStore = async () => {
+    const promise = new Promise((resolve, reject) => {
+      childRef.current.saveDesign().then(resolve()).catch(reject());
+    });
+    return promise;
   };
 
   return (
@@ -46,7 +50,7 @@ const EditorStep = ({ nextStep = () => {}, exportBase64 = () => {}, design }) =>
           variant="contained"
           onClick={exportAndMove}
           size="large"
-          style={{ backgroundColor: '#116dff ', color: 'white' }}
+          style={{ backgroungColor: '#116dff ', color: 'white' }}
         >
           Save &#38; Continue
         </Button>

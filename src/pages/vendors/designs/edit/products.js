@@ -1,5 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Grid, Button, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Grid,
+  Button,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Snackbar,
+  Alert as MuiAlert,
+} from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../../../../configs/const';
@@ -9,19 +21,31 @@ import BackButton from '../../../../components/backButton';
 import { ClassNames } from '@emotion/react';
 import { makeStyles } from '@mui/styles';
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const useStyles = makeStyles(theme => ({
   selected: {
     border: '3px solid #116dff',
-    borderRadius: '16px'
-  }
-}))
-const EditDesign = ({designId}) => {
-  const classes = useStyles()
+    borderRadius: '16px',
+  },
+}));
+const EditDesign = ({ designId }) => {
+  const classes = useStyles();
   const navigate = useNavigate();
   const [selectedVariants, setSelectedVariants] = useState({});
   const [products, setProducts] = useState([]);
   const [design, setDesign] = useState();
   const [vendorUpdatedPrices, setVendorUpdatedPrices] = useState({});
+  const [open, setOpen] = useState(false);
+  const [designName, setDesignName] = useState('');
+  const [updatedDesignName, setUpdatedDesignName] = useState('');
+  const [snackBarToggle, setSnackBarToggle] = useState({
+    visible: false,
+    type: '',
+    message: '',
+  });
 
   useEffect(() => {
     getDesign();
@@ -47,8 +71,8 @@ const EditDesign = ({designId}) => {
         },
       })
       .then(response => {
-        console.log({ response })
         setDesign(response.data.design);
+        setDesignName(response.data.design.name);
       })
       .catch(error => console.log({ error: error.response.data.message }));
   };
@@ -219,46 +243,132 @@ const EditDesign = ({designId}) => {
 
     return cost_price;
   };
-  console.log(selectedVariants)
-  console.log(products)
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCloseAndUpdateName = () => {
+    setDesignName(updatedDesignName);
+    setOpen(false);
+    axios
+      .put(
+        `${baseURL}/store/design/${designId}/name`,
+        { designName: updatedDesignName },
+        {
+          headers: {
+            Authorization: localStorage.getItem('MERCHPAL_AUTH_TOKEN'),
+          },
+        },
+      )
+      .then(response => {
+        setSnackBarToggle({
+          visible: true,
+          type: 'success',
+          message: 'Design name updated successfully',
+        });
+        setOpen(false);
+      })
+      .catch(error => {
+        console.log({ error: error });
+      });
+  };
+
+  const handleSnackBarClose = () =>
+    setSnackBarToggle({
+      ...snackBarToggle,
+      visible: false,
+    });
 
   return (
     // <LoggedInVendor >
-      <Grid mt={5} style={{margin: 'auto', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <Grid justifyContent="center" container style={{maxWidth: '800px', margin: 'auto'}}>
-            {products?.map((product, i) => (
-              <Grid
-                style={{paddingLeft: '10px', paddingRight: '10px'}}
-                justifyContent="center"
-                container
-                md={4}
-                mt={5}
-                xs={6}
-                key={`product-${i}`}
-              >
-                <div className={selectedVariants[product._id] ? classes.selected : null}>
-                <ProductCardWithPricing
-                  design={design}
-                  product={product}
-                  price={productPrice(product)}
-                  shippingCost={productShippingCost(product)}
-                  costPrice={productCostPrice(product)}
-                  onVariantClick={onVariantClick}
-                  onProductClick={onProductClick}
-                  selectedVariants={selectedVariants}
-                  updatePrice={updatePrice}
-                />
-                </div>
-              </Grid>
-            ))}
+    <Grid
+      mt={5}
+      style={{
+        margin: 'auto',
+        width: '100vw',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Grid justifyContent="center" container style={{ maxWidth: '800px', margin: 'auto' }}>
+        <Grid item md={12} xs={12}>
+          <Button color="primary" onClick={handleClickOpen}>
+            Update Design Name
+          </Button>
 
-            <Grid mt={6} justifyContent="center" container>
-              <Button variant="contained" onClick={formatAndContinue}>
-                Update products
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{'Update design name'}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Enter the new name for the design
+              </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Name"
+                type="text"
+                fullWidth
+                defaultValue={designName}
+                onChange={e => setUpdatedDesignName(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleCloseAndUpdateName} autoFocus>
+                Update
               </Button>
-            </Grid>
-          </Grid>
+            </DialogActions>
+          </Dialog>
         </Grid>
+        {products?.map((product, i) => (
+          <Grid
+            style={{ paddingLeft: '10px', paddingRight: '10px' }}
+            justifyContent="center"
+            container
+            md={4}
+            mt={5}
+            xs={6}
+            key={`product-${i}`}
+          >
+            <div className={selectedVariants[product._id] ? classes.selected : null}>
+              <ProductCardWithPricing
+                design={design}
+                designName={designName}
+                product={product}
+                price={productPrice(product)}
+                shippingCost={productShippingCost(product)}
+                costPrice={productCostPrice(product)}
+                onVariantClick={onVariantClick}
+                onProductClick={onProductClick}
+                selectedVariants={selectedVariants}
+                updatePrice={updatePrice}
+              />
+            </div>
+          </Grid>
+        ))}
+
+        <Grid mt={6} justifyContent="center" container>
+          <Button variant="contained" onClick={formatAndContinue}>
+            Update products
+          </Button>
+        </Grid>
+      </Grid>
+      <Snackbar open={snackBarToggle.visible} autoHideDuration={2000} onClose={handleSnackBarClose}>
+        <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
+      </Snackbar>
+    </Grid>
     // </LoggedInVendor>
   );
 };

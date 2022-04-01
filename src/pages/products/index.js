@@ -15,6 +15,8 @@ import {
   Slide,
   Collapse,
   Paper,
+  Card,
+  CardMedia,
 } from '@mui/material';
 // import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 // import axios from 'axios';
@@ -48,9 +50,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import BackLong from '../../assets/images/back-long.png';
-import BackTee from '../../assets/images/back-tee.png';
-import BackHoodie from '../../assets/images/Back-hoodie.png';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -95,8 +95,8 @@ const useStyle = makeStyles(theme => ({
     marginBottom: '16px',
     [theme.breakpoints.down('sm')]: {
       textAlign: 'right',
-      marginRight: '10px'
-    }
+      marginRight: '10px',
+    },
   },
   backButton: {
     margin: '20px',
@@ -134,8 +134,8 @@ const useStyle = makeStyles(theme => ({
       border: 'none',
     },
     [theme.breakpoints.down('sm')]: {
-      width: '100%'
-    }
+      width: '100%',
+    },
   },
   acwrapper: {
     // maxWidth: '376px',
@@ -241,6 +241,7 @@ const Product = () => {
   const reduxCartProducts = useSelector(state => state.cart?.cart?.products);
   const [designImage, setDesignImage] = useState('');
   const [backDesignImage, setBackDesignImage] = useState();
+  const [mugPosterDesign, setMugPosterDesign] = useState();
   const fetchedProduct = useSelector(state => state.product?.product);
 
   const handleDetailsChange = data => {
@@ -260,22 +261,24 @@ const Product = () => {
     }
   }, [reduxCartProducts]);
 
-  let designUrl, backDesignUrl;
+  let designUrl, backDesignUrl, mugPoster;
   useEffect(() => {
     if (fetchedProduct) {
       fetchedProduct.name === 'Case'
         ? (designUrl =
             fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-              ? fetchedProduct.designId?.frontDesign?.designImages[3].imageUrl
-              : fetchedProduct.designId?.backDesign?.designImages[1].imageUrl)
+              ? fetchedProduct.designId?.frontDesign?.designImages[3]?.imageUrl
+              : fetchedProduct.designId?.frontDesign?.designImages[2]?.imageUrl)
         : (designUrl =
-            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
-              ? fetchedProduct.designId?.frontDesign.designImages[4].imageUrl
-              : fetchedProduct.designId?.backDesign?.designImages[1].imageUrl);
-
+            fetchedProduct?.designId?.frontDesign?.designImages?.length > 3 &&
+            fetchedProduct.designId?.frontDesign?.designImages[4]?.imageUrl);
+      mugPoster =
+        fetchedProduct?.designId?.frontDesign?.designImages?.length > 3
+          ? fetchedProduct.designId?.frontDesign?.designImages[4]?.imageUrl
+          : fetchedProduct.designId?.backDesign?.designImages[1]?.imageUrl;
       backDesignUrl =
         fetchedProduct?.designId?.backDesign?.designImages?.length > 1 &&
-        fetchedProduct.designId?.backDesign.designImages[1].imageUrl;
+        fetchedProduct.designId?.backDesign?.designImages[1]?.imageUrl;
 
       const colorsArr = fetchedProduct.productMappings.map(c => c.color);
       const variantArr = fetchedProduct.productMappings.map(c => c.variant);
@@ -285,6 +288,7 @@ const Product = () => {
         name: fetchedProduct.name,
         description: fetchedProduct.description,
         image: fetchedProduct.image,
+        backImage: fetchedProduct.backImage,
         cost: fetchedProduct.price,
         basePrice: fetchedProduct.basePrice,
         slug: fetchedProduct.slug,
@@ -296,6 +300,7 @@ const Product = () => {
         productNumberedId: fetchedProduct.productMappings[0].productNumberedId,
         design: designUrl,
         backDesign: backDesignUrl,
+        mugPosterDesign: mugPoster,
       };
       formattedProduct.colors = formattedProduct.colors.sort(function (a, b) {
         return a.id - b.id || a.label.localeCompare(b.label);
@@ -305,6 +310,7 @@ const Product = () => {
       setColor(formattedProduct.colors[0]);
       setDesignImage(formattedProduct.design);
       setBackDesignImage(fetchedProduct.image);
+      setMugPosterDesign(formattedProduct.mugPosterDesign);
     }
   }, [fetchedProduct]);
 
@@ -384,6 +390,7 @@ const Product = () => {
             variantId: selectedVariant.variantId,
             design: product.design,
             backDesign: product.backDesign,
+            mugPoster: product.mugPosterDesign,
           },
         ],
       };
@@ -399,12 +406,14 @@ const Product = () => {
             design: product.design,
             backDesign: product.backDesign,
             variantId: selectedVariant.variantId,
+            mugPoster: product.mugPosterDesign,
           },
         ],
         price: product.cost,
         basePrice: product.basePrice,
         name: product.name,
         image: product.image,
+        backImage: product.backImage,
         slug: product.slug,
       };
     }
@@ -456,21 +465,21 @@ const Product = () => {
 
   const countItems = () => {
     var length = 0;
-    if(reduxCartProducts) {
-      length = reduxCartProducts.length
-      for(var i = 0; i < reduxCartProducts.length; i++) {
-        console.log(length)
-        for(var n = 0; n < reduxCartProducts[i].productMappings.length; n++) {
-          length += reduxCartProducts[i].productMappings[n].quantity
-          console.log(length)
+    if (reduxCartProducts) {
+      length = reduxCartProducts.length;
+      for (var i = 0; i < reduxCartProducts.length; i++) {
+        console.log(length);
+        for (var n = 0; n < reduxCartProducts[i].productMappings.length; n++) {
+          length += reduxCartProducts[i].productMappings[n].quantity;
+          console.log(length);
         }
       }
-      console.log(length)
+      console.log(length);
     }
 
-    return length
-  }
-  const cartItemsLength = countItems()
+    return length;
+  };
+  const cartItemsLength = countItems();
   return (
     <Grid container spacing={1} justifyContent="center" alignItems="center">
       <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pl={{ xs: 3 }}>
@@ -479,15 +488,7 @@ const Product = () => {
       <Grid item md={10} xs={8} sm={10} display="flex" justifyContent="center">
         <Typography variant="h4">Official Store</Typography>
       </Grid>
-      <Grid
-        item
-        md={1}
-        xs={1}
-        sm={1}
-        display="flex"
-        justifyContent="center"
-        pr={{ xs: 5, sm: 0 }}
-        >
+      <Grid item md={1} xs={1} sm={1} display="flex" justifyContent="center" pr={{ xs: 5, sm: 0 }}>
         <IconButton
           aria-label="cart"
           onClick={handleCartButton}
@@ -501,102 +502,80 @@ const Product = () => {
         <Grid item md={12} xs={12}>
           <Grid container display="flex" justifyContent="center" alignItems="center">
             <Grid item md={4} xs={12}>
-               <Carousel
-                  selectedItem={index}
-                  showThumbs={false}
-                  showArrows={false}
-                  swipeable={false}
-                  showStatus={false}
-                  showIndicators={false}
-                >
-                  {product.colors?.map(({ id, label }) => {
-                    return (
-                      <>
-                        {console.log('image color', product.slug, { id, label })}
-                        <div
-                          className={classes.imageContainer}
-                          style={{
-                            // backgroundColor: '#121616',
+              <Carousel
+                selectedItem={index}
+                showThumbs={false}
+                showArrows={false}
+                swipeable={false}
+                showStatus={false}
+                showIndicators={false}
+              >
+                {product.colors?.map(({ id, label }) => {
+                  return (
+                    <Card
+                      className={classes.imageContainer}
+                      onMouseOver={() => {
+                        if (product.backDesign) {
+                          product.slug !== 'Case' &&
+                            product.slug !== 'mug' &&
+                            product.slug !== 'poster' &&
+                            (console.log('call ', product.slug),
+                            setDesignImage(product.backDesign),
+                            product.slug === 'hoodie'
+                              ? setBackDesignImage(product.backImage)
+                              : product.slug === 'longsleeve'
+                              ? setBackDesignImage(product.backImage)
+                              : setBackDesignImage(product.backImage));
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        if (product.backDesign) {
+                          product.slug !== 'Case' &&
+                            product.slug !== 'mug' &&
+                            product.slug !== 'poster' &&
+                            (setDesignImage(product.design), setBackDesignImage(product.image));
+                        }
+                      }}
+                      style={{
+                        borderRadius: '0px',
+                      }}
+                    >
+                      {console.log('call product', product)}
+                      <CardMedia
+                        component="img"
+                        style={{
+                          // backgroundColor: '#121616',
 
-                            backgroundColor:
-                              product.name !== 'Case' && label === 'white'
-                                ? '#ffffff'
-                                : label === 'navy'
-                                ? '#262d4f '
-                                : label === 'black'
-                                ? '#121616'
-                                : '',
-                            backgroundImage: product.name === 'Case' && `url(${designImage})`,
-                            backgroundSize: product.name === 'Case' && '33% 100%',
-                          }}
-                          onMouseOver={() => {
-                            if (product.design && product.backDesign) {
-                              product.slug !== 'Case' &&
-                                product.slug !== 'mug' &&
-                                product.slug !== 'poster' &&
-                                (console.log('call ', product.slug),
-                                setDesignImage(
-                                  product.backDesign !== '' ? product.backDesign : product.design,
-                                ),
-                                product.slug === 'hoodie'
-                                  ? setBackDesignImage(BackHoodie)
-                                  : product.slug === 'longsleeve'
-                                  ? setBackDesignImage(BackLong)
-                                  : setBackDesignImage(BackTee));
-                            }
-                          }}
-                          onMouseLeave={() => {
-                            if (product.design && product.backDesign) {
-                              product.slug !== 'Case' &&
-                                product.slug !== 'mug' &&
-                                product.slug !== 'poster' &&
-                                (setDesignImage(product.design), setBackDesignImage(product.image));
-                            }
-                          }}
-                        >
-                          <img
-                            src={
-                              product.name === 'Case'
-                                ? '/assets/img/FINALCASE.png'
-                                : backDesignImage
-                            }
-                            alt=""
-                            className={classes.image}
-                            onMouseOver={() => {
-                              if (product.design && product.backDesign) {
-                                product.slug !== 'Case' &&
-                                  product.slug !== 'mug' &&
-                                  product.slug !== 'poster' &&
-                                  (console.log('call ', product.slug),
-                                  setDesignImage(
-                                    product.backDesign !== '' ? product.backDesign : product.design,
-                                  ),
-                                  product.slug === 'hoodie'
-                                    ? setBackDesignImage(BackHoodie)
-                                    : product.slug === 'longsleeve'
-                                    ? setBackDesignImage(BackLong)
-                                    : setBackDesignImage(BackTee));
-                              }
-                            }}
-                            onMouseLeave={() => {
-                              if (product.design && product.backDesign) {
-                                product.slug !== 'Case' &&
-                                  product.slug !== 'mug' &&
-                                  product.slug !== 'poster' &&
-                                  (setDesignImage(product.design),
-                                  setBackDesignImage(product.image));
-                              }
-                            }}
-                          />
-                          {product.name !== 'Case' && (
-                            <img src={designImage} alt="design" className={classes.design} />
-                          )}
-                        </div>
-                      </>
-                    );
-                  })}
-                </Carousel>
+                          backgroundColor:
+                            product.name !== 'Case' && label === 'white'
+                              ? '#ffffff'
+                              : label === 'navy'
+                              ? '#262d4f '
+                              : label === 'black'
+                              ? '#121616'
+                              : '',
+                          backgroundImage: product.slug === 'Case' && `url(${designImage})`,
+                          backgroundSize: product.name === 'Case' && '37% 80%',
+                        }}
+                        //  <img
+                        image={backDesignImage}
+                        alt=""
+                        //   className={classes.image}
+                        // />
+                      />
 
+                      {product.slug !== 'Case' &&
+                        (product.slug !== 'mug' && product.slug !== 'poster'
+                          ? designImage && (
+                              <img src={designImage} alt="design" className={classes.design} />
+                            )
+                          : mugPosterDesign && (
+                              <img src={mugPosterDesign} alt="design" className={classes.design} />
+                            ))}
+                    </Card>
+                  );
+                })}
+              </Carousel>
             </Grid>
             <Grid
               item
@@ -609,29 +588,29 @@ const Product = () => {
               className={classes.gridContainer}
             >
               <Stack direction="column" spacing={2} className={classes.stack}>
-                <Grid display='flex' flexWrap='wrap' justifyContent='space-between'>
+                <Grid display="flex" flexWrap="wrap" justifyContent="space-between">
                   <Grid xs={6} sm={12}>
-                  <Typography gutterBottom variant="h3" component="div" align="left">
-                  {`${product.name === 'Case' ? 'Iphone Case' : product.name}`}
-                </Typography>
+                    <Typography gutterBottom variant="h3" component="div" align="left">
+                      {`${product.name === 'Case' ? 'Iphone Case' : product.name}`}
+                    </Typography>
                   </Grid>
                   <Grid xs={6} sm={12}>
-                  
-
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  className={classes.price}
-                  align="left"
-                >
-                  ${product?.cost ? product.cost.toFixed(2) : 0} USD
-                </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      className={classes.price}
+                      align="left"
+                    >
+                      ${product?.cost ? product.cost.toFixed(2) : 0} USD
+                    </Typography>
                   </Grid>
                 </Grid>
 
                 <FormControl component="fieldset">
-                  <FormLabel sx={{mb:1}} component="legend">Color options:</FormLabel>
+                  <FormLabel sx={{ mb: 1 }} component="legend">
+                    Color options:
+                  </FormLabel>
                   <RadioGroup
                     row
                     aria-label="color"
@@ -661,20 +640,10 @@ const Product = () => {
                             />
                           }
                           label={
-                            <div
+                            <Card
                               className={classes.color}
                               style={{
-                                backgroundColor:
-                                label === 'white'
-                                      ? '#ffffff'
-                                      : label === 'navy'
-                                      ? '#262d4f '
-                                      : label === 'black'
-                                      ? '#121616'
-                                      : '',
-                                backgroundImage: `url(${product.image})`,
-                                backgroundSize: '100% 100%',
-                                backgroundRepeat: 'no-repeat',
+                                borderRadius: '0px',
                                 width: '50px',
                                 height: '50px',
                                 display: 'flex',
@@ -682,18 +651,51 @@ const Product = () => {
                                 alignItems: 'center',
                               }}
                             >
-                              {' '}
-                              {/* <Typography>Rehman</Typography> */}
-                              {/* <img src={`${product.image}`} height="50" width="50" /> */}
-                              <img
-                                src={product.design}
-                                width="15px"
-                                height="15px"
+                              <CardMedia
+                                component="img"
                                 style={{
-                                  position: 'absolute',
+                                  backgroundColor:
+                                    product.name !== 'Case' && label === 'white'
+                                      ? '#FFFFFF'
+                                      : label === 'navy'
+                                      ? '#262D4F '
+                                      : label === 'black'
+                                      ? '#121616'
+                                      : '',
+                                  backgroundImage: product.slug === 'Case' && `url(${designImage})`,
+                                  backgroundSize: product.name === 'Case' && '37% 80%',
                                 }}
+                                //  <img
+                                image={product.image}
+                                alt=""
+                                //   className={classes.image}
+                                // />
                               />
-                            </div>
+                              {product.slug !== 'Case' &&
+                                (product.slug !== 'mug' && product.slug !== 'poster'
+                                  ? designImage && (
+                                      <img
+                                        src={designImage}
+                                        alt="design"
+                                        width="15px"
+                                        height="15px"
+                                        style={{
+                                          position: 'absolute',
+                                        }}
+                                      />
+                                    )
+                                  : mugPosterDesign && (
+                                      <img
+                                        src={mugPosterDesign}
+                                        alt="design"
+                                        width="15px"
+                                        height="15px"
+                                        style={{
+                                          position: 'absolute',
+                                        }}
+                                      />
+                                    ))}
+                            </Card>
                           }
                         />
                       );
@@ -760,74 +762,76 @@ const Product = () => {
                 </Grid>
 
                 <Grid className={classes.acwrapper}>
-                <Accordion className={classes.accordian}>
-                  <AccordionSummary
-                    onClick={() => handleDetailsChange(details)}
-                    expandIcon={
-                      details ? (
-                        <RemoveIcon sx={{ color: '#EAEAEA' }} />
-                      ) : (
-                        <AddIcon sx={{ color: '#EAEAEA' }} />
-                      )
-                    }
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
-                      DETAILS
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <List>
-                      {product.details?.map((detail, i) => (
-                        <ListItem disablePadding key={i}>
-                          <ListItemIcon
-                            disablePadding
-                            sx={{ fontSize: '10px' }}
-                          >{`\u2B24`}</ListItemIcon>
-                          {detail}
-                        </ListItem>
-                      ))}
-                    </List>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion className={classes.accordian}>
-                  <AccordionSummary
-                    onClick={() => handleShippingChange(shipping)}
-                    expandIcon={
-                      shipping ? (
-                        <RemoveIcon sx={{ color: '#EAEAEA' }} />
-                      ) : (
-                        <AddIcon sx={{ color: '#EAEAEA' }} />
-                      )
-                    }
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
-                      SHIPPING DETAILS
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                  <Typography
-                        key={index}
-                        variant="body1"
-                        sx={{ fontWeight: '400 !important' }}
-                        mb={4}>
-                        FREE Shipping to US
+                  <Accordion className={classes.accordian}>
+                    <AccordionSummary
+                      onClick={() => handleDetailsChange(details)}
+                      expandIcon={
+                        details ? (
+                          <RemoveIcon sx={{ color: '#EAEAEA' }} />
+                        ) : (
+                          <AddIcon sx={{ color: '#EAEAEA' }} />
+                        )
+                      }
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
+                        DETAILS
                       </Typography>
-                    {product.shippingText?.map((shippingText, index) => (
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <List>
+                        {product.details?.map((detail, i) => (
+                          <ListItem disablePadding key={i}>
+                            <ListItemIcon
+                              disablePadding
+                              sx={{ fontSize: '10px' }}
+                            >{`\u2B24`}</ListItemIcon>
+                            {detail}
+                          </ListItem>
+                        ))}
+                      </List>
+                    </AccordionDetails>
+                  </Accordion>
+
+                  <Accordion className={classes.accordian}>
+                    <AccordionSummary
+                      onClick={() => handleShippingChange(shipping)}
+                      expandIcon={
+                        shipping ? (
+                          <RemoveIcon sx={{ color: '#EAEAEA' }} />
+                        ) : (
+                          <AddIcon sx={{ color: '#EAEAEA' }} />
+                        )
+                      }
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography variant="h6" sx={{ fontWeight: 'bold !important' }}>
+                        SHIPPING DETAILS
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
                       <Typography
                         key={index}
                         variant="body1"
                         sx={{ fontWeight: '400 !important' }}
-                        mb={4}>
-                        {shippingText}
+                        mb={4}
+                      >
+                        FREE Shipping to US
                       </Typography>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
+                      {product.shippingText?.map((shippingText, index) => (
+                        <Typography
+                          key={index}
+                          variant="body1"
+                          sx={{ fontWeight: '400 !important' }}
+                          mb={4}
+                        >
+                          {shippingText}
+                        </Typography>
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
                 </Grid>
 
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -850,24 +854,24 @@ const Product = () => {
       {product.backDesign !== '' && (
         <div hidden>
           <img src={product.backDesign} />
-          <img src={BackLong} />
-          <img src={BackTee} />
-          <img src={BackHoodie} />
+          <img src={product.backImage} />
         </div>
       )}
-      </Grid>
+    </Grid>
   );
 };
 
-const CartButton = (props) => {
+const CartButton = props => {
   return (
     <IconButton
       aria-label="cart"
       onClick={() => props.handleCartButton()}
       size="large"
-      style={{ height: '50px', width: '50px' }}>
-        <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: '#000000' }} />
-        <Grid sx={{
+      style={{ height: '50px', width: '50px' }}
+    >
+      <ShoppingCartOutlinedIcon sx={{ fontSize: '2rem', color: '#000000' }} />
+      <Grid
+        sx={{
           position: 'absolute',
           dislpay: 'flex',
           flexDirection: 'column',
@@ -881,11 +885,14 @@ const CartButton = (props) => {
           fontWeight: '600',
           backgroundColor: 'black',
           height: '20px',
-          width: '20px'
-          }}>
-          <Typography sx={{fontSize: '10px', fontWeight: '600', marginTop: '3px'}}>{props.cartCount}</Typography>
-        </Grid>
+          width: '20px',
+        }}
+      >
+        <Typography sx={{ fontSize: '10px', fontWeight: '600', marginTop: '3px' }}>
+          {props.cartCount}
+        </Typography>
+      </Grid>
     </IconButton>
-  )
-}
+  );
+};
 export default Product;

@@ -89,12 +89,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TransactionHistory = ({
+  hasStripeAcc,
+
   vendor,
   initiatePayout,
   handleViewStripeDashboard,
   pendingBalance,
   transactionHistory,
   setHasStripeAcc,
+  handleOnboarding,
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -117,7 +120,6 @@ const TransactionHistory = ({
   );
 
   const handleRemoveStripeAccount = () => {
-    console.log('call correct');
     setLoading(true);
     axios
       .delete(`${baseURL}/stripe/delete`, {
@@ -126,7 +128,8 @@ const TransactionHistory = ({
         },
       })
       .then(response => {
-        setHasStripeAcc(false);
+        handleOnboarding();
+        // setHasStripeAcc(false);
         handleClose();
         setLoading(false);
       })
@@ -134,6 +137,11 @@ const TransactionHistory = ({
         console.log({ error });
       });
   };
+
+  const removeAndHandleViewStripeDashboard = () => {
+    handleRemoveStripeAccount();
+  };
+
   const handleVerifyRemoveName = e => {
     //  setStoreName(e.target.value);
     //  const name = e.target.value.trim();
@@ -148,235 +156,69 @@ const TransactionHistory = ({
   const handleClose = () => setOpen(false);
   return (
     <Grid container spacing={2} className={classes.container}>
-      <Grid item md={12} xs={12} mb={3}>
-        <Grid container spacing={2}>
-          <Grid
-            item
-            md={6}
-            xs={12}
-            display="flex"
-            flexDirection="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            sx={{ positon: 'relative' }}
-          >
-            <AccountCircleIcon sx={{ fontSize: 60, marginRight: '10px', color: '#cfd7df' }} />
-            <Stack direction="column" justifyContent="center" alignItems="flex-start">
-              <Typography className={classes.name}>{vendor.displayName}</Typography>
+      <Grid item md={12} xs={12}>
+        <Grid container spacing={1}>
+          <Grid item md={8} xs={8}>
+            <Stack direction="row" spacing={2}>
+              <Stack direction="column" spacing={2}>
+                <Typography variant="body1" color="initial">
+                  Lifetime Profit
+                </Typography>
 
-              <Typography onClick={handleViewStripeDashboard} className={classes.buttonText}>
-                View stripe account
-              </Typography>
-              <Typography onClick={handleOpen} className={classes.buttonText}>
-                Remove account
-              </Typography>
+                <Typography variant="body1" color="initial">
+                  To be Payed
+                </Typography>
+                <Typography variant="body1" color="initial">
+                  Ready to Payout
+                </Typography>
+              </Stack>
+              <Stack direction="column" spacing={2}>
+                <Typography variant="body" color="initial">
+                  $0.00
+                </Typography>
+                <Typography variant="body1" color="initial">
+                  ${pendingBalance.pendingBalance.toFixed(2)}
+                </Typography>
+                <Typography variant="body1" color="initial">
+                  ${vendor.balance.toFixed(2)}
+                </Typography>
+              </Stack>
             </Stack>
           </Grid>
-          <Grid item md={2} xs={6}>
-            <Stack direction="column">
-              <Typography variant="p" component="p" className={classes.topText}>
-                Pending Balance
-              </Typography>
-              <Typography className={classes.balance}>
-                ${pendingBalance.pendingBalance.toFixed(2)}
-              </Typography>
-              <Typography variant="p" component="p" className={classes.lightText}>
-                {pendingBalance.numberOfTransactions} transactions
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid item md={2} xs={6}>
-            <Stack direction="column">
-              <Typography variant="p" component="p" className={classes.topText}>
-                Your Balance
-              </Typography>
-              <Typography className={classes.balance}>${vendor.balance.toFixed(2)}</Typography>
-              <Typography variant="p" component="p" className={classes.lightText}>
-                ${vendor.balance.toFixed(2)} available
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid item md={2} xs={12}>
-            <Stack direction="column" className={classes.payoutButtonContainer}>
+          <Grid item md={4} xs={4}>
+            <Stack direction="column" spacing={3} justifyContent="space-between">
               <Button
-                onClick={initiatePayout}
-                disabled={!vendor.balance > 0}
-                fullWidth
-                className={classes.payoutButton}
                 variant="contained"
                 color="primary"
+                className={classes.payoutButton}
+                onClick={hasStripeAcc ? removeAndHandleViewStripeDashboard : handleOnboarding}
+                // onClick={removeAndHandleViewStripeDashboard}
               >
-                Payout Now
+                {hasStripeAcc ? 'Change Bank' : 'Setup Bank'}
               </Button>
-              <Typography
-                className={classes.buttonText}
-                onClick={handleViewStripeDashboard}
-                align="center"
-              >
-                View Payouts on Stripe
-              </Typography>
+              {/* <Typography onClick={handleOpen} className={classes.buttonText}>
+                Remove account
+              </Typography> */}
+              <Stack direction="column" spacing={1}>
+                <Button
+                  onClick={initiatePayout}
+                  disabled={!vendor.balance > 0}
+                  fullWidth
+                  className={classes.payoutButton}
+                  variant="contained"
+                  color="primary"
+                >
+                  Payout Now
+                </Button>
+                <Typography
+                  className={classes.buttonText}
+                  onClick={handleViewStripeDashboard}
+                  align="center"
+                >
+                  View Payouts History
+                </Typography>
+              </Stack>
             </Stack>
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid item md={12} xs={12}>
-        <Button onClick={callCronJob} fullWidth variant="contained" color="primary">
-          Testing purpose: Release Escrow payments
-        </Button>
-      </Grid>
-
-      <Grid item md={12} xs={12} p={3}>
-        <Grid container spacing={2}>
-          <Grid item md={12} xs={12}>
-            {transactionHistory.length > 0 && (
-              <Grid container spacing={2}>
-                <Grid item md={12} xs={12}>
-                  <Typography className={classes.tableHeading}>Escrow Details</Typography>
-                </Grid>
-                <Grid item md={12} xs={12}>
-                  <Card className={classes.card}>
-                    <TableContainer>
-                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                        <TableHead>
-                          <TableRow className={classes.tableRow}>
-                            <TableCell align="center" className={classes.tableColumnHeading}>
-                              Date
-                            </TableCell>
-                            <TableCell align="center" className={classes.tableColumnHeading}>
-                              Release Date
-                            </TableCell>
-                            <TableCell align="center" className={classes.tableColumnHeading}>
-                              Status
-                            </TableCell>
-                            <TableCell align="center" className={classes.tableColumnHeading}>
-                              Amount
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {transactionHistory.map(transaction => (
-                            <TableRow
-                              key={transaction._id}
-                              sx={{
-                                '&:last-child td, &:last-child th': {
-                                  border: 0,
-                                },
-                              }}
-                              className={classes.tableRow}
-                            >
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                {moment(transaction.updatedAt).format('LLL')}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                {moment(transaction.releaseDate).format('LLL')}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                {transaction.status}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                $ {transaction.vendorProfit.toFixed(2)}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Card>
-                </Grid>
-              </Grid>
-            )}
-          </Grid>
-          <Grid item md={12} xs={12} mt={4}>
-            {vendorTransaction.length > 0 && (
-              <Grid container spacing={2}>
-                <Grid item md={12} xs={12}>
-                  <Typography className={classes.tableHeading}>Transaction history</Typography>
-                </Grid>
-                <Grid item md={12} xs={12}>
-                  <Card className={classes.card}>
-                    <TableContainer>
-                      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                        <TableHead>
-                          <TableRow className={classes.tableRow}>
-                            <TableCell align="center">Name</TableCell>
-                            <TableCell align="center">Date</TableCell>
-                            <TableCell align="center">Status</TableCell>
-                            <TableCell align="center">Amount</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {vendorTransaction.map(row => (
-                            <TableRow
-                              key={row._id}
-                              sx={{
-                                '&:last-child td, &:last-child th': {
-                                  border: 0,
-                                },
-                              }}
-                              className={classes.tableRow}
-                            >
-                              <TableCell align="center" scope="row">
-                                <Stack direction="row" alignItems="center">
-                                  <AccountCircleIcon
-                                    sx={{
-                                      fontSize: 30,
-                                      marginRight: '10px',
-                                      color: '#cfd7df',
-                                    }}
-                                  />
-                                  <Typography variant="p" component="p">
-                                    {vendor.displayName}
-                                  </Typography>
-                                </Stack>
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                {moment(row.updatedAt).format('LLL')}
-                              </TableCell>
-
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                {row.status}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                scope="row"
-                                className={classes.tableLightText}
-                              >
-                                $ {row.totalPayout}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Card>
-                </Grid>
-              </Grid>
-            )}
           </Grid>
         </Grid>
       </Grid>

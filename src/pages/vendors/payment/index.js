@@ -157,6 +157,11 @@ const PaymentOnboarding = () => {
       })
       .catch(error => {
         console.log({ error });
+        setSnackBarToggle({
+          visible: true,
+          type: 'error',
+          message: 'Please complete your account setup by going to your stripe account',
+        });
       });
   };
 
@@ -175,21 +180,23 @@ const PaymentOnboarding = () => {
     });
   };
   return (
-    <LoggedInVendor>
-      {hasStripeAcc ? (
-        <TransactionHistory
-          initiatePayout={initiatePayout}
-          vendor={vendor}
-          handleViewStripeDashboard={handleViewStripeDashboard}
-          pendingBalance={pendingBalance}
-          transactionHistory={transactionHistory}
-          setHasStripeAcc={setHasStripeAcc}
-        />
-      ) : open ? (
+    <>
+      {/* {hasStripeAcc ? ( */}
+      <TransactionHistory
+        hasStripeAcc={hasStripeAcc}
+        initiatePayout={initiatePayout}
+        vendor={vendor}
+        handleViewStripeDashboard={handleViewStripeDashboard}
+        pendingBalance={pendingBalance}
+        transactionHistory={transactionHistory}
+        setHasStripeAcc={setHasStripeAcc}
+        handleOnboarding={handleOnboarding}
+      />
+      {/* ) : open ? (
         ''
       ) : (
         <Payout handleOnboarding={handleOnboarding} />
-      )}
+      )} */}
 
       <Snackbar open={snackBarToggle.visible} autoHideDuration={5000} onClose={handleSnackBarClose}>
         <Alert severity={snackBarToggle.type}>{snackBarToggle.message}</Alert>
@@ -201,7 +208,7 @@ const PaymentOnboarding = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-    </LoggedInVendor>
+    </>
   );
 };
 
