@@ -124,6 +124,9 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
   };
 
   useEffect(() => {
+    console.log(product);
+  }, []);
+  useEffect(() => {
     if (product) {
       const colorsArr = product.productMappings.map(c => c.color);
 
@@ -233,7 +236,9 @@ const StoreProductCard = ({ product, storeUrl, storeName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${product.slug === 'longsleeve' ? 'Long' : product.name} // ${storeName}`}
+          {`${product?.designId?.name !== 'default' ? product?.designId?.name : ''} 
+          ${product.slug === 'longsleeve' ? 'Long' : product.name} 
+          ${product?.designId?.name === 'default' ? `// ${storeName}` : ''}`}
         </Typography>
         <Typography
           gutterBottom

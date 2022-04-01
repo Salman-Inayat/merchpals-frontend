@@ -205,7 +205,8 @@ const VendorStoreProductCard = ({ product, design, vendorName }) => {
           component="div"
           className={classes.productTextcolor}
         >
-          {`${product.slug === 'longsleeve' ? 'Long' : product.name} // ${vendorName}`}
+          {`${product?.designId?.name !== 'default' ? product?.designId?.name : ''} 
+          ${product.slug === 'longsleeve' ? 'Long' : product.name}`}
         </Typography>
         <Typography
           gutterBottom
