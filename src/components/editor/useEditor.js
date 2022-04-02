@@ -1658,12 +1658,18 @@ const useEditor = mode => {
   //     .data.some(channel => channel !== 0);
   // }
   function isCanvasEmpty(canvas) {
+    
+    if (isMobile) {
+      if (canvas.getObjects().length != 0) {
+        return false;
+      }
+    }
+    
     const context = canvas.getContext('2d');
 
     const pixelBuffer = new Uint32Array(
       context.getImageData(0, 0, canvas.width, canvas.height).data.buffer,
     );
-    // console.log('buffer', pixelBuffer, !pixelBuffer.some(color => color !== 0));
 
     return !pixelBuffer.some(color => color !== 0);
   }
